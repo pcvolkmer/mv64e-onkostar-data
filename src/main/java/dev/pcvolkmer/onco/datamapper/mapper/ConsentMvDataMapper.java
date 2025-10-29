@@ -26,7 +26,6 @@ import dev.pcvolkmer.mv64e.mtb.ModelProjectConsentPurpose;
 import dev.pcvolkmer.mv64e.mtb.Provision;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ConsentMvCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ConsentMvVerlaufCatalogue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,100 +38,109 @@ import java.util.stream.Collectors;
  */
 public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
 
-    private final ConsentMvCatalogue catalogue;
-    private final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue;
+  private final ConsentMvCatalogue catalogue;
+  private final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue;
 
-    public ConsentMvDataMapper(
-            final ConsentMvCatalogue catalogue,
-            final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue
-    ) {
-        this.catalogue = catalogue;
-        this.consentMvVerlaufCatalogue = consentMvVerlaufCatalogue;
+  public ConsentMvDataMapper(
+      final ConsentMvCatalogue catalogue,
+      final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue) {
+    this.catalogue = catalogue;
+    this.consentMvVerlaufCatalogue = consentMvVerlaufCatalogue;
+  }
+
+  /**
+   * Loads and maps consent data using the consent form database id
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded Consent data
+   */
+  @Override
+  public ModelProjectConsent getById(int id) {
+    try {
+      var builder = ModelProjectConsent.builder();
+      builder.version(getLatestVersion(id)).provisions(getProvisions(id));
+      return builder.build();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private String getLatestVersion(int id) {
+    return consentMvVerlaufCatalogue.getAllByParentId(id).stream()
+        .sorted((rs1, rs2) -> rs2.getDate("date").compareTo(rs1.getDate("date")))
+        .map(resultSet -> resultSet.getString("version"))
+        .findFirst()
+        .orElse("");
+  }
+
+  private List<Provision> getProvisions(final int id) {
+    var result = new ArrayList<Provision>();
+
+    var all =
+        consentMvVerlaufCatalogue.getAllByParentId(id).stream()
+            .sorted((rs1, rs2) -> rs2.getDate("date").compareTo(rs1.getDate("date")))
+            .collect(Collectors.toList());
+
+    var latest = all.stream().findFirst();
+    if (latest.isEmpty()) {
+      return result;
     }
 
-    /**
-     * Loads and maps consent data using the consent form database id
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded Consent data
-     */
-    @Override
-    public ModelProjectConsent getById(int id) {
-        try {
-            var builder = ModelProjectConsent.builder();
-            builder
-                    .version(getLatestVersion(id))
-                    .provisions(getProvisions(id))
-            ;
-            return builder.build();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    all.stream()
+        .filter(rs -> rs.getString("sequencing") != null && !rs.getString("sequencing").isBlank())
+        .findFirst()
+        .ifPresent(
+            rs ->
+                result.add(
+                    Provision.builder()
+                        .date(rs.getDate("date"))
+                        .purpose(ModelProjectConsentPurpose.SEQUENCING)
+                        .type(
+                            ConsentProvision.PERMIT.toValue().equals(rs.getString("sequencing"))
+                                ? ConsentProvision.PERMIT
+                                : ConsentProvision.DENY)
+                        .build()));
 
-    private String getLatestVersion(int id) {
-        return consentMvVerlaufCatalogue.getAllByParentId(id).stream()
-                .sorted((rs1, rs2) -> rs2.getDate("date").compareTo(rs1.getDate("date")))
-                .map(resultSet -> resultSet.getString("version"))
-                .findFirst()
-                .orElse("");
-    }
+    all.stream()
+        .filter(
+            rs ->
+                rs.getString("caseidentification") != null
+                    && !rs.getString("caseidentification").isBlank())
+        .findFirst()
+        .ifPresent(
+            rs ->
+                result.add(
+                    Provision.builder()
+                        .date(rs.getDate("date"))
+                        .purpose(ModelProjectConsentPurpose.CASE_IDENTIFICATION)
+                        .type(
+                            ConsentProvision.PERMIT
+                                    .toValue()
+                                    .equals(rs.getString("caseidentification"))
+                                ? ConsentProvision.PERMIT
+                                : ConsentProvision.DENY)
+                        .build()));
 
-    private List<Provision> getProvisions(final int id) {
-        var result = new ArrayList<Provision>();
+    all.stream()
+        .filter(
+            rs ->
+                rs.getString("reidentification") != null
+                    && !rs.getString("reidentification").isBlank())
+        .findFirst()
+        .ifPresent(
+            rs ->
+                result.add(
+                    Provision.builder()
+                        .date(rs.getDate("date"))
+                        .purpose(ModelProjectConsentPurpose.REIDENTIFICATION)
+                        .type(
+                            ConsentProvision.PERMIT
+                                    .toValue()
+                                    .equals(rs.getString("reidentification"))
+                                ? ConsentProvision.PERMIT
+                                : ConsentProvision.DENY)
+                        .build()));
 
-        var all = consentMvVerlaufCatalogue.getAllByParentId(id).stream()
-                .sorted((rs1, rs2) -> rs2.getDate("date").compareTo(rs1.getDate("date")))
-                .collect(Collectors.toList());
-
-        var latest = all.stream().findFirst();
-        if (latest.isEmpty()) {
-            return result;
-        }
-
-        all.stream()
-                .filter(rs -> rs.getString("sequencing") != null && !rs.getString("sequencing").isBlank())
-                .findFirst().ifPresent(rs -> result.add(
-                        Provision.builder()
-                                .date(rs.getDate("date"))
-                                .purpose(ModelProjectConsentPurpose.SEQUENCING)
-                                .type(
-                                        ConsentProvision.PERMIT.toValue().equals(rs.getString("sequencing"))
-                                                ? ConsentProvision.PERMIT
-                                                : ConsentProvision.DENY
-                                )
-                                .build()
-                ));
-
-        all.stream()
-                .filter(rs -> rs.getString("caseidentification") != null && !rs.getString("caseidentification").isBlank())
-                .findFirst().ifPresent(rs -> result.add(
-                        Provision.builder()
-                                .date(rs.getDate("date"))
-                                .purpose(ModelProjectConsentPurpose.CASE_IDENTIFICATION)
-                                .type(
-                                        ConsentProvision.PERMIT.toValue().equals(rs.getString("caseidentification"))
-                                                ? ConsentProvision.PERMIT
-                                                : ConsentProvision.DENY
-                                )
-                                .build()
-                ));
-
-        all.stream()
-                .filter(rs -> rs.getString("reidentification") != null && !rs.getString("reidentification").isBlank())
-                .findFirst().ifPresent(rs -> result.add(
-                        Provision.builder()
-                                .date(rs.getDate("date"))
-                                .purpose(ModelProjectConsentPurpose.REIDENTIFICATION)
-                                .type(
-                                        ConsentProvision.PERMIT.toValue().equals(rs.getString("reidentification"))
-                                                ? ConsentProvision.PERMIT
-                                                : ConsentProvision.DENY
-                                )
-                                .build()
-                ));
-
-        return result;
-    }
-
+    return result;
+  }
 }

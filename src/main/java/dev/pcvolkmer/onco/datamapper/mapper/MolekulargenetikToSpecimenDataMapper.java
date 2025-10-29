@@ -23,7 +23,6 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.*;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,221 +35,207 @@ import java.util.stream.Collectors;
  */
 public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpecimen> {
 
-    private final MolekulargenetikCatalogue molekulargenetikCatalogue;
-    private final TherapieplanCatalogue therapieplanCatalogue;
-    private final RebiopsieCatalogue rebiopsieCatalogue;
-    private final ReevaluationCatalogue reevaluationCatalogue;
-    private final EinzelempfehlungCatalogue einzelempfehlungCatalogue;
-    private final VorbefundeCatalogue vorbefundeCatalogue;
-    private final HistologieCatalogue histologieCatalogue;
+  private final MolekulargenetikCatalogue molekulargenetikCatalogue;
+  private final TherapieplanCatalogue therapieplanCatalogue;
+  private final RebiopsieCatalogue rebiopsieCatalogue;
+  private final ReevaluationCatalogue reevaluationCatalogue;
+  private final EinzelempfehlungCatalogue einzelempfehlungCatalogue;
+  private final VorbefundeCatalogue vorbefundeCatalogue;
+  private final HistologieCatalogue histologieCatalogue;
 
-    public MolekulargenetikToSpecimenDataMapper(
-            final MolekulargenetikCatalogue molekulargenetikCatalogue,
-            final TherapieplanCatalogue therapieplanCatalogue,
-            final RebiopsieCatalogue rebiopsieCatalogue,
-            final ReevaluationCatalogue reevaluationCatalogue,
-            final EinzelempfehlungCatalogue einzelempfehlungCatalogue,
-            final VorbefundeCatalogue vorbefundeCatalogue,
-            final HistologieCatalogue histologieCatalogue
-    ) {
-        this.molekulargenetikCatalogue = molekulargenetikCatalogue;
-        this.therapieplanCatalogue = therapieplanCatalogue;
-        this.rebiopsieCatalogue = rebiopsieCatalogue;
-        this.reevaluationCatalogue = reevaluationCatalogue;
-        this.einzelempfehlungCatalogue = einzelempfehlungCatalogue;
-        this.vorbefundeCatalogue = vorbefundeCatalogue;
-        this.histologieCatalogue = histologieCatalogue;
+  public MolekulargenetikToSpecimenDataMapper(
+      final MolekulargenetikCatalogue molekulargenetikCatalogue,
+      final TherapieplanCatalogue therapieplanCatalogue,
+      final RebiopsieCatalogue rebiopsieCatalogue,
+      final ReevaluationCatalogue reevaluationCatalogue,
+      final EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      final VorbefundeCatalogue vorbefundeCatalogue,
+      final HistologieCatalogue histologieCatalogue) {
+    this.molekulargenetikCatalogue = molekulargenetikCatalogue;
+    this.therapieplanCatalogue = therapieplanCatalogue;
+    this.rebiopsieCatalogue = rebiopsieCatalogue;
+    this.reevaluationCatalogue = reevaluationCatalogue;
+    this.einzelempfehlungCatalogue = einzelempfehlungCatalogue;
+    this.vorbefundeCatalogue = vorbefundeCatalogue;
+    this.histologieCatalogue = histologieCatalogue;
+  }
+
+  /**
+   * Loads and maps a specimen using the database id Not intended for direct use! The result does
+   * not include a diagnosis reference!
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded Patient data
+   */
+  @Override
+  public TumorSpecimen getById(int id) {
+    var data = molekulargenetikCatalogue.getById(id);
+
+    var builder = TumorSpecimen.builder();
+    builder
+        .id(data.getString("id"))
+        .patient(data.getPatientReference())
+        .type(getTumorSpecimenCoding(data.getString("materialfixierung")))
+        .collection(getCollection(data))
+    // diagnosis is added in getAllByKpaId()
+    ;
+
+    return builder.build();
+  }
+
+  /**
+   * Loads and maps specimens by using the referencing KPA database id
+   *
+   * @param kpaId The database id of the referencing KPA procedure data set
+   * @param diagnoseReferenz The reference object to the diagnosis
+   * @return The loaded Patient data
+   */
+  public List<TumorSpecimen> getAllByKpaId(int kpaId, Reference diagnoseReferenz) {
+    var therapieplanIds = therapieplanCatalogue.getByKpaId(kpaId);
+
+    var osMolGen =
+        therapieplanIds.stream()
+            .map(einzelempfehlungCatalogue::getAllByParentId)
+            .flatMap(
+                einzelempfehlungen ->
+                    einzelempfehlungen.stream()
+                        .map(
+                            einzelempfehlung ->
+                                einzelempfehlung.getInteger("ref_molekulargenetik")))
+            .collect(Collectors.toSet());
+
+    // Addition: Rebiopsie
+    osMolGen.addAll(
+        therapieplanIds.stream()
+            .map(rebiopsieCatalogue::getAllByParentId)
+            .flatMap(
+                einzelempfehlungen ->
+                    einzelempfehlungen.stream()
+                        .map(
+                            einzelempfehlung ->
+                                einzelempfehlung.getInteger("ref_molekulargenetik")))
+            .collect(Collectors.toSet()));
+
+    // Addition: Reevaluation
+    osMolGen.addAll(
+        therapieplanIds.stream()
+            .map(reevaluationCatalogue::getAllByParentId)
+            .flatMap(
+                einzelempfehlungen ->
+                    einzelempfehlungen.stream()
+                        .map(
+                            einzelempfehlung ->
+                                einzelempfehlung.getInteger("ref_molekulargenetik")))
+            .collect(Collectors.toSet()));
+
+    // Vorbefunde anhand Einsendenummer
+    osMolGen.addAll(
+        vorbefundeCatalogue.getAllByParentId(kpaId).stream()
+            .map(rs -> rs.getString("befundnummer"))
+            .map(molekulargenetikCatalogue::getByEinsendenummer)
+            .map(ResultSet::getId)
+            .collect(Collectors.toList()));
+
+    // Histologie
+    osMolGen.addAll(
+        histologieCatalogue.getAllByParentId(kpaId).stream()
+            .map(rs -> rs.getInteger("histologie"))
+            .map(molekulargenetikCatalogue::getById)
+            .map(ResultSet::getId)
+            .collect(Collectors.toList()));
+
+    return osMolGen.stream()
+        .filter(Objects::nonNull)
+        .distinct()
+        .map(this::getById)
+        .peek(it -> it.setDiagnosis(diagnoseReferenz))
+        .collect(Collectors.toList());
+  }
+
+  // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
+  private TumorSpecimenCoding getTumorSpecimenCoding(String value) {
+    if (value == null) {
+      return null;
     }
 
-    /**
-     * Loads and maps a specimen using the database id
-     * Not intended for direct use! The result does not include a diagnosis reference!
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded Patient data
-     */
-    @Override
-    public TumorSpecimen getById(int id) {
-        var data = molekulargenetikCatalogue.getById(id);
+    var resultBuilder = TumorSpecimenCoding.builder().system("dnpm-dip/mtb/tumor-specimen/type");
 
-        var builder = TumorSpecimen.builder();
-        builder
-                .id(data.getString("id"))
-                .patient(data.getPatientReference())
-                .type(getTumorSpecimenCoding(data.getString("materialfixierung")))
-                .collection(getCollection(data))
-                // diagnosis is added in getAllByKpaId()
-        ;
-
-
-        return builder.build();
+    switch (value) {
+      case "2":
+        resultBuilder.code(TumorSpecimenCodingCode.CRYO_FROZEN).display("Cryo-frozen");
+        break;
+      case "3":
+        resultBuilder.code(TumorSpecimenCodingCode.FFPE).display("FFPE");
+        break;
+      default:
+        resultBuilder.code(TumorSpecimenCodingCode.UNKNOWN).display("Unbekannt");
+        break;
     }
 
-    /**
-     * Loads and maps specimens by using the referencing KPA database id
-     *
-     * @param kpaId            The database id of the referencing KPA procedure data set
-     * @param diagnoseReferenz The reference object to the diagnosis
-     * @return The loaded Patient data
-     */
-    public List<TumorSpecimen> getAllByKpaId(int kpaId, Reference diagnoseReferenz) {
-        var therapieplanIds = therapieplanCatalogue.getByKpaId(kpaId);
+    return resultBuilder.build();
+  }
 
-        var osMolGen = therapieplanIds.stream()
-                .map(einzelempfehlungCatalogue::getAllByParentId)
-                .flatMap(einzelempfehlungen ->
-                        einzelempfehlungen
-                                .stream()
-                                .map(einzelempfehlung -> einzelempfehlung.getInteger("ref_molekulargenetik"))
-                )
-                .collect(Collectors.toSet());
+  private Collection getCollection(ResultSet data) {
+    if (data == null
+        || data.getString("entnahmemethode") == null
+        || data.getString("probenmaterial") == null) {
+      return null;
+    }
 
-        // Addition: Rebiopsie
-        osMolGen.addAll(
-                therapieplanIds.stream()
-                        .map(rebiopsieCatalogue::getAllByParentId)
-                        .flatMap(einzelempfehlungen ->
-                                einzelempfehlungen
-                                        .stream()
-                                        .map(einzelempfehlung -> einzelempfehlung.getInteger("ref_molekulargenetik"))
-                        )
-                        .collect(Collectors.toSet())
-        );
+    var methodBuilder =
+        TumorSpecimenCollectionMethodCoding.builder()
+            .system("dnpm-dip/mtb/tumor-specimen/collection/method");
 
-        // Addition: Reevaluation
-        osMolGen.addAll(
-                therapieplanIds.stream()
-                        .map(reevaluationCatalogue::getAllByParentId)
-                        .flatMap(einzelempfehlungen ->
-                                einzelempfehlungen
-                                        .stream()
-                                        .map(einzelempfehlung -> einzelempfehlung.getInteger("ref_molekulargenetik"))
-                        )
-                        .collect(Collectors.toSet())
-        );
-
-        // Vorbefunde anhand Einsendenummer
-        osMolGen.addAll(
-                vorbefundeCatalogue.getAllByParentId(kpaId).stream()
-                        .map(rs -> rs.getString("befundnummer"))
-                        .map(molekulargenetikCatalogue::getByEinsendenummer)
-                        .map(ResultSet::getId)
-                        .collect(Collectors.toList())
-        );
-
-        // Histologie
-        osMolGen.addAll(
-                histologieCatalogue.getAllByParentId(kpaId).stream()
-                        .map(rs -> rs.getInteger("histologie"))
-                        .map(molekulargenetikCatalogue::getById)
-                        .map(ResultSet::getId)
-                        .collect(Collectors.toList())
-        );
-
-        return osMolGen.stream()
-                .filter(Objects::nonNull)
-                .distinct()
-                .map(this::getById)
-                .peek(it -> it.setDiagnosis(diagnoseReferenz))
-                .collect(Collectors.toList());
+    switch (data.getString("entnahmemethode")) {
+      case "B":
+        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.BIOPSY).display("Biopsie");
+        break;
+      case "R":
+        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.RESECTION).display("Resektat");
+        break;
+      case "LB":
+        methodBuilder
+            .code(TumorSpecimenCollectionMethodCodingCode.LIQUID_BIOPSY)
+            .display("Liquid Biopsy");
+        break;
+      case "Z":
+        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.CYTOLOGY).display("Zytologie");
+        break;
+      case "U":
+      default:
+        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.UNKNOWN).display("Unbekannt");
+        break;
     }
 
     // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
-    private TumorSpecimenCoding getTumorSpecimenCoding(String value) {
-        if (value == null) {
-            return null;
-        }
+    var localizationBuilder =
+        TumorSpecimenCollectionLocalizationCoding.builder()
+            .system("dnpm-dip/mtb/tumor-specimen/collection/localization");
 
-        var resultBuilder = TumorSpecimenCoding.builder()
-                .system("dnpm-dip/mtb/tumor-specimen/type");
-
-        switch (value) {
-            case "2":
-                resultBuilder
-                        .code(TumorSpecimenCodingCode.CRYO_FROZEN)
-                        .display("Cryo-frozen");
-                break;
-            case "3":
-                resultBuilder
-                        .code(TumorSpecimenCodingCode.FFPE)
-                        .display("FFPE");
-                break;
-            default:
-                resultBuilder
-                        .code(TumorSpecimenCodingCode.UNKNOWN)
-                        .display("Unbekannt");
-                break;
-        }
-
-        return resultBuilder.build();
+    switch (data.getString("probenmaterial")) {
+      case "T":
+        localizationBuilder
+            .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
+            .display("Primärtumor");
+        break;
+      case "LK":
+      case "M":
+      case "ITM":
+      case "SM":
+        localizationBuilder
+            .code(TumorSpecimenCollectionLocalizationCodingCode.METASTASIS)
+            .display("Metastase");
+        break;
+      default:
+        localizationBuilder
+            .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+            .display("Unbekannt");
+        break;
     }
 
-    private Collection getCollection(ResultSet data) {
-        if (data == null || data.getString("entnahmemethode") == null || data.getString("probenmaterial") == null) {
-            return null;
-        }
-
-        var methodBuilder = TumorSpecimenCollectionMethodCoding.builder()
-                .system("dnpm-dip/mtb/tumor-specimen/collection/method");
-
-        switch (data.getString("entnahmemethode")) {
-            case "B":
-                methodBuilder
-                        .code(TumorSpecimenCollectionMethodCodingCode.BIOPSY)
-                        .display("Biopsie");
-                break;
-            case "R":
-                methodBuilder
-                        .code(TumorSpecimenCollectionMethodCodingCode.RESECTION)
-                        .display("Resektat");
-                break;
-            case "LB":
-                methodBuilder
-                        .code(TumorSpecimenCollectionMethodCodingCode.LIQUID_BIOPSY)
-                        .display("Liquid Biopsy");
-                break;
-            case "Z":
-                methodBuilder
-                        .code(TumorSpecimenCollectionMethodCodingCode.CYTOLOGY)
-                        .display("Zytologie");
-                break;
-            case "U":
-            default:
-                methodBuilder
-                        .code(TumorSpecimenCollectionMethodCodingCode.UNKNOWN)
-                        .display("Unbekannt");
-                break;
-        }
-
-        // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
-        var localizationBuilder = TumorSpecimenCollectionLocalizationCoding.builder()
-                .system("dnpm-dip/mtb/tumor-specimen/collection/localization");
-
-        switch (data.getString("probenmaterial")) {
-            case "T":
-                localizationBuilder
-                        .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
-                        .display("Primärtumor");
-                break;
-            case "LK":
-            case "M":
-            case "ITM":
-            case "SM":
-                localizationBuilder
-                        .code(TumorSpecimenCollectionLocalizationCodingCode.METASTASIS)
-                        .display("Metastase");
-                break;
-            default:
-                localizationBuilder
-                        .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
-                        .display("Unbekannt");
-                break;
-        }
-
-        return Collection.builder()
-                .method(methodBuilder.build())
-                .localization(localizationBuilder.build())
-                .build();
-    }
-
+    return Collection.builder()
+        .method(methodBuilder.build())
+        .localization(localizationBuilder.build())
+        .build();
+  }
 }

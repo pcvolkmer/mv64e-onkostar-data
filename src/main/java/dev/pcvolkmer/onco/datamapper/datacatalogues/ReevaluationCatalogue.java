@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class ReevaluationCatalogue extends AbstractSubformDataCatalogue {
 
-    private ReevaluationCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private ReevaluationCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_reevaluation";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_reevaluation";
+  }
 
-    public static ReevaluationCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new ReevaluationCatalogue(jdbcTemplate);
-    }
-
+  public static ReevaluationCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new ReevaluationCatalogue(jdbcTemplate);
+  }
 }

@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class VorbefundeCatalogue extends AbstractSubformDataCatalogue {
 
-    private VorbefundeCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private VorbefundeCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_vorbefunde";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_vorbefunde";
+  }
 
-    public static VorbefundeCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new VorbefundeCatalogue(jdbcTemplate);
-    }
-
+  public static VorbefundeCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new VorbefundeCatalogue(jdbcTemplate);
+  }
 }

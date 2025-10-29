@@ -20,38 +20,44 @@
 
 package dev.pcvolkmer.onco.datamapper.genes;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import dev.pcvolkmer.mv64e.mtb.Chromosome;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class GeneUtilsTest {
 
-    @Test
-    void findByHgncId() {
-        var actual = GeneUtils.findByHgncId("HGNC:1097");
+  @Test
+  void findByHgncId() {
+    var actual = GeneUtils.findByHgncId("HGNC:1097");
 
-        assertThat(actual).isPresent().hasValueSatisfying(gene -> {
-            assertThat(gene.getHgncId()).isEqualTo("HGNC:1097");
-            assertThat(gene.getEnsemblId()).isEqualTo("ENSG00000157764");
-            assertThat(gene.getSymbol()).isEqualTo("BRAF");
-            assertThat(gene.getName()).isEqualTo("B-Raf proto-oncogene, serine/threonine kinase");
-            assertThat(gene.getChromosome()).isEqualTo("7q34");
-            assertThat(gene.getSingleChromosomeInPropertyForm()).hasValue(Chromosome.CHR7);
-        });
-    }
+    assertThat(actual)
+        .isPresent()
+        .hasValueSatisfying(
+            gene -> {
+              assertThat(gene.getHgncId()).isEqualTo("HGNC:1097");
+              assertThat(gene.getEnsemblId()).isEqualTo("ENSG00000157764");
+              assertThat(gene.getSymbol()).isEqualTo("BRAF");
+              assertThat(gene.getName()).isEqualTo("B-Raf proto-oncogene, serine/threonine kinase");
+              assertThat(gene.getChromosome()).isEqualTo("7q34");
+              assertThat(gene.getSingleChromosomeInPropertyForm()).hasValue(Chromosome.CHR7);
+            });
+  }
 
-    @Test
-    void findByHgncSymbol() {
-        var actual = GeneUtils.findBySymbol("ABCD1");
+  @Test
+  void findByHgncSymbol() {
+    var actual = GeneUtils.findBySymbol("ABCD1");
 
-        assertThat(actual).isPresent().hasValueSatisfying(gene -> {
-            assertThat(gene.getHgncId()).isEqualTo("HGNC:61");
-            assertThat(gene.getEnsemblId()).isEqualTo("ENSG00000101986");
-            assertThat(gene.getSymbol()).isEqualTo("ABCD1");
-            assertThat(gene.getName()).isEqualTo("ATP binding cassette subfamily D member 1");
-            assertThat(gene.getChromosome()).isEqualTo("Xq28");
-            assertThat(gene.getSingleChromosomeInPropertyForm()).hasValue(Chromosome.CHR_X);
-        });
-    }
+    assertThat(actual)
+        .isPresent()
+        .hasValueSatisfying(
+            gene -> {
+              assertThat(gene.getHgncId()).isEqualTo("HGNC:61");
+              assertThat(gene.getEnsemblId()).isEqualTo("ENSG00000101986");
+              assertThat(gene.getSymbol()).isEqualTo("ABCD1");
+              assertThat(gene.getName()).isEqualTo("ATP binding cassette subfamily D member 1");
+              assertThat(gene.getChromosome()).isEqualTo("Xq28");
+              assertThat(gene.getSingleChromosomeInPropertyForm()).hasValue(Chromosome.CHR_X);
+            });
+  }
 }

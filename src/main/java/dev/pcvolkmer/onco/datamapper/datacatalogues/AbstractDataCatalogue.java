@@ -22,12 +22,11 @@ package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  * Common implementations for all data catalogues
@@ -37,109 +36,101 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractDataCatalogue implements DataCatalogue {
 
-    protected final JdbcTemplate jdbcTemplate;
+  protected final JdbcTemplate jdbcTemplate;
 
-    protected AbstractDataCatalogue(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+  protected AbstractDataCatalogue(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
+
+  protected abstract String getTableName();
+
+  /**
+   * Get procedure result set by procedure id
+   *
+   * @param id The procedure id
+   * @return The procedure id
+   */
+  @Override
+  public ResultSet getById(int id) {
+    var result =
+        this.jdbcTemplate.queryForList(
+            String.format(
+                "SELECT patient.patienten_id, %s.*, prozedur.patient_id, prozedur.hauptprozedur_id FROM %s JOIN prozedur ON (prozedur.id = %s.id) JOIN patient ON (patient.id = prozedur.patient_id) WHERE geloescht = 0 AND prozedur.id = ?",
+                getTableName(), getTableName(), getTableName()),
+            id);
+
+    if (result.isEmpty()) {
+      throw new DataAccessException("No record found for id: " + id);
+    } else if (result.size() > 1) {
+      throw new DataAccessException("Multiple records found for id: " + id);
     }
 
-    protected abstract String getTableName();
+    var resultSet = ResultSet.from(result.get(0));
 
-    /**
-     * Get procedure result set by procedure id
-     *
-     * @param id The procedure id
-     * @return The procedure id
-     */
-    @Override
-    public ResultSet getById(int id) {
-        var result = this.jdbcTemplate.queryForList(
-                String.format(
-                        "SELECT patient.patienten_id, %s.*, prozedur.patient_id, prozedur.hauptprozedur_id FROM %s JOIN prozedur ON (prozedur.id = %s.id) JOIN patient ON (patient.id = prozedur.patient_id) WHERE geloescht = 0 AND prozedur.id = ?",
-                        getTableName(),
-                        getTableName(),
-                        getTableName()
-                ),
-                id);
-
-        if (result.isEmpty()) {
-            throw new DataAccessException("No record found for id: " + id);
-        } else if (result.size() > 1) {
-            throw new DataAccessException("Multiple records found for id: " + id);
-        }
-
-        var resultSet = ResultSet.from(result.get(0));
-
-        if (resultSet.getRawData().containsKey("id")) {
-            var merkmale = getMerkmaleById(resultSet.getId());
-            if (merkmale.isEmpty()) {
-                return resultSet;
-            }
-            merkmale.forEach((key, value) ->
-                    resultSet.getRawData().put(key, value)
-            );
-        }
-
+    if (resultSet.getRawData().containsKey("id")) {
+      var merkmale = getMerkmaleById(resultSet.getId());
+      if (merkmale.isEmpty()) {
         return resultSet;
+      }
+      merkmale.forEach((key, value) -> resultSet.getRawData().put(key, value));
     }
 
-    /**
-     * Get list of ResultSet by list of procedure ids
-     * Filters our null objects
-     *
-     * @param ids List of procedure id
-     * @return List of result set
-     */
-    public List<ResultSet> getByIdList(List<Integer> ids) {
-        return ids.stream().map(this::getById)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    return resultSet;
+  }
+
+  /**
+   * Get list of ResultSet by list of procedure ids Filters our null objects
+   *
+   * @param ids List of procedure id
+   * @return List of result set
+   */
+  public List<ResultSet> getByIdList(List<Integer> ids) {
+    return ids.stream().map(this::getById).filter(Objects::nonNull).collect(Collectors.toList());
+  }
+
+  /**
+   * Returns related diseases
+   *
+   * @param procedureId The procedure id
+   * @return the diseases
+   */
+  public List<ResultSet> getDiseases(int procedureId) {
+    return this.jdbcTemplate
+        .queryForList(
+            String.format(
+                "SELECT * FROM erkrankung_prozedur JOIN erkrankung ON (erkrankung.id = erkrankung_prozedur.erkrankung_id) WHERE erkrankung_prozedur.prozedur_id = ?",
+                getTableName(),
+                getTableName()),
+            procedureId)
+        .stream()
+        .map(ResultSet::from)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Get procedure "Merkmale" result by procedure id and form field name
+   *
+   * @param id The parents procedure id
+   * @return The sub procedures
+   */
+  Map<String, List<String>> getMerkmaleById(int id) {
+    try {
+      var resultSet =
+          this.jdbcTemplate.queryForList(
+              String.format(
+                  "SELECT feldname, feldwert FROM %s_merkmale WHERE eintrag_id = ?",
+                  getTableName()),
+              id);
+
+      return resultSet.stream()
+          .collect(
+              Collectors.groupingBy(
+                  m -> m.get("feldname").toString(),
+                  Collectors.mapping(
+                      stringObjectMap -> stringObjectMap.get("feldwert").toString(),
+                      Collectors.toList())));
+    } catch (org.springframework.dao.DataAccessException e) {
+      return Map.of();
     }
-
-    /**
-     * Returns related diseases
-     *
-     * @param procedureId The procedure id
-     * @return the diseases
-     */
-    public List<ResultSet> getDiseases(int procedureId) {
-        return this.jdbcTemplate.queryForList(
-                        String.format(
-                                "SELECT * FROM erkrankung_prozedur JOIN erkrankung ON (erkrankung.id = erkrankung_prozedur.erkrankung_id) WHERE erkrankung_prozedur.prozedur_id = ?",
-                                getTableName(),
-                                getTableName()
-                        ),
-                        procedureId)
-                .stream()
-                .map(ResultSet::from)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Get procedure "Merkmale" result by procedure id and form field name
-     *
-     * @param id The parents procedure id
-     * @return The sub procedures
-     */
-    Map<String, List<String>> getMerkmaleById(int id) {
-        try {
-            var resultSet = this.jdbcTemplate.queryForList(
-                    String.format(
-                            "SELECT feldname, feldwert FROM %s_merkmale WHERE eintrag_id = ?",
-                            getTableName()
-                    ),
-                    id);
-
-            return resultSet.stream()
-                    .collect(
-                            Collectors.groupingBy(
-                                    m -> m.get("feldname").toString(),
-                                    Collectors.mapping(stringObjectMap -> stringObjectMap.get("feldwert").toString(), Collectors.toList())
-                            )
-                    );
-        } catch (org.springframework.dao.DataAccessException e) {
-            return Map.of();
-        }
-    }
-
+  }
 }

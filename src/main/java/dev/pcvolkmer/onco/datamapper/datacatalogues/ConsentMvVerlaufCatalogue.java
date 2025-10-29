@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class ConsentMvVerlaufCatalogue extends AbstractSubformDataCatalogue {
 
-    private ConsentMvVerlaufCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private ConsentMvVerlaufCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_consentmvverlauf";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_consentmvverlauf";
+  }
 
-    public static ConsentMvVerlaufCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new ConsentMvVerlaufCatalogue(jdbcTemplate);
-    }
-
+  public static ConsentMvVerlaufCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new ConsentMvVerlaufCatalogue(jdbcTemplate);
+  }
 }

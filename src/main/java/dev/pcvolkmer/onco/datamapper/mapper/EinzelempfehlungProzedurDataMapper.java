@@ -23,7 +23,6 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -35,84 +34,83 @@ import java.util.stream.Collectors;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class EinzelempfehlungProzedurDataMapper extends AbstractEinzelempfehlungDataMapper<ProcedureRecommendation> {
+public class EinzelempfehlungProzedurDataMapper
+    extends AbstractEinzelempfehlungDataMapper<ProcedureRecommendation> {
 
-    public EinzelempfehlungProzedurDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
-        super(einzelempfehlungCatalogue);
+  public EinzelempfehlungProzedurDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
+    super(einzelempfehlungCatalogue);
+  }
+
+  @Override
+  protected ProcedureRecommendation map(ResultSet resultSet) {
+    var resultBuilder =
+        ProcedureRecommendation.builder()
+            .id(resultSet.getString("id"))
+            .patient(resultSet.getPatientReference())
+            .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
+            // TODO Fix id?
+            .reason(Reference.builder().id(resultSet.getString("id")).build())
+            .issuedOn(resultSet.getDate("datum"))
+            .levelOfEvidence(getLevelOfEvidence(resultSet));
+
+    if (null != resultSet.getString("evidenzlevel")) {
+      resultBuilder.priority(
+          getRecommendationPriorityCoding(
+              resultSet.getString("evidenzlevel"),
+              resultSet.getInteger("evidenzlevel_propcat_version")));
     }
 
-    @Override
-    protected ProcedureRecommendation map(ResultSet resultSet) {
-        var resultBuilder = ProcedureRecommendation.builder()
-                .id(resultSet.getString("id"))
-                .patient(resultSet.getPatientReference())
-                .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
-                // TODO Fix id?
-                .reason(Reference.builder().id(resultSet.getString("id")).build())
-                .issuedOn(resultSet.getDate("datum"))
-                .levelOfEvidence(getLevelOfEvidence(resultSet));
-
-        if (null != resultSet.getString("evidenzlevel")) {
-            resultBuilder.priority(
-                    getRecommendationPriorityCoding(
-                            resultSet.getString("evidenzlevel"),
-                            resultSet.getInteger("evidenzlevel_propcat_version")
-                    )
-            );
-        }
-
-        // Nur der erste Eintrag!
-        if (!resultSet.getMerkmalList("art_der_therapie").isEmpty()) {
-            resultBuilder.code(
-                    getMtbProcedureRecommendationCategoryCoding(
-                            resultSet.getMerkmalList("art_der_therapie").get(0),
-                            resultSet.getInteger("art_der_therapie_propcat_version")
-                    )
-            );
-        }
-
-        // As of now: Simple variant and CSV only! - Not used but present for completeness
-        if (null != resultSet.getString("st_mol_alt_variante_json")) {
-            resultBuilder.supportingVariants(
-                    JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json"))
-            );
-        }
-
-        return resultBuilder.build();
+    // Nur der erste Eintrag!
+    if (!resultSet.getMerkmalList("art_der_therapie").isEmpty()) {
+      resultBuilder.code(
+          getMtbProcedureRecommendationCategoryCoding(
+              resultSet.getMerkmalList("art_der_therapie").get(0),
+              resultSet.getInteger("art_der_therapie_propcat_version")));
     }
 
-    @Override
-    public ProcedureRecommendation getById(int id) {
-        return this.map(this.catalogue.getById(id));
+    // As of now: Simple variant and CSV only! - Not used but present for completeness
+    if (null != resultSet.getString("st_mol_alt_variante_json")) {
+      resultBuilder.supportingVariants(
+          JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json")));
     }
 
-    @Override
-    public List<ProcedureRecommendation> getByParentId(final int parentId) {
-        return catalogue.getAllByParentId(parentId)
-                .stream()
-                // Filter Prozedurempfehlung (Weitere Empfehlungen)
-                .filter(it -> "sonstige".equals(it.getString("empfehlungskategorie")))
-                .map(this::map)
-                .collect(Collectors.toList());
+    return resultBuilder.build();
+  }
+
+  @Override
+  public ProcedureRecommendation getById(int id) {
+    return this.map(this.catalogue.getById(id));
+  }
+
+  @Override
+  public List<ProcedureRecommendation> getByParentId(final int parentId) {
+    return catalogue.getAllByParentId(parentId).stream()
+        // Filter Prozedurempfehlung (Weitere Empfehlungen)
+        .filter(it -> "sonstige".equals(it.getString("empfehlungskategorie")))
+        .map(this::map)
+        .collect(Collectors.toList());
+  }
+
+  private MtbProcedureRecommendationCategoryCoding getMtbProcedureRecommendationCategoryCoding(
+      String code, int version) {
+    if (code == null
+        || !Arrays.stream(MtbProcedureRecommendationCategoryCodingCode.values())
+            .map(MtbProcedureRecommendationCategoryCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(code)) {
+      return null;
     }
 
-    private MtbProcedureRecommendationCategoryCoding getMtbProcedureRecommendationCategoryCoding(String code, int version) {
-        if (code == null || !Arrays.stream(MtbProcedureRecommendationCategoryCodingCode.values()).map(MtbProcedureRecommendationCategoryCodingCode::toValue).collect(Collectors.toSet()).contains(code)) {
-            return null;
-        }
+    var resultBuilder =
+        MtbProcedureRecommendationCategoryCoding.builder()
+            .system("dnpm-dip/mtb/recommendation/procedure/category");
 
-        var resultBuilder = MtbProcedureRecommendationCategoryCoding.builder()
-                .system("dnpm-dip/mtb/recommendation/procedure/category");
-
-        try {
-            resultBuilder
-                    .code(MtbProcedureRecommendationCategoryCodingCode.forValue(code))
-                    .display(code);
-        } catch (IOException e) {
-            return null;
-        }
-
-        return resultBuilder.build();
+    try {
+      resultBuilder.code(MtbProcedureRecommendationCategoryCodingCode.forValue(code)).display(code);
+    } catch (IOException e) {
+      return null;
     }
 
+    return resultBuilder.build();
+  }
 }

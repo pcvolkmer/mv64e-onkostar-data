@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class RebiopsieCatalogue extends AbstractSubformDataCatalogue {
 
-    private RebiopsieCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private RebiopsieCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_rebiopsie";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_rebiopsie";
+  }
 
-    public static RebiopsieCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new RebiopsieCatalogue(jdbcTemplate);
-    }
-
+  public static RebiopsieCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new RebiopsieCatalogue(jdbcTemplate);
+  }
 }

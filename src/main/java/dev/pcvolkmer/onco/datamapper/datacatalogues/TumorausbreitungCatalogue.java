@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class TumorausbreitungCatalogue extends AbstractSubformDataCatalogue {
 
-    private TumorausbreitungCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private TumorausbreitungCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_tumorausbreitung";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_tumorausbreitung";
+  }
 
-    public static TumorausbreitungCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new TumorausbreitungCatalogue(jdbcTemplate);
-    }
-
+  public static TumorausbreitungCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new TumorausbreitungCatalogue(jdbcTemplate);
+  }
 }

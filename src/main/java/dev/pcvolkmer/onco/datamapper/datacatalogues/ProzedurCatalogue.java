@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class ProzedurCatalogue extends AbstractSubformDataCatalogue {
 
-    private ProzedurCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private ProzedurCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_prozedur";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_prozedur";
+  }
 
-    public static ProzedurCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new ProzedurCatalogue(jdbcTemplate);
-    }
-
+  public static ProzedurCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new ProzedurCatalogue(jdbcTemplate);
+  }
 }

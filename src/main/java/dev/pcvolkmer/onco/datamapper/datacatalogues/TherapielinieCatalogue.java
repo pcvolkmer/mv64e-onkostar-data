@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class TherapielinieCatalogue extends AbstractSubformDataCatalogue {
 
-    private TherapielinieCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private TherapielinieCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_therapielinie";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_therapielinie";
+  }
 
-    public static TherapielinieCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new TherapielinieCatalogue(jdbcTemplate);
-    }
-
+  public static TherapielinieCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new TherapielinieCatalogue(jdbcTemplate);
+  }
 }

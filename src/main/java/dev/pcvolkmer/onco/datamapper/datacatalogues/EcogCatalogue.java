@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class EcogCatalogue extends AbstractSubformDataCatalogue {
 
-    private EcogCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private EcogCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_ecog";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_ecog";
+  }
 
-    public static EcogCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new EcogCatalogue(jdbcTemplate);
-    }
-
+  public static EcogCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new EcogCatalogue(jdbcTemplate);
+  }
 }

@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class MolekularImmunhistoCatalogue extends AbstractSubformDataCatalogue {
 
-    private MolekularImmunhistoCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private MolekularImmunhistoCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_molekularimmunhisto";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_molekularimmunhisto";
+  }
 
-    public static MolekularImmunhistoCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new MolekularImmunhistoCatalogue(jdbcTemplate);
-    }
-
+  public static MolekularImmunhistoCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new MolekularImmunhistoCatalogue(jdbcTemplate);
+  }
 }

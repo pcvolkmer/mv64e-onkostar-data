@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class TumorgradingCatalogue extends AbstractSubformDataCatalogue {
 
-    private TumorgradingCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private TumorgradingCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_tumorgrading";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_tumorgrading";
+  }
 
-    public static TumorgradingCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new TumorgradingCatalogue(jdbcTemplate);
-    }
-
+  public static TumorgradingCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new TumorgradingCatalogue(jdbcTemplate);
+  }
 }

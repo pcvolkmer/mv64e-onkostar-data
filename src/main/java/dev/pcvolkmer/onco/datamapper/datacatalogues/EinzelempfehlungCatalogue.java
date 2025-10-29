@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class EinzelempfehlungCatalogue extends AbstractSubformDataCatalogue {
 
-    private EinzelempfehlungCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private EinzelempfehlungCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_einzelempfehlung";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_einzelempfehlung";
+  }
 
-    public static EinzelempfehlungCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new EinzelempfehlungCatalogue(jdbcTemplate);
-    }
-
+  public static EinzelempfehlungCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new EinzelempfehlungCatalogue(jdbcTemplate);
+  }
 }

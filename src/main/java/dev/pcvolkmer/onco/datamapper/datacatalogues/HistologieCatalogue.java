@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class HistologieCatalogue extends AbstractSubformDataCatalogue {
 
-    private HistologieCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private HistologieCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_histologie";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_histologie";
+  }
 
-    public static HistologieCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new HistologieCatalogue(jdbcTemplate);
-    }
-
+  public static HistologieCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new HistologieCatalogue(jdbcTemplate);
+  }
 }

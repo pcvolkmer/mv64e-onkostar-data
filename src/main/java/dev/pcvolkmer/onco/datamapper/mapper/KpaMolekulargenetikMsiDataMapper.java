@@ -35,79 +35,81 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.MolekulargenMsiCatalogue;
  */
 public class KpaMolekulargenetikMsiDataMapper extends AbstractSubformDataMapper<Msi> {
 
-    public KpaMolekulargenetikMsiDataMapper(
-            final MolekulargenMsiCatalogue molekulargenMsiCatalogue
-    ) {
-        super(molekulargenMsiCatalogue);
+  public KpaMolekulargenetikMsiDataMapper(final MolekulargenMsiCatalogue molekulargenMsiCatalogue) {
+    super(molekulargenMsiCatalogue);
+  }
+
+  /**
+   * Loads and maps Prozedur related by database id
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded Procedure
+   */
+  @Override
+  public Msi getById(final int id) {
+    return this.map(catalogue.getById(id));
+  }
+
+  @Override
+  protected Msi map(ResultSet resultSet) {
+    var builder = Msi.builder();
+
+    if (!resultSet.getString("komplexerbiomarker").equals("MSI")) {
+      return null;
     }
 
-    /**
-     * Loads and maps Prozedur related by database id
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded Procedure
-     */
-    @Override
-    public Msi getById(final int id) {
-        return this.map(catalogue.getById(id));
+    builder
+        .id(resultSet.getString("id"))
+        .patient(resultSet.getPatientReference())
+        .method(getMethodCode(resultSet))
+        .specimen(
+            Reference.builder()
+                .id(resultSet.getString("hauptprozedur_id"))
+                .type("Specimen")
+                .build())
+        // Aktuell nicht in Onkostar vorhanden!
+        // .interpretation()
+        // In Onkostar nur für "Sequenzierung" bzw "BIOINFORMATIC" als Prozentwert angegeben => "0"
+        // als Fallback?
+        .value(getSeqProzentwert(resultSet));
+
+    return builder.build();
+  }
+
+  private MsiMethodCoding getMethodCode(final ResultSet resultSet) {
+    var builder = MsiMethodCoding.builder().system("dnpm-dip/mtb/msi/method");
+
+    var analysemethoden = resultSet.getMerkmalList("analysemethoden");
+
+    // Achtung: Immer nur eine Methode wird betrachtet! In Onkostar sind gleichzeitig mehrere
+    // Angaben möglich!
+    if (analysemethoden == null) {
+      return null;
+    } else if (analysemethoden.contains("S")) {
+      builder.code(MsiMethodCodingCode.BIOINFORMATIC);
+      builder.display(MsiMethodCodingCode.BIOINFORMATIC.toString());
+    } else if (analysemethoden.contains("P")) {
+      builder.code(MsiMethodCodingCode.PCR);
+      builder.display(MsiMethodCodingCode.PCR.toString());
+    } else if (analysemethoden.contains("I")) {
+      builder.code(MsiMethodCodingCode.IHC);
+      builder.display(MsiMethodCodingCode.IHC.toString());
+    } else {
+      return null;
     }
 
-    @Override
-    protected Msi map(ResultSet resultSet) {
-        var builder = Msi.builder();
+    return builder.build();
+  }
 
-        if (!resultSet.getString("komplexerbiomarker").equals("MSI")) {
-            return null;
-        }
+  private double getSeqProzentwert(final ResultSet resultSet) {
+    var analysemethoden = resultSet.getMerkmalList("analysemethoden");
 
-        builder
-                .id(resultSet.getString("id"))
-                .patient(resultSet.getPatientReference())
-                .method(getMethodCode(resultSet))
-                .specimen(Reference.builder().id(resultSet.getString("hauptprozedur_id")).type("Specimen").build())
-                // Aktuell nicht in Onkostar vorhanden!
-                //.interpretation()
-                // In Onkostar nur für "Sequenzierung" bzw "BIOINFORMATIC" als Prozentwert angegeben => "0" als Fallback?
-                .value(getSeqProzentwert(resultSet))
-        ;
-
-
-        return builder.build();
+    // Achtung: Immer nur eine Methode wird betrachtet! In Onkostar sind gleichzeitig mehrere
+    // Angaben möglich!
+    if (analysemethoden != null && analysemethoden.contains("S")) {
+      return resultSet.getDouble("seqprozentwert");
     }
 
-    private MsiMethodCoding getMethodCode(final ResultSet resultSet) {
-        var builder = MsiMethodCoding.builder()
-                .system("dnpm-dip/mtb/msi/method");
-
-        var analysemethoden = resultSet.getMerkmalList("analysemethoden");
-
-        // Achtung: Immer nur eine Methode wird betrachtet! In Onkostar sind gleichzeitig mehrere Angaben möglich!
-        if  (analysemethoden == null) {
-            return null;
-        } else if  (analysemethoden.contains("S")) {
-            builder.code(MsiMethodCodingCode.BIOINFORMATIC);
-            builder.display(MsiMethodCodingCode.BIOINFORMATIC.toString());
-        } else if  (analysemethoden.contains("P")) {
-            builder.code(MsiMethodCodingCode.PCR);
-            builder.display(MsiMethodCodingCode.PCR.toString());
-        } else if  (analysemethoden.contains("I")) {
-            builder.code(MsiMethodCodingCode.IHC);
-            builder.display(MsiMethodCodingCode.IHC.toString());
-        } else {
-            return null;
-        }
-
-        return builder.build();
-    }
-
-    private double getSeqProzentwert(final ResultSet resultSet) {
-        var analysemethoden = resultSet.getMerkmalList("analysemethoden");
-
-        // Achtung: Immer nur eine Methode wird betrachtet! In Onkostar sind gleichzeitig mehrere Angaben möglich!
-        if  (analysemethoden != null && analysemethoden.contains("S")) {
-            return resultSet.getDouble("seqprozentwert");
-        }
-
-        return 0;
-    }
+    return 0;
+  }
 }

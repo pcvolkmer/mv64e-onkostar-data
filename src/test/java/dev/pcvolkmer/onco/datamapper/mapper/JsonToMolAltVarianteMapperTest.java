@@ -20,30 +20,35 @@
 
 package dev.pcvolkmer.onco.datamapper.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import dev.pcvolkmer.mv64e.mtb.Coding;
 import dev.pcvolkmer.mv64e.mtb.GeneAlterationReference;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class JsonToMolAltVarianteMapperTest {
 
-    @Test
-    void shouldMapJson() {
-        var json = "[{\"id\":22641112,\"ergebnis\":\"Einfache Variante (Mutation)\",\"gen\":\"BRAF\",\"exon\":\"-\",\"pathogenitaetsklasse\":\"-\"}]";
+  @Test
+  void shouldMapJson() {
+    var json =
+        "[{\"id\":22641112,\"ergebnis\":\"Einfache Variante (Mutation)\",\"gen\":\"BRAF\",\"exon\":\"-\",\"pathogenitaetsklasse\":\"-\"}]";
 
-        var actual = JsonToMolAltVarianteMapper.map(json);
+    var actual = JsonToMolAltVarianteMapper.map(json);
 
-        assertThat(actual).hasSize(1);
+    assertThat(actual).hasSize(1);
 
-        var variant = actual.get(0);
-        assertThat(variant).isEqualTo(
-                GeneAlterationReference.builder()
-                        .gene(Coding.builder().code("HGNC:1097").display("BRAF").system("https://www.genenames.org/").build())
-                        .variant(Reference.builder().id("22641112").type("Variant").build())
-                        .build()
-        );
-    }
-
+    var variant = actual.get(0);
+    assertThat(variant)
+        .isEqualTo(
+            GeneAlterationReference.builder()
+                .gene(
+                    Coding.builder()
+                        .code("HGNC:1097")
+                        .display("BRAF")
+                        .system("https://www.genenames.org/")
+                        .build())
+                .variant(Reference.builder().id("22641112").type("Variant").build())
+                .build());
+  }
 }

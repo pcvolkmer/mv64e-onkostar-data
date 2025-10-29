@@ -24,7 +24,6 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -36,110 +35,117 @@ import java.util.stream.Collectors;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class EinzelempfehlungWirkstoffDataMapper extends AbstractEinzelempfehlungDataMapper<MtbMedicationRecommendation> {
+public class EinzelempfehlungWirkstoffDataMapper
+    extends AbstractEinzelempfehlungDataMapper<MtbMedicationRecommendation> {
 
-    private final PropertyCatalogue propertyCatalogue;
+  private final PropertyCatalogue propertyCatalogue;
 
-    public EinzelempfehlungWirkstoffDataMapper(
-            EinzelempfehlungCatalogue einzelempfehlungCatalogue,
-            PropertyCatalogue propertyCatalogue
-    ) {
-        super(einzelempfehlungCatalogue);
-        this.propertyCatalogue = propertyCatalogue;
+  public EinzelempfehlungWirkstoffDataMapper(
+      EinzelempfehlungCatalogue einzelempfehlungCatalogue, PropertyCatalogue propertyCatalogue) {
+    super(einzelempfehlungCatalogue);
+    this.propertyCatalogue = propertyCatalogue;
+  }
+
+  @Override
+  protected MtbMedicationRecommendation map(ResultSet resultSet) {
+    var resultBuilder =
+        MtbMedicationRecommendation.builder()
+            .id(resultSet.getString("id"))
+            .patient(resultSet.getPatientReference())
+            .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
+            // TODO Fix id?
+            // .reason(Reference.builder().id(resultSet.getString("id")).build())
+            .issuedOn(resultSet.getDate("datum"))
+            .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
+            .levelOfEvidence(getLevelOfEvidence(resultSet));
+
+    if (!resultSet.getMerkmalList("art_der_therapie").isEmpty()) {
+      resultBuilder.category(
+          resultSet.getMerkmalList("art_der_therapie").stream()
+              .map(
+                  value ->
+                      getMtbMedicationRecommendationCategoryCoding(
+                          value, resultSet.getInteger("art_der_therapie_propcat_version")))
+              .collect(Collectors.toList()));
     }
 
-    @Override
-    protected MtbMedicationRecommendation map(ResultSet resultSet) {
-        var resultBuilder = MtbMedicationRecommendation.builder()
-                .id(resultSet.getString("id"))
-                .patient(resultSet.getPatientReference())
-                .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
-                // TODO Fix id?
-                //.reason(Reference.builder().id(resultSet.getString("id")).build())
-                .issuedOn(resultSet.getDate("datum"))
-                .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
-                .levelOfEvidence(getLevelOfEvidence(resultSet));
-
-        if (!resultSet.getMerkmalList("art_der_therapie").isEmpty()) {
-            resultBuilder.category(
-                    resultSet.getMerkmalList("art_der_therapie").stream()
-                            .map(value ->
-                                    getMtbMedicationRecommendationCategoryCoding(value, resultSet.getInteger("art_der_therapie_propcat_version"))
-                            )
-                            .collect(Collectors.toList())
-            );
-        }
-
-        if (null != resultSet.getString("empfehlungsart")) {
-            resultBuilder.useType(
-                    getMtbMedicationRecommendationUseTypeCoding(
-                            resultSet.getString("empfehlungsart"),
-                            resultSet.getInteger("empfehlungsart_propcat_version")
-                    )
-            );
-        }
-
-        // As of now: Simple variant and CSV only!
-        if (null != resultSet.getString("st_mol_alt_variante_json")) {
-            resultBuilder.supportingVariants(
-                    JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json"))
-            );
-        }
-
-        return resultBuilder.build();
+    if (null != resultSet.getString("empfehlungsart")) {
+      resultBuilder.useType(
+          getMtbMedicationRecommendationUseTypeCoding(
+              resultSet.getString("empfehlungsart"),
+              resultSet.getInteger("empfehlungsart_propcat_version")));
     }
 
-    @Override
-    public MtbMedicationRecommendation getById(int id) {
-        return this.map(this.catalogue.getById(id));
+    // As of now: Simple variant and CSV only!
+    if (null != resultSet.getString("st_mol_alt_variante_json")) {
+      resultBuilder.supportingVariants(
+          JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json")));
     }
 
-    @Override
-    public List<MtbMedicationRecommendation> getByParentId(final int parentId) {
-        return catalogue.getAllByParentId(parentId)
-                .stream()
-                // Filter Wirkstoffempfehlung (Systemische Therapie)
-                .filter(it -> "systemisch".equals(it.getString("empfehlungskategorie")))
-                .map(this::map)
-                .collect(Collectors.toList());
+    return resultBuilder.build();
+  }
+
+  @Override
+  public MtbMedicationRecommendation getById(int id) {
+    return this.map(this.catalogue.getById(id));
+  }
+
+  @Override
+  public List<MtbMedicationRecommendation> getByParentId(final int parentId) {
+    return catalogue.getAllByParentId(parentId).stream()
+        // Filter Wirkstoffempfehlung (Systemische Therapie)
+        .filter(it -> "systemisch".equals(it.getString("empfehlungskategorie")))
+        .map(this::map)
+        .collect(Collectors.toList());
+  }
+
+  private MtbMedicationRecommendationCategoryCoding getMtbMedicationRecommendationCategoryCoding(
+      String code, int version) {
+    if (code == null
+        || !Arrays.stream(MtbMedicationRecommendationCategoryCodingCode.values())
+            .map(MtbMedicationRecommendationCategoryCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(code)) {
+      return null;
     }
 
-    private MtbMedicationRecommendationCategoryCoding getMtbMedicationRecommendationCategoryCoding(String code, int version) {
-        if (code == null || !Arrays.stream(MtbMedicationRecommendationCategoryCodingCode.values()).map(MtbMedicationRecommendationCategoryCodingCode::toValue).collect(Collectors.toSet()).contains(code)) {
-            return null;
-        }
+    var resultBuilder =
+        MtbMedicationRecommendationCategoryCoding.builder()
+            .system("dnpm-dip/mtb/recommendation/systemic-therapy/category");
 
-        var resultBuilder = MtbMedicationRecommendationCategoryCoding.builder()
-                .system("dnpm-dip/mtb/recommendation/systemic-therapy/category");
-
-        try {
-            resultBuilder
-                    .code(MtbMedicationRecommendationCategoryCodingCode.forValue(code))
-                    .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc());
-        } catch (IOException e) {
-            return null;
-        }
-
-        return resultBuilder.build();
+    try {
+      resultBuilder
+          .code(MtbMedicationRecommendationCategoryCodingCode.forValue(code))
+          .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc());
+    } catch (IOException e) {
+      return null;
     }
 
-    private MtbMedicationRecommendationUseTypeCoding getMtbMedicationRecommendationUseTypeCoding(String code, int version) {
-        if (code == null || !Arrays.stream(MtbMedicationRecommendationUseTypeCodingCode.values()).map(MtbMedicationRecommendationUseTypeCodingCode::toValue).collect(Collectors.toSet()).contains(code)) {
-            return null;
-        }
+    return resultBuilder.build();
+  }
 
-        var resultBuilder = MtbMedicationRecommendationUseTypeCoding.builder()
-                .system("dnpm-dip/mtb/recommendation/systemic-therapy/use-type");
-
-        try {
-            resultBuilder
-                    .code(MtbMedicationRecommendationUseTypeCodingCode.forValue(code))
-                    .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc());
-        } catch (IOException e) {
-            return null;
-        }
-
-        return resultBuilder.build();
+  private MtbMedicationRecommendationUseTypeCoding getMtbMedicationRecommendationUseTypeCoding(
+      String code, int version) {
+    if (code == null
+        || !Arrays.stream(MtbMedicationRecommendationUseTypeCodingCode.values())
+            .map(MtbMedicationRecommendationUseTypeCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(code)) {
+      return null;
     }
 
+    var resultBuilder =
+        MtbMedicationRecommendationUseTypeCoding.builder()
+            .system("dnpm-dip/mtb/recommendation/systemic-therapy/use-type");
+
+    try {
+      resultBuilder
+          .code(MtbMedicationRecommendationUseTypeCodingCode.forValue(code))
+          .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc());
+    } catch (IOException e) {
+      return null;
+    }
+
+    return resultBuilder.build();
+  }
 }

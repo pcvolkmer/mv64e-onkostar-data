@@ -29,7 +29,7 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.DataCatalogue;
  * @since 0.1
  */
 public class DataCatalogueCreationException extends RuntimeException {
-    public DataCatalogueCreationException(Class<? extends DataCatalogue> clazz) {
-        super(String.format("Error creating data catalogue for type '%s'", clazz.getCanonicalName()));
-    }
+  public DataCatalogueCreationException(Class<? extends DataCatalogue> clazz) {
+    super(String.format("Error creating data catalogue for type '%s'", clazz.getCanonicalName()));
+  }
 }

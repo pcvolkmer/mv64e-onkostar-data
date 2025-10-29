@@ -29,12 +29,11 @@ package dev.pcvolkmer.onco.datamapper.mapper;
  */
 public interface DataMapper<T> {
 
-    /**
-     * Loads a data set from database and maps it into destination data type
-     *
-     * @param id The database id of the root procedure data set
-     * @return The data set to be loaded
-     */
-    T getById(int id);
-
+  /**
+   * Loads a data set from database and maps it into destination data type
+   *
+   * @param id The database id of the root procedure data set
+   * @return The data set to be loaded
+   */
+  T getById(int id);
 }

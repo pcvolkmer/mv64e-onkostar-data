@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class MolekularPcrCatalogue extends AbstractSubformDataCatalogue {
 
-    private MolekularPcrCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private MolekularPcrCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_molekularpcr";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_molekularpcr";
+  }
 
-    public static MolekularPcrCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new MolekularPcrCatalogue(jdbcTemplate);
-    }
-
+  public static MolekularPcrCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new MolekularPcrCatalogue(jdbcTemplate);
+  }
 }

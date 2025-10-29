@@ -26,7 +26,6 @@ import dev.pcvolkmer.mv64e.mtb.Reference;
 import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ProzedurCatalogue;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,85 +37,72 @@ import java.util.stream.Collectors;
  */
 public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<OncoProcedure> {
 
-    public KpaProzedurDataMapper(final ProzedurCatalogue catalogue, final PropertyCatalogue propertyCatalogue) {
-        super(catalogue, propertyCatalogue);
+  public KpaProzedurDataMapper(
+      final ProzedurCatalogue catalogue, final PropertyCatalogue propertyCatalogue) {
+    super(catalogue, propertyCatalogue);
+  }
+
+  /**
+   * Loads and maps Prozedur related by database id
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded MtbDiagnosis file
+   */
+  @Override
+  public OncoProcedure getById(final int id) {
+    var data = catalogue.getById(id);
+    return this.map(data);
+  }
+
+  // TODO: Fix for DNPM:DIP verification that does not accept procedures without reason.id
+  @Override
+  public List<OncoProcedure> getByParentId(final int id) {
+    return super.getByParentId(id).stream()
+        .filter(p -> p.getReason() != null && p.getReason().getId() != null)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  protected OncoProcedure map(final ResultSet resultSet) {
+    var diseases = catalogue.getDiseases(resultSet.getId());
+
+    if (diseases.size() != 1) {
+      throw new IllegalStateException(
+          String.format("No unique disease for procedure %s", resultSet.getId()));
     }
 
-    /**
-     * Loads and maps Prozedur related by database id
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded MtbDiagnosis file
-     */
-    @Override
-    public OncoProcedure getById(final int id) {
-        var data = catalogue.getById(id);
-        return this.map(data);
+    var builder = OncoProcedure.builder();
+    builder
+        .id(resultSet.getString("id"))
+        .patient(resultSet.getPatientReference())
+        .basedOn(Reference.builder().id(diseases.get(0).getString("id")).build())
+        .recordedOn(resultSet.getDate("erfassungsdatum"))
+        .therapyLine(resultSet.getLong("therapielinie"))
+        .intent(
+            getMtbTherapyIntentCoding(
+                resultSet.getString("intention"),
+                resultSet.getInteger("intention_propcat_version")))
+        .status(
+            getTherapyStatusCoding(
+                resultSet.getString("status"), resultSet.getInteger("status_propcat_version")))
+        .statusReason(
+            getMtbTherapyStatusReasonCoding(
+                resultSet.getString("statusgrund"),
+                resultSet.getInteger("statusgrund_propcat_version")))
+        .period(
+            PeriodDate.builder()
+                .start(resultSet.getDate("beginn"))
+                .end(resultSet.getDate("ende"))
+                .build())
+        .code(
+            getOncoProcedureCoding(
+                resultSet.getString("typ"), resultSet.getInteger("typ_propcat_version")))
+        .reason(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
+
+    if (resultSet.getString("anmerkungen") != null) {
+      builder.notes(List.of(resultSet.getString("anmerkungen")));
     }
 
-    // TODO: Fix for DNPM:DIP verification that does not accept procedures without reason.id
-    @Override
-    public List<OncoProcedure> getByParentId(final int id) {
-        return super.getByParentId(id).stream().filter(p -> p.getReason() != null && p.getReason().getId() != null).collect(Collectors.toList());
-    }
-
-    @Override
-    protected OncoProcedure map(final ResultSet resultSet) {
-        var diseases = catalogue.getDiseases(resultSet.getId());
-
-        if (diseases.size() != 1) {
-            throw new IllegalStateException(String.format("No unique disease for procedure %s", resultSet.getId()));
-        }
-
-        var builder = OncoProcedure.builder();
-        builder
-                .id(resultSet.getString("id"))
-                .patient(resultSet.getPatientReference())
-                .basedOn(Reference.builder().id(diseases.get(0).getString("id")).build())
-                .recordedOn(resultSet.getDate("erfassungsdatum"))
-                .therapyLine(resultSet.getLong("therapielinie"))
-                .intent(
-                        getMtbTherapyIntentCoding(
-                                resultSet.getString("intention"),
-                                resultSet.getInteger("intention_propcat_version")
-                        )
-                )
-                .status(
-                        getTherapyStatusCoding(
-                                resultSet.getString("status"),
-                                resultSet.getInteger("status_propcat_version")
-                        )
-                )
-                .statusReason(
-                        getMtbTherapyStatusReasonCoding(
-                                resultSet.getString("statusgrund"),
-                                resultSet.getInteger("statusgrund_propcat_version")
-                        )
-                )
-                .period(
-                        PeriodDate.builder()
-                                .start(resultSet.getDate("beginn"))
-                                .end(resultSet.getDate("ende"))
-                                .build()
-                )
-                .code(
-                        getOncoProcedureCoding(
-                                resultSet.getString("typ"),
-                                resultSet.getInteger("typ_propcat_version")
-                        )
-                )
-                .reason(
-                        Reference.builder()
-                                .id(resultSet.getString("ref_einzelempfehlung"))
-                                .build()
-                )
-        ;
-
-        if (resultSet.getString("anmerkungen") != null) {
-            builder.notes(List.of(resultSet.getString("anmerkungen")));
-        }
-
-        return builder.build();
-    }
-
+    return builder.build();
+  }
 }

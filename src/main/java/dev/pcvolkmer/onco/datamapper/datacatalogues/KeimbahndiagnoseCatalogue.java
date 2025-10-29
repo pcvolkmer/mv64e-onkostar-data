@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class KeimbahndiagnoseCatalogue extends AbstractSubformDataCatalogue {
 
-    private KeimbahndiagnoseCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private KeimbahndiagnoseCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_keimbahndiagnose";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_keimbahndiagnose";
+  }
 
-    public static KeimbahndiagnoseCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new KeimbahndiagnoseCatalogue(jdbcTemplate);
-    }
-
+  public static KeimbahndiagnoseCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new KeimbahndiagnoseCatalogue(jdbcTemplate);
+  }
 }

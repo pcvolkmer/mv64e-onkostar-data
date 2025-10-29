@@ -21,14 +21,13 @@
 package dev.pcvolkmer.onco.datamapper.genes;
 
 import dev.pcvolkmer.mv64e.mtb.Coding;
-import org.apache.commons.csv.CSVFormat;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.csv.CSVFormat;
 
 /**
  * Utility class for genes
@@ -38,53 +37,53 @@ import java.util.Optional;
  */
 public class GeneUtils {
 
-    private GeneUtils() {
-        // Empty
+  private GeneUtils() {
+    // Empty
+  }
+
+  public static Optional<Gene> findByHgncId(String hgncId) {
+    return genes().stream().filter(gene -> gene.getHgncId().equalsIgnoreCase(hgncId)).findFirst();
+  }
+
+  public static Optional<Gene> findBySymbol(String symbol) {
+    return genes().stream().filter(gene -> gene.getSymbol().equalsIgnoreCase(symbol)).findFirst();
+  }
+
+  public static Coding toCoding(Gene gene) {
+    return Coding.builder()
+        .code(gene.getHgncId())
+        .display(gene.getSymbol())
+        .system("https://www.genenames.org/")
+        .build();
+  }
+
+  private static List<Gene> genes() {
+    var result = new ArrayList<Gene>();
+
+    try {
+      var inputStream =
+          Objects.requireNonNull(GeneUtils.class.getClassLoader().getResourceAsStream("genes.csv"));
+      var parser =
+          CSVFormat.RFC4180
+              .builder()
+              .setHeader()
+              .setSkipHeaderRecord(true)
+              .setDelimiter('\t')
+              .build()
+              .parse(new InputStreamReader(inputStream));
+      for (var row : parser) {
+        result.add(
+            new Gene(
+                row.get("HGNC ID"),
+                row.get("Ensembl ID(supplied by Ensembl)"),
+                row.get("Approved symbol"),
+                row.get("Approved name"),
+                row.get("Chromosome")));
+      }
+
+      return result;
+    } catch (IOException e) {
+      return List.of();
     }
-
-    public static Optional<Gene> findByHgncId(String hgncId) {
-        return genes().stream().filter(gene -> gene.getHgncId().equalsIgnoreCase(hgncId)).findFirst();
-    }
-
-    public static Optional<Gene> findBySymbol(String symbol) {
-        return genes().stream().filter(gene -> gene.getSymbol().equalsIgnoreCase(symbol)).findFirst();
-    }
-
-    public static Coding toCoding(Gene gene) {
-        return Coding.builder()
-                .code(gene.getHgncId())
-                .display(gene.getSymbol())
-                .system("https://www.genenames.org/")
-                .build();
-    }
-
-    private static List<Gene> genes() {
-        var result = new ArrayList<Gene>();
-
-        try {
-            var inputStream = Objects.requireNonNull(GeneUtils.class.getClassLoader().getResourceAsStream("genes.csv"));
-            var parser = CSVFormat.RFC4180.builder()
-                    .setHeader()
-                    .setSkipHeaderRecord(true)
-                    .setDelimiter('\t')
-                    .build()
-                    .parse(new InputStreamReader(inputStream));
-            for (var row : parser) {
-                result.add(
-                        new Gene(
-                                row.get("HGNC ID"),
-                                row.get("Ensembl ID(supplied by Ensembl)"),
-                                row.get("Approved symbol"),
-                                row.get("Approved name"),
-                                row.get("Chromosome")
-                        )
-                );
-            }
-
-            return result;
-        } catch (IOException e) {
-            return List.of();
-        }
-    }
-
+  }
 }

@@ -27,7 +27,6 @@ import dev.pcvolkmer.mv64e.mtb.GeneAlterationReference;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.onco.datamapper.genes.GeneUtils;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,44 +38,49 @@ import java.util.stream.Collectors;
  */
 public class JsonToMolAltVarianteMapper {
 
-    private JsonToMolAltVarianteMapper() {
-        // intentionally left empty
+  private JsonToMolAltVarianteMapper() {
+    // intentionally left empty
+  }
+
+  public static List<GeneAlterationReference> map(String studyJson) {
+    if (studyJson == null) {
+      return List.of();
+    }
+    try {
+      return new ObjectMapper()
+          .readValue(studyJson, new TypeReference<List<MolAltVariante>>() {}).stream()
+              .map(
+                  variante -> {
+                    var resultBuilder = GeneAlterationReference.builder();
+                    GeneUtils.findBySymbol(variante.getGen())
+                        .ifPresent(
+                            gene ->
+                                resultBuilder
+                                    .gene(GeneUtils.toCoding(gene))
+                                    .variant(
+                                        Reference.builder()
+                                            .id(variante.id)
+                                            .type("Variant")
+                                            .build()));
+                    return resultBuilder.build();
+                  })
+              .collect(Collectors.toList());
+    } catch (Exception e) {
+      throw new DataAccessException(String.format("Cannot map gene alteration for %s", studyJson));
+    }
+  }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  private static class MolAltVariante {
+    private String id;
+    private String gen;
+
+    public String getId() {
+      return id;
     }
 
-    public static List<GeneAlterationReference> map(String studyJson) {
-        if (studyJson == null) {
-            return List.of();
-        }
-        try {
-            return new ObjectMapper().readValue(studyJson, new TypeReference<List<MolAltVariante>>() {
-                    }).stream()
-                    .map(variante -> {
-                        var resultBuilder = GeneAlterationReference.builder();
-                        GeneUtils.findBySymbol(variante.getGen()).ifPresent(gene -> resultBuilder
-                                .gene(GeneUtils.toCoding(gene))
-                                .variant(
-                                        Reference.builder().id(variante.id).type("Variant").build()
-                                ));
-                        return resultBuilder.build();
-                    })
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            throw new DataAccessException(String.format("Cannot map gene alteration for %s", studyJson));
-        }
+    public String getGen() {
+      return gen;
     }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class MolAltVariante {
-        private String id;
-        private String gen;
-
-        public String getId() {
-            return id;
-        }
-
-        public String getGen() {
-            return gen;
-        }
-    }
-
+  }
 }

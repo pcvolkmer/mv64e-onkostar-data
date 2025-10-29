@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class MolekulargenMsiCatalogue extends AbstractSubformDataCatalogue {
 
-    private MolekulargenMsiCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private MolekulargenMsiCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_molekluargenmsi";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_molekluargenmsi";
+  }
 
-    public static MolekulargenMsiCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new MolekulargenMsiCatalogue(jdbcTemplate);
-    }
-
+  public static MolekulargenMsiCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new MolekulargenMsiCatalogue(jdbcTemplate);
+  }
 }

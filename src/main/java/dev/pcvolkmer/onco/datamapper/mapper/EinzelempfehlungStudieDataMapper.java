@@ -24,7 +24,6 @@ import dev.pcvolkmer.mv64e.mtb.MtbStudyEnrollmentRecommendation;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,48 +33,47 @@ import java.util.stream.Collectors;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class EinzelempfehlungStudieDataMapper extends AbstractEinzelempfehlungDataMapper<MtbStudyEnrollmentRecommendation> {
+public class EinzelempfehlungStudieDataMapper
+    extends AbstractEinzelempfehlungDataMapper<MtbStudyEnrollmentRecommendation> {
 
-    public EinzelempfehlungStudieDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
-        super(einzelempfehlungCatalogue);
+  public EinzelempfehlungStudieDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
+    super(einzelempfehlungCatalogue);
+  }
+
+  @Override
+  protected MtbStudyEnrollmentRecommendation map(ResultSet resultSet) {
+    var resultBuilder =
+        MtbStudyEnrollmentRecommendation.builder()
+            .id(resultSet.getString("id"))
+            .patient(resultSet.getPatientReference())
+            .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
+            // TODO Fix id?
+            .reason(Reference.builder().id(resultSet.getString("id")).build())
+            .issuedOn(resultSet.getDate("datum"))
+            .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
+            .levelOfEvidence(getLevelOfEvidence(resultSet))
+            .study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json")));
+
+    // As of now: Simple variant and CSV only!
+    if (null != resultSet.getString("st_mol_alt_variante_json")) {
+      resultBuilder.supportingVariants(
+          JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json")));
     }
 
-    @Override
-    protected MtbStudyEnrollmentRecommendation map(ResultSet resultSet) {
-        var resultBuilder = MtbStudyEnrollmentRecommendation.builder()
-                .id(resultSet.getString("id"))
-                .patient(resultSet.getPatientReference())
-                .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
-                // TODO Fix id?
-                .reason(Reference.builder().id(resultSet.getString("id")).build())
-                .issuedOn(resultSet.getDate("datum"))
-                .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
-                .levelOfEvidence(getLevelOfEvidence(resultSet))
-                .study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json")));
+    return resultBuilder.build();
+  }
 
-        // As of now: Simple variant and CSV only!
-        if (null != resultSet.getString("st_mol_alt_variante_json")) {
-            resultBuilder.supportingVariants(
-                    JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json"))
-            );
-        }
+  @Override
+  public MtbStudyEnrollmentRecommendation getById(int id) {
+    return this.map(this.catalogue.getById(id));
+  }
 
-        return resultBuilder.build();
-    }
-
-    @Override
-    public MtbStudyEnrollmentRecommendation getById(int id) {
-        return this.map(this.catalogue.getById(id));
-    }
-
-    @Override
-    public List<MtbStudyEnrollmentRecommendation> getByParentId(final int parentId) {
-        return catalogue.getAllByParentId(parentId)
-                .stream()
-                // Filter Wirkstoffempfehlung (Systemische Therapie)
-                .filter(it -> "studie".equals(it.getString("empfehlungskategorie")))
-                .map(this::map)
-                .collect(Collectors.toList());
-    }
-
+  @Override
+  public List<MtbStudyEnrollmentRecommendation> getByParentId(final int parentId) {
+    return catalogue.getAllByParentId(parentId).stream()
+        // Filter Wirkstoffempfehlung (Systemische Therapie)
+        .filter(it -> "studie".equals(it.getString("empfehlungskategorie")))
+        .map(this::map)
+        .collect(Collectors.toList());
+  }
 }

@@ -25,7 +25,6 @@ import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.MolekulargenetikCatalogue;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -38,94 +37,98 @@ import java.util.stream.Collectors;
  */
 public class KpaHistologieDataMapper extends AbstractSubformDataMapper<HistologyReport> {
 
-    private final MolekulargenetikCatalogue molekulargenetikCatalogue;
-    private final PropertyCatalogue propertyCatalogue;
+  private final MolekulargenetikCatalogue molekulargenetikCatalogue;
+  private final PropertyCatalogue propertyCatalogue;
 
-    public KpaHistologieDataMapper(
-            final HistologieCatalogue catalogue,
-            final MolekulargenetikCatalogue molekulargenetikCatalogue,
-            final PropertyCatalogue propertyCatalogue
-    ) {
-        super(catalogue);
-        this.molekulargenetikCatalogue = molekulargenetikCatalogue;
-        this.propertyCatalogue = propertyCatalogue;
+  public KpaHistologieDataMapper(
+      final HistologieCatalogue catalogue,
+      final MolekulargenetikCatalogue molekulargenetikCatalogue,
+      final PropertyCatalogue propertyCatalogue) {
+    super(catalogue);
+    this.molekulargenetikCatalogue = molekulargenetikCatalogue;
+    this.propertyCatalogue = propertyCatalogue;
+  }
+
+  /**
+   * Loads and maps Prozedur related by database id
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded data set
+   */
+  @Override
+  public HistologyReport getById(final int id) {
+    var data = catalogue.getById(id);
+    return this.map(data);
+  }
+
+  @Override
+  public List<HistologyReport> getByParentId(final int parentId) {
+    return catalogue.getAllByParentId(parentId).stream()
+        .map(this::map)
+        .filter(Objects::nonNull)
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  protected HistologyReport map(final ResultSet resultSet) {
+    var builder = HistologyReport.builder();
+
+    var osMolGen = molekulargenetikCatalogue.getById(resultSet.getInteger("histologie"));
+
+    if (null != osMolGen) {
+      builder
+          .id(resultSet.getId().toString())
+          .patient(resultSet.getPatientReference())
+          .issuedOn(resultSet.getDate("erstellungsdatum"))
+          .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
+          .results(
+              HistologyReportResults.builder()
+                  .tumorCellContent(
+                      TumorCellContent.builder()
+                          .id(resultSet.getId().toString())
+                          .patient(resultSet.getPatientReference())
+                          .specimen(
+                              Reference.builder()
+                                  .id(osMolGen.getId().toString())
+                                  .type("Specimen")
+                                  .build())
+                          .value(resultSet.getLong("tumorzellgehalt") / 100.0)
+                          // TODO: Nicht in OS.Molekulargenetik
+                          .method(
+                              TumorCellContentMethodCoding.builder()
+                                  .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
+                                  .build())
+                          .build())
+                  .tumorMorphology(
+                      TumorMorphology.builder()
+                          .id(resultSet.getId().toString())
+                          .patient(resultSet.getPatientReference())
+                          .specimen(
+                              Reference.builder()
+                                  .id(osMolGen.getId().toString())
+                                  .type("Specimen")
+                                  .build())
+                          .value(getTumorMorphologyCoding(resultSet))
+                          .build())
+                  .build());
+
+      return builder.build();
     }
 
-    /**
-     * Loads and maps Prozedur related by database id
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded data set
-     */
-    @Override
-    public HistologyReport getById(final int id) {
-        var data = catalogue.getById(id);
-        return this.map(data);
-    }
+    return null;
+  }
 
-    @Override
-    public List<HistologyReport> getByParentId(final int parentId) {
-        return catalogue.getAllByParentId(parentId)
-                .stream()
-                .map(this::map)
-                .filter(Objects::nonNull)
-                .distinct()
-                .collect(Collectors.toList());
-    }
+  private Coding getTumorMorphologyCoding(ResultSet resultSet) {
+    var propertyCatalogueEntry =
+        propertyCatalogue.getByCodeAndVersion(
+            resultSet.getString("morphologie"),
+            resultSet.getInteger("morphologie_propcat_version"));
 
-    @Override
-    protected HistologyReport map(final ResultSet resultSet) {
-        var builder = HistologyReport.builder();
-
-        var osMolGen = molekulargenetikCatalogue.getById(resultSet.getInteger("histologie"));
-
-        if (null != osMolGen) {
-            builder
-                    .id(resultSet.getId().toString())
-                    .patient(resultSet.getPatientReference())
-                    .issuedOn(resultSet.getDate("erstellungsdatum"))
-                    .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
-                    .results(
-                            HistologyReportResults.builder()
-                                    .tumorCellContent(
-                                            TumorCellContent.builder()
-                                                    .id(resultSet.getId().toString())
-                                                    .patient(resultSet.getPatientReference())
-                                                    .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
-                                                    .value(resultSet.getLong("tumorzellgehalt") / 100.0)
-                                                    // TODO: Nicht in OS.Molekulargenetik
-                                                    .method(TumorCellContentMethodCoding.builder().code(TumorCellContentMethodCodingCode.HISTOLOGIC).build())
-                                                    .build()
-                                    )
-                                    .tumorMorphology(
-                                            TumorMorphology.builder()
-                                                    .id(resultSet.getId().toString())
-                                                    .patient(resultSet.getPatientReference())
-                                                    .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
-                                                    .value(getTumorMorphologyCoding(resultSet))
-                                                    .build()
-                                    )
-                                    .build()
-                    )
-            ;
-
-            return builder.build();
-        }
-
-        return null;
-    }
-
-    private Coding getTumorMorphologyCoding(ResultSet resultSet) {
-        var propertyCatalogueEntry =  propertyCatalogue.getByCodeAndVersion(
-                resultSet.getString("morphologie"),
-                resultSet.getInteger("morphologie_propcat_version")
-        );
-
-        return Coding.builder()
-                .code(propertyCatalogueEntry.getCode())
-                .display(propertyCatalogueEntry.getShortdesc())
-                .version(propertyCatalogueEntry.getVersionDescription())
-                .build();
-    }
-
+    return Coding.builder()
+        .code(propertyCatalogueEntry.getCode())
+        .display(propertyCatalogueEntry.getShortdesc())
+        .version(propertyCatalogueEntry.getVersionDescription())
+        .build();
+  }
 }

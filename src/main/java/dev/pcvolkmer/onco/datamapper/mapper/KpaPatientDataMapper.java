@@ -33,121 +33,115 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.KpaCatalogue;
  */
 public class KpaPatientDataMapper implements DataMapper<Patient> {
 
-    private final KpaCatalogue kpaCatalogue;
-    private final PropertyCatalogue propertyCatalogue;
+  private final KpaCatalogue kpaCatalogue;
+  private final PropertyCatalogue propertyCatalogue;
 
-    public KpaPatientDataMapper(
-            final KpaCatalogue kpaCatalogue,
-            final PropertyCatalogue propertyCatalogue
-    ) {
-        this.kpaCatalogue = kpaCatalogue;
-        this.propertyCatalogue = propertyCatalogue;
+  public KpaPatientDataMapper(
+      final KpaCatalogue kpaCatalogue, final PropertyCatalogue propertyCatalogue) {
+    this.kpaCatalogue = kpaCatalogue;
+    this.propertyCatalogue = propertyCatalogue;
+  }
+
+  /**
+   * Loads and maps a patient using the kpa procedures database id
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded Patient data
+   */
+  @Override
+  public Patient getById(int id) {
+    var kpaData = kpaCatalogue.getById(id);
+
+    var builder = Patient.builder();
+    builder
+        .id(kpaData.getString("patient_id"))
+        .gender(getGenderCoding(kpaData))
+        .birthDate(kpaData.getDate("geburtsdatum"))
+        .dateOfDeath(kpaData.getDate("todesdatum"))
+        .healthInsurance(getHealthInsurance(kpaData));
+    return builder.build();
+  }
+
+  private GenderCoding getGenderCoding(ResultSet data) {
+    var genderCodingBuilder = GenderCoding.builder().system("Gender");
+
+    String geschlecht = data.getString("geschlecht");
+    switch (geschlecht) {
+      case "m":
+        genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
+        break;
+      case "w":
+        genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
+        break;
+      case "d":
+      case "x":
+        genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
+        break;
+      default:
+        genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+    }
+    return genderCodingBuilder.build();
+  }
+
+  private HealthInsurance getHealthInsurance(ResultSet data) {
+    var resultBuilder =
+        HealthInsurance.builder()
+            .reference(
+                Reference.builder()
+                    .id(data.getString("krankenkasse"))
+                    .system("https://www.dguv.de/arge-ik")
+                    .type("HealthInsurance")
+                    .build());
+
+    var healthInsuranceCodingBuilder =
+        HealthInsuranceCoding.builder()
+            .system("http://fhir.de/CodeSystem/versicherungsart-de-basis");
+
+    var healthInsuranceType = data.getString("artderkrankenkasse");
+    if (healthInsuranceType == null) {
+      healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.UNK).build();
+      return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
     }
 
-    /**
-     * Loads and maps a patient using the kpa procedures database id
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded Patient data
-     */
-    @Override
-    public Patient getById(int id) {
-        var kpaData = kpaCatalogue.getById(id);
-
-        var builder = Patient.builder();
-        builder
-                .id(kpaData.getString("patient_id"))
-                .gender(getGenderCoding(kpaData))
-                .birthDate(kpaData.getDate("geburtsdatum"))
-                .dateOfDeath(kpaData.getDate("todesdatum"))
-                .healthInsurance(getHealthInsurance(kpaData))
-        ;
-        return builder.build();
+    switch (healthInsuranceType) {
+      case "GKV":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GKV).build();
+        break;
+      case "PKV":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.PKV).build();
+        break;
+      case "BG":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.BG).build();
+        break;
+      case "SEL":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SEL).build();
+        break;
+      case "SOZ":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SOZ).build();
+        break;
+      case "GPV":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GPV).build();
+        break;
+      case "PPV":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.PPV).build();
+        break;
+      case "BEI":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.BEI).build();
+        break;
+      case "SKT":
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SKT).build();
+        break;
+      default:
+        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.UNK).build();
     }
 
-    private GenderCoding getGenderCoding(ResultSet data) {
-        var genderCodingBuilder = GenderCoding.builder()
-                .system("Gender");
+    var healthInsurancePropertyEntry =
+        propertyCatalogue.getByCodeAndVersion(
+            data.getString("artderkrankenkasse"),
+            data.getInteger("artderkrankenkasse_propcat_version"));
 
-        String geschlecht = data.getString("geschlecht");
-        switch (geschlecht) {
-            case "m":
-                genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
-                break;
-            case "w":
-                genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
-                break;
-            case "d":
-            case "x":
-                genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
-                break;
-            default:
-                genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
-        }
-        return genderCodingBuilder.build();
-    }
+    healthInsuranceCodingBuilder.display(healthInsurancePropertyEntry.getDescription());
 
-    private HealthInsurance getHealthInsurance(ResultSet data) {
-        var resultBuilder = HealthInsurance.builder()
-                .reference(
-                        Reference.builder()
-                                .id(data.getString("krankenkasse"))
-                                .system("https://www.dguv.de/arge-ik")
-                                .type("HealthInsurance")
-                                .build()
-                );
-
-        var healthInsuranceCodingBuilder = HealthInsuranceCoding.builder()
-                .system("http://fhir.de/CodeSystem/versicherungsart-de-basis");
-
-        var healthInsuranceType = data.getString("artderkrankenkasse");
-        if (healthInsuranceType == null) {
-            healthInsuranceCodingBuilder
-                    .code(HealthInsuranceCodingCode.UNK)
-                    .build();
-            return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
-        }
-
-        switch (healthInsuranceType) {
-            case "GKV":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GKV).build();
-                break;
-            case "PKV":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.PKV).build();
-                break;
-            case "BG":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.BG).build();
-                break;
-            case "SEL":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SEL).build();
-                break;
-            case "SOZ":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SOZ).build();
-                break;
-            case "GPV":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GPV).build();
-                break;
-            case "PPV":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.PPV).build();
-                break;
-            case "BEI":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.BEI).build();
-                break;
-            case "SKT":
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SKT).build();
-                break;
-            default:
-                healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.UNK).build();
-        }
-
-        var healthInsurancePropertyEntry = propertyCatalogue.getByCodeAndVersion(
-                data.getString("artderkrankenkasse"),
-                data.getInteger("artderkrankenkasse_propcat_version")
-        );
-
-        healthInsuranceCodingBuilder.display(healthInsurancePropertyEntry.getDescription());
-
-        return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
-    }
-
+    return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
+  }
 }

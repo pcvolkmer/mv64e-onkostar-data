@@ -20,7 +20,6 @@
 
 package dev.pcvolkmer.onco.datamapper.mapper;
 
-import dev.pcvolkmer.mv64e.mtb.Mtb;
 import dev.pcvolkmer.onco.datamapper.CustomMetadata;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.PatientCatalogue;
@@ -35,51 +34,45 @@ import org.slf4j.LoggerFactory;
  */
 public class CustomMetadataDataMapper implements DataMapper<CustomMetadata> {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final KpaCatalogue kpaCatalogue;
-    private final PatientCatalogue patientCatalogue;
+  private final KpaCatalogue kpaCatalogue;
+  private final PatientCatalogue patientCatalogue;
 
-    public CustomMetadataDataMapper(final KpaCatalogue kpaCatalogue, final PatientCatalogue patientCatalogue) {
-        this.kpaCatalogue = kpaCatalogue;
-        this.patientCatalogue = patientCatalogue;
-    }
+  public CustomMetadataDataMapper(
+      final KpaCatalogue kpaCatalogue, final PatientCatalogue patientCatalogue) {
+    this.kpaCatalogue = kpaCatalogue;
+    this.patientCatalogue = patientCatalogue;
+  }
 
+  @Override
+  public CustomMetadata getById(int id) {
+    var kpaData = kpaCatalogue.getById(id);
+    var patientData = patientCatalogue.getById(kpaData.getInteger("patient_id"));
 
-    @Override
-    public CustomMetadata getById(int id) {
-        var kpaData = kpaCatalogue.getById(id);
-        var patientData = patientCatalogue.getById(kpaData.getInteger("patient_id"));
+    return new CustomMetadata(
+        kpaData.getString("fallnummermv"), patientData.getString("verischerungsnummer"));
+  }
 
-        return new CustomMetadata(
-                kpaData.getString("fallnummermv"),
-                patientData.getString("verischerungsnummer")
-        );
-    }
+  /**
+   * Loads and maps using the case id
+   *
+   * @param caseId The case id
+   * @return The loaded Mtb file
+   */
+  public CustomMetadata getByCaseId(String caseId) {
+    return this.getById(this.kpaCatalogue.getProcedureIdByCaseId(caseId));
+  }
 
-    /**
-     * Loads and maps using the case id
-     *
-     * @param caseId The case id
-     * @return The loaded Mtb file
-     */
-    public CustomMetadata getByCaseId(String caseId) {
-        return this.getById(
-                this.kpaCatalogue.getProcedureIdByCaseId(caseId)
-        );
-    }
-
-    /**
-     * Loads and maps using the patient id and tumor id
-     *
-     * @param patientId The patients id (not database id)
-     * @param tumorId   The tumor identification
-     * @return The loaded Mtb file
-     */
-    public CustomMetadata getLatestByPatientIdAndTumorId(String patientId, int tumorId) {
-        return this.getById(
-                this.kpaCatalogue
-                        .getLatestProcedureIdByPatientIdAndTumor(patientId, tumorId)
-        );
-    }
+  /**
+   * Loads and maps using the patient id and tumor id
+   *
+   * @param patientId The patients id (not database id)
+   * @param tumorId The tumor identification
+   * @return The loaded Mtb file
+   */
+  public CustomMetadata getLatestByPatientIdAndTumorId(String patientId, int tumorId) {
+    return this.getById(
+        this.kpaCatalogue.getLatestProcedureIdByPatientIdAndTumor(patientId, tumorId));
+  }
 }

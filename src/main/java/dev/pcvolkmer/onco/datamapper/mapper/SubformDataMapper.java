@@ -31,11 +31,11 @@ import java.util.List;
  */
 public interface SubformDataMapper<T> extends DataMapper<T> {
 
-    /**
-     * Loads a data set from database and maps it into destination data type
-     * @param parentId The database id of the parent procedure data set
-     * @return The data set to be loaded
-     */
-    List<T> getByParentId(int parentId);
-
+  /**
+   * Loads a data set from database and maps it into destination data type
+   *
+   * @param parentId The database id of the parent procedure data set
+   * @return The data set to be loaded
+   */
+  List<T> getByParentId(int parentId);
 }

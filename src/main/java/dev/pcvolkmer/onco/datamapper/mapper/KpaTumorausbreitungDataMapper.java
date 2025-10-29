@@ -23,7 +23,6 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.TumorausbreitungCatalogue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -37,104 +36,101 @@ import java.util.stream.Collectors;
  */
 public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<TumorStaging> {
 
-    public KpaTumorausbreitungDataMapper(final TumorausbreitungCatalogue catalogue) {
-        super(catalogue);
+  public KpaTumorausbreitungDataMapper(final TumorausbreitungCatalogue catalogue) {
+    super(catalogue);
+  }
+
+  /**
+   * Loads and maps Prozedur related by database id
+   *
+   * @param id The database id of the procedure data set
+   * @return The loaded data set
+   */
+  @Override
+  public TumorStaging getById(final int id) {
+    var data = catalogue.getById(id);
+    return this.map(data);
+  }
+
+  @Override
+  protected TumorStaging map(final ResultSet resultSet) {
+    var builder = TumorStaging.builder();
+    builder
+        .date(resultSet.getDate("zeitpunkt"))
+        .method(getTumorStagingMethodCoding(resultSet.getString("typ")))
+        .otherClassifications(
+            List.of(
+                Coding.builder()
+                    .code(resultSet.getString("wert"))
+                    .system("dnpm-dip/mtb/diagnosis/kds-tumor-spread")
+                    .build()))
+        .tnmClassification(getTnmClassification(resultSet));
+
+    return builder.build();
+  }
+
+  private TumorStagingMethodCoding getTumorStagingMethodCoding(final String value) {
+    if (value == null
+        || !Arrays.stream(TumorStagingMethodCodingCode.values())
+            .map(TumorStagingMethodCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(value)) {
+      return null;
     }
 
-    /**
-     * Loads and maps Prozedur related by database id
-     *
-     * @param id The database id of the procedure data set
-     * @return The loaded data set
-     */
-    @Override
-    public TumorStaging getById(final int id) {
-        var data = catalogue.getById(id);
-        return this.map(data);
+    var resultBuilder =
+        TumorStagingMethodCoding.builder().system("dnpm-dip/mtb/tumor-staging/method");
+    try {
+      resultBuilder.code(TumorStagingMethodCodingCode.forValue(value));
+    } catch (IOException e) {
+      throw new IllegalStateException("No valid code found");
     }
 
-    @Override
-    protected TumorStaging map(final ResultSet resultSet) {
-        var builder = TumorStaging.builder();
-        builder
-                .date(resultSet.getDate("zeitpunkt"))
-                .method(getTumorStagingMethodCoding(resultSet.getString("typ")))
-                .otherClassifications(
-                        List.of(
-                                Coding.builder()
-                                        .code(resultSet.getString("wert"))
-                                        .system("dnpm-dip/mtb/diagnosis/kds-tumor-spread")
-                                        .build()
-                        )
-                )
-                .tnmClassification(getTnmClassification(resultSet))
-        ;
+    return resultBuilder.build();
+  }
 
-        return builder.build();
+  private TnmClassification getTnmClassification(final ResultSet resultSet) {
+    var tnpmClassificationBuilder = TnmClassification.builder();
+
+    var hasContent = false;
+
+    var tnmt = resultSet.getString("tnmt");
+    if (tnmt != null && !tnmt.isBlank()) {
+      tnpmClassificationBuilder.tumor(
+          Coding.builder()
+              // TODO With or withour prefix?
+              .code(String.format("%s%s", resultSet.getString("tnmtprefix"), tnmt))
+              .system("UICC")
+              .build());
+      hasContent = true;
     }
 
-    private TumorStagingMethodCoding getTumorStagingMethodCoding(final String value) {
-        if (value == null || !Arrays.stream(TumorStagingMethodCodingCode.values()).map(TumorStagingMethodCodingCode::toValue).collect(Collectors.toSet()).contains(value)) {
-            return null;
-        }
-
-        var resultBuilder = TumorStagingMethodCoding.builder()
-                .system("dnpm-dip/mtb/tumor-staging/method");
-        try {
-            resultBuilder.code(TumorStagingMethodCodingCode.forValue(value));
-        } catch (IOException e) {
-            throw new IllegalStateException("No valid code found");
-        }
-
-        return resultBuilder.build();
+    var tnmn = resultSet.getString("tnmn");
+    if (tnmn != null && !tnmn.isBlank()) {
+      tnpmClassificationBuilder.nodes(
+          Coding.builder()
+              // TODO With or withour prefix?
+              .code(String.format("%s%s", resultSet.getString("tnmnprefix"), tnmn))
+              .system("UICC")
+              .build());
+      hasContent = true;
     }
 
-    private TnmClassification getTnmClassification(final ResultSet resultSet) {
-        var tnpmClassificationBuilder = TnmClassification.builder();
-
-        var hasContent = false;
-
-        var tnmt = resultSet.getString("tnmt");
-        if (tnmt != null && !tnmt.isBlank()) {
-            tnpmClassificationBuilder.tumor(
-                    Coding.builder()
-                            // TODO With or withour prefix?
-                            .code(String.format("%s%s", resultSet.getString("tnmtprefix"), tnmt))
-                            .system("UICC")
-                            .build()
-            );
-            hasContent = true;
-        }
-
-        var tnmn = resultSet.getString("tnmn");
-        if (tnmn != null && !tnmn.isBlank()) {
-            tnpmClassificationBuilder.nodes(
-                    Coding.builder()
-                            // TODO With or withour prefix?
-                            .code(String.format("%s%s", resultSet.getString("tnmnprefix"), tnmn))
-                            .system("UICC")
-                            .build()
-            );
-            hasContent = true;
-        }
-
-        var tnmm = resultSet.getString("tnmm");
-        if (tnmm != null && !tnmm.isBlank()) {
-            tnpmClassificationBuilder.metastasis(
-                    Coding.builder()
-                            // TODO With or withour prefix?
-                            .code(String.format("%s%s", resultSet.getString("tnmmprefix"), tnmm))
-                            .system("UICC")
-                            .build()
-            );
-            hasContent = true;
-        }
-
-        if (hasContent) {
-            return tnpmClassificationBuilder.build();
-        }
-
-        return null;
+    var tnmm = resultSet.getString("tnmm");
+    if (tnmm != null && !tnmm.isBlank()) {
+      tnpmClassificationBuilder.metastasis(
+          Coding.builder()
+              // TODO With or withour prefix?
+              .code(String.format("%s%s", resultSet.getString("tnmmprefix"), tnmm))
+              .system("UICC")
+              .build());
+      hasContent = true;
     }
 
+    if (hasContent) {
+      return tnpmClassificationBuilder.build();
+    }
+
+    return null;
+  }
 }

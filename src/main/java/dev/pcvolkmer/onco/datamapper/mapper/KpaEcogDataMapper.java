@@ -25,7 +25,6 @@ import dev.pcvolkmer.mv64e.mtb.EcogCodingCode;
 import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EcogCatalogue;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,60 +39,60 @@ import java.util.stream.Collectors;
  */
 public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStatus> {
 
-    public KpaEcogDataMapper(final EcogCatalogue catalogue) {
-        super(catalogue);
+  public KpaEcogDataMapper(final EcogCatalogue catalogue) {
+    super(catalogue);
+  }
+
+  /**
+   * Loads and maps Prozedur related by database id
+   *
+   * @param id The patient id of the procedure data set
+   * @return The loaded data set
+   */
+  @Override
+  public PerformanceStatus getById(final int id) {
+    var data = catalogue.getById(id);
+    return this.map(data);
+  }
+
+  @Override
+  public List<PerformanceStatus> getByParentId(final int parentId) {
+    return catalogue.getAllByParentId(parentId).stream()
+        .map(this::map)
+        .sorted(Comparator.comparing(PerformanceStatus::getEffectiveDate))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  protected PerformanceStatus map(final ResultSet resultSet) {
+    var builder = PerformanceStatus.builder();
+    builder
+        .id(resultSet.getId().toString())
+        .patient(resultSet.getPatientReference())
+        .effectiveDate(resultSet.getDate("datum"))
+        .value(getEcogCoding(resultSet.getString("ecog")));
+
+    return builder.build();
+  }
+
+  private EcogCoding getEcogCoding(final String value) {
+    if (value == null
+        || !Arrays.stream(EcogCodingCode.values())
+            .map(EcogCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(value)) {
+      return null;
     }
 
-    /**
-     * Loads and maps Prozedur related by database id
-     *
-     * @param id The patient id of the procedure data set
-     * @return The loaded data set
-     */
-    @Override
-    public PerformanceStatus getById(final int id) {
-        var data = catalogue.getById(id);
-        return this.map(data);
+    var resultBuilder = EcogCoding.builder().system("ECOG-Performance-Status");
+
+    try {
+      resultBuilder.code(EcogCodingCode.forValue(value));
+      resultBuilder.display(String.format("ECOG %s", value));
+    } catch (IOException e) {
+      throw new IllegalStateException("No valid code found");
     }
 
-    @Override
-    public List<PerformanceStatus> getByParentId(final int parentId) {
-        return catalogue.getAllByParentId(parentId)
-                .stream()
-                .map(this::map)
-                .sorted(Comparator.comparing(PerformanceStatus::getEffectiveDate))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    protected PerformanceStatus map(final ResultSet resultSet) {
-        var builder = PerformanceStatus.builder();
-        builder
-                .id(resultSet.getId().toString())
-                .patient(resultSet.getPatientReference())
-                .effectiveDate(resultSet.getDate("datum"))
-                .value(getEcogCoding(resultSet.getString("ecog")))
-        ;
-
-        return builder.build();
-    }
-
-    private EcogCoding getEcogCoding(final String value) {
-        if (value == null || !Arrays.stream(EcogCodingCode.values()).map(EcogCodingCode::toValue).collect(Collectors.toSet()).contains(value)) {
-            return null;
-        }
-
-        var resultBuilder = EcogCoding.builder()
-                .system("ECOG-Performance-Status");
-
-        try {
-            resultBuilder.code(EcogCodingCode.forValue(value));
-            resultBuilder.display(String.format("ECOG %s", value));
-        } catch (IOException e) {
-            throw new IllegalStateException("No valid code found");
-        }
-
-        return resultBuilder.build();
-    }
-
+    return resultBuilder.build();
+  }
 }

@@ -28,20 +28,19 @@ package dev.pcvolkmer.onco.datamapper;
  */
 public class CustomMetadata {
 
-    private final String fallnummer;
-    private final String kvnr;
+  private final String fallnummer;
+  private final String kvnr;
 
-    public CustomMetadata(String fallnummer, String kvnr) {
-        this.fallnummer = fallnummer;
-        this.kvnr = kvnr;
-    }
+  public CustomMetadata(String fallnummer, String kvnr) {
+    this.fallnummer = fallnummer;
+    this.kvnr = kvnr;
+  }
 
-    public String getFallnummer() {
-        return fallnummer;
-    }
+  public String getFallnummer() {
+    return fallnummer;
+  }
 
-    public String getKvnr() {
-        return kvnr;
-    }
-
+  public String getKvnr() {
+    return kvnr;
+  }
 }

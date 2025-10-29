@@ -30,17 +30,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class VerwandteCatalogue extends AbstractSubformDataCatalogue {
 
-    private VerwandteCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private VerwandteCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_dnpm_uf_verwandte";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_dnpm_uf_verwandte";
+  }
 
-    public static VerwandteCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new VerwandteCatalogue(jdbcTemplate);
-    }
-
+  public static VerwandteCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new VerwandteCatalogue(jdbcTemplate);
+  }
 }

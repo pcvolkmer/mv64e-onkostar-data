@@ -20,11 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
-import dev.pcvolkmer.onco.datamapper.ResultSet;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Load raw result sets from database table 'dk_molekulargenuntersuchung'
@@ -34,17 +30,16 @@ import java.util.stream.Collectors;
  */
 public class MolekulargenuntersuchungCatalogue extends AbstractSubformDataCatalogue {
 
-    private MolekulargenuntersuchungCatalogue(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+  private MolekulargenuntersuchungCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-    @Override
-    protected String getTableName() {
-        return "dk_molekulargenuntersuchung";
-    }
+  @Override
+  protected String getTableName() {
+    return "dk_molekulargenuntersuchung";
+  }
 
-    public static MolekulargenuntersuchungCatalogue create(JdbcTemplate jdbcTemplate) {
-        return new MolekulargenuntersuchungCatalogue(jdbcTemplate);
-    }
-
+  public static MolekulargenuntersuchungCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new MolekulargenuntersuchungCatalogue(jdbcTemplate);
+  }
 }

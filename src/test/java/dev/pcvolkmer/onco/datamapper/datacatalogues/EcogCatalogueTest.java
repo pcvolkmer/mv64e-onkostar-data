@@ -20,7 +20,15 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
-import dev.pcvolkmer.onco.datamapper.ResultSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,99 +37,90 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 class EcogCatalogueTest {
 
-    JdbcTemplate jdbcTemplate;
-    EcogCatalogue catalogue;
+  JdbcTemplate jdbcTemplate;
+  EcogCatalogue catalogue;
 
-    @BeforeEach
-    void setUp(@Mock JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.catalogue = EcogCatalogue.create(jdbcTemplate);
-    }
+  @BeforeEach
+  void setUp(@Mock JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+    this.catalogue = EcogCatalogue.create(jdbcTemplate);
+  }
 
-    @Test
-    void shouldUseCorrectQuery(@Mock Map<String, Object> resultSet) {
-        doAnswer(invocationOnMock -> List.of(resultSet))
-                .when(jdbcTemplate)
-                .queryForList(anyString(), anyInt());
+  @Test
+  void shouldUseCorrectQuery(@Mock Map<String, Object> resultSet) {
+    doAnswer(invocationOnMock -> List.of(resultSet))
+        .when(jdbcTemplate)
+        .queryForList(anyString(), anyInt());
 
-        this.catalogue.getById(1);
+    this.catalogue.getById(1);
 
-        var captor = ArgumentCaptor.forClass(String.class);
-        verify(this.jdbcTemplate).queryForList(captor.capture(), anyInt());
+    var captor = ArgumentCaptor.forClass(String.class);
+    verify(this.jdbcTemplate).queryForList(captor.capture(), anyInt());
 
-        assertThat(captor.getValue())
-                .isEqualTo("SELECT patient.patienten_id, dk_dnpm_uf_ecog.*, prozedur.patient_id, prozedur.hauptprozedur_id FROM dk_dnpm_uf_ecog JOIN prozedur ON (prozedur.id = dk_dnpm_uf_ecog.id) JOIN patient ON (patient.id = prozedur.patient_id) WHERE geloescht = 0 AND prozedur.id = ?");
-    }
+    assertThat(captor.getValue())
+        .isEqualTo(
+            "SELECT patient.patienten_id, dk_dnpm_uf_ecog.*, prozedur.patient_id, prozedur.hauptprozedur_id FROM dk_dnpm_uf_ecog JOIN prozedur ON (prozedur.id = dk_dnpm_uf_ecog.id) JOIN patient ON (patient.id = prozedur.patient_id) WHERE geloescht = 0 AND prozedur.id = ?");
+  }
 
-    @Test
-    void shouldUseCorrectSubformQuery(@Mock Map<String, Object> resultSet) {
-        doAnswer(invocationOnMock -> List.of(resultSet))
-                .when(jdbcTemplate)
-                .queryForList(anyString(), anyInt());
+  @Test
+  void shouldUseCorrectSubformQuery(@Mock Map<String, Object> resultSet) {
+    doAnswer(invocationOnMock -> List.of(resultSet))
+        .when(jdbcTemplate)
+        .queryForList(anyString(), anyInt());
 
-        this.catalogue.getAllByParentId(1);
+    this.catalogue.getAllByParentId(1);
 
-        var captor = ArgumentCaptor.forClass(String.class);
-        verify(this.jdbcTemplate).queryForList(captor.capture(), anyInt());
+    var captor = ArgumentCaptor.forClass(String.class);
+    verify(this.jdbcTemplate).queryForList(captor.capture(), anyInt());
 
-        assertThat(captor.getValue())
-                .isEqualTo("SELECT patient.patienten_id, dk_dnpm_uf_ecog.*, prozedur.patient_id, prozedur.hauptprozedur_id FROM dk_dnpm_uf_ecog JOIN prozedur ON (prozedur.id = dk_dnpm_uf_ecog.id) JOIN patient ON (patient.id = prozedur.patient_id) WHERE geloescht = 0 AND hauptprozedur_id = ?");
-    }
+    assertThat(captor.getValue())
+        .isEqualTo(
+            "SELECT patient.patienten_id, dk_dnpm_uf_ecog.*, prozedur.patient_id, prozedur.hauptprozedur_id FROM dk_dnpm_uf_ecog JOIN prozedur ON (prozedur.id = dk_dnpm_uf_ecog.id) JOIN patient ON (patient.id = prozedur.patient_id) WHERE geloescht = 0 AND hauptprozedur_id = ?");
+  }
 
-    @Test
-    void shouldUseCorrectMerkmalQuery(@Mock Map<String, Object> resultSet) {
-        when(resultSet.get(anyString()))
-                .thenReturn(Map.of("feldname", "name", "feldwert", "wert"));
+  @Test
+  void shouldUseCorrectMerkmalQuery(@Mock Map<String, Object> resultSet) {
+    when(resultSet.get(anyString())).thenReturn(Map.of("feldname", "name", "feldwert", "wert"));
 
-        doAnswer(invocationOnMock -> List.of(resultSet))
-                .when(jdbcTemplate)
-                .queryForList(anyString(), anyInt());
+    doAnswer(invocationOnMock -> List.of(resultSet))
+        .when(jdbcTemplate)
+        .queryForList(anyString(), anyInt());
 
-        this.catalogue.getMerkmaleById(1);
+    this.catalogue.getMerkmaleById(1);
 
-        var captor = ArgumentCaptor.forClass(String.class);
-        verify(this.jdbcTemplate).queryForList(captor.capture(), anyInt());
+    var captor = ArgumentCaptor.forClass(String.class);
+    verify(this.jdbcTemplate).queryForList(captor.capture(), anyInt());
 
-        assertThat(captor.getValue())
-                .isEqualTo("SELECT feldname, feldwert FROM dk_dnpm_uf_ecog_merkmale WHERE eintrag_id = ?");
-    }
+    assertThat(captor.getValue())
+        .isEqualTo("SELECT feldname, feldwert FROM dk_dnpm_uf_ecog_merkmale WHERE eintrag_id = ?");
+  }
 
-    @Test
-    void shouldUseMerkmalList() {
-        doAnswer(invocationOnMock -> {
-            var sql = invocationOnMock.getArgument(0, String.class);
-            ArrayList<Map<String, Object>> result = new ArrayList<>();
-            if (sql.startsWith("SELECT feldname")) {
+  @Test
+  void shouldUseMerkmalList() {
+    doAnswer(
+            invocationOnMock -> {
+              var sql = invocationOnMock.getArgument(0, String.class);
+              ArrayList<Map<String, Object>> result = new ArrayList<>();
+              if (sql.startsWith("SELECT feldname")) {
                 result.add(Map.of("feldname", "name", "feldwert", "wert1"));
                 result.add(Map.of("feldname", "name", "feldwert", "wert2"));
-            } else {
+              } else {
                 var map = new HashMap<String, Object>();
                 map.put("id", 1);
                 map.put("name", "x");
                 result.add(map);
-            }
-            return result;
-        })
-                .when(jdbcTemplate)
-                .queryForList(anyString(), anyInt());
+              }
+              return result;
+            })
+        .when(jdbcTemplate)
+        .queryForList(anyString(), anyInt());
 
-        var result = this.catalogue.getById(1);
+    var result = this.catalogue.getById(1);
 
-        assertThat(result.getInteger("id")).isEqualTo(1);
-        assertThat(result.getMerkmalList("name")).isEqualTo(List.of("wert1", "wert2"));
-    }
-
+    assertThat(result.getInteger("id")).isEqualTo(1);
+    assertThat(result.getMerkmalList("name")).isEqualTo(List.of("wert1", "wert2"));
+  }
 }
