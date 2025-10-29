@@ -8,7 +8,7 @@ version = "0.1.0-SNAPSHOT"
 
 var versions = mapOf(
     "mtb-dto" to "0.1.0-SNAPSHOT",
-    "commons-csv" to "1.14.0",
+    "commons-csv" to "1.10.0",
     "slf4j" to "2.0.17",
     "junit" to "5.13.1",
     "assertj" to "3.27.3",

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -61,12 +62,12 @@ public class GeneUtils {
         var result = new ArrayList<Gene>();
 
         try {
-            var inputStream = GeneUtils.class.getClassLoader().getResourceAsStream("genes.csv");
+            var inputStream = Objects.requireNonNull(GeneUtils.class.getClassLoader().getResourceAsStream("genes.csv"));
             var parser = CSVFormat.RFC4180.builder()
                     .setHeader()
                     .setSkipHeaderRecord(true)
                     .setDelimiter('\t')
-                    .get()
+                    .build()
                     .parse(new InputStreamReader(inputStream));
             for (var row : parser) {
                 result.add(
