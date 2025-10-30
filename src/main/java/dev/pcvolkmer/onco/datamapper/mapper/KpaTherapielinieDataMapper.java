@@ -72,7 +72,6 @@ public class KpaTherapielinieDataMapper
                 .id(resultSet.getString("hauptprozedur_id"))
                 .type("MTBDiagnosis")
                 .build())
-        .therapyLine(resultSet.getLong("nummer"))
         .recordedOn(resultSet.getDate("erfassungsdatum"))
         .intent(
             getMtbTherapyIntentCoding(
@@ -92,7 +91,11 @@ public class KpaTherapielinieDataMapper
                 .build())
         .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffcodes")));
 
-    if (resultSet.getString("ref_einzelempfehlung") != null) {
+    if (!resultSet.isNull("nummer")) {
+      builder.therapyLine(resultSet.getLong("nummer"));
+    }
+
+    if (!resultSet.isNull("ref_einzelempfehlung")) {
       builder.basedOn(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
     }
 

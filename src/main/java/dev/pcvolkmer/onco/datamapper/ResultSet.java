@@ -208,6 +208,16 @@ public class ResultSet {
   }
 
   /**
+   * Checks if column value has non null value
+   *
+   * @param columnName The name of the column
+   * @return true or false
+   */
+  public boolean isNull(String columnName) {
+    return null == this.rawData.get(columnName);
+  }
+
+  /**
    * Get Merkmal values as List of Strings
    *
    * @param columnName The name of the column

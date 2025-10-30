@@ -77,6 +77,14 @@ class ResultSetTest {
     assertFalse(data.isTrue("false"));
   }
 
+  @Test
+  void shouldReturnIfNullValue() {
+    var data = getTestData();
+
+    assertFalse(data.isNull("string"));
+    assertTrue(data.isNull("null"));
+  }
+
   static ResultSet getTestData() {
     return ResultSet.from(
         Map.of(
