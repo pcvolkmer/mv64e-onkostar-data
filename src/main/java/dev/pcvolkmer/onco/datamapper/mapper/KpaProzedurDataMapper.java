@@ -75,7 +75,6 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
     builder
         .id(resultSet.getString("id"))
         .patient(resultSet.getPatientReference())
-        .basedOn(Reference.builder().id(diseases.get(0).getString("id")).build())
         .recordedOn(resultSet.getDate("erfassungsdatum"))
         .therapyLine(resultSet.getLong("therapielinie"))
         .intent(
@@ -98,6 +97,10 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
             getOncoProcedureCoding(
                 resultSet.getString("typ"), resultSet.getInteger("typ_propcat_version")))
         .reason(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
+
+    if (resultSet.getString("ref_einzelempfehlung") != null) {
+      builder.basedOn(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
+    }
 
     if (resultSet.getString("anmerkungen") != null) {
       builder.notes(List.of(resultSet.getString("anmerkungen")));

@@ -67,7 +67,6 @@ public class KpaTherapielinieDataMapper
     builder
         .id(resultSet.getString("id"))
         .patient(resultSet.getPatientReference())
-        .basedOn(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build())
         .reason(
             Reference.builder()
                 .id(resultSet.getString("hauptprozedur_id"))
@@ -92,6 +91,10 @@ public class KpaTherapielinieDataMapper
                 .end(resultSet.getDate("ende"))
                 .build())
         .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffcodes")));
+
+    if (resultSet.getString("ref_einzelempfehlung") != null) {
+      builder.basedOn(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
+    }
 
     if (resultSet.getString("stellung_propcat_version") != null) {
       builder.category(
