@@ -132,6 +132,8 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
     osMolGen.addAll(
         vorbefundeCatalogue.getAllByParentId(kpaId).stream()
             .map(rs -> rs.getString("befundnummer"))
+            .filter(
+                befundnummer -> befundnummer != null && !befundnummer.equalsIgnoreCase("unbekannt"))
             .map(molekulargenetikCatalogue::getByEinsendenummer)
             .map(ResultSet::getId)
             .collect(Collectors.toList()));

@@ -25,10 +25,7 @@ import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.*;
 import dev.pcvolkmer.onco.datamapper.genes.GeneUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -205,6 +202,7 @@ public class KpaMolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRe
 
                   return cnvBuilder.build();
                 })
+            .filter(Objects::nonNull)
             .collect(Collectors.toList()));
     return resultBuilder.build();
   }
