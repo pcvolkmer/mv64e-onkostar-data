@@ -27,7 +27,6 @@ import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ProzedurCatalogue;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_uf_prozedur'
@@ -52,14 +51,6 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
   public OncoProcedure getById(final int id) {
     var data = catalogue.getById(id);
     return this.map(data);
-  }
-
-  // TODO: Fix for DNPM:DIP verification that does not accept procedures without reason.id
-  @Override
-  public List<OncoProcedure> getByParentId(final int id) {
-    return super.getByParentId(id).stream()
-        .filter(p -> p.getReason() != null && p.getReason().getId() != null)
-        .collect(Collectors.toList());
   }
 
   @Override

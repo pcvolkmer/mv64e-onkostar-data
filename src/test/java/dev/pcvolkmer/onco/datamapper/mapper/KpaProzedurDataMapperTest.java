@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -52,6 +53,16 @@ class KpaProzedurDataMapperTest {
     this.catalogue = catalogue;
     this.propertyCatalogue = propertyCatalogue;
     this.dataMapper = new KpaProzedurDataMapper(catalogue, propertyCatalogue);
+  }
+
+  @Test
+  void shouldGetProceduresWithoutReason(@Mock ResultSet resultSet) {
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getDiseases(anyInt());
+
+    var actual = dataMapper.getByParentId(1);
+
+    assertThat(actual).hasSize(1);
   }
 
   @Test
@@ -127,52 +138,47 @@ class KpaProzedurDataMapperTest {
         .getByCodeAndVersion(anyString(), anyInt());
 
     var actualList = this.dataMapper.getByParentId(1);
-    /*assertThat(actualList).hasSize(1);
+    assertThat(actualList).hasSize(1);
 
     var actual = actualList.get(0);
     assertThat(actual).isInstanceOf(OncoProcedure.class);
     assertThat(actual.getId()).isEqualTo("1");
-    assertThat(actual.getPatient())
-            .isEqualTo(Reference.builder().id("42").type("Patient").build());
-    assertThat(actual.getPeriod()).isEqualTo(
+    assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
+    assertThat(actual.getPeriod())
+        .isEqualTo(
             PeriodDate.builder()
-                    .start(Date.from(Instant.parse("2000-01-01T12:00:00Z")))
-                    .end(Date.from(Instant.parse("2024-06-19T12:00:00Z")))
-                    .build()
-    );
+                .start(Date.from(Instant.parse("2000-01-01T12:00:00Z")))
+                .end(Date.from(Instant.parse("2024-06-19T12:00:00Z")))
+                .build());
     assertThat(actual.getRecordedOn()).isEqualTo(Date.from(Instant.parse("2024-06-19T12:00:00Z")));
     assertThat(actual.getIntent())
-            .isEqualTo(
-                    MtbTherapyIntentCoding.builder()
-                            .code(MtbTherapyIntentCodingCode.S)
-                            .display("Sonstiges")
-                            .system("dnpm-dip/therapy/intent")
-                            .build()
-            );
+        .isEqualTo(
+            MtbTherapyIntentCoding.builder()
+                .code(MtbTherapyIntentCodingCode.S)
+                .display("Sonstiges")
+                .system("dnpm-dip/therapy/intent")
+                .build());
     assertThat(actual.getStatus())
-            .isEqualTo(
-                    TherapyStatusCoding.builder()
-                            .code(TherapyStatusCodingCode.STOPPED)
-                            .display("Abgebrochen")
-                            .system("dnpm-dip/therapy/status")
-                            .build()
-            );
+        .isEqualTo(
+            TherapyStatusCoding.builder()
+                .code(TherapyStatusCodingCode.STOPPED)
+                .display("Abgebrochen")
+                .system("dnpm-dip/therapy/status")
+                .build());
     assertThat(actual.getStatusReason())
-            .isEqualTo(
-                    MtbTherapyStatusReasonCoding.builder()
-                            .code(MtbTherapyStatusReasonCodingCode.PATIENT_DEATH)
-                            .display("Tod")
-                            .system("dnpm-dip/therapy/status-reason")
-                            .build()
-            );
+        .isEqualTo(
+            MtbTherapyStatusReasonCoding.builder()
+                .code(MtbTherapyStatusReasonCodingCode.PATIENT_DEATH)
+                .display("Tod")
+                .system("dnpm-dip/therapy/status-reason")
+                .build());
     assertThat(actual.getTherapyLine()).isEqualTo(1);
     assertThat(actual.getCode())
-            .isEqualTo(
-                    OncoProcedureCoding.builder()
-                            .code(OncoProcedureCodingCode.SURGERY)
-                            .display("OP")
-                            .system("dnpm-dip/therapy/type")
-                            .build()
-            );*/
+        .isEqualTo(
+            OncoProcedureCoding.builder()
+                .code(OncoProcedureCodingCode.SURGERY)
+                .display("OP")
+                .system("dnpm-dip/therapy/type")
+                .build());
   }
 }
