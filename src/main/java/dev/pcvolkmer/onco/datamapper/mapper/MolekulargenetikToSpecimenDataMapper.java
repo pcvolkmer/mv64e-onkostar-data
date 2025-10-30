@@ -23,6 +23,7 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.*;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -134,7 +135,15 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
             .map(rs -> rs.getString("befundnummer"))
             .filter(
                 befundnummer -> befundnummer != null && !befundnummer.equalsIgnoreCase("unbekannt"))
-            .map(molekulargenetikCatalogue::getByEinsendenummer)
+            .map(
+                einsendenummer -> {
+                  try {
+                    return molekulargenetikCatalogue.getByEinsendenummer(einsendenummer);
+                  } catch (DataAccessException e) {
+                    return null;
+                  }
+                })
+            .filter(Objects::nonNull)
             .map(ResultSet::getId)
             .collect(Collectors.toList()));
 

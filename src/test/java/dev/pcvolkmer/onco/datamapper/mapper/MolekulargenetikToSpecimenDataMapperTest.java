@@ -22,12 +22,14 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.*;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -142,6 +144,31 @@ class MolekulargenetikToSpecimenDataMapperTest {
 
     assertThat(actual.get(0).getPatient())
         .isEqualTo(Reference.builder().id("4711").type("Patient").build());
+  }
+
+  @Test
+  void shouldNotFetchSpecimensForUnknownEinsendenummer() {
+
+    // Mock Einzelempfehlungen ID
+    when(therapieplanCatalogue.getByKpaId(anyInt())).thenReturn(List.of(1, 2));
+
+    // Mock Vorbefund
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  ResultSet.from(
+                      Map.of("id", id, "ref_molekulargenetik", 42, "befundnummer", "H/2025/1234")));
+            })
+        .when(vorbefundeCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.getByEinsendenummer(anyString()))
+        .thenThrow(new DataAccessException("Test"));
+
+    var actual = this.mapper.getAllByKpaId(1, Reference.builder().build());
+
+    assertThat(actual).isEmpty();
   }
 
   @Test
