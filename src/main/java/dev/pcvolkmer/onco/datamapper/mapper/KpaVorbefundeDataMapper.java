@@ -28,8 +28,10 @@ import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.VorbefundeCatalogue;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -68,11 +70,15 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
 
   @Override
   public List<PriorDiagnosticReport> getByParentId(final int parentId) {
-    return catalogue.getAllByParentId(parentId).stream()
-        .map(this::map)
-        .filter(Objects::nonNull)
-        .distinct()
-        .collect(Collectors.toList());
+    try {
+      return catalogue.getAllByParentId(parentId).stream()
+          .map(this::map)
+          .filter(Objects::nonNull)
+          .distinct()
+          .collect(Collectors.toList());
+    } catch (DataAccessException e) {
+      return Collections.emptyList();
+    }
   }
 
   @Override

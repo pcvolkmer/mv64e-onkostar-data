@@ -34,6 +34,7 @@ import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.VorbefundeCatalogue;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -139,5 +140,13 @@ class KpaVorbefundeDataMapperTest {
                 .code(MolecularDiagnosticReportCodingCode.PANEL)
                 .display("Panel")
                 .build());
+  }
+
+  @Test
+  void shouldReturnEmptyListOnDataAccessErrorRequestingByParentId() {
+    when(catalogue.getAllByParentId(anyInt())).thenThrow(new DataAccessException("Test"));
+
+    var actualList = this.dataMapper.getByParentId(1);
+    assertThat(actualList).isEmpty();
   }
 }
