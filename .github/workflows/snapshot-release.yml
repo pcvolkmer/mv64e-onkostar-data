@@ -1,0 +1,24 @@
+name: 'Snapshot Release'
+
+on:
+  push:
+    branches: [ 'master' ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Build
+        run: ./gradlew build -Pdnpm_dev_token=${{ secrets.DNPM_DEV_TOKEN }}
+
+      - name: Publish Maven
+        run: ./gradlew publish -Pdnpm_dev_token=${{ secrets.DNPM_DEV_TOKEN }}
