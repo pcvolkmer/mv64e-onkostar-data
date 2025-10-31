@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 
@@ -96,12 +97,24 @@ public class ResultSet {
     if (raw == null) {
       return null;
     } else if (raw instanceof String) {
-      return raw.toString();
+      return removeInvalidCodePoints(raw.toString().trim());
     } else if (raw instanceof Integer) {
-      return ((Integer) raw).toString();
+      return removeInvalidCodePoints(((Integer) raw).toString().trim());
     }
 
     throw new IllegalArgumentException("Cannot convert " + raw.getClass() + " to String");
+  }
+
+  @NullMarked
+  private static String removeInvalidCodePoints(String input) {
+    StringBuilder sb = new StringBuilder(input.length());
+    input
+        .codePoints()
+        .filter(Character::isValidCodePoint)
+        .filter(cp -> !Character.isSurrogate((char) cp))
+        .forEach(sb::appendCodePoint);
+
+    return sb.toString();
   }
 
   /**
