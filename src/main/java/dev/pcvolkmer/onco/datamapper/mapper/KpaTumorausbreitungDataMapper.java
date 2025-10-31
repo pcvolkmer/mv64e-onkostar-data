@@ -97,33 +97,21 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
     var tnmt = resultSet.getString("tnmt");
     if (tnmt != null && !tnmt.isBlank()) {
       tnpmClassificationBuilder.tumor(
-          Coding.builder()
-              // TODO With or withour prefix?
-              .code(String.format("%s%s", resultSet.getString("tnmtprefix"), tnmt))
-              .system("UICC")
-              .build());
+          Coding.builder().code(String.format("T%s", tnmt)).system("UICC").build());
       hasContent = true;
     }
 
     var tnmn = resultSet.getString("tnmn");
     if (tnmn != null && !tnmn.isBlank()) {
       tnpmClassificationBuilder.nodes(
-          Coding.builder()
-              // TODO With or withour prefix?
-              .code(String.format("%s%s", resultSet.getString("tnmnprefix"), tnmn))
-              .system("UICC")
-              .build());
+          Coding.builder().code(String.format("N%s", tnmn)).system("UICC").build());
       hasContent = true;
     }
 
     var tnmm = resultSet.getString("tnmm");
     if (tnmm != null && !tnmm.isBlank()) {
       tnpmClassificationBuilder.metastasis(
-          Coding.builder()
-              // TODO With or withour prefix?
-              .code(String.format("%s%s", resultSet.getString("tnmmprefix"), tnmm))
-              .system("UICC")
-              .build());
+          Coding.builder().code(String.format("M%s", tnmm)).system("UICC").build());
       hasContent = true;
     }
 
