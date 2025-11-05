@@ -189,14 +189,14 @@ public class MtbDataMapper implements DataMapper<Mtb> {
             catalogueFactory.catalogue(VorbefundeCatalogue.class),
             catalogueFactory.catalogue(HistologieCatalogue.class));
 
-    var kpaMolekulargenetikNgsDataMapper =
-        new KpaMolekulargenetikNgsDataMapper(
+    var molekulargenetikNgsDataMapper =
+        new MolekulargenetikNgsDataMapper(
             molekulargenetikCatalogue,
             catalogueFactory.catalogue(MolekulargenuntersuchungCatalogue.class),
             propertyCatalogue,
             tumorCellContentMethod);
-    var kpaMolekulargenetikMsiDataMapper =
-        new KpaMolekulargenetikMsiDataMapper(
+    var molekulargenetikMsiDataMapper =
+        new MolekulargenetikMsiDataMapper(
             catalogueFactory.catalogue(MolekulargenMsiCatalogue.class));
 
     var kpaVorbefundeDataMapper =
@@ -234,9 +234,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
 
       var msiFindings =
-          kpaMolekulargenetikNgsDataMapper.getAllByKpaId(kpaId).stream()
+          molekulargenetikNgsDataMapper.getAllByKpaId(kpaId).stream()
               .map(ngs -> Integer.parseInt(ngs.getId()))
-              .flatMap(ngsId -> kpaMolekulargenetikMsiDataMapper.getByParentId(ngsId).stream());
+              .flatMap(ngsId -> molekulargenetikMsiDataMapper.getByParentId(ngsId).stream());
 
       if (this.filterIncomplete) {
         carePlans =
@@ -281,7 +281,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           // DNPM Therapieplan
           .carePlans(carePlans.collect(Collectors.toList()))
           // NGS Berichte
-          .ngsReports(kpaMolekulargenetikNgsDataMapper.getAllByKpaId(kpaId))
+          .ngsReports(molekulargenetikNgsDataMapper.getAllByKpaId(kpaId))
           // MSI Befunde
           .msiFindings(msiFindings.collect(Collectors.toList()));
 
