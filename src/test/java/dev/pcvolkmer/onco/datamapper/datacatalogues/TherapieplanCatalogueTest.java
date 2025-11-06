@@ -78,7 +78,7 @@ class TherapieplanCatalogueTest {
 
     assertThat(captor.getValue())
         .isEqualTo(
-            "SELECT prozedur.id AS procedure_id FROM dk_dnpm_therapieplan JOIN prozedur ON (prozedur.id = dk_dnpm_therapieplan.id) WHERE geloescht = 0 AND ref_dnpm_klinikanamnese = ?");
+            "SELECT DISTINCT prozedur.id AS procedure_id FROM dk_dnpm_therapieplan JOIN prozedur ON (prozedur.id = dk_dnpm_therapieplan.id) WHERE geloescht = 0 AND ref_dnpm_klinikanamnese = ?");
   }
 
   @Test

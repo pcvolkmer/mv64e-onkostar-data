@@ -56,12 +56,13 @@ public class TherapieplanCatalogue extends AbstractDataCatalogue {
     return this.jdbcTemplate
         .queryForList(
             String.format(
-                "SELECT prozedur.id AS procedure_id FROM %s JOIN prozedur ON (prozedur.id = %s.id) WHERE geloescht = 0 AND ref_dnpm_klinikanamnese = ?",
+                "SELECT DISTINCT prozedur.id AS procedure_id FROM %s JOIN prozedur ON (prozedur.id = %s.id) WHERE geloescht = 0 AND ref_dnpm_klinikanamnese = ?",
                 getTableName(), getTableName()),
             kpaId)
         .stream()
         .map(ResultSet::from)
         .map(rs -> rs.getInteger("procedure_id"))
+        .distinct()
         .collect(Collectors.toList());
   }
 }
