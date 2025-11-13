@@ -98,9 +98,7 @@ public abstract class AbstractDataCatalogue implements DataCatalogue {
     return this.jdbcTemplate
         .queryForList(
             String.format(
-                "SELECT * FROM erkrankung_prozedur JOIN erkrankung ON (erkrankung.id = erkrankung_prozedur.erkrankung_id) WHERE erkrankung_prozedur.prozedur_id = ?",
-                getTableName(),
-                getTableName()),
+                "SELECT * FROM erkrankung_prozedur JOIN erkrankung ON (erkrankung.id = erkrankung_prozedur.erkrankung_id) WHERE erkrankung_prozedur.prozedur_id = ?"),
             procedureId)
         .stream()
         .map(ResultSet::from)
@@ -125,9 +123,21 @@ public abstract class AbstractDataCatalogue implements DataCatalogue {
       return resultSet.stream()
           .collect(
               Collectors.groupingBy(
-                  m -> m.get("feldname").toString(),
+                  m -> {
+                    var feldname = m.get("feldname");
+                    if (feldname == null) {
+                      return "?";
+                    }
+                    return feldname.toString();
+                  },
                   Collectors.mapping(
-                      stringObjectMap -> stringObjectMap.get("feldwert").toString(),
+                      stringObjectMap -> {
+                        var feldwert = stringObjectMap.get("feldwert");
+                        if (feldwert == null) {
+                          return "?";
+                        }
+                        return feldwert.toString();
+                      },
                       Collectors.toList())));
     } catch (org.springframework.dao.DataAccessException e) {
       return Map.of();

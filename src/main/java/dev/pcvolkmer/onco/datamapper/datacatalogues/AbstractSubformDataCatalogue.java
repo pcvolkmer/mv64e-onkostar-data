@@ -38,6 +38,7 @@ public abstract class AbstractSubformDataCatalogue extends AbstractDataCatalogue
     super(jdbcTemplate);
   }
 
+  @Override
   protected abstract String getTableName();
 
   /**

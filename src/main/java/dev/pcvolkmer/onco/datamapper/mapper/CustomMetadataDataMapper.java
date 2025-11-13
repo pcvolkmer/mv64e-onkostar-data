@@ -23,8 +23,6 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.onco.datamapper.CustomMetadata;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.PatientCatalogue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Mapper class to load and map custom metadata from database
@@ -33,8 +31,6 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  */
 public class CustomMetadataDataMapper implements DataMapper<CustomMetadata> {
-
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final KpaCatalogue kpaCatalogue;
   private final PatientCatalogue patientCatalogue;
