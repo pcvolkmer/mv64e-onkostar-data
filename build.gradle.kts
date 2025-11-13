@@ -1,7 +1,10 @@
+import net.ltgt.gradle.errorprone.errorprone
+
 plugins {
     id("java")
     id("java-library")
     id("com.diffplug.spotless") version "7.2.1"
+    id("net.ltgt.errorprone") version "4.3.0"
     id("maven-publish")
 }
 
@@ -53,6 +56,7 @@ dependencies {
     }
     implementation("org.apache.commons:commons-csv:${versions["commons-csv"]}")
     implementation("org.slf4j:slf4j-api:${versions["slf4j"]}")
+    implementation("org.jspecify:jspecify:1.0.0")
 
     testImplementation(platform("org.junit:junit-bom:${versions["junit"]}"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -60,11 +64,22 @@ dependencies {
     testImplementation("org.mockito:mockito-core:${versions["mockito"]}")
     testImplementation("org.mockito:mockito-junit-jupiter:${versions["mockito"]}")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    errorprone("com.google.errorprone:error_prone_core:2.31.0")
+    errorprone("com.uber.nullaway:nullaway:0.12.12")
 }
 
 tasks.test {
     useJUnitPlatform()
     dependsOn(tasks.spotlessCheck)
+}
+
+tasks.withType<JavaCompile> {
+    options.errorprone {
+        disableAllChecks = true
+        option("NullAway:OnlyNullMarked", "true")
+        error("NullAway")
+    }
 }
 
 spotless {
