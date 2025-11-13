@@ -309,6 +309,10 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    * @return The loaded Mtb file
    */
   public Mtb getByCaseId(String caseId) {
+    if (null == caseId || caseId.isBlank()) {
+      throw new IllegalArgumentException("The Case ID must not be null or empty");
+    }
+
     return this.getById(
         this.catalogueFactory.catalogue(KpaCatalogue.class).getProcedureIdByCaseId(caseId));
   }
@@ -321,6 +325,10 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    * @return The loaded Mtb file
    */
   public Mtb getLatestByPatientIdAndTumorId(String patientId, int tumorId) {
+    if (null == patientId || patientId.isBlank()) {
+      throw new IllegalArgumentException("The Patient ID must not be null or empty");
+    }
+
     return this.getById(
         this.catalogueFactory
             .catalogue(KpaCatalogue.class)
