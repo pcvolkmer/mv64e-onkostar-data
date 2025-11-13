@@ -29,6 +29,9 @@ import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.onco.datamapper.genes.GeneUtils;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Maps JSON strings used in Einzelempfehlung MolAltVariante
@@ -36,13 +39,14 @@ import java.util.stream.Collectors;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
+@NullMarked
 public class JsonToMolAltVarianteMapper {
 
   private JsonToMolAltVarianteMapper() {
     // intentionally left empty
   }
 
-  public static List<GeneAlterationReference> map(String studyJson) {
+  public static List<GeneAlterationReference> map(@Nullable String studyJson) {
     if (studyJson == null) {
       return List.of();
     }
@@ -70,6 +74,7 @@ public class JsonToMolAltVarianteMapper {
     }
   }
 
+  @NullUnmarked
   @JsonIgnoreProperties(ignoreUnknown = true)
   private static class MolAltVariante {
     private String id;
