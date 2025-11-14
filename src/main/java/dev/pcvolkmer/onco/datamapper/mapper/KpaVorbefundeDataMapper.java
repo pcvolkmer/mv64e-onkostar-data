@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_vorbefunde'
@@ -68,6 +69,7 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
     return this.map(data);
   }
 
+  @NullMarked
   @Override
   public List<PriorDiagnosticReport> getByParentId(final int parentId) {
     try {

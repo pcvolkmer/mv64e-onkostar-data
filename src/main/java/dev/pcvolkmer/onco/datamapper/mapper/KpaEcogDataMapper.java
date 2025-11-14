@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_uf_ecog'
@@ -55,10 +57,13 @@ public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStat
     return this.map(data);
   }
 
+  @NullMarked
   @Override
   public List<PerformanceStatus> getByParentId(final int parentId) {
     return catalogue.getAllByParentId(parentId).stream()
         .map(this::map)
+        .filter(Objects::nonNull)
+        .distinct()
         .sorted(Comparator.comparing(PerformanceStatus::getEffectiveDate))
         .collect(Collectors.toList());
   }

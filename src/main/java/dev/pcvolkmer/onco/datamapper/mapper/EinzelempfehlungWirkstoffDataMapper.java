@@ -27,7 +27,9 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_einzelempfehlung'
@@ -90,12 +92,15 @@ public class EinzelempfehlungWirkstoffDataMapper
     return this.map(this.catalogue.getById(id));
   }
 
+  @NullMarked
   @Override
   public List<MtbMedicationRecommendation> getByParentId(final int parentId) {
     return catalogue.getAllByParentId(parentId).stream()
         // Filter Wirkstoffempfehlung (Systemische Therapie)
         .filter(it -> "systemisch".equals(it.getString("empfehlungskategorie")))
         .map(this::map)
+        .filter(Objects::nonNull)
+        .distinct()
         .collect(Collectors.toList());
   }
 

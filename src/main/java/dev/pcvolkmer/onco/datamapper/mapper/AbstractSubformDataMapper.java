@@ -23,7 +23,9 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.AbstractSubformDataCatalogue;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Abstract common implementation for all subform data mappers
@@ -46,10 +48,13 @@ public abstract class AbstractSubformDataMapper<T> implements SubformDataMapper<
    * @param parentId The database id of the parent procedure data set
    * @return The data set to be loaded
    */
+  @NullMarked
   @Override
   public List<T> getByParentId(final int parentId) {
     return catalogue.getAllByParentId(parentId).stream()
         .map(this::map)
+        .filter(Objects::nonNull)
+        .distinct()
         .collect(Collectors.toList());
   }
 

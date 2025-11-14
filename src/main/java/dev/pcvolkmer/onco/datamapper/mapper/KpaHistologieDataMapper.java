@@ -28,6 +28,7 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_vorbefunde'
@@ -61,6 +62,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     return this.map(data);
   }
 
+  @NullMarked
   @Override
   public List<HistologyReport> getByParentId(final int parentId) {
     return catalogue.getAllByParentId(parentId).stream()
