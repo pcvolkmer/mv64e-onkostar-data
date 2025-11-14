@@ -21,11 +21,13 @@
 package dev.pcvolkmer.onco.datamapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.sql.Date;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -83,6 +85,50 @@ class ResultSetTest {
 
     assertFalse(data.isNull("string"));
     assertTrue(data.isNull("null"));
+  }
+
+  @Test
+  void shouldApplyConsumerOrSilentlyFail() {
+    var data = getTestData();
+    List<Object> results = new ArrayList<>();
+
+    data.ifValueNotNull("string", String.class, results::add);
+    data.ifValueNotNull("int", Integer.class, results::add);
+    data.ifValueNotNull("date", java.util.Date.class, results::add);
+    data.ifValueNotNull("true", Boolean.class, results::add);
+    data.ifValueNotNull("false", Boolean.class, results::add);
+    // Ignore this null value
+    data.ifValueNotNull("null", Boolean.class, results::add);
+
+    assertThat(results)
+        .containsExactly(
+            "TestString", 42, Date.from(Instant.parse("2025-06-21T00:00:00Z")), true, false);
+  }
+
+  @Test
+  void shouldThrowExceptionIfValueIsNull() {
+    var data = getTestData();
+
+    var e =
+        assertThrows(
+            DataAccessException.class,
+            () ->
+                data.ifValueNotNull(
+                    "null", String.class, value -> {}, new DataAccessException("TestException")));
+
+    assertThat(e).hasMessage("TestException");
+  }
+
+  @Test
+  void shouldNotThrowExceptionIfValueIsNull() {
+    var data = getTestData();
+    List<Object> results = new ArrayList<>();
+
+    data.ifValueNotNull(
+        "string", String.class, results::add, new DataAccessException("TestException"));
+
+    assertThat(results).hasSize(1);
+    assertThat(results.get(0)).isEqualTo("TestString");
   }
 
   static ResultSet getTestData() {
