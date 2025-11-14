@@ -26,8 +26,11 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubformDataMapper<T> {
 
@@ -60,6 +63,7 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     return resultBuilder.build();
   }
 
+  @Nullable
   protected LevelOfEvidence getLevelOfEvidence(ResultSet resultSet) {
     if (resultSet == null) {
       return null;
@@ -173,36 +177,39 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
 
     resultBuilder.addendums(evidenzlevelZusatz);
 
-    if (resultSet.getString("evidenzlevel_publication") != null) {
-      // Mappe nur PubMed-Ids (Ziffern) oder DOI (Pattern)
-      var evidenzlevelPublications =
-          Arrays.stream(resultSet.getString("evidenzlevel_publication").split("\n"))
-              .map(String::trim)
-              .map(
-                  line -> {
-                    if (line.matches("^\\d+$")) {
-                      return PublicationReference.builder()
-                          .id(line)
-                          .system(PublicationSystem.PUBMED_NCBI_NLM_NIH_GOV)
-                          .type("Publication")
-                          .build();
-                    }
-                    if (line.matches("^\\d{2}\\.\\d{4}/\\d+(\\.\\d+)?$")) {
-                      return PublicationReference.builder()
-                          .id(line)
-                          .system(PublicationSystem.DOI_ORG)
-                          .type("Publication")
-                          .build();
-                    }
-                    return null;
-                  })
-              .filter(Objects::nonNull)
-              .collect(Collectors.toList());
-
-      resultBuilder.publications(evidenzlevelPublications);
+    var evidenzlevelPublication = resultSet.getString("evidenzlevel_publication");
+    if (null != evidenzlevelPublication) {
+      resultBuilder.publications(getPublicationReferences(evidenzlevelPublication));
     }
 
     return resultBuilder.build();
+  }
+
+  @NullMarked
+  private List<PublicationReference> getPublicationReferences(String fieldContent) {
+    return Arrays.stream(fieldContent.split("\n"))
+        .map(String::trim)
+        .map(
+            // Mappe nur PubMed-Ids (Ziffern) oder DOI (Pattern)
+            line -> {
+              if (line.matches("^\\d+$")) {
+                return PublicationReference.builder()
+                    .id(line)
+                    .system(PublicationSystem.PUBMED_NCBI_NLM_NIH_GOV)
+                    .type("Publication")
+                    .build();
+              }
+              if (line.matches("^\\d{2}\\.\\d{4}/\\d+(\\.\\d+)?$")) {
+                return PublicationReference.builder()
+                    .id(line)
+                    .system(PublicationSystem.DOI_ORG)
+                    .type("Publication")
+                    .build();
+              }
+              return null;
+            })
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
   }
 
   protected RecommendationPriorityCoding getRecommendationPriorityCoding(int value) {
@@ -213,10 +220,13 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     switch (value) {
       case 1:
         resultBuilder.code(RecommendationPriorityCodingCode.CODE_1);
+        break;
       case 2:
-        resultBuilder.code(RecommendationPriorityCodingCode.CODE_3);
+        resultBuilder.code(RecommendationPriorityCodingCode.CODE_2);
+        break;
       case 3:
         resultBuilder.code(RecommendationPriorityCodingCode.CODE_3);
+        break;
       case 4:
       default:
         resultBuilder.code(RecommendationPriorityCodingCode.CODE_4);
