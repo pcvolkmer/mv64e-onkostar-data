@@ -21,10 +21,9 @@
 package dev.pcvolkmer.onco.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistory;
 import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCoding;
@@ -32,6 +31,7 @@ import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.VerwandteCatalogue;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,28 +54,13 @@ class KpaVerwandteDataMapperTest {
   }
 
   @Test
-  void shouldMapResultSet(@Mock ResultSet resultSet) {
-    var testData =
+  void shouldMapResultSet() {
+    Map<String, Object> testData =
         Map.of(
-            "id", "1",
-            "patienten_id", "42",
+            "id", 1,
+            "patienten_id", 42,
             "verwandtschaftsgrad", "EXT");
-
-    doAnswer(
-            invocationOnMock ->
-                Reference.builder().id(testData.get("patienten_id")).type("Patient").build())
-        .when(resultSet)
-        .getPatientReference();
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getString(anyString());
-
-    when(resultSet.getId()).thenReturn(1);
+    var resultSet = ResultSet.from(testData);
 
     doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
 
@@ -93,5 +78,19 @@ class KpaVerwandteDataMapperTest {
                 .display("Verwandter weiteren Grades")
                 .system("dnpm-dip/mtb/family-meber-history/relationship-type")
                 .build());
+  }
+
+  @Test
+  void shouldThrowExceptionOnInvalidRelationship() {
+    Map<String, Object> testData =
+        Map.of(
+            "id", 1,
+            "patienten_id", 42);
+    var resultSet = ResultSet.from(testData);
+
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+
+    var e = assertThrows(DataAccessException.class, () -> this.dataMapper.getByParentId(1));
+    assertThat(e).hasMessage("Unknown family member history relationship type: No Value present");
   }
 }

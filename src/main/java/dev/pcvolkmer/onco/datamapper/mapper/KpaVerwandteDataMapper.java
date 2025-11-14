@@ -25,8 +25,10 @@ import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCoding;
 import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCodingCode;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.VerwandteCatalogue;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_uf_verwandte'
@@ -52,21 +54,26 @@ public class KpaVerwandteDataMapper extends AbstractSubformDataMapper<FamilyMemb
     return this.map(data);
   }
 
+  @Nullable
   @Override
   protected FamilyMemberHistory map(final ResultSet resultSet) {
     var builder = FamilyMemberHistory.builder();
-    builder
-        .id(resultSet.getId().toString())
-        .patient(resultSet.getPatientReference())
-        .relationship(
-            getFamilyMemberHistoryRelationshipTypeCoding(
-                resultSet.getString("verwandtschaftsgrad")));
+
+    builder.id(resultSet.getId().toString()).patient(resultSet.getPatientReference());
+
+    resultSet.ifValueNotNull(
+        "verwandtschaftsgrad",
+        String.class,
+        value -> builder.relationship(getFamilyMemberHistoryRelationshipTypeCoding(value)),
+        new DataAccessException(
+            "Unknown family member history relationship type: No Value present"));
 
     return builder.build();
   }
 
+  @Nullable
   private FamilyMemberHistoryRelationshipTypeCoding getFamilyMemberHistoryRelationshipTypeCoding(
-      final String value) {
+      final @Nullable String value) {
     if (value == null
         || !Arrays.stream(FamilyMemberHistoryRelationshipTypeCodingCode.values())
             .map(FamilyMemberHistoryRelationshipTypeCodingCode::toValue)
