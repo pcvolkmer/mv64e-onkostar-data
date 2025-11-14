@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class VorbefundeCatalogue extends AbstractSubformDataCatalogue {
     return "dk_dnpm_vorbefunde";
   }
 
+  @NullMarked
   public static VorbefundeCatalogue create(JdbcTemplate jdbcTemplate) {
     return new VorbefundeCatalogue(jdbcTemplate);
   }

@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class MolekulargenMsiCatalogue extends AbstractSubformDataCatalogue {
     return "dk_molekluargenmsi";
   }
 
+  @NullMarked
   public static MolekulargenMsiCatalogue create(JdbcTemplate jdbcTemplate) {
     return new MolekulargenMsiCatalogue(jdbcTemplate);
   }

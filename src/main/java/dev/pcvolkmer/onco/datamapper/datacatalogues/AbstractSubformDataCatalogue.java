@@ -23,6 +23,7 @@ package dev.pcvolkmer.onco.datamapper.datacatalogues;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -31,6 +32,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
+@NullMarked
 public abstract class AbstractSubformDataCatalogue extends AbstractDataCatalogue
     implements DataCatalogue {
 

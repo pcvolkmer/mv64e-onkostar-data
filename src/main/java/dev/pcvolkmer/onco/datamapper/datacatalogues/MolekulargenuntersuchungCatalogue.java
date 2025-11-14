@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class MolekulargenuntersuchungCatalogue extends AbstractSubformDataCatalo
     return "dk_molekulargenuntersuchung";
   }
 
+  @NullMarked
   public static MolekulargenuntersuchungCatalogue create(JdbcTemplate jdbcTemplate) {
     return new MolekulargenuntersuchungCatalogue(jdbcTemplate);
   }

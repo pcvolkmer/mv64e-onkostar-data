@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class EcogCatalogue extends AbstractSubformDataCatalogue {
     return "dk_dnpm_uf_ecog";
   }
 
+  @NullMarked
   public static EcogCatalogue create(JdbcTemplate jdbcTemplate) {
     return new EcogCatalogue(jdbcTemplate);
   }

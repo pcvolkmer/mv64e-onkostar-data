@@ -21,6 +21,7 @@
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
 import dev.pcvolkmer.onco.datamapper.ResultSet;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Common interface for all data catalogues
@@ -28,6 +29,7 @@ import dev.pcvolkmer.onco.datamapper.ResultSet;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
+@NullMarked
 public interface DataCatalogue {
 
   /**

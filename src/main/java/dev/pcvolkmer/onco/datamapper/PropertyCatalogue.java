@@ -21,6 +21,8 @@
 package dev.pcvolkmer.onco.datamapper;
 
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -29,6 +31,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
+@NullUnmarked
 public class PropertyCatalogue {
 
   private final JdbcTemplate jdbcTemplate;
@@ -37,7 +40,7 @@ public class PropertyCatalogue {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  private static PropertyCatalogue obj;
+  @Nullable private static PropertyCatalogue obj;
 
   public static synchronized PropertyCatalogue initialize(final JdbcTemplate jdbcTemplate) {
     if (null == obj) {
@@ -94,12 +97,13 @@ public class PropertyCatalogue {
       this(code, shortdesc, description, null, null);
     }
 
+    @NullUnmarked
     public Entry(
         String code,
         String shortdesc,
         String description,
-        String versionOid,
-        String versionDescription) {
+        @Nullable String versionOid,
+        @Nullable String versionDescription) {
       this.code = code;
       this.shortdesc = shortdesc;
       this.description = description;

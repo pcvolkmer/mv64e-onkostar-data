@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class ConsentMvCatalogue extends AbstractDataCatalogue {
     return "dk_dnpm_consentmv";
   }
 
+  @NullMarked
   public static ConsentMvCatalogue create(JdbcTemplate jdbcTemplate) {
     return new ConsentMvCatalogue(jdbcTemplate);
   }

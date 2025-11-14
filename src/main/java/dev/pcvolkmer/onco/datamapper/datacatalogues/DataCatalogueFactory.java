@@ -23,7 +23,6 @@ package dev.pcvolkmer.onco.datamapper.datacatalogues;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataCatalogueCreationException;
 import java.util.HashMap;
 import java.util.Map;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -68,8 +67,7 @@ public class DataCatalogueFactory {
    * @return The catalogue if it exists
    */
   @SuppressWarnings("unchecked")
-  @NullMarked
-  public synchronized <T extends DataCatalogue> T catalogue(@NonNull Class<T> clazz) {
+  public synchronized <T extends DataCatalogue> T catalogue(Class<T> clazz) {
     return (T)
         catalogues.computeIfAbsent(
             clazz,

@@ -27,6 +27,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Result set type to wrap <code>Map<String, Object></code>
@@ -34,6 +36,7 @@ import java.util.Map;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
+@NullUnmarked
 public class ResultSet {
 
   private final Map<String, Object> rawData;
@@ -85,6 +88,7 @@ public class ResultSet {
    * @param columnName The name of the column
    * @return The column value as String
    */
+  @Nullable
   public String getString(String columnName) {
     var raw = this.rawData.get(columnName);
 
@@ -105,6 +109,7 @@ public class ResultSet {
    * @param columnName The name of the column
    * @return The column value as Integer
    */
+  @Nullable
   public Integer getInteger(String columnName) {
     var raw = this.rawData.get(columnName);
 
@@ -123,6 +128,7 @@ public class ResultSet {
    * @param columnName The name of the column
    * @return The column value as Integer
    */
+  @Nullable
   public Long getLong(String columnName) {
     var raw = this.rawData.get(columnName);
 
@@ -145,6 +151,7 @@ public class ResultSet {
    * @param columnName The name of the column
    * @return The column value as Integer
    */
+  @Nullable
   public Double getDouble(String columnName) {
     var raw = this.rawData.get(columnName);
 
@@ -167,6 +174,7 @@ public class ResultSet {
    * @param columnName The name of the column
    * @return The column value as Date
    */
+  @Nullable
   public Date getDate(String columnName) {
     var raw = this.rawData.get(columnName);
 

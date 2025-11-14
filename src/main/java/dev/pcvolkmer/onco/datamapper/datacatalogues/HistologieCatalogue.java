@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class HistologieCatalogue extends AbstractSubformDataCatalogue {
     return "dk_dnpm_uf_histologie";
   }
 
+  @NullMarked
   public static HistologieCatalogue create(JdbcTemplate jdbcTemplate) {
     return new HistologieCatalogue(jdbcTemplate);
   }

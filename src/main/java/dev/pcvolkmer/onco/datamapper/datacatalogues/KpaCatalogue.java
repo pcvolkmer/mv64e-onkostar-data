@@ -21,6 +21,7 @@
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -40,6 +41,7 @@ public class KpaCatalogue extends AbstractDataCatalogue {
     return "dk_dnpm_kpa";
   }
 
+  @NullMarked
   public static KpaCatalogue create(JdbcTemplate jdbcTemplate) {
     return new KpaCatalogue(jdbcTemplate);
   }

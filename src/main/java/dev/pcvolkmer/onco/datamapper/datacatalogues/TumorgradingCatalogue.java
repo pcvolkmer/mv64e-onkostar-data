@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class TumorgradingCatalogue extends AbstractSubformDataCatalogue {
     return "dk_dnpm_uf_tumorgrading";
   }
 
+  @NullMarked
   public static TumorgradingCatalogue create(JdbcTemplate jdbcTemplate) {
     return new TumorgradingCatalogue(jdbcTemplate);
   }

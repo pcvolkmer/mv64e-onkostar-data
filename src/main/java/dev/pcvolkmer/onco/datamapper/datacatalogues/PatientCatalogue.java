@@ -22,6 +22,7 @@ package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -38,6 +39,7 @@ public class PatientCatalogue implements DataCatalogue {
     this.jdbcTemplate = jdbcTemplate;
   }
 
+  @NullMarked
   public static PatientCatalogue create(JdbcTemplate jdbcTemplate) {
     return new PatientCatalogue(jdbcTemplate);
   }

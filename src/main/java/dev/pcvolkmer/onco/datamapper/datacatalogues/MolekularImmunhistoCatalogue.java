@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class MolekularImmunhistoCatalogue extends AbstractSubformDataCatalogue {
     return "dk_molekularimmunhisto";
   }
 
+  @NullMarked
   public static MolekularImmunhistoCatalogue create(JdbcTemplate jdbcTemplate) {
     return new MolekularImmunhistoCatalogue(jdbcTemplate);
   }

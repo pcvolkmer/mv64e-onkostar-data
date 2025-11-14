@@ -20,6 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.datacatalogues;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -39,6 +40,7 @@ public class RebiopsieCatalogue extends AbstractSubformDataCatalogue {
     return "dk_dnpm_uf_rebiopsie";
   }
 
+  @NullMarked
   public static RebiopsieCatalogue create(JdbcTemplate jdbcTemplate) {
     return new RebiopsieCatalogue(jdbcTemplate);
   }

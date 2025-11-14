@@ -23,6 +23,7 @@ package dev.pcvolkmer.onco.datamapper.datacatalogues;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -42,6 +43,7 @@ public class TherapieplanCatalogue extends AbstractDataCatalogue {
     return "dk_dnpm_therapieplan";
   }
 
+  @NullMarked
   public static TherapieplanCatalogue create(JdbcTemplate jdbcTemplate) {
     return new TherapieplanCatalogue(jdbcTemplate);
   }

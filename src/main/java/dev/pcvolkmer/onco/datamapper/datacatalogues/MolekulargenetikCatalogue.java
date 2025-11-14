@@ -24,6 +24,7 @@ import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -43,6 +44,7 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
     return "dk_molekulargenetik";
   }
 
+  @NullMarked
   public static MolekulargenetikCatalogue create(JdbcTemplate jdbcTemplate) {
     return new MolekulargenetikCatalogue(jdbcTemplate);
   }
