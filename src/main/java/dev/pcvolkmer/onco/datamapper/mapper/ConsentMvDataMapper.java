@@ -24,10 +24,12 @@ import dev.pcvolkmer.mv64e.mtb.ConsentProvision;
 import dev.pcvolkmer.mv64e.mtb.ModelProjectConsent;
 import dev.pcvolkmer.mv64e.mtb.ModelProjectConsentPurpose;
 import dev.pcvolkmer.mv64e.mtb.Provision;
+import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ConsentMvCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ConsentMvVerlaufCatalogue;
-import java.util.ArrayList;
-import java.util.List;
+import org.jspecify.annotations.NullMarked;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,13 +40,12 @@ import java.util.stream.Collectors;
  */
 public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
 
-  private final ConsentMvCatalogue catalogue;
   private final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue;
 
+  @SuppressWarnings("unused")
   public ConsentMvDataMapper(
       final ConsentMvCatalogue catalogue,
       final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue) {
-    this.catalogue = catalogue;
     this.consentMvVerlaufCatalogue = consentMvVerlaufCatalogue;
   }
 
@@ -65,20 +66,34 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
     }
   }
 
+  @NullMarked
+  private static Comparator<ResultSet> getResultSetDateComparator() {
+    return (rs1, rs2) -> {
+      var date1 = rs1.getDate("date");
+      var date2 = rs2.getDate("date");
+      if (null == date1 || null == date2) {
+        return 0;
+      }
+      return date2.compareTo(date1);
+    };
+  }
+
   private String getLatestVersion(int id) {
     return consentMvVerlaufCatalogue.getAllByParentId(id).stream()
-        .sorted((rs1, rs2) -> rs2.getDate("date").compareTo(rs1.getDate("date")))
+        .sorted(getResultSetDateComparator())
         .map(resultSet -> resultSet.getString("version"))
+        .filter(Objects::nonNull)
         .findFirst()
         .orElse("");
   }
 
+  @NullMarked
   private List<Provision> getProvisions(final int id) {
     var result = new ArrayList<Provision>();
 
     var all =
         consentMvVerlaufCatalogue.getAllByParentId(id).stream()
-            .sorted((rs1, rs2) -> rs2.getDate("date").compareTo(rs1.getDate("date")))
+            .sorted(getResultSetDateComparator())
             .collect(Collectors.toList());
 
     var latest = all.stream().findFirst();
@@ -87,7 +102,11 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
     }
 
     all.stream()
-        .filter(rs -> rs.getString("sequencing") != null && !rs.getString("sequencing").isBlank())
+        .filter(
+            rs -> {
+              var sequencing = rs.getString("sequencing");
+              return null != sequencing && !sequencing.isBlank();
+            })
         .findFirst()
         .ifPresent(
             rs ->
@@ -103,9 +122,10 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
 
     all.stream()
         .filter(
-            rs ->
-                rs.getString("caseidentification") != null
-                    && !rs.getString("caseidentification").isBlank())
+            rs -> {
+              var caseidentification = rs.getString("caseidentification");
+              return null != caseidentification && !caseidentification.isBlank();
+            })
         .findFirst()
         .ifPresent(
             rs ->
@@ -123,9 +143,10 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
 
     all.stream()
         .filter(
-            rs ->
-                rs.getString("reidentification") != null
-                    && !rs.getString("reidentification").isBlank())
+            rs -> {
+              var reidentification = rs.getString("reidentification");
+              return null != reidentification && !reidentification.isBlank();
+            })
         .findFirst()
         .ifPresent(
             rs ->
