@@ -27,10 +27,9 @@ import dev.pcvolkmer.mv64e.mtb.Provision;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ConsentMvCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ConsentMvVerlaufCatalogue;
-import org.jspecify.annotations.NullMarked;
-
 import java.util.*;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_consentmv'
