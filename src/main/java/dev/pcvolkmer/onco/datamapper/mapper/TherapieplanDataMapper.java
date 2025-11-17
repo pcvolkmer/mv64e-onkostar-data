@@ -61,11 +61,12 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     this.propertyCatalogue = propertyCatalogue;
 
     this.einzelempfehlungProzedurDataMapper =
-        new EinzelempfehlungProzedurDataMapper(einzelempfehlungCatalogue);
+        new EinzelempfehlungProzedurDataMapper(einzelempfehlungCatalogue, therapieplanCatalogue);
     this.einzelempfehlungWirkstoffDataMapper =
-        new EinzelempfehlungWirkstoffDataMapper(einzelempfehlungCatalogue, propertyCatalogue);
+        new EinzelempfehlungWirkstoffDataMapper(
+            einzelempfehlungCatalogue, therapieplanCatalogue, propertyCatalogue);
     this.einzelempfehlungStudieDataMapper =
-        new EinzelempfehlungStudieDataMapper(einzelempfehlungCatalogue);
+        new EinzelempfehlungStudieDataMapper(einzelempfehlungCatalogue, therapieplanCatalogue);
   }
 
   /**

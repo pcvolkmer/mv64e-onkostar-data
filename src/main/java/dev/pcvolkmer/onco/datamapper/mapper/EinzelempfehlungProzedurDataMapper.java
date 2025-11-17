@@ -23,6 +23,7 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +40,10 @@ import org.jspecify.annotations.NullMarked;
 public class EinzelempfehlungProzedurDataMapper
     extends AbstractEinzelempfehlungDataMapper<ProcedureRecommendation> {
 
-  public EinzelempfehlungProzedurDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
-    super(einzelempfehlungCatalogue);
+  public EinzelempfehlungProzedurDataMapper(
+      EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      TherapieplanCatalogue therapieplanCatalogue) {
+    super(einzelempfehlungCatalogue, therapieplanCatalogue);
   }
 
   @Override

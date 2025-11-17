@@ -10,6 +10,7 @@ import dev.pcvolkmer.mv64e.mtb.PublicationReference;
 import dev.pcvolkmer.mv64e.mtb.PublicationSystem;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,9 +26,11 @@ class EinzelempfehlungProzedurDataMapperTest {
   EinzelempfehlungProzedurDataMapper mapper;
 
   @BeforeEach
-  void setUp(@Mock EinzelempfehlungCatalogue catalogue) {
+  void setUp(
+      @Mock EinzelempfehlungCatalogue catalogue,
+      @Mock TherapieplanCatalogue therapieplanCatalogue) {
     this.catalogue = catalogue;
-    this.mapper = new EinzelempfehlungProzedurDataMapper(catalogue);
+    this.mapper = new EinzelempfehlungProzedurDataMapper(catalogue, therapieplanCatalogue);
   }
 
   @Test

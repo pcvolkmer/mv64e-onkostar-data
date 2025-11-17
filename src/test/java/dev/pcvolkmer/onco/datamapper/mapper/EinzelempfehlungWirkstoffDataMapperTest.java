@@ -11,6 +11,7 @@ import dev.pcvolkmer.mv64e.mtb.PublicationSystem;
 import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,9 +27,14 @@ class EinzelempfehlungWirkstoffDataMapperTest {
   EinzelempfehlungWirkstoffDataMapper mapper;
 
   @BeforeEach
-  void setUp(@Mock EinzelempfehlungCatalogue catalogue, @Mock PropertyCatalogue propertyCatalogue) {
+  void setUp(
+      @Mock EinzelempfehlungCatalogue catalogue,
+      @Mock TherapieplanCatalogue therapieplanCatalogue,
+      @Mock PropertyCatalogue propertyCatalogue) {
     this.catalogue = catalogue;
-    this.mapper = new EinzelempfehlungWirkstoffDataMapper(catalogue, propertyCatalogue);
+    this.mapper =
+        new EinzelempfehlungWirkstoffDataMapper(
+            catalogue, therapieplanCatalogue, propertyCatalogue);
   }
 
   @Test

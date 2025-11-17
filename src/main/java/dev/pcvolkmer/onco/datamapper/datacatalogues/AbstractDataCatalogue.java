@@ -50,7 +50,7 @@ public abstract class AbstractDataCatalogue implements DataCatalogue {
    * Get procedure result set by procedure id
    *
    * @param id The procedure id
-   * @return The procedure id
+   * @return The procedure
    */
   @Override
   public ResultSet getById(int id) {

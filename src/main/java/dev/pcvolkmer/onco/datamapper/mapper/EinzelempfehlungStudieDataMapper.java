@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.mtb.MtbStudyEnrollmentRecommendation;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -38,8 +39,10 @@ import org.jspecify.annotations.NullMarked;
 public class EinzelempfehlungStudieDataMapper
     extends AbstractEinzelempfehlungDataMapper<MtbStudyEnrollmentRecommendation> {
 
-  public EinzelempfehlungStudieDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
-    super(einzelempfehlungCatalogue);
+  public EinzelempfehlungStudieDataMapper(
+      EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      TherapieplanCatalogue therapieplanCatalogue) {
+    super(einzelempfehlungCatalogue, therapieplanCatalogue);
   }
 
   @Override

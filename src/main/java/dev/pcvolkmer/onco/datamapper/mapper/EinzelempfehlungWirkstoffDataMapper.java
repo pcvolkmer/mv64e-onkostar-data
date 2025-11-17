@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -43,8 +44,10 @@ public class EinzelempfehlungWirkstoffDataMapper
   private final PropertyCatalogue propertyCatalogue;
 
   public EinzelempfehlungWirkstoffDataMapper(
-      EinzelempfehlungCatalogue einzelempfehlungCatalogue, PropertyCatalogue propertyCatalogue) {
-    super(einzelempfehlungCatalogue);
+      EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      TherapieplanCatalogue therapieplanCatalogue,
+      PropertyCatalogue propertyCatalogue) {
+    super(einzelempfehlungCatalogue, therapieplanCatalogue);
     this.propertyCatalogue = propertyCatalogue;
   }
 
