@@ -162,4 +162,86 @@ class KpaTherapielinieDataMapperTest {
                 .system("dnpm-dip/therapy/status-reason")
                 .build());
   }
+
+  @Test
+  void shouldNotGetTherapielinenWithoutStart(@Mock ResultSet resultSet) {
+    var testData =
+        Map.of(
+            "id",
+            "1",
+            "ende",
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            "erfassungsdatum",
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            "intention",
+            "S",
+            "status",
+            "stopped",
+            "statusgrund",
+            "patient-death",
+            "therapielinie",
+            1L,
+            "typ",
+            "surgery",
+            "patienten_id",
+            "42");
+
+    doAnswer(
+            invocationOnMock -> {
+              var columnName = invocationOnMock.getArgument(0, String.class);
+              return testData.get(columnName);
+            })
+        .when(resultSet)
+        .getDate(anyString());
+
+    when(resultSet.getId()).thenReturn(1);
+
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getDiseases(anyInt());
+
+    var actual = dataMapper.getByParentId(1);
+
+    assertThat(actual).isEmpty();
+  }
+
+  @Test
+  void shouldNotGetTherapielinenWithoutErfassungsdatum(@Mock ResultSet resultSet) {
+    var testData =
+        Map.of(
+            "id",
+            "1",
+            "ende",
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            "beginn",
+            new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
+            "intention",
+            "S",
+            "status",
+            "stopped",
+            "statusgrund",
+            "patient-death",
+            "therapielinie",
+            1L,
+            "typ",
+            "surgery",
+            "patienten_id",
+            "42");
+
+    doAnswer(
+            invocationOnMock -> {
+              var columnName = invocationOnMock.getArgument(0, String.class);
+              return testData.get(columnName);
+            })
+        .when(resultSet)
+        .getDate(anyString());
+
+    when(resultSet.getId()).thenReturn(1);
+
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getDiseases(anyInt());
+
+    var actual = dataMapper.getByParentId(1);
+
+    assertThat(actual).isEmpty();
+  }
 }

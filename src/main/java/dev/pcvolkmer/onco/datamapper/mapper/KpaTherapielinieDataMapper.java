@@ -28,6 +28,7 @@ import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.List;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class KpaTherapielinieDataMapper
     super(catalogue, propertyCatalogue);
   }
 
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(KpaTherapielinieDataMapper.class);
 
   /**
    * Loads and maps Prozedur related by database id
@@ -62,7 +63,7 @@ public class KpaTherapielinieDataMapper
 
   @Nullable
   @Override
-  protected MtbSystemicTherapy map(final ResultSet resultSet) {
+  protected MtbSystemicTherapy map(@NonNull final ResultSet resultSet) {
     var diseases = catalogue.getDiseases(resultSet.getId());
 
     if (diseases.size() != 1) {
@@ -78,7 +79,10 @@ public class KpaTherapielinieDataMapper
       // If so, log a warning and skip mapping for this record withouth breaking the
       // whole data
       // mapping.
-      if (resultSet.getDate("beginn") == null && resultSet.getDate("erfassungsdatum") == null) {
+      var start = resultSet.getDate("beginn");
+      var erfassungsdatum = resultSet.getDate("erfassungsdatum");
+      // Do not map procedures without start and end set
+      if (null == start || null == erfassungsdatum) {
         logger.warn(
             "Cannot map therapyline period date as 'beginn' date and erfassungsdatum are missing");
         return null;
@@ -92,7 +96,7 @@ public class KpaTherapielinieDataMapper
                   .id(resultSet.getString("hauptprozedur_id"))
                   .type("MTBDiagnosis")
                   .build())
-          .recordedOn(resultSet.getDate("erfassungsdatum"))
+          .recordedOn(erfassungsdatum)
           .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffcodes")));
 
       // --- Codings with null checks ---
@@ -115,7 +119,7 @@ public class KpaTherapielinieDataMapper
       }
 
       // --- Period Date with null checks ---
-      var pdb = PeriodDate.builder().start(resultSet.getDate("beginn"));
+      var pdb = PeriodDate.builder().start(start);
       if (resultSet.getDate("ende") != null) pdb.end(resultSet.getDate("ende"));
       builder.period(pdb.build());
 

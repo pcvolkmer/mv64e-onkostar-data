@@ -27,6 +27,10 @@ import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ProzedurCatalogue;
 import java.util.List;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_uf_prozedur'
@@ -35,6 +39,8 @@ import java.util.List;
  * @since 0.1
  */
 public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<OncoProcedure> {
+
+  private final Logger logger = LoggerFactory.getLogger(KpaProzedurDataMapper.class);
 
   public KpaProzedurDataMapper(
       final ProzedurCatalogue catalogue, final PropertyCatalogue propertyCatalogue) {
@@ -53,13 +59,29 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
     return this.map(data);
   }
 
+  /**
+   * Maps result set into OncoProcedure
+   *
+   * @param resultSet The result set to start from
+   * @return the OncoProcedure or null if not mappable
+   */
+  @Nullable
   @Override
-  protected OncoProcedure map(final ResultSet resultSet) {
+  protected OncoProcedure map(@NonNull final ResultSet resultSet) {
     var diseases = catalogue.getDiseases(resultSet.getId());
 
     if (diseases.size() != 1) {
       throw new IllegalStateException(
           String.format("No unique disease for procedure %s", resultSet.getId()));
+    }
+
+    var start = resultSet.getDate("beginn");
+    var erfassungsdatum = resultSet.getDate("erfassungsdatum");
+    // Do not map procedures without start and end set
+    if (null == start || null == erfassungsdatum) {
+      logger.warn(
+          "Cannot map procedure period date as 'beginn' date and erfassungsdatum are missing");
+      return null;
     }
 
     var builder = OncoProcedure.builder();
@@ -71,7 +93,7 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
                 .id(resultSet.getString("hauptprozedur_id"))
                 .type("MTBDiagnosis")
                 .build())
-        .recordedOn(resultSet.getDate("erfassungsdatum"))
+        .recordedOn(erfassungsdatum)
         .intent(
             getMtbTherapyIntentCoding(
                 resultSet.getString("intention"),
@@ -83,11 +105,7 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
             getMtbTherapyStatusReasonCoding(
                 resultSet.getString("statusgrund"),
                 resultSet.getInteger("statusgrund_propcat_version")))
-        .period(
-            PeriodDate.builder()
-                .start(resultSet.getDate("beginn"))
-                .end(resultSet.getDate("ende"))
-                .build())
+        .period(PeriodDate.builder().start(start).end(resultSet.getDate("ende")).build())
         .code(
             getOncoProcedureCoding(
                 resultSet.getString("typ"), resultSet.getInteger("typ_propcat_version")));
