@@ -24,7 +24,7 @@ import dev.pcvolkmer.mv64e.mtb.MtbStudyEnrollmentRecommendation;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,22 +39,31 @@ import org.jspecify.annotations.NullMarked;
 public class EinzelempfehlungStudieDataMapper
     extends AbstractEinzelempfehlungDataMapper<MtbStudyEnrollmentRecommendation> {
 
-  public EinzelempfehlungStudieDataMapper(
-      EinzelempfehlungCatalogue einzelempfehlungCatalogue,
-      TherapieplanCatalogue therapieplanCatalogue) {
-    super(einzelempfehlungCatalogue, therapieplanCatalogue);
+  public EinzelempfehlungStudieDataMapper(EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
+    super(einzelempfehlungCatalogue);
   }
 
   @Override
   protected MtbStudyEnrollmentRecommendation map(ResultSet resultSet) {
+    // Fetch date from care plan due to https://github.com/pcvolkmer/onkostar-plugin-dnpm/issues/213
+    var carePlan = this.catalogue.getParentById(resultSet.getId());
+    var date = carePlan.getDate("datum");
+    if (null == date) {
+      throw new DataAccessException("Cannot map datum for ProcedureRecommendation");
+    }
+
+    var kpaId = carePlan.getString("ref_dnpm_klinikanamnese");
+    if (null == kpaId) {
+      throw new DataAccessException("Cannot map KPA as Diagnosis");
+    }
+
     var resultBuilder =
         MtbStudyEnrollmentRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
             .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
-            // TODO Fix id?
-            .reason(Reference.builder().id(resultSet.getString("id")).build())
-            .issuedOn(resultSet.getDate("datum"))
+            .reason(Reference.builder().id(kpaId).build())
+            .issuedOn(date)
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet))
             .study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json")));

@@ -77,6 +77,7 @@ public abstract class AbstractSubformDataCatalogue extends AbstractDataCatalogue
    * @param id The procedure id
    * @return The procedure
    */
+  @NullMarked
   public ResultSet getParentById(int id) {
     try {
       var result =
@@ -89,6 +90,6 @@ public abstract class AbstractSubformDataCatalogue extends AbstractDataCatalogue
     } catch (Exception e) {
       // Nothing
     }
-    throw new DataAccessException("No unique parent found for id: " + id);
+    throw new DataAccessException("No parent found for id: " + id);
   }
 }

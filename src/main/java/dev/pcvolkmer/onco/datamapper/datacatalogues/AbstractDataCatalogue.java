@@ -52,6 +52,7 @@ public abstract class AbstractDataCatalogue implements DataCatalogue {
    * @param id The procedure id
    * @return The procedure
    */
+  @NullMarked
   @Override
   public ResultSet getById(int id) {
     var result =

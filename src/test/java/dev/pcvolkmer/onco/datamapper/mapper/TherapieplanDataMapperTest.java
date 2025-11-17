@@ -32,6 +32,8 @@ import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.RebiopsieCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.ReevaluationCatalogue;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,12 +117,35 @@ class TherapieplanDataMapperTest {
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
 
+    doAnswer(
+            invocationOnMock ->
+                ResultSet.from(
+                    Map.of(
+                        "datum",
+                        new java.sql.Date(
+                            Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
+                        "ref_dnpm_klinikanamnese",
+                        "4711")))
+        .when(this.einzelempfehlungCatalogue)
+        .getParentById(anyInt());
+
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(MtbCarePlan.class);
     assertThat(actual.getId()).isEqualTo("1");
     assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
 
-    assertThat(actual.getMedicationRecommendations()).hasSize(1);
+    assertThat(actual.getMedicationRecommendations())
+        .satisfies(
+            recommendations -> {
+              assertThat(recommendations).hasSize(1);
+              assertThat(recommendations.get(0))
+                  .satisfies(
+                      recommendation -> {
+                        assertThat(recommendation.getId()).isEqualTo("1");
+                        assertThat(recommendation.getIssuedOn())
+                            .isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
+                      });
+            });
 
     assertThat(actual.getNotes()).hasSize(1);
     assertThat(actual.getNotes().get(0)).isEqualTo("Das ist ein Protokollauszug");

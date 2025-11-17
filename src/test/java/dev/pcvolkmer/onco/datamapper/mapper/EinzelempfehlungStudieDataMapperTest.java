@@ -2,6 +2,7 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.mtb.LevelOfEvidenceGradingCoding;
@@ -10,7 +11,8 @@ import dev.pcvolkmer.mv64e.mtb.PublicationReference;
 import dev.pcvolkmer.mv64e.mtb.PublicationSystem;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +28,22 @@ class EinzelempfehlungStudieDataMapperTest {
   EinzelempfehlungStudieDataMapper mapper;
 
   @BeforeEach
-  void setUp(
-      @Mock EinzelempfehlungCatalogue catalogue,
-      @Mock TherapieplanCatalogue therapieplanCatalogue) {
+  void setUp(@Mock EinzelempfehlungCatalogue catalogue) {
     this.catalogue = catalogue;
-    this.mapper = new EinzelempfehlungStudieDataMapper(catalogue, therapieplanCatalogue);
+    this.mapper = new EinzelempfehlungStudieDataMapper(catalogue);
+
+    // Care Plan
+    doAnswer(
+            invocationOnMock ->
+                ResultSet.from(
+                    Map.of(
+                        "datum",
+                        new java.sql.Date(
+                            Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
+                        "ref_dnpm_klinikanamnese",
+                        "4711")))
+        .when(this.catalogue)
+        .getParentById(anyInt());
   }
 
   @Test
@@ -144,5 +157,17 @@ class EinzelempfehlungStudieDataMapperTest {
                       });
               assertThat(levelOfEvidence.getPublications()).isNull();
             });
+  }
+
+  @Test
+  void shouldMapIssuedOn() {
+    Map<String, Object> testData = Map.of("id", 1, "patienten_id", 42, "prio", 1);
+    var resultSet = ResultSet.from(testData);
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
   }
 }
