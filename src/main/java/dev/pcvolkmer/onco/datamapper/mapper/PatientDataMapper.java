@@ -62,21 +62,24 @@ public class PatientDataMapper implements DataMapper<Patient> {
   }
 
   private GenderCoding getGenderCoding(final ResultSet data) {
-    var genderCodingBuilder = GenderCoding.builder().system("Gender");
+    var genderCodingBuilder =
+        GenderCoding.builder().code(GenderCodingCode.UNKNOWN).display("Unbekannt").system("Gender");
 
     String geschlecht = data.getString("geschlecht");
-    switch (geschlecht) {
-      case "M":
-        genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
-        break;
-      case "F":
-        genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
-        break;
-      case "X":
-        genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
-        break;
-      default:
-        genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+    if (null != geschlecht) {
+      switch (geschlecht) {
+        case "M":
+          genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
+          break;
+        case "F":
+          genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
+          break;
+        case "X":
+          genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
+          break;
+        default:
+          genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+      }
     }
     return genderCodingBuilder.build();
   }

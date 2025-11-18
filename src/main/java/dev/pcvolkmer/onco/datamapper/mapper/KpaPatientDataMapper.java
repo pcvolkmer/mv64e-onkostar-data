@@ -63,22 +63,25 @@ public class KpaPatientDataMapper implements DataMapper<Patient> {
   }
 
   private GenderCoding getGenderCoding(ResultSet data) {
-    var genderCodingBuilder = GenderCoding.builder().system("Gender");
+    var genderCodingBuilder =
+        GenderCoding.builder().code(GenderCodingCode.UNKNOWN).display("Unbekannt").system("Gender");
 
     String geschlecht = data.getString("geschlecht");
-    switch (geschlecht) {
-      case "m":
-        genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
-        break;
-      case "w":
-        genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
-        break;
-      case "d":
-      case "x":
-        genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
-        break;
-      default:
-        genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+    if (null != geschlecht) {
+      switch (geschlecht) {
+        case "m":
+          genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
+          break;
+        case "w":
+          genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
+          break;
+        case "d":
+        case "x":
+          genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
+          break;
+        default:
+          genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+      }
     }
     return genderCodingBuilder.build();
   }
