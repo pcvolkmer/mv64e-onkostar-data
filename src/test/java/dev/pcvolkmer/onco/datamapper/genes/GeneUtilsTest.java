@@ -60,4 +60,21 @@ class GeneUtilsTest {
               assertThat(gene.getSingleChromosomeInPropertyForm()).hasValue(Chromosome.CHR_X);
             });
   }
+
+  @Test
+  void findByHgncSymbolContainingWhitespaces() {
+    var actual = GeneUtils.findBySymbol("BRCA 2");
+
+    assertThat(actual)
+        .isPresent()
+        .hasValueSatisfying(
+            gene -> {
+              assertThat(gene.getHgncId()).isEqualTo("HGNC:1101");
+              assertThat(gene.getEnsemblId()).isEqualTo("ENSG00000139618");
+              assertThat(gene.getSymbol()).isEqualTo("BRCA2");
+              assertThat(gene.getName()).isEqualTo("BRCA2 DNA repair associated");
+              assertThat(gene.getChromosome()).isEqualTo("13q13.1");
+              assertThat(gene.getSingleChromosomeInPropertyForm()).hasValue(Chromosome.CHR13);
+            });
+  }
 }
