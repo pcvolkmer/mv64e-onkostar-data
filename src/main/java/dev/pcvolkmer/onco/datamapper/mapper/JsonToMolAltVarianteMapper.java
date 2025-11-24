@@ -46,13 +46,13 @@ public class JsonToMolAltVarianteMapper {
     // intentionally left empty
   }
 
-  public static List<GeneAlterationReference> map(@Nullable String studyJson) {
-    if (studyJson == null) {
+  public static List<GeneAlterationReference> map(@Nullable String variantsJson) {
+    if (variantsJson == null) {
       return List.of();
     }
     try {
       return new ObjectMapper()
-          .readValue(studyJson, new TypeReference<List<MolAltVariante>>() {}).stream()
+          .readValue(variantsJson, new TypeReference<List<MolAltVariante>>() {}).stream()
               .map(
                   variante -> {
                     var resultBuilder = GeneAlterationReference.builder();
@@ -68,9 +68,11 @@ public class JsonToMolAltVarianteMapper {
                                             .build()));
                     return resultBuilder.build();
                   })
+              .filter(it -> it.getVariant() != null)
               .collect(Collectors.toList());
     } catch (Exception e) {
-      throw new DataAccessException(String.format("Cannot map gene alteration for %s", studyJson));
+      throw new DataAccessException(
+          String.format("Cannot map gene alteration for %s", variantsJson));
     }
   }
 

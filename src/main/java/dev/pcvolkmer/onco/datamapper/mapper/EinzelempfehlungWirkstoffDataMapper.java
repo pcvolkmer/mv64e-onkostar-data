@@ -99,9 +99,9 @@ public class EinzelempfehlungWirkstoffDataMapper
     }
 
     // As of now: Simple variant and CSV only!
-    if (null != resultSet.getString("st_mol_alt_variante_json")) {
-      resultBuilder.supportingVariants(
-          JsonToMolAltVarianteMapper.map(resultSet.getString("st_mol_alt_variante_json")));
+    var supportingVariants = resultSet.getString("st_mol_alt_variante_json");
+    if (null != supportingVariants) {
+      resultBuilder.supportingVariants(JsonToMolAltVarianteMapper.map(supportingVariants));
     }
 
     return resultBuilder.build();
