@@ -244,9 +244,15 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
         break;
     }
 
-    return Collection.builder()
-        .method(methodBuilder.build())
-        .localization(localizationBuilder.build())
-        .build();
+    final var collectionBuilder =
+        Collection.builder()
+            .method(methodBuilder.build())
+            .localization(localizationBuilder.build());
+
+    if (!data.isNull("entnahmedatum")) {
+      collectionBuilder.date(data.getDate("entnahmedatum"));
+    }
+
+    return collectionBuilder.build();
   }
 }

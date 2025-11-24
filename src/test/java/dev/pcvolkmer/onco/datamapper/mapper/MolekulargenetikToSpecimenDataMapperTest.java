@@ -30,6 +30,8 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.*;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -443,6 +445,48 @@ class MolekulargenetikToSpecimenDataMapperTest {
 
     assertThat(actual).hasSize(1);
     assertThat(actual.get(0).getCollection().getLocalization()).isEqualTo(coding);
+  }
+
+  @Test
+  void shouldReturnExpectedSpecimenDate() {
+
+    // Mock Einzelempfehlungen ID
+    when(therapieplanCatalogue.getByKpaId(anyInt())).thenReturn(List.of(1, 2));
+
+    // Mock Einzelempfehlungen - two referencing the same OS.Molekulargenetik
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+            })
+        .when(einzelempfehlungCatalogue)
+        .getAllByParentId(anyInt());
+
+    // Mock OS.Molekulargenetik
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return ResultSet.from(
+                  Map.of(
+                      "id",
+                      id,
+                      "patienten_id",
+                      4711,
+                      "entnahmemethode",
+                      "B",
+                      "entnahmedatum",
+                      new java.sql.Date(Date.from(Instant.parse("2025-06-28T12:00:00Z")).getTime()),
+                      "probenmaterial",
+                      "T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(anyInt());
+
+    var actual = this.mapper.getAllByKpaId(1, Reference.builder().build());
+
+    assertThat(actual).hasSize(1);
+    assertThat(actual.get(0).getCollection().getDate())
+        .isEqualTo(Date.from(Instant.parse("2025-06-28T00:00:00Z")));
   }
 
   // Returns all available Onkostar values and - best effort - expected mapping
