@@ -166,12 +166,18 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                   var coding = GeneUtils.toCoding(gene);
                   if (coding != null) snvBuilder.gene(coding);
 
-                  // Only add transcriptId if Ensembl ID is available
-                  var ensemblId = gene.getEnsemblId();
+                  // Add transcriptId from gene list if no EnsemblID is available
+                  var ensemblId = subform.getString("evensemblid");
                   if (ensemblId != null) {
                     snvBuilder.transcriptId(
                         TranscriptId.builder()
                             .value(ensemblId)
+                            .system(TranscriptIdSystem.ENSEMBL_ORG)
+                            .build());
+                  } else {
+                    snvBuilder.transcriptId(
+                        TranscriptId.builder()
+                            .value(gene.getEnsemblId())
                             .system(TranscriptIdSystem.ENSEMBL_ORG)
                             .build());
                   }
