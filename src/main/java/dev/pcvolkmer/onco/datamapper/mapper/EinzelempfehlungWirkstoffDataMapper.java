@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.onco.datamapper.exceptions.DataAccessException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,15 +45,22 @@ public class EinzelempfehlungWirkstoffDataMapper
   private final PropertyCatalogue propertyCatalogue;
 
   public EinzelempfehlungWirkstoffDataMapper(
-      EinzelempfehlungCatalogue einzelempfehlungCatalogue, PropertyCatalogue propertyCatalogue) {
-    super(einzelempfehlungCatalogue);
+      EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      TherapieplanCatalogue therapieplanCatalogue,
+      PropertyCatalogue propertyCatalogue) {
+    super(einzelempfehlungCatalogue, therapieplanCatalogue);
     this.propertyCatalogue = propertyCatalogue;
   }
 
   @Override
   protected MtbMedicationRecommendation map(ResultSet resultSet) {
     // Fetch date from care plan due to https://github.com/pcvolkmer/onkostar-plugin-dnpm/issues/213
-    var carePlan = this.catalogue.getParentById(resultSet.getId());
+    var hauptprozedurid = resultSet.getParentId();
+    if (null == hauptprozedurid) {
+      throw new DataAccessException("Cannot fetch 'Therapieplan'");
+    }
+    var carePlan = this.therapieplanCatalogue.getById(hauptprozedurid);
+
     var date = carePlan.getDate("datum");
     if (null == date) {
       throw new DataAccessException("Cannot map datum for ProcedureRecommendation");

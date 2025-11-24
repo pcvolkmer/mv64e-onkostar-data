@@ -131,13 +131,34 @@ class ResultSetTest {
     assertThat(results.get(0)).isEqualTo("TestString");
   }
 
+  @Test
+  void shouldGetProcedureId() {
+    var data = getTestData();
+    assertThat(data.getId()).isEqualTo(22);
+  }
+
+  @Test
+  void shouldGetParentProcedureId() {
+    var data = getTestData();
+    assertThat(data.getParentId()).isEqualTo(11);
+  }
+
   static ResultSet getTestData() {
     return ResultSet.from(
         Map.of(
-            "string", "TestString",
-            "int", 42,
-            "date", new Date(Date.from(Instant.parse("2025-06-21T02:00:00Z")).getTime()),
-            "true", 1,
-            "false", 0));
+            "string",
+            "TestString",
+            "int",
+            42,
+            "date",
+            new Date(Date.from(Instant.parse("2025-06-21T02:00:00Z")).getTime()),
+            "true",
+            1,
+            "false",
+            0,
+            "id",
+            22,
+            "hauptprozedur_id",
+            11));
   }
 }

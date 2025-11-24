@@ -73,6 +73,16 @@ public class ResultSet {
    *
    * @return The procedures id
    */
+  @Nullable
+  public Integer getParentId() {
+    return this.getInteger("hauptprozedur_id");
+  }
+
+  /**
+   * Get the id
+   *
+   * @return The procedures id
+   */
   public Reference getPatientReference() {
     if (this.getString("patienten_id") == null) {
       throw new DataAccessException("No patient id found");

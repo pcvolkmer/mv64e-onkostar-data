@@ -12,6 +12,7 @@ import dev.pcvolkmer.mv64e.mtb.PublicationSystem;
 import dev.pcvolkmer.onco.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -29,9 +30,14 @@ class EinzelempfehlungWirkstoffDataMapperTest {
   EinzelempfehlungWirkstoffDataMapper mapper;
 
   @BeforeEach
-  void setUp(@Mock EinzelempfehlungCatalogue catalogue, @Mock PropertyCatalogue propertyCatalogue) {
+  void setUp(
+      @Mock EinzelempfehlungCatalogue catalogue,
+      @Mock TherapieplanCatalogue therapieplanCatalogue,
+      @Mock PropertyCatalogue propertyCatalogue) {
     this.catalogue = catalogue;
-    this.mapper = new EinzelempfehlungWirkstoffDataMapper(catalogue, propertyCatalogue);
+    this.mapper =
+        new EinzelempfehlungWirkstoffDataMapper(
+            catalogue, therapieplanCatalogue, propertyCatalogue);
 
     // Care Plan
     doAnswer(
@@ -43,17 +49,14 @@ class EinzelempfehlungWirkstoffDataMapperTest {
                             Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
                         "ref_dnpm_klinikanamnese",
                         "4711")))
-        .when(this.catalogue)
-        .getParentById(anyInt());
+        .when(therapieplanCatalogue)
+        .getById(anyInt());
   }
 
   @Test
   void shouldMapEinzelempfehlungEvenWithoutEvidenzlevel() {
     Map<String, Object> testData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42,
-            "prio", 1);
+        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 1);
     var resultSet = ResultSet.from(testData);
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
@@ -68,6 +71,8 @@ class EinzelempfehlungWirkstoffDataMapperTest {
         Map.of(
             "id",
             1,
+            "hauptprozedur_id",
+            100,
             "patienten_id",
             42,
             "prio",
@@ -127,6 +132,8 @@ class EinzelempfehlungWirkstoffDataMapperTest {
         Map.of(
             "id",
             1,
+            "hauptprozedur_id",
+            100,
             "patienten_id",
             42,
             "prio",
@@ -162,7 +169,8 @@ class EinzelempfehlungWirkstoffDataMapperTest {
 
   @Test
   void shouldMapIssuedOn() {
-    Map<String, Object> testData = Map.of("id", 1, "patienten_id", 42, "prio", 1);
+    Map<String, Object> testData =
+        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 1);
     var resultSet = ResultSet.from(testData);
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);

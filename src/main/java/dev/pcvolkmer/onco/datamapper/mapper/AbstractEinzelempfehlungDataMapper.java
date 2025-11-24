@@ -23,6 +23,7 @@ package dev.pcvolkmer.onco.datamapper.mapper;
 import dev.pcvolkmer.mv64e.mtb.*;
 import dev.pcvolkmer.onco.datamapper.ResultSet;
 import dev.pcvolkmer.onco.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.onco.datamapper.datacatalogues.TherapieplanCatalogue;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,9 +38,13 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   private static final String GRADING_SYSTEM = "dnpm-dip/mtb/level-of-evidence/grading";
   private static final String ADDENDUM_SYSTEM = "dnpm-dip/mtb/level-of-evidence/addendum";
 
+  protected final TherapieplanCatalogue therapieplanCatalogue;
+
   protected AbstractEinzelempfehlungDataMapper(
-      EinzelempfehlungCatalogue einzelempfehlungCatalogue) {
+      final EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      final TherapieplanCatalogue therapieplanCatalogue) {
     super(einzelempfehlungCatalogue);
+    this.therapieplanCatalogue = therapieplanCatalogue;
   }
 
   protected RecommendationPriorityCoding getRecommendationPriorityCoding(String code, int version) {

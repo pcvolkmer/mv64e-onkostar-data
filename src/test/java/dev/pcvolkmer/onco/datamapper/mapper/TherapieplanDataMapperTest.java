@@ -78,13 +78,16 @@ class TherapieplanDataMapperTest {
   void shouldCreateCarePlan(@Mock ResultSet resultSet) {
     final var testData =
         Map.of(
-            "id", "1",
-            "patienten_id", "42",
+            "id",
+            "1",
+            "hauptprozedur_id",
+            100,
+            "patienten_id",
+            42,
             "wirkstoffe_json",
-                "[{\"code\":\"\",\"name\":\"PARP-Inhibierung\",\"system\":\"UNREGISTERED\"}]",
-            "protokollauszug", "Das ist ein Protokollauszug",
-            "mit_einzelempfehlung", true,
-            "empfehlungskategorie", "systemisch");
+            "[{\"code\":\"\",\"name\":\"PARP-Inhibierung\",\"system\":\"UNREGISTERED\"}]",
+            "empfehlungskategorie",
+            "systemisch");
 
     doAnswer(
             invocationOnMock ->
@@ -111,8 +114,6 @@ class TherapieplanDataMapperTest {
         .when(resultSet)
         .isTrue(anyString());
 
-    doAnswer(invocationOnMock -> resultSet).when(therapieplanCatalogue).getById(anyInt());
-
     doAnswer(invocationOnMock -> List.of(resultSet))
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -121,17 +122,25 @@ class TherapieplanDataMapperTest {
             invocationOnMock ->
                 ResultSet.from(
                     Map.of(
+                        "id",
+                        100,
+                        "patienten_id",
+                        "42",
                         "datum",
                         new java.sql.Date(
                             Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
                         "ref_dnpm_klinikanamnese",
-                        "4711")))
-        .when(this.einzelempfehlungCatalogue)
-        .getParentById(anyInt());
+                        "4711",
+                        "protokollauszug",
+                        "Das ist ein Protokollauszug",
+                        "mit_einzelempfehlung",
+                        true)))
+        .when(this.therapieplanCatalogue)
+        .getById(anyInt());
 
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(MtbCarePlan.class);
-    assertThat(actual.getId()).isEqualTo("1");
+    assertThat(actual.getId()).isEqualTo("100");
     assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
 
     assertThat(actual.getMedicationRecommendations())

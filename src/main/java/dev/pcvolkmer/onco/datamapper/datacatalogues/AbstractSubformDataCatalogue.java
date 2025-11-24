@@ -78,18 +78,15 @@ public abstract class AbstractSubformDataCatalogue extends AbstractDataCatalogue
    * @return The procedure
    */
   @NullMarked
-  public ResultSet getParentById(int id) {
+  public int getParentIdById(int id) {
     try {
-      var result =
-          this.jdbcTemplate.queryForObject(
-              "SELECT prozedur.hauptprozedur_id FROM prozedur WHERE geloescht = 0 AND prozedur.id = ?",
-              new Integer[] {id},
-              Integer.class);
-
-      return getById(result);
+      return this.jdbcTemplate.queryForObject(
+          "SELECT prozedur.hauptprozedur_id FROM prozedur WHERE geloescht = 0 AND prozedur.id = ?",
+          new Integer[] {id},
+          Integer.class);
     } catch (Exception e) {
-      // Nothing
+      throw new DataAccessException(
+          String.format("No parent found for id '%d': %s", id, e.getMessage()));
     }
-    throw new DataAccessException("No parent found for id: " + id);
   }
 }
