@@ -74,24 +74,23 @@ public class EinzelempfehlungProzedurDataMapper
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
             .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
-            // TODO Fix id?
             .reason(Reference.builder().id(kpaId).build())
             .issuedOn(date)
             .levelOfEvidence(getLevelOfEvidence(resultSet));
 
-    if (null != resultSet.getString("evidenzlevel")) {
-      resultBuilder.priority(
-          getRecommendationPriorityCoding(
-              resultSet.getString("evidenzlevel"),
-              resultSet.getInteger("evidenzlevel_propcat_version")));
+    final var evidenzlevel = resultSet.getString("evidenzlevel");
+    final var evidenzlevelPropcat = resultSet.getInteger("evidenzlevel_propcat_version");
+    if (null != evidenzlevel && null != evidenzlevelPropcat) {
+      resultBuilder.priority(getRecommendationPriorityCoding(evidenzlevel, evidenzlevelPropcat));
     }
 
     // Nur der erste Eintrag!
-    if (!resultSet.getMerkmalList("art_der_therapie").isEmpty()) {
+    final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
+    final var artDerTherapiePropcat = resultSet.getInteger("art_der_therapie_propcat_version");
+    if (!artDerTherapie.isEmpty() && null != artDerTherapiePropcat) {
       resultBuilder.code(
           getMtbProcedureRecommendationCategoryCoding(
-              resultSet.getMerkmalList("art_der_therapie").get(0),
-              resultSet.getInteger("art_der_therapie_propcat_version")));
+              artDerTherapie.get(0), artDerTherapiePropcat));
     }
 
     // As of now: Simple variant and CSV only! - Not used but present for completeness

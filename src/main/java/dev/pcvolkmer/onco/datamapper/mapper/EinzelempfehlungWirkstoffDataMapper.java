@@ -81,21 +81,22 @@ public class EinzelempfehlungWirkstoffDataMapper
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet));
 
-    if (!resultSet.getMerkmalList("art_der_therapie").isEmpty()) {
+    final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
+    final var artDerTherapiePropcat = resultSet.getInteger("art_der_therapie_propcat_version");
+    if (!artDerTherapie.isEmpty() && null != artDerTherapiePropcat) {
       resultBuilder.category(
-          resultSet.getMerkmalList("art_der_therapie").stream()
+          artDerTherapie.stream()
               .map(
                   value ->
-                      getMtbMedicationRecommendationCategoryCoding(
-                          value, resultSet.getInteger("art_der_therapie_propcat_version")))
+                      getMtbMedicationRecommendationCategoryCoding(value, artDerTherapiePropcat))
               .collect(Collectors.toList()));
     }
 
-    if (null != resultSet.getString("empfehlungsart")) {
+    final var empfehlungsart = resultSet.getString("empfehlungsart");
+    final var empfehlungsartPropcat = resultSet.getInteger("empfehlungsart_propcat_version");
+    if (null != empfehlungsart && null != empfehlungsartPropcat) {
       resultBuilder.useType(
-          getMtbMedicationRecommendationUseTypeCoding(
-              resultSet.getString("empfehlungsart"),
-              resultSet.getInteger("empfehlungsart_propcat_version")));
+          getMtbMedicationRecommendationUseTypeCoding(empfehlungsart, empfehlungsartPropcat));
     }
 
     // As of now: Simple variant and CSV only!
