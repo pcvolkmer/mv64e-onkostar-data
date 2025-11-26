@@ -74,8 +74,6 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         .patient(data.getPatientReference())
         .issuedOn(data.getDate("datum"))
         .specimen(Reference.builder().id(data.getString("id")).type("Specimen").build())
-        // TODO: OS.MolDiagSequenzierung kennt keine Unterscheidung zwischen 'genome-long-read' und
-        // 'genome-short-read'! -> OTHER
         .type(getNgsReportCoding(data.getString("artdersequenzierung")))
         .metadata(List.of(getNgsReportMetadata(data.getString("artdersequenzierung"))))
         .results(this.getNgsReportResults(data));
@@ -300,6 +298,18 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         return NgsReportCoding.builder()
             .code(NgsReportCodingCode.PANEL)
             .display("Panel")
+            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
+            .build();
+      case "genome-long-read":
+        return NgsReportCoding.builder()
+            .code(NgsReportCodingCode.GENOME_LONG_READ)
+            .display("Genome long-read")
+            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
+            .build();
+      case "genome-short-read":
+        return NgsReportCoding.builder()
+            .code(NgsReportCodingCode.GENOME_SHORT_READ)
+            .display("Genome short-read")
             .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
             .build();
       default:

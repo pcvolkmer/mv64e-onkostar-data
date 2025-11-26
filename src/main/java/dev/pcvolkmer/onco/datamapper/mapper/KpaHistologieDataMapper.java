@@ -111,7 +111,6 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
 
     var builder = HistologyReport.builder();
     var osMolGen = molekulargenetikCatalogue.getById(histoId);
-    var tumorzellgehaltValue = resultSet.getLong("tumorzellgehalt");
 
     builder
         .id(resultSet.getId().toString())
@@ -120,23 +119,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
         .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
         .results(
             HistologyReportResults.builder()
-                .tumorCellContent(
-                    TumorCellContent.builder()
-                        .id(resultSet.getId().toString())
-                        .patient(resultSet.getPatientReference())
-                        .specimen(
-                            Reference.builder()
-                                .id(osMolGen.getId().toString())
-                                .type("Specimen")
-                                .build())
-                        .value(
-                            (null == tumorzellgehaltValue) ? null : (tumorzellgehaltValue / 100.0))
-                        // TODO: Nicht in OS.Molekulargenetik
-                        .method(
-                            TumorCellContentMethodCoding.builder()
-                                .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
-                                .build())
-                        .build())
+                .tumorCellContent(getTumorCellContent(resultSet, osMolGen))
                 .tumorMorphology(
                     TumorMorphology.builder()
                         .id(resultSet.getId().toString())
@@ -150,6 +133,24 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
                         .build())
                 .build());
 
+    return builder.build();
+  }
+
+  @Nullable
+  private TumorCellContent getTumorCellContent(ResultSet resultSet, ResultSet osMolGen) {
+
+    var builder =
+        TumorCellContent.builder()
+            .id(resultSet.getId().toString())
+            .patient(resultSet.getPatientReference())
+            .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
+            .method(
+                TumorCellContentMethodCoding.builder()
+                    .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
+                    .build());
+
+    var tumorzellgehaltValue = resultSet.getLong("tumorzellgehalt");
+    if (null != tumorzellgehaltValue) builder.value(tumorzellgehaltValue / 100.0);
     return builder.build();
   }
 
