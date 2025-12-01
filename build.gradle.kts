@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "dev.pcvolkmer.onco"
-version = "0.1.0-SNAPSHOT"
+version = "0.1.0-SNAPSHOT" // x-release-please-version
 
 var versions = mapOf(
     "mtb-dto" to "0.1.1",
@@ -23,14 +23,6 @@ var versions = mapOf(
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
-    }
-}
-
-configurations {
-    all {
-        resolutionStrategy {
-            cacheChangingModulesFor(5, "minutes")
-        }
     }
 }
 
