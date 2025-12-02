@@ -8,7 +8,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "dev.pcvolkmer.onco"
+group = "dev.pcvolkmer.mv64e"
 version = "0.1.1" // x-release-please-version
 
 var versions = mapOf(
@@ -24,6 +24,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(11)
     }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
