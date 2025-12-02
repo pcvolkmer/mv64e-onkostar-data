@@ -98,6 +98,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
    * Loads and maps all Prozedur related by KPA database id
    *
    * @param kpaId The database id of the KPA procedure data set
+   * @param molgenIdsFromHisto List of procedure IDs for related histology forms
    * @return The loaded Procedures
    */
   public List<SomaticNgsReport> getAllByKpaIdWithHisto(

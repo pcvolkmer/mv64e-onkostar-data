@@ -134,6 +134,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
   /**
    * Sets tumor cell content method to be used. If not set, HISTOLOGIC will be used.
    *
+   * @param tumorCellContentMethod The tumor cell content method to be used
    * @return Instance of MtbDataMapper with enabled filter.
    */
   @NullMarked
