@@ -33,7 +33,7 @@ import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Result set type to wrap <code>Map<String, Object></code>
+ * Result set type to wrap {@code Map<String, Object>}
  *
  * @author Paul-Christian Volkmer
  * @since 0.1
