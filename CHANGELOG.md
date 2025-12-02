@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.1.1...v0.2.0) (2025-12-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* use 'dev.pcvolkmer.mv64e' for package and group ([#52](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/52))
+
+### Code Refactoring
+
+* use 'dev.pcvolkmer.mv64e' for package and group ([#52](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/52)) ([b13a0d4](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/b13a0d485b7d8d8d57228ee076343afb64c1fa29))
+
 ## [0.1.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.1.0...v0.1.1) (2025-12-01)
 
 
