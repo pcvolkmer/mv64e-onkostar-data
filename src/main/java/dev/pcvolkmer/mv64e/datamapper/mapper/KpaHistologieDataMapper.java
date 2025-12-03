@@ -113,19 +113,10 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     var builder = HistologyReport.builder();
     var osMolGen = molekulargenetikCatalogue.getById(histoId);
 
-    var histologieReportResultBuilder =
-        HistologyReportResults.builder()
-            .tumorMorphology(
-                TumorMorphology.builder()
-                    .id(resultSet.getId().toString())
-                    .patient(resultSet.getPatientReference())
-                    .specimen(
-                        Reference.builder()
-                            .id(osMolGen.getId().toString())
-                            .type("Specimen")
-                            .build())
-                    .value(getTumorMorphologyCoding(resultSet))
-                    .build());
+    var histologieReportResultBuilder = HistologyReportResults.builder();
+
+    getTumorMorphology(resultSet, osMolGen)
+        .ifPresent(histologieReportResultBuilder::tumorMorphology);
 
     getTumorCellContent(resultSet, osMolGen)
         .ifPresent(histologieReportResultBuilder::tumorCellContent);
@@ -138,6 +129,21 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
         .results(histologieReportResultBuilder.build());
 
     return builder.build();
+  }
+
+  private Optional<TumorMorphology> getTumorMorphology(ResultSet resultSet, ResultSet osMolGen) {
+    var builder =
+        TumorMorphology.builder()
+            .id(resultSet.getId().toString())
+            .patient(resultSet.getPatientReference())
+            .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build());
+
+    var tumorMorphologyCoding = getTumorMorphologyCoding(resultSet);
+    if (null == tumorMorphologyCoding) {
+      return Optional.empty();
+    }
+
+    return Optional.of(builder.value(tumorMorphologyCoding).build());
   }
 
   private Optional<TumorCellContent> getTumorCellContent(ResultSet resultSet, ResultSet osMolGen) {
@@ -169,6 +175,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     var propertyCatalogueEntry =
         propertyCatalogue.getByCodeAndVersion(
             resultSet.getString("morphologie"), morphologiePropcatVersion);
+    if (propertyCatalogueEntry == null) return null;
 
     return Coding.builder()
         .code(propertyCatalogueEntry.getCode())

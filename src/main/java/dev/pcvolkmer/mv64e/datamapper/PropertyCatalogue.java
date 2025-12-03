@@ -21,8 +21,11 @@
 package dev.pcvolkmer.mv64e.datamapper;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.genes.GeneUtils;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -34,6 +37,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @NullUnmarked
 public class PropertyCatalogue {
 
+  private static final Logger logger = LoggerFactory.getLogger(GeneUtils.class);
   private final JdbcTemplate jdbcTemplate;
 
   private PropertyCatalogue(JdbcTemplate jdbcTemplate) {
@@ -63,7 +67,13 @@ public class PropertyCatalogue {
    * @param version The entries version
    * @return The sub procedures
    */
-  public Entry getByCodeAndVersion(String code, int version) {
+  public Entry getByCodeAndVersion(String code, Integer version) {
+    if (code == null || version == null) {
+      logger.error(
+          String.format(
+              "Cannot request property catalogue entry for '%s' version '%d'", code, version));
+      return null;
+    }
     try {
       return this.jdbcTemplate.queryForObject(
           "SELECT code, shortdesc, e.description, v.oid AS version_oid, v.description AS version_description FROM property_catalogue_version_entry e"

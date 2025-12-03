@@ -108,8 +108,9 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
   }
 
   private MolecularDiagnosticReportCoding getMolecularDiagnosticReportCoding(
-      String value, int version) {
+      String value, Integer version) {
     if (value == null
+        || version == null
         || !Arrays.stream(MolecularDiagnosticReportCodingCode.values())
             .map(MolecularDiagnosticReportCodingCode::toValue)
             .collect(Collectors.toSet())

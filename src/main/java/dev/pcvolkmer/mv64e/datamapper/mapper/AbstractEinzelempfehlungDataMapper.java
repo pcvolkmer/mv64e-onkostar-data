@@ -47,8 +47,10 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     this.therapieplanCatalogue = therapieplanCatalogue;
   }
 
-  protected RecommendationPriorityCoding getRecommendationPriorityCoding(String code, int version) {
+  protected RecommendationPriorityCoding getRecommendationPriorityCoding(
+      String code, Integer version) {
     if (code == null
+        || version == null
         || !Arrays.stream(RecommendationPriorityCodingCode.values())
             .map(RecommendationPriorityCodingCode::toValue)
             .collect(Collectors.toSet())

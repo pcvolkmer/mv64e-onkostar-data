@@ -126,8 +126,9 @@ public class EinzelempfehlungWirkstoffDataMapper
   }
 
   private MtbMedicationRecommendationCategoryCoding getMtbMedicationRecommendationCategoryCoding(
-      String code, int version) {
+      String code, Integer version) {
     if (code == null
+        || version == null
         || !Arrays.stream(MtbMedicationRecommendationCategoryCodingCode.values())
             .map(MtbMedicationRecommendationCategoryCodingCode::toValue)
             .collect(Collectors.toSet())
@@ -151,8 +152,9 @@ public class EinzelempfehlungWirkstoffDataMapper
   }
 
   private MtbMedicationRecommendationUseTypeCoding getMtbMedicationRecommendationUseTypeCoding(
-      String code, int version) {
+      String code, Integer version) {
     if (code == null
+        || version == null
         || !Arrays.stream(MtbMedicationRecommendationUseTypeCodingCode.values())
             .map(MtbMedicationRecommendationUseTypeCodingCode::toValue)
             .collect(Collectors.toSet())
