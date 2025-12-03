@@ -203,6 +203,13 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                     snvBuilder.refAllele(subform.getString("evrefnucleotide"));
                   }
 
+                  var posStart = subform.getInteger("EVStart");
+                  var posEnd = subform.getInteger("EVEnde");
+                  if (null != posStart && null != posEnd) {
+                    snvBuilder.position(
+                        Position.builder().start((double) posStart).end((double) posEnd).build());
+                  }
+
                   gene.getSingleChromosomeInPropertyForm().ifPresent(snvBuilder::chromosome);
 
                   return snvBuilder.build();
