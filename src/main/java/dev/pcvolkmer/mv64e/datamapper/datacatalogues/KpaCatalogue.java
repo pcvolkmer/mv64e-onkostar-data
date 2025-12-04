@@ -55,14 +55,14 @@ public class KpaCatalogue extends AbstractDataCatalogue {
   public int getProcedureIdByCaseId(String caseId) {
     var result =
         this.jdbcTemplate.query(
-            "SELECT id FROM dk_dnpm_kpa WHERE fallnummermv = ?",
+            "SELECT dk_dnpm_kpa.id FROM dk_dnpm_kpa JOIN prozedur ON (prozedur.id = dk_dnpm_kpa.id) WHERE prozedur.geloescht = 0 AND dk_dnpm_kpa.fallnummermv = ?",
             (resultSet, i) -> resultSet.getInt(1),
             caseId);
 
     if (result.isEmpty()) {
       throw new DataAccessException("No record found for case: " + caseId);
     } else if (result.size() > 1) {
-      throw new DataAccessException("Multiple records found for case: " + caseId);
+      throw new DataAccessException("Multiple procedure IDs found for case: " + caseId);
     }
 
     return result.get(0);
@@ -111,14 +111,14 @@ public class KpaCatalogue extends AbstractDataCatalogue {
   public int getPatientIdByCaseId(String caseId) {
     var result =
         this.jdbcTemplate.query(
-            "SELECT patient_id FROM dk_dnpm_kpa JOIN prozedur ON (prozedur.id = dk_dnpm_kpa.id) WHERE fallnummermv = ?",
+            "SELECT patient_id FROM dk_dnpm_kpa JOIN prozedur ON (prozedur.id = dk_dnpm_kpa.id) WHERE prozedur.geloescht = 0 AND fallnummermv = ?",
             (resultSet, i) -> resultSet.getInt(1),
             caseId);
 
     if (result.isEmpty()) {
       throw new DataAccessException("No record found for case: " + caseId);
     } else if (result.size() > 1) {
-      throw new DataAccessException("Multiple records found for case: " + caseId);
+      throw new DataAccessException("Multiple patient IDs found for case: " + caseId);
     }
 
     return result.get(0);
