@@ -27,12 +27,15 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KeimbahndiagnoseCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorgradingCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_kpa'
@@ -71,8 +74,16 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
    * @return The loaded MtbDiagnosis file
    */
   @Override
+  @NonNull
   public MtbDiagnosis getById(int id) {
     var data = kpaCatalogue.getById(id);
+
+    final var icd10 = data.getString("icd10");
+    final var icd10PropcatVersion = data.getInteger("icd10_propcat_version");
+
+    if (null == icd10 || null == icd10PropcatVersion) {
+      throw new DataAccessException("Cannot get expected ICD10 code or property catalogue entry");
+    }
 
     var builder = MtbDiagnosis.builder();
     builder
@@ -80,33 +91,37 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
         .patient(data.getPatientReference())
         .code(
             Coding.builder()
-                .code(data.getString("icd10"))
+                .code(icd10)
                 .system("http://fhir.de/CodeSystem/bfarm/icd-10-gm")
                 .display(
                     propertyCatalogue
-                        .getByCodeAndVersion(
-                            data.getString("icd10"), data.getInteger("icd10_propcat_version"))
+                        .getByCodeAndVersion(icd10, icd10PropcatVersion)
                         .getShortdesc())
                 .version(
                     propertyCatalogue
-                        .getByCodeAndVersion(
-                            data.getString("icd10"), data.getInteger("icd10_propcat_version"))
+                        .getByCodeAndVersion(icd10, icd10PropcatVersion)
                         .getVersionDescription())
                 .build())
         .recordedOn(data.getDate("datumerstdiagnose"))
         .topography(Coding.builder().code(data.getString("icdo3lokalisation")).build())
         .type(getType(data))
-        .guidelineTreatmentStatus(
-            getMtbDiagnosisGuidelineTreatmentStatusCoding(
-                data.getString("leitlinienstatus"),
-                data.getInteger("leitlinienstatus_propcat_version")))
         .grading(getGrading(id))
         .staging(getStaging(id))
         .germlineCodes(getGermlineCodes(id))
         .histology(getHistologyReferences(id));
+
+    final var leitlinienstatus = data.getString("leitlinienstatus");
+    final var leitlinienstatusPropcatVersion = data.getInteger("leitlinienstatus_propcat_version");
+    if (null != leitlinienstatus && null != leitlinienstatusPropcatVersion) {
+      builder.guidelineTreatmentStatus(
+          getMtbDiagnosisGuidelineTreatmentStatusCoding(
+              leitlinienstatus, leitlinienstatusPropcatVersion));
+    }
+
     return builder.build();
   }
 
+  @NonNull
   private List<Reference> getHistologyReferences(final int id) {
     return histologieCatalogue.getAllByParentId(id).stream()
         .map(
@@ -116,13 +131,13 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
         .collect(Collectors.toList());
   }
 
+  @Nullable
   private MtbDiagnosisGuidelineTreatmentStatusCoding getMtbDiagnosisGuidelineTreatmentStatusCoding(
-      final String code, final int version) {
-    if (code == null
-        || !Arrays.stream(MtbDiagnosisGuidelineTreatmentStatusCodingCode.values())
-            .map(MtbDiagnosisGuidelineTreatmentStatusCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(code)) {
+      @NonNull final String code, final int version) {
+    if (!Arrays.stream(MtbDiagnosisGuidelineTreatmentStatusCodingCode.values())
+        .map(MtbDiagnosisGuidelineTreatmentStatusCodingCode::toValue)
+        .collect(Collectors.toSet())
+        .contains(code)) {
       return null;
     }
 
@@ -139,6 +154,7 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
     return resultBuilder.build();
   }
 
+  @Nullable
   private Grading getGrading(final int id) {
     var all =
         tumorgradingCatalogue.getAllByParentId(id).stream()
@@ -194,6 +210,7 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
     return Grading.builder().history(all).build();
   }
 
+  @Nullable
   private Staging getStaging(final int id) {
     var subMapper = new KpaTumorausbreitungDataMapper(tumorausbreitungCatalogue);
 
@@ -208,6 +225,7 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
     return Staging.builder().history(all).build();
   }
 
+  @NonNull
   private List<Coding> getGermlineCodes(final int id) {
     return keimbahndiagnoseCatalogue.getAllByParentId(id).stream()
         .map(
@@ -229,7 +247,8 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
         .collect(Collectors.toList());
   }
 
-  private Type getType(final ResultSet resultSet) {
+  @Nullable
+  private Type getType(@NonNull final ResultSet resultSet) {
     var diagnosisCoding = MtbDiagnosisCoding.builder();
     var code = resultSet.getString("diagnosetyp");
     if (code == null
