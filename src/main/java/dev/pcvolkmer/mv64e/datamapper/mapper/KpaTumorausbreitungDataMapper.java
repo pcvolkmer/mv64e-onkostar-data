@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -98,13 +97,10 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
     var hasContent = false;
 
     var tnmtprefix = resultSet.getString("tnmtprefix");
-    var tnmt = resultSet.getString("tnmt");
+    var tnmt = sanitizeTValue(resultSet.getString("tnmt"));
     if (null != tnmtprefix && tnmt != null && !tnmt.isBlank()) {
       tnpmClassificationBuilder.tumor(
-          Coding.builder()
-              .code(String.format("%sT%s", tnmtprefix, sanitizeTValue(tnmt)))
-              .system("UICC")
-              .build());
+          Coding.builder().code(String.format("%sT%s", tnmtprefix, tnmt)).system("UICC").build());
       hasContent = true;
     }
 
@@ -132,7 +128,10 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
   }
 
   @Nullable
-  static String sanitizeTValue(@NonNull final String value) {
+  static String sanitizeTValue(@Nullable final String value) {
+    if (null == value) {
+      return null;
+    }
     final var pattern =
         Pattern.compile(
             "(?<mainvalue>[0-4X]|is|a)(?<subsite>[a-e])?(?<count>\\d)?(?<tail>\\(.+\\))?");

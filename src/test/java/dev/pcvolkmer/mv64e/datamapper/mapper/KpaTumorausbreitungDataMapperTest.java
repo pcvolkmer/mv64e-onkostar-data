@@ -109,6 +109,68 @@ class KpaTumorausbreitungDataMapperTest {
     assertThat(actual.getTnmClassification().getMetastasis().getCode()).isEqualTo("pM0");
   }
 
+  @Test
+  void shouldNotUseNullTnmForUnsableValue(@Mock ResultSet resultSet) {
+    var testData =
+        Map.of(
+            "id",
+            "1",
+            "zeitpunkt",
+            new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
+            "typ",
+            "pathologic",
+            "wert",
+            "tumor-free",
+            "tnmtprefix",
+            "p",
+            "tnmt",
+            "4e",
+            "tnmnprefix",
+            "p",
+            "tnmn",
+            "0",
+            "tnmmprefix",
+            "p",
+            "tnmm",
+            "0");
+
+    doAnswer(
+            invocationOnMock -> {
+              var columnName = invocationOnMock.getArgument(0, String.class);
+              return testData.get(columnName);
+            })
+        .when(resultSet)
+        .getString(anyString());
+
+    doAnswer(
+            invocationOnMock -> {
+              var columnName = invocationOnMock.getArgument(0, String.class);
+              return testData.get(columnName);
+            })
+        .when(resultSet)
+        .getDate(anyString());
+
+    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+
+    var actualList = this.dataMapper.getByParentId(1);
+    assertThat(actualList).hasSize(1);
+
+    var actual = actualList.get(0);
+    assertThat(actual).isInstanceOf(TumorStaging.class);
+    assertThat(actual.getDate())
+        .isEqualTo(new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()));
+    assertThat(actual.getMethod())
+        .isEqualTo(
+            TumorStagingMethodCoding.builder()
+                .code(TumorStagingMethodCodingCode.PATHOLOGIC)
+                .system("dnpm-dip/mtb/tumor-staging/method")
+                .build());
+    // No T value available in DNPM:DIP for code "4e"
+    assertThat(actual.getTnmClassification().getTumor()).isNull();
+    assertThat(actual.getTnmClassification().getNodes().getCode()).isEqualTo("pN0");
+    assertThat(actual.getTnmClassification().getMetastasis().getCode()).isEqualTo("pM0");
+  }
+
   @ParameterizedTest
   @CsvSource({
     "0,0",
