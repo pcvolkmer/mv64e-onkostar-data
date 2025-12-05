@@ -101,7 +101,10 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
     var tnmt = resultSet.getString("tnmt");
     if (null != tnmtprefix && tnmt != null && !tnmt.isBlank()) {
       tnpmClassificationBuilder.tumor(
-          Coding.builder().code(String.format("%sT%s", tnmtprefix, sanitizeTValue(tnmt))).system("UICC").build());
+          Coding.builder()
+              .code(String.format("%sT%s", tnmtprefix, sanitizeTValue(tnmt)))
+              .system("UICC")
+              .build());
       hasContent = true;
     }
 

@@ -104,9 +104,9 @@ class KpaTumorausbreitungDataMapperTest {
                 .build());
     assertThat(actual.getOtherClassifications()).hasSize(1);
     assertThat(actual.getOtherClassifications().get(0).getCode()).isEqualTo("tumor-free");
-    assertThat(actual.getTnmClassification().getTumor().getCode()).isEqualTo("T0");
-    assertThat(actual.getTnmClassification().getNodes().getCode()).isEqualTo("N0");
-    assertThat(actual.getTnmClassification().getMetastasis().getCode()).isEqualTo("M0");
+    assertThat(actual.getTnmClassification().getTumor().getCode()).isEqualTo("pT0");
+    assertThat(actual.getTnmClassification().getNodes().getCode()).isEqualTo("pN0");
+    assertThat(actual.getTnmClassification().getMetastasis().getCode()).isEqualTo("pM0");
   }
 
   @ParameterizedTest
