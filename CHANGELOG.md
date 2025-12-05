@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.0...v0.2.1) (2025-12-05)
+
+
+### Features
+
+* add nullchecks in diagnosis mapper ([#56](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/56)) ([e388db4](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/e388db4c727e688edd86f30de7421f53c39f2859))
+* sanitize values for TNM-T ([#58](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/58)) ([d35e850](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/d35e850fd922333ff1182a1d0e0393c8cedc2743))
+
 ## [0.2.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.1.1...v0.2.0) (2025-12-02)
 
 
