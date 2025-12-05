@@ -26,7 +26,10 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_uf_tumorausbreitung'
@@ -94,24 +97,27 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
 
     var hasContent = false;
 
+    var tnmtprefix = resultSet.getString("tnmtprefix");
     var tnmt = resultSet.getString("tnmt");
-    if (tnmt != null && !tnmt.isBlank()) {
+    if (null != tnmtprefix && tnmt != null && !tnmt.isBlank()) {
       tnpmClassificationBuilder.tumor(
-          Coding.builder().code(String.format("T%s", tnmt)).system("UICC").build());
+          Coding.builder().code(String.format("%sT%s", tnmtprefix, sanitizeTValue(tnmt))).system("UICC").build());
       hasContent = true;
     }
 
+    var tnmnprefix = resultSet.getString("tnmnprefix");
     var tnmn = resultSet.getString("tnmn");
-    if (tnmn != null && !tnmn.isBlank()) {
+    if (null != tnmnprefix && tnmn != null && !tnmn.isBlank()) {
       tnpmClassificationBuilder.nodes(
-          Coding.builder().code(String.format("N%s", tnmn)).system("UICC").build());
+          Coding.builder().code(String.format("%sN%s", tnmnprefix, tnmn)).system("UICC").build());
       hasContent = true;
     }
 
+    var tnmmprefix = resultSet.getString("tnmmprefix");
     var tnmm = resultSet.getString("tnmm");
-    if (tnmm != null && !tnmm.isBlank()) {
+    if (null != tnmmprefix && tnmm != null && !tnmm.isBlank()) {
       tnpmClassificationBuilder.metastasis(
-          Coding.builder().code(String.format("M%s", tnmm)).system("UICC").build());
+          Coding.builder().code(String.format("%sM%s", tnmmprefix, tnmm)).system("UICC").build());
       hasContent = true;
     }
 
@@ -119,6 +125,47 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
       return tnpmClassificationBuilder.build();
     }
 
+    return null;
+  }
+
+  @Nullable
+  static String sanitizeTValue(@NonNull final String value) {
+    final var pattern =
+        Pattern.compile(
+            "(?<mainvalue>[0-4X]|is|a)(?<subsite>[a-e])?(?<count>\\d)?(?<tail>\\(.+\\))?");
+    final var matcher = pattern.matcher(value);
+    if (matcher.find()) {
+      // Special values in Onkostar but not available in DNPM:DIP
+      if ("a".equals(value) || "1mi".equals(value)) {
+        return null;
+      }
+
+      final var stringBuilder = new StringBuilder();
+      if (null == matcher.group("mainvalue")) {
+        return value;
+      }
+      stringBuilder.append(matcher.group("mainvalue"));
+
+      // Special values in Onkostar but not available in DNPM:DIP
+      if ("e".equals(matcher.group("subsite"))) {
+        return null;
+      }
+      if (null != matcher.group("subsite")) {
+        stringBuilder.append(matcher.group("subsite"));
+      }
+
+      if (null != matcher.group("count")) {
+        stringBuilder.append(String.format("(%s)", matcher.group("count")));
+      }
+
+      if (null != matcher.group("tail")) {
+        stringBuilder.append(matcher.group("tail"));
+      }
+
+      return stringBuilder.toString();
+    }
+
+    // No sanitize possible
     return null;
   }
 }
