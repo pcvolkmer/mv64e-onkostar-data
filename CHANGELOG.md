@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.1...v0.2.2) (2025-12-06)
+
+
+### Features
+
+* add further null checks and marks ([#62](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/62)) ([3fcab12](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/3fcab12e4e612e082933f24e4996229b1262a323))
+
+
+### Bug Fixes
+
+* TNM-T should not include null codes ([#59](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/59)) ([4b2d143](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/4b2d1438745c8795d407d3fe54229bce7284db21))
+
 ## [0.2.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.0...v0.2.1) (2025-12-05)
 
 

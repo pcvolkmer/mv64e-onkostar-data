@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "dev.pcvolkmer.mv64e"
-version = "0.2.1" // x-release-please-version
+version = "0.2.2" // x-release-please-version
 
 var versions = mapOf(
     "mtb-dto" to "0.1.1",
