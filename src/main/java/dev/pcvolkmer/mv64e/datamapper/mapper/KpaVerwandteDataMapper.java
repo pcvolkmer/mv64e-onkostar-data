@@ -48,6 +48,7 @@ public class KpaVerwandteDataMapper extends AbstractSubformDataMapper<FamilyMemb
    * @param id The database id of the procedure data set
    * @return The loaded data set
    */
+  @Nullable
   @Override
   public FamilyMemberHistory getById(final int id) {
     var data = catalogue.getById(id);

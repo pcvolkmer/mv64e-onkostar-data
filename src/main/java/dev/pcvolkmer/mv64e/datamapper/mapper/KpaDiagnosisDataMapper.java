@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -162,12 +163,18 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                 resultSet -> {
                   var builder = TumorGrading.builder().date(resultSet.getDate("zeitpunkt"));
 
-                  if (null != resultSet.getString("tumorgrading")
-                      && !resultSet.getString("tumorgrading").isBlank()) {
+                  final var tumorgrading = resultSet.getString("tumorgrading");
+                  final var tumorgradingPropcat =
+                      resultSet.getInteger("tumorgrading_propcat_version");
+
+                  final var whograd = resultSet.getString("whograd");
+                  final var whogradPropcat = resultSet.getInteger("whograd_propcat_version");
+
+                  if (null != tumorgrading
+                      && !tumorgrading.isBlank()
+                      && null != tumorgradingPropcat) {
                     var propertyEntry =
-                        propertyCatalogue.getByCodeAndVersion(
-                            resultSet.getString("tumorgrading"),
-                            resultSet.getInteger("tumorgrading_propcat_version"));
+                        propertyCatalogue.getByCodeAndVersion(tumorgrading, tumorgradingPropcat);
                     builder.codes(
                         List.of(
                             Coding.builder()
@@ -181,16 +188,13 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                                 .display(propertyEntry.getShortdesc())
                                 .build()));
                     return builder.build();
-                  } else if (null != resultSet.getString("whograd")
-                      && !resultSet.getString("whograd").isBlank()) {
+                  } else if (null != whograd && !whograd.isBlank() && null != whogradPropcat) {
                     var propertyEntry =
-                        propertyCatalogue.getByCodeAndVersion(
-                            resultSet.getString("whograd"),
-                            resultSet.getInteger("whograd_propcat_version"));
+                        propertyCatalogue.getByCodeAndVersion(whograd, whogradPropcat);
                     builder.codes(
                         List.of(
                             Coding.builder()
-                                .code(resultSet.getString("whograd"))
+                                .code(whograd)
                                 .system("dnpm-dip/mtb/who-grading-cns-tumors")
                                 .version(propertyEntry.getVersionDescription())
                                 .display(propertyEntry.getShortdesc())
@@ -216,7 +220,7 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
 
     var all =
         tumorausbreitungCatalogue.getAllByParentId(id).stream()
-            .map(it -> subMapper.getById(it.getInteger("id")))
+            .map(it -> subMapper.getById(it.getId()))
             .collect(Collectors.toList());
     if (all.isEmpty()) {
       return null;
@@ -225,25 +229,32 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
     return Staging.builder().history(all).build();
   }
 
-  @NonNull
+  @NullMarked
   private List<Coding> getGermlineCodes(final int id) {
     return keimbahndiagnoseCatalogue.getAllByParentId(id).stream()
         .map(
-            it ->
-                Coding.builder()
-                    .code(it.getString("icd10"))
-                    .system("http://fhir.de/CodeSystem/bfarm/icd-10-gm")
-                    .display(
-                        propertyCatalogue
-                            .getByCodeAndVersion(
-                                it.getString("icd10"), it.getInteger("icd10_propcat_version"))
-                            .getShortdesc())
-                    .version(
-                        propertyCatalogue
-                            .getByCodeAndVersion(
-                                it.getString("icd10"), it.getInteger("icd10_propcat_version"))
-                            .getVersionDescription())
-                    .build())
+            it -> {
+              final var icd10 = it.getString("icd10");
+              final var icd10PropcatVersion = it.getInteger("icd10_propcat_version");
+
+              if (null == icd10 || icd10.isBlank() || null == icd10PropcatVersion) {
+                return null;
+              }
+
+              return Coding.builder()
+                  .code(it.getString("icd10"))
+                  .system("http://fhir.de/CodeSystem/bfarm/icd-10-gm")
+                  .display(
+                      propertyCatalogue
+                          .getByCodeAndVersion(icd10, icd10PropcatVersion)
+                          .getShortdesc())
+                  .version(
+                      propertyCatalogue
+                          .getByCodeAndVersion(icd10, icd10PropcatVersion)
+                          .getVersionDescription())
+                  .build();
+            })
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 

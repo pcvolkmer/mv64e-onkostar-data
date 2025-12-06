@@ -61,6 +61,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
    * @param id The database id of the procedure data set
    * @return The loaded data set
    */
+  @Nullable
   @Override
   public HistologyReport getById(final int id) {
     var data = catalogue.getById(id);

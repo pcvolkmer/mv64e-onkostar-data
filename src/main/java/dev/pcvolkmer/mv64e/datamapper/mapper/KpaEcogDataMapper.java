@@ -31,7 +31,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_uf_ecog'
@@ -51,6 +53,7 @@ public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStat
    * @param id The patient id of the procedure data set
    * @return The loaded data set
    */
+  @Nullable
   @Override
   public PerformanceStatus getById(final int id) {
     var data = catalogue.getById(id);
@@ -68,24 +71,31 @@ public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStat
         .collect(Collectors.toList());
   }
 
+  @Nullable
   @Override
   protected PerformanceStatus map(final ResultSet resultSet) {
+    final var ecog = resultSet.getString("ecog");
+
+    if (null == ecog) {
+      return null;
+    }
+
     var builder = PerformanceStatus.builder();
     builder
         .id(resultSet.getId().toString())
         .patient(resultSet.getPatientReference())
         .effectiveDate(resultSet.getDate("datum"))
-        .value(getEcogCoding(resultSet.getString("ecog")));
+        .value(getEcogCoding(ecog));
 
     return builder.build();
   }
 
-  private EcogCoding getEcogCoding(final String value) {
-    if (value == null
-        || !Arrays.stream(EcogCodingCode.values())
-            .map(EcogCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(value)) {
+  @Nullable
+  private EcogCoding getEcogCoding(@NonNull final String value) {
+    if (!Arrays.stream(EcogCodingCode.values())
+        .map(EcogCodingCode::toValue)
+        .collect(Collectors.toSet())
+        .contains(value)) {
       return null;
     }
 

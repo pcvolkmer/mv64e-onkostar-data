@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsReport> {
 
-  private static final Logger logger = LoggerFactory.getLogger(GeneUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(MolekulargenetikNgsDataMapper.class);
   private final MolekulargenetikCatalogue catalogue;
   private final MolekulargenuntersuchungCatalogue untersuchungCatalogue;
   private final TumorCellContentMethodCodingCode tumorCellContentMethod;
@@ -121,13 +122,14 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     var resultBuilder = NgsReportResults.builder();
 
-    if (null != resultSet.getLong("tumorzellgehalt")) {
+    final var tumorzellgehalt = resultSet.getLong("tumorzellgehalt");
+    if (null != tumorzellgehalt) {
       var tumorcellContentBuilder =
           TumorCellContent.builder()
               .id(resultSet.getId().toString())
               .patient(resultSet.getPatientReference())
               .specimen(Reference.builder().id(resultSet.getString("id")).type("Specimen").build())
-              .value(resultSet.getLong("tumorzellgehalt") / 100.0);
+              .value(tumorzellgehalt / 100.0);
 
       // Der Tumorcellcontent kann für NGS-Reports ausschließlich bioinformatisch
       // ermittelt werden.
@@ -147,9 +149,9 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
             .filter(subform -> "P".equals(subform.getString("ergebnis")))
             .map(
                 subform -> {
-                  if (subform.getString("untersucht") == null) return null;
-
-                  final var geneOptional = GeneUtils.findBySymbol(subform.getString("untersucht"));
+                  final var untersucht = subform.getString("untersucht");
+                  if (null == untersucht) return null;
+                  final var geneOptional = GeneUtils.findBySymbol(untersucht);
                   if (geneOptional.isEmpty()) {
                     return null;
                   }
@@ -181,33 +183,39 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                             .build());
                   }
 
-                  if (subform.getString("exon") != null) {
-                    snvBuilder.exonId(subform.getString("exon"));
+                  final var exon = subform.getString("exon");
+                  if (null != exon) {
+                    snvBuilder.exonId(exon);
                   }
-                  if (subform.getString("cdnanomenklatur") != null) {
-                    snvBuilder.dnaChange(subform.getString("cdnanomenklatur"));
+                  final var cdnanomenklatur = subform.getString("cdnanomenklatur");
+                  if (null != cdnanomenklatur) {
+                    snvBuilder.dnaChange(cdnanomenklatur);
                   }
-                  if (subform.getString("proteinebenenomenklatur") != null) {
-                    snvBuilder.proteinChange(subform.getString("proteinebenenomenklatur"));
+                  final var proteinebenenomenklatur = subform.getString("proteinebenenomenklatur");
+                  if (null != proteinebenenomenklatur) {
+                    snvBuilder.proteinChange(proteinebenenomenklatur);
                   }
-                  if (null != subform.getLong("allelfrequenz")) {
-                    snvBuilder.allelicFrequency(subform.getLong("allelfrequenz"));
+                  final var allelfrequenz = subform.getLong("allelfrequenz");
+                  if (null != allelfrequenz) {
+                    snvBuilder.allelicFrequency(allelfrequenz);
                   }
-                  if (null != subform.getLong("evreaddepth")) {
-                    snvBuilder.readDepth(subform.getLong("evreaddepth"));
+                  final var evreaddepth = subform.getLong("evreaddepth");
+                  if (null != evreaddepth) {
+                    snvBuilder.readDepth(evreaddepth);
                   }
-                  if (null != subform.getString("evaltnucleotide")) {
-                    snvBuilder.altAllele(subform.getString("evaltnucleotide"));
+                  final var evaltnucleotide = subform.getString("evaltnucleotide");
+                  if (null != evaltnucleotide) {
+                    snvBuilder.altAllele(evaltnucleotide);
                   }
+                  final var evrefnucleotide = subform.getString("evrefnucleotide");
                   if (null != subform.getString("evrefnucleotide")) {
-                    snvBuilder.refAllele(subform.getString("evrefnucleotide"));
+                    snvBuilder.refAllele(evrefnucleotide);
                   }
 
-                  var posStart = subform.getInteger("EVStart");
-                  var posEnd = subform.getInteger("EVEnde");
+                  var posStart = subform.getDouble("EVStart");
+                  var posEnd = subform.getDouble("EVEnde");
                   if (null != posStart && null != posEnd) {
-                    snvBuilder.position(
-                        Position.builder().start((double) posStart).end((double) posEnd).build());
+                    snvBuilder.position(Position.builder().start(posStart).end(posEnd).build());
                   }
 
                   gene.getSingleChromosomeInPropertyForm().ifPresent(snvBuilder::chromosome);
@@ -228,13 +236,16 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
             .filter(subform -> "CNV".equals(subform.getString("ergebnis")))
             .map(
                 subform -> {
-                  final var geneOptional = GeneUtils.findBySymbol(subform.getString("untersucht"));
+                  final var untersucht = subform.getString("untersucht");
+                  if (null == untersucht) return null;
+
+                  final var geneOptional = GeneUtils.findBySymbol(untersucht);
                   if (geneOptional.isEmpty()) {
                     return null;
                   }
 
                   final var reportedAffectedGenes = new ArrayList<String>();
-                  reportedAffectedGenes.add(subform.getString("untersucht"));
+                  reportedAffectedGenes.add(untersucht);
 
                   // Weitere betroffene Gene aus Freitextfeld?
                   if (null != subform.getString("cnvbetroffenegene")) {
@@ -270,6 +281,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     return resultBuilder.build();
   }
 
+  @Nullable
   private CnvCoding getCnvTypeCoding(ResultSet osMolResultSet) {
 
     var cnvFromString = osMolResultSet.getString("CopyNumberVariation");
@@ -281,6 +293,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     return CnvCoding.builder().code(cnvCode).build();
   }
 
+  @Nullable
   private CnvCodingCode getCodeFromString(String value) {
     if (value.equals("G")) {
       return CnvCodingCode.HIGH_LEVEL_GAIN;
@@ -295,37 +308,27 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   }
 
   private NgsReportCoding getNgsReportCoding(final String artdersequenzierung) {
+    final var builder =
+        NgsReportCoding.builder().system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type");
+
     switch (artdersequenzierung) {
       case "WES":
-        return NgsReportCoding.builder()
-            .code(NgsReportCodingCode.EXOME)
-            .display("Exome")
-            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
-            .build();
+        return builder.code(NgsReportCodingCode.EXOME).display("Exome").build();
       case "PanelKit":
-        return NgsReportCoding.builder()
-            .code(NgsReportCodingCode.PANEL)
-            .display("Panel")
-            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
-            .build();
+        return builder.code(NgsReportCodingCode.PANEL).display("Panel").build();
       case "genome-long-read":
-        return NgsReportCoding.builder()
+        return builder
             .code(NgsReportCodingCode.GENOME_LONG_READ)
             .display("Genome long-read")
-            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
             .build();
       case "genome-short-read":
-        return NgsReportCoding.builder()
+        return builder
             .code(NgsReportCodingCode.GENOME_SHORT_READ)
             .display("Genome short-read")
             .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
             .build();
       default:
-        return NgsReportCoding.builder()
-            .code(NgsReportCodingCode.OTHER)
-            .display("Other")
-            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
-            .build();
+        return builder.code(NgsReportCodingCode.OTHER).display("Other").build();
     }
   }
 

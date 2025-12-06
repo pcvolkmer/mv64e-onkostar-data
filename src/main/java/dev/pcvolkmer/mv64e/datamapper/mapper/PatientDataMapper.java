@@ -26,6 +26,7 @@ import dev.pcvolkmer.mv64e.mtb.Address;
 import dev.pcvolkmer.mv64e.mtb.GenderCoding;
 import dev.pcvolkmer.mv64e.mtb.GenderCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Patient;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_kpa'
@@ -84,6 +85,7 @@ public class PatientDataMapper implements DataMapper<Patient> {
     return genderCodingBuilder.build();
   }
 
+  @Nullable
   private String getMunicipalityCode(final ResultSet data) {
     var gkz = data.getString("GKZ");
     if (gkz == null || gkz.trim().length() != 8) {

@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_einzelempfehlung'
@@ -42,6 +45,8 @@ import org.jspecify.annotations.NullMarked;
 public class EinzelempfehlungWirkstoffDataMapper
     extends AbstractEinzelempfehlungDataMapper<MtbMedicationRecommendation> {
 
+  private static final Logger log =
+      LoggerFactory.getLogger(EinzelempfehlungWirkstoffDataMapper.class);
   private final PropertyCatalogue propertyCatalogue;
 
   public EinzelempfehlungWirkstoffDataMapper(
@@ -75,11 +80,17 @@ public class EinzelempfehlungWirkstoffDataMapper
         MtbMedicationRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
-            .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
             .reason(Reference.builder().id(kpaId).build())
             .issuedOn(date)
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet));
+
+    final var prio = resultSet.getInteger("prio");
+    if (null != prio) {
+      resultBuilder.priority(getRecommendationPriorityCoding(prio));
+    } else {
+      log.warn("No priority found for recommendation {}", resultSet.getId());
+    }
 
     final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
     final var artDerTherapiePropcat = resultSet.getInteger("art_der_therapie_propcat_version");
@@ -108,6 +119,7 @@ public class EinzelempfehlungWirkstoffDataMapper
     return resultBuilder.build();
   }
 
+  @Nullable
   @Override
   public MtbMedicationRecommendation getById(int id) {
     return this.map(this.catalogue.getById(id));

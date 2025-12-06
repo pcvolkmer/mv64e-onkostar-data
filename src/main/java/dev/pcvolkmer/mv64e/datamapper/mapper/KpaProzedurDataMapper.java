@@ -53,6 +53,7 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
    * @param id The database id of the procedure data set
    * @return The loaded MtbDiagnosis file
    */
+  @Nullable
   @Override
   public OncoProcedure getById(final int id) {
     var data = catalogue.getById(id);
@@ -118,8 +119,9 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
       builder.basedOn(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
     }
 
-    if (resultSet.getString("anmerkungen") != null) {
-      builder.notes(List.of(resultSet.getString("anmerkungen")));
+    final var anmerkungen = resultSet.getString("anmerkungen");
+    if (null != anmerkungen && !anmerkungen.isBlank()) {
+      builder.notes(List.of(anmerkungen.trim()));
     }
 
     return builder.build();

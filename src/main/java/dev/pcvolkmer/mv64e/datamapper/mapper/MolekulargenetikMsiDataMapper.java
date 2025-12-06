@@ -47,6 +47,7 @@ public class MolekulargenetikMsiDataMapper extends AbstractSubformDataMapper<Msi
    * @param id The database id of the procedure data set
    * @return The loaded Procedure
    */
+  @Nullable
   @Override
   public Msi getById(final int id) {
     return this.map(catalogue.getById(id));

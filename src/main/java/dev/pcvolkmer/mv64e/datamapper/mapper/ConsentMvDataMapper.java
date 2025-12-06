@@ -30,6 +30,7 @@ import dev.pcvolkmer.mv64e.mtb.Provision;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_consentmv'
@@ -54,6 +55,7 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
    * @param id The database id of the procedure data set
    * @return The loaded Consent data
    */
+  @Nullable
   @Override
   public ModelProjectConsent getById(int id) {
     try {

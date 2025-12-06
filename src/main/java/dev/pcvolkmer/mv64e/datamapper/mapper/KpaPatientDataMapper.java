@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.mtb.*;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map patient data from database table 'dk_dnpm_kpa'
@@ -31,6 +32,7 @@ import dev.pcvolkmer.mv64e.mtb.*;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
+@NullMarked
 public class KpaPatientDataMapper implements DataMapper<Patient> {
 
   private final KpaCatalogue kpaCatalogue;
@@ -100,13 +102,15 @@ public class KpaPatientDataMapper implements DataMapper<Patient> {
         HealthInsuranceCoding.builder()
             .system("http://fhir.de/CodeSystem/versicherungsart-de-basis");
 
-    var healthInsuranceType = data.getString("artderkrankenkasse");
-    if (healthInsuranceType == null) {
+    final var artDerKrankenkasse = data.getString("artderkrankenkasse");
+    final var artDerKrankenkassePropcat = data.getInteger("artderkrankenkasse_propcat_version");
+
+    if (null == artDerKrankenkasse || null == artDerKrankenkassePropcat) {
       healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.UNK).build();
       return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
     }
 
-    switch (healthInsuranceType) {
+    switch (artDerKrankenkasse) {
       case "GKV":
         healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GKV).build();
         break;
@@ -139,10 +143,7 @@ public class KpaPatientDataMapper implements DataMapper<Patient> {
     }
 
     var healthInsurancePropertyEntry =
-        propertyCatalogue.getByCodeAndVersion(
-            data.getString("artderkrankenkasse"),
-            data.getInteger("artderkrankenkasse_propcat_version"));
-
+        propertyCatalogue.getByCodeAndVersion(artDerKrankenkasse, artDerKrankenkassePropcat);
     healthInsuranceCodingBuilder.display(healthInsurancePropertyEntry.getDescription());
 
     return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
