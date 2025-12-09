@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.2...v0.2.3) (2025-12-09)
+
+
+### Bug Fixes
+
+* missing evidenzlevel ([#67](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/67)) ([6ae4e17](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/6ae4e170237c0db43243618fecbc5f2509f38b76))
+
 ## [0.2.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.1...v0.2.2) (2025-12-09)
 
 
