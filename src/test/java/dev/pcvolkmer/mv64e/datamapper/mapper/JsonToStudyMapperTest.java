@@ -42,7 +42,7 @@ class JsonToStudyMapperTest {
 
     var study = actual.get(0);
     assertThat(study.getId()).isEqualTo("NCT12345678");
-    assertThat(study.getDisplay()).isNull();
+    assertThat(study.getDisplay()).isEqualTo("TestInhibitor"); // Datenmodell V2.1: Über den "display"-Wert an der Referenz kann der Studien-Name gesetzt werden.
     assertThat(study.getSystem()).isEqualTo(StudySystem.NCT);
     assertThat(study.getType()).isEqualTo("Study");
   }

@@ -53,9 +53,10 @@ public class JsonToStudyMapper {
               .map(
                   studie ->
                       StudyReference.builder()
-                          .id(studie.id)
-                          .system(getStudySystem(studie.system))
+                          .id(studie.getId())
+                          .system(getStudySystem(studie.getSystem()))
                           .type("Study")
+                          .display(studie.getStudy()) // Datenmodell v2.1: Über den "display"-Wert an der Referenz kann der Studien-Name gesetzt werden.
                           .build())
               .collect(Collectors.toList());
     } catch (Exception e) {
@@ -86,12 +87,23 @@ public class JsonToStudyMapper {
 
     private String system;
 
+    @JsonAlias("studie")
+    private String study;
+
     public String getId() {
       return id;
     }
 
     public void setId(String id) {
       this.id = id;
+    }
+
+    public void setStudy(String study) {
+      this.study = study;
+    }
+
+    public String getStudy() {
+      return this.study;
     }
 
     public String getSystem() {
