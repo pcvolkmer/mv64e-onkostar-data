@@ -75,9 +75,12 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         .patient(data.getPatientReference())
         .issuedOn(data.getDate("datum"))
         .specimen(Reference.builder().id(data.getString("id")).type("Specimen").build())
-        .type(getNgsReportCoding(data.getString("artdersequenzierung")))
-        .metadata(List.of(getNgsReportMetadata(data.getString("artdersequenzierung"))))
         .results(this.getNgsReportResults(data));
+
+    if (data.getString("artdersequenzierung") != null) {
+      builder.type(getNgsReportCoding(data.getString("artdersequenzierung")));
+      builder.metadata(List.of(getNgsReportMetadata(data.getString("artdersequenzierung"))));
+    }
 
     return builder.build();
   }

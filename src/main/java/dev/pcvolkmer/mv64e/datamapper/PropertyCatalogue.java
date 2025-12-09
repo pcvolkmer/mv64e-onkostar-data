@@ -21,6 +21,7 @@
 package dev.pcvolkmer.mv64e.datamapper;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +32,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-@NullUnmarked
+@NullMarked
 public class PropertyCatalogue {
 
   private final JdbcTemplate jdbcTemplate;
@@ -90,8 +91,8 @@ public class PropertyCatalogue {
     private final String code;
     private final String shortdesc;
     private final String description;
-    private final String versionOid;
-    private final String versionDescription;
+    @Nullable private final String versionOid;
+    @Nullable private final String versionDescription;
 
     public Entry(String code, String shortdesc, String description) {
       this(code, shortdesc, description, null, null);
@@ -123,10 +124,12 @@ public class PropertyCatalogue {
       return shortdesc;
     }
 
+    @Nullable
     public String getVersionOid() {
       return versionOid;
     }
 
+    @Nullable
     public String getVersionDescription() {
       return versionDescription;
     }
