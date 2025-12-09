@@ -77,73 +77,76 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     var resultBuilder = LevelOfEvidence.builder();
 
     var evidenzlevel = resultSet.getString("evidenzlevel");
-    if (evidenzlevel != null) {
-      switch (evidenzlevel) {
-        case "1":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M1A)
-                  .display(LevelOfEvidenceGradingCodingCode.M1A.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "2":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M1B)
-                  .display(LevelOfEvidenceGradingCodingCode.M1B.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "3":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M1C)
-                  .display(LevelOfEvidenceGradingCodingCode.M1C.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "4":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M2A)
-                  .display(LevelOfEvidenceGradingCodingCode.M2A.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "5":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M2B)
-                  .display(LevelOfEvidenceGradingCodingCode.M2B.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "6":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M2C)
-                  .display(LevelOfEvidenceGradingCodingCode.M2C.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "7":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M3)
-                  .display(LevelOfEvidenceGradingCodingCode.M3.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-        case "8":
-          resultBuilder.grading(
-              LevelOfEvidenceGradingCoding.builder()
-                  .code(LevelOfEvidenceGradingCodingCode.M4)
-                  .display(LevelOfEvidenceGradingCodingCode.M4.toValue())
-                  .system(GRADING_SYSTEM)
-                  .build());
-          break;
-      }
+
+    if (null == evidenzlevel) {
+      return null;
+    }
+
+    switch (evidenzlevel) {
+      case "1":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M1A)
+                .display(LevelOfEvidenceGradingCodingCode.M1A.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "2":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M1B)
+                .display(LevelOfEvidenceGradingCodingCode.M1B.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "3":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M1C)
+                .display(LevelOfEvidenceGradingCodingCode.M1C.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "4":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M2A)
+                .display(LevelOfEvidenceGradingCodingCode.M2A.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "5":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M2B)
+                .display(LevelOfEvidenceGradingCodingCode.M2B.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "6":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M2C)
+                .display(LevelOfEvidenceGradingCodingCode.M2C.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "7":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M3)
+                .display(LevelOfEvidenceGradingCodingCode.M3.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
+      case "8":
+        resultBuilder.grading(
+            LevelOfEvidenceGradingCoding.builder()
+                .code(LevelOfEvidenceGradingCodingCode.M4)
+                .display(LevelOfEvidenceGradingCodingCode.M4.toValue())
+                .system(GRADING_SYSTEM)
+                .build());
+        break;
     }
 
     var evidenzlevelZusatz = new ArrayList<LevelOfEvidenceAddendumCoding>();

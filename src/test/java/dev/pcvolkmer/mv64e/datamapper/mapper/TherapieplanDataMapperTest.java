@@ -106,14 +106,6 @@ class TherapieplanDataMapperTest {
         .when(resultSet)
         .getString(anyString());
 
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .isTrue(anyString());
-
     doAnswer(invocationOnMock -> List.of(resultSet))
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());

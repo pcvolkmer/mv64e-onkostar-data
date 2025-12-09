@@ -164,6 +164,19 @@ class EinzelempfehlungStudieDataMapperTest {
   }
 
   @Test
+  void shouldNotMapEmptyEvidenzlevel() {
+    Map<String, Object> testData =
+        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 1);
+    var resultSet = ResultSet.from(testData);
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getLevelOfEvidence()).isNull();
+  }
+
+  @Test
   void shouldMapIssuedOn() {
     Map<String, Object> testData =
         Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 1);
