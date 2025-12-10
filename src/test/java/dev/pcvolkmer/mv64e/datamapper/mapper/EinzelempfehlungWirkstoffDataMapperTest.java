@@ -9,10 +9,7 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
-import dev.pcvolkmer.mv64e.mtb.LevelOfEvidenceGradingCoding;
-import dev.pcvolkmer.mv64e.mtb.LevelOfEvidenceGradingCodingCode;
-import dev.pcvolkmer.mv64e.mtb.PublicationReference;
-import dev.pcvolkmer.mv64e.mtb.PublicationSystem;
+import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -178,5 +175,19 @@ class EinzelempfehlungWirkstoffDataMapperTest {
     var actual = this.mapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
+  }
+
+  @Test
+  void shouldMapDefaultLowestPrio() {
+    Map<String, Object> testData =
+        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 99);
+    var resultSet = ResultSet.from(testData);
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
+    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCodingCode.CODE_4);
   }
 }
