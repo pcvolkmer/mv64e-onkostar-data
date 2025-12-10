@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.3...v0.2.4) (2025-12-10)
+
+
+### Features
+
+* add IgnorableMappingException and related method ([#75](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/75)) ([284c984](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/284c9848250f820d39f535b4b387a692852749f3))
+* add study name as display to study references ([#69](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/69)) ([239a3ef](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/239a3ef829d2084e78c46a482031c76f38aaa8fa))
+
 ## [0.2.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.2...v0.2.3) (2025-12-09)
 
 
