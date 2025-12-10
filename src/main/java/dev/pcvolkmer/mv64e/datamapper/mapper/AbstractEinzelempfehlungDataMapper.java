@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.*;
@@ -71,8 +72,8 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   protected RecommendationPriorityCoding getRecommendationPriority(ResultSet resultSet) {
     var prio = resultSet.getInteger("prio");
     if (null == prio) {
-      log.warn("No priority found for recommendation {}", resultSet.getId());
-      return null;
+      throw new IgnorableMappingException(
+          String.format("No priority found for recommendation %s", resultSet.getId()));
     }
     return getRecommendationPriorityCoding(resultSet.getInteger("prio"));
   }

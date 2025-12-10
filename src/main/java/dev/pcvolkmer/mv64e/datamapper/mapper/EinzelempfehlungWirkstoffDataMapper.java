@@ -70,11 +70,13 @@ public class EinzelempfehlungWirkstoffDataMapper
         MtbMedicationRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
-            .priority(getRecommendationPriority(resultSet))
             .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
             .issuedOn(this.getCarePlanDate(carePlan))
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet));
+
+    MapperUtils.tryAndReturnOrLog(() -> getRecommendationPriority(resultSet), log)
+        .ifPresent(resultBuilder::priority);
 
     final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
     final var artDerTherapiePropcat = resultSet.getInteger("art_der_therapie_propcat_version");

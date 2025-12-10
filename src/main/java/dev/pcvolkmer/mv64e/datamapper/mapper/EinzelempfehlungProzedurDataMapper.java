@@ -67,10 +67,12 @@ public class EinzelempfehlungProzedurDataMapper
         ProcedureRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
-            .priority(getRecommendationPriority(resultSet))
             .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
             .issuedOn(this.getCarePlanDate(carePlan))
             .levelOfEvidence(getLevelOfEvidence(resultSet));
+
+    MapperUtils.tryAndReturnOrLog(() -> getRecommendationPriority(resultSet), log)
+        .ifPresent(resultBuilder::priority);
 
     final var evidenzlevel = resultSet.getString("evidenzlevel");
     final var evidenzlevelPropcat = resultSet.getInteger("evidenzlevel_propcat_version");

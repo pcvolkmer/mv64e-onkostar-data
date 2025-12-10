@@ -57,6 +57,8 @@ dependencies {
     testImplementation("org.assertj:assertj-core:${versions["assertj"]}")
     testImplementation("org.mockito:mockito-core:${versions["mockito"]}")
     testImplementation("org.mockito:mockito-junit-jupiter:${versions["mockito"]}")
+    testImplementation("ch.qos.logback:logback-classic:1.5.21")
+
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     errorprone("com.google.errorprone:error_prone_core:2.31.0")

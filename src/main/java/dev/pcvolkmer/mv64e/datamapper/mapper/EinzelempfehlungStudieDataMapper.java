@@ -63,12 +63,14 @@ public class EinzelempfehlungStudieDataMapper
         MtbStudyEnrollmentRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
-            .priority(getRecommendationPriority(resultSet))
             .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
             .issuedOn(this.getCarePlanDate(carePlan))
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet))
             .study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json")));
+
+    MapperUtils.tryAndReturnOrLog(() -> getRecommendationPriority(resultSet), log)
+        .ifPresent(resultBuilder::priority);
 
     // As of now: Simple variant and CSV only!
     if (null != resultSet.getString("st_mol_alt_variante_json")) {
