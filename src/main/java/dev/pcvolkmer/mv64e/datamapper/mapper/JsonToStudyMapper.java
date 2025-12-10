@@ -56,7 +56,9 @@ public class JsonToStudyMapper {
                           .id(studie.getId())
                           .system(getStudySystem(studie.getSystem()))
                           .type("Study")
-                          .display(studie.getStudy()) // Datenmodell v2.1: Über den "display"-Wert an der Referenz kann der Studien-Name gesetzt werden.
+                          .display(
+                              studie.getStudy()) // Datenmodell v2.1: Über den "display"-Wert an der
+                          // Referenz kann der Studien-Name gesetzt werden.
                           .build())
               .collect(Collectors.toList());
     } catch (Exception e) {
@@ -98,12 +100,12 @@ public class JsonToStudyMapper {
       this.id = id;
     }
 
-    public void setStudy(String study) {
-      this.study = study;
-    }
-
     public String getStudy() {
       return this.study;
+    }
+
+    public void setStudy(String study) {
+      this.study = study;
     }
 
     public String getSystem() {
