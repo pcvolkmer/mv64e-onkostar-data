@@ -15,9 +15,9 @@ var versions = mapOf(
     "mtb-dto" to "0.1.2",
     "commons-csv" to "1.10.0",
     "slf4j" to "2.0.17",
-    "junit" to "5.13.1",
-    "assertj" to "3.27.3",
-    "mockito" to "5.18.0"
+    "junit" to "5.14.1",
+    "assertj" to "3.27.6",
+    "mockito" to "5.21.0"
 )
 
 java {
