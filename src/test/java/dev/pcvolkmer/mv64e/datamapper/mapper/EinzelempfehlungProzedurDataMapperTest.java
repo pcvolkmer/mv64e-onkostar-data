@@ -175,4 +175,16 @@ class EinzelempfehlungProzedurDataMapperTest {
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
   }
+
+  @Test
+  void shouldMapDefaultLowestPrio() {
+    Map<String, Object> testData = Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42);
+    var resultSet = ResultSet.from(testData);
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
+  }
 }

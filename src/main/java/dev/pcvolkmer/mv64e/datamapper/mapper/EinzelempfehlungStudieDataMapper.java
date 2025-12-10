@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mapper class to load and map diagnosis data from database table 'dk_dnpm_einzelempfehlung'
@@ -43,7 +44,10 @@ public class EinzelempfehlungStudieDataMapper
   public EinzelempfehlungStudieDataMapper(
       EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       TherapieplanCatalogue therapieplanCatalogue) {
-    super(einzelempfehlungCatalogue, therapieplanCatalogue);
+    super(
+        einzelempfehlungCatalogue,
+        therapieplanCatalogue,
+        LoggerFactory.getLogger(EinzelempfehlungStudieDataMapper.class));
   }
 
   @Override
@@ -55,23 +59,13 @@ public class EinzelempfehlungStudieDataMapper
     }
     var carePlan = this.therapieplanCatalogue.getById(hauptprozedurid);
 
-    var date = carePlan.getDate("datum");
-    if (null == date) {
-      throw new DataAccessException("Cannot map datum for ProcedureRecommendation");
-    }
-
-    var kpaId = carePlan.getString("ref_dnpm_klinikanamnese");
-    if (null == kpaId) {
-      throw new DataAccessException("Cannot map KPA as Diagnosis");
-    }
-
     var resultBuilder =
         MtbStudyEnrollmentRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
-            .priority(getRecommendationPriorityCoding(resultSet.getInteger("prio")))
-            .reason(Reference.builder().id(kpaId).build())
-            .issuedOn(date)
+            .priority(getRecommendationPriority(resultSet))
+            .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
+            .issuedOn(this.getCarePlanDate(carePlan))
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet))
             .study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json")));

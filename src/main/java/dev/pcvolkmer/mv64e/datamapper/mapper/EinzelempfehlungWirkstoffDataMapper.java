@@ -33,7 +33,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -45,15 +44,16 @@ import org.slf4j.LoggerFactory;
 public class EinzelempfehlungWirkstoffDataMapper
     extends AbstractEinzelempfehlungDataMapper<MtbMedicationRecommendation> {
 
-  private static final Logger log =
-      LoggerFactory.getLogger(EinzelempfehlungWirkstoffDataMapper.class);
   private final PropertyCatalogue propertyCatalogue;
 
   public EinzelempfehlungWirkstoffDataMapper(
       EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       TherapieplanCatalogue therapieplanCatalogue,
       PropertyCatalogue propertyCatalogue) {
-    super(einzelempfehlungCatalogue, therapieplanCatalogue);
+    super(
+        einzelempfehlungCatalogue,
+        therapieplanCatalogue,
+        LoggerFactory.getLogger(EinzelempfehlungWirkstoffDataMapper.class));
     this.propertyCatalogue = propertyCatalogue;
   }
 
@@ -66,31 +66,15 @@ public class EinzelempfehlungWirkstoffDataMapper
     }
     var carePlan = this.therapieplanCatalogue.getById(hauptprozedurid);
 
-    var date = carePlan.getDate("datum");
-    if (null == date) {
-      throw new DataAccessException("Cannot map datum for ProcedureRecommendation");
-    }
-
-    var kpaId = carePlan.getString("ref_dnpm_klinikanamnese");
-    if (null == kpaId) {
-      throw new DataAccessException("Cannot map KPA as Diagnosis");
-    }
-
     var resultBuilder =
         MtbMedicationRecommendation.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
-            .reason(Reference.builder().id(kpaId).build())
-            .issuedOn(date)
+            .priority(getRecommendationPriority(resultSet))
+            .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
+            .issuedOn(this.getCarePlanDate(carePlan))
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet));
-
-    final var prio = resultSet.getInteger("prio");
-    if (null != prio) {
-      resultBuilder.priority(getRecommendationPriorityCoding(prio));
-    } else {
-      log.warn("No priority found for recommendation {}", resultSet.getId());
-    }
 
     final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
     final var artDerTherapiePropcat = resultSet.getInteger("art_der_therapie_propcat_version");

@@ -23,15 +23,14 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
 
 public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubformDataMapper<T> {
 
@@ -39,12 +38,38 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   private static final String ADDENDUM_SYSTEM = "dnpm-dip/mtb/level-of-evidence/addendum";
 
   protected final TherapieplanCatalogue therapieplanCatalogue;
+  protected final Logger log;
 
   protected AbstractEinzelempfehlungDataMapper(
       final EinzelempfehlungCatalogue einzelempfehlungCatalogue,
-      final TherapieplanCatalogue therapieplanCatalogue) {
+      final TherapieplanCatalogue therapieplanCatalogue,
+      final Logger log) {
     super(einzelempfehlungCatalogue);
     this.therapieplanCatalogue = therapieplanCatalogue;
+    this.log = log;
+  }
+
+  @NullMarked
+  protected Date getCarePlanDate(ResultSet carePlanResultSet) {
+    var date = carePlanResultSet.getDate("datum");
+    if (null != date) {
+      return date;
+    }
+    throw new DataAccessException("Cannot map datum for ProcedureRecommendation");
+  }
+
+  @NullMarked
+  protected String getCarePlanKpaId(ResultSet carePlanResultSet) {
+    var kpaId = carePlanResultSet.getString("ref_dnpm_klinikanamnese");
+    if (null != kpaId) {
+      return kpaId;
+    }
+    throw new DataAccessException("Cannot map KPA as Diagnosis");
+  }
+
+  @Nullable
+  protected RecommendationPriorityCoding getRecommendationPriority(ResultSet resultSet) {
+    return getRecommendationPriorityCoding(resultSet.getInteger("prio"));
   }
 
   protected RecommendationPriorityCoding getRecommendationPriorityCoding(String code, int version) {
@@ -220,11 +245,21 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
         .collect(Collectors.toList());
   }
 
-  protected RecommendationPriorityCoding getRecommendationPriorityCoding(int value) {
+  /**
+   * Maps integer value to RecommendationPriorityCoding
+   *
+   * @param value The priority value
+   * @return The mapped RecommendationPriorityCoding
+   */
+  @Nullable
+  protected RecommendationPriorityCoding getRecommendationPriorityCoding(Integer value) {
     var resultBuilder =
         RecommendationPriorityCoding.builder()
             .system("dnpm-dip/recommendation/priority")
             .display(String.format("%d", value));
+    if (null == value) {
+      return null;
+    }
     switch (value) {
       case 1:
         resultBuilder.code(RecommendationPriorityCodingCode.CODE_1);
