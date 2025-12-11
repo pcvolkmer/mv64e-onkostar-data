@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,9 +78,10 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         .specimen(Reference.builder().id(data.getString("id")).type("Specimen").build())
         .results(this.getNgsReportResults(data));
 
-    if (data.getString("artdersequenzierung") != null) {
-      builder.type(getNgsReportCoding(data.getString("artdersequenzierung")));
-      builder.metadata(List.of(getNgsReportMetadata(data.getString("artdersequenzierung"))));
+    final var artdersequenzierung = data.getString("artdersequenzierung");
+    if (null != artdersequenzierung) {
+      builder.type(getNgsReportCoding(artdersequenzierung));
+      builder.metadata(List.of(getNgsReportMetadata(artdersequenzierung)));
     }
 
     return builder.build();
@@ -305,16 +307,15 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     } else if (value.equals("LLG")) {
       return CnvCodingCode.LOW_LEVEL_GAIN;
     } else {
-      logger.error("No supported CNV Code for " + value + "found.");
+      logger.error("No supported CNV Code for {} found.", value);
       return null;
     }
   }
 
-  private NgsReportCoding getNgsReportCoding(final String artdersequenzierung) {
+  private NgsReportCoding getNgsReportCoding(@NonNull final String artdersequenzierung) {
     final var builder =
         NgsReportCoding.builder().system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type");
 
-    if (artdersequenzierung == null) return null;
     switch (artdersequenzierung) {
       case "WES":
         return builder.code(NgsReportCodingCode.EXOME).display("Exome").build();

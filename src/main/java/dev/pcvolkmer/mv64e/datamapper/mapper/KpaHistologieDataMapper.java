@@ -167,16 +167,15 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
 
   @Nullable
   private Coding getTumorMorphologyCoding(ResultSet resultSet) {
+    var morphologie = resultSet.getString("morphologie");
     var morphologiePropcatVersion = resultSet.getInteger("morphologie_propcat_version");
 
-    if (null == morphologiePropcatVersion) {
+    if (null == morphologie || null == morphologiePropcatVersion) {
       return null;
     }
 
     var propertyCatalogueEntry =
-        propertyCatalogue.getByCodeAndVersion(
-            resultSet.getString("morphologie"), morphologiePropcatVersion);
-    if (propertyCatalogueEntry == null) return null;
+        propertyCatalogue.getByCodeAndVersion(morphologie, morphologiePropcatVersion);
 
     return Coding.builder()
         .code(propertyCatalogueEntry.getCode())

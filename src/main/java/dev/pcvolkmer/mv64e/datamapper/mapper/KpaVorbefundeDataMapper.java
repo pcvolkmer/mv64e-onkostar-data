@@ -35,7 +35,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_vorbefunde'
@@ -83,38 +85,42 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
     }
   }
 
+  @Nullable
   @Override
   protected PriorDiagnosticReport map(final ResultSet resultSet) {
     var builder = PriorDiagnosticReport.builder();
     var einsendenummer = resultSet.getString("befundnummer");
-
     if (einsendenummer == null || einsendenummer.equalsIgnoreCase("unbekannt")) return null;
 
+    var artderdiagnostik = resultSet.getString("artderdiagnostik");
+    var artderdiagnostikPropcat = resultSet.getInteger("artderdiagnostik_propcat_version");
+    if (null == artderdiagnostik || null == artderdiagnostikPropcat) {
+      return null;
+    }
+
     var osMolGen = molekulargenetikCatalogue.getByEinsendenummer(einsendenummer);
-    if (osMolGen == null) return null;
 
     builder
         .id(resultSet.getId().toString())
         .patient(resultSet.getPatientReference())
         .issuedOn(resultSet.getDate("erstellungsdatum"))
         .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
-        .type(
-            getMolecularDiagnosticReportCoding(
-                resultSet.getString("artderdiagnostik"),
-                resultSet.getInteger("artderdiagnostik_propcat_version")))
-        .results(List.of(resultSet.getString("ergebnisse")));
+        .type(getMolecularDiagnosticReportCoding(artderdiagnostik, artderdiagnostikPropcat));
+
+    var ergebnisse = resultSet.getString("ergebnisse");
+    if (null != ergebnisse) {
+      builder.results(List.of(ergebnisse));
+    }
 
     return builder.build();
   }
 
   private MolecularDiagnosticReportCoding getMolecularDiagnosticReportCoding(
-      String value, Integer version) {
-    if (value == null
-        || version == null
-        || !Arrays.stream(MolecularDiagnosticReportCodingCode.values())
-            .map(MolecularDiagnosticReportCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(value)) {
+      @NonNull String value, @NonNull Integer version) {
+    if (!Arrays.stream(MolecularDiagnosticReportCodingCode.values())
+        .map(MolecularDiagnosticReportCodingCode::toValue)
+        .collect(Collectors.toSet())
+        .contains(value)) {
       return null;
     }
 

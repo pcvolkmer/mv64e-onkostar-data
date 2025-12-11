@@ -82,11 +82,8 @@ public class EinzelempfehlungProzedurDataMapper
 
     // Nur der erste Eintrag!
     final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
-    final var artDerTherapiePropcat = resultSet.getInteger("art_der_therapie_propcat_version");
-    if (!artDerTherapie.isEmpty() && null != artDerTherapiePropcat) {
-      resultBuilder.code(
-          getMtbProcedureRecommendationCategoryCoding(
-              artDerTherapie.get(0), artDerTherapiePropcat));
+    if (!artDerTherapie.isEmpty()) {
+      resultBuilder.code(getMtbProcedureRecommendationCategoryCoding(artDerTherapie.get(0)));
     }
 
     // As of now: Simple variant and CSV only! - Not used but present for completeness
@@ -116,9 +113,8 @@ public class EinzelempfehlungProzedurDataMapper
   }
 
   private MtbProcedureRecommendationCategoryCoding getMtbProcedureRecommendationCategoryCoding(
-      String code, Integer version) {
+      String code) {
     if (code == null
-        || version == null
         || !Arrays.stream(MtbProcedureRecommendationCategoryCodingCode.values())
             .map(MtbProcedureRecommendationCategoryCodingCode::toValue)
             .collect(Collectors.toSet())

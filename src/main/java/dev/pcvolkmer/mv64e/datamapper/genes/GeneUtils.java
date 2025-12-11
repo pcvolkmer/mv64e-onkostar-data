@@ -99,8 +99,8 @@ public class GeneUtils {
       return List.of();
     } catch (NoSuchMethodError e) {
       logger.error(
-          "CSVFormat.get() not found! VERSION: "
-              + org.apache.commons.csv.CSVFormat.class.getPackage().getImplementationVersion(),
+          "CSVFormat.get() not found! VERSION: {}",
+          org.apache.commons.csv.CSVFormat.class.getPackage().getImplementationVersion(),
           e);
       throw e;
     }

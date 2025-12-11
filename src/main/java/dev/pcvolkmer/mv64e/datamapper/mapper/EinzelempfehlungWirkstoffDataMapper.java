@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,7 @@ public class EinzelempfehlungWirkstoffDataMapper
     if (!artDerTherapie.isEmpty() && null != artDerTherapiePropcat) {
       resultBuilder.category(
           artDerTherapie.stream()
+              .filter(Objects::nonNull)
               .map(
                   value ->
                       getMtbMedicationRecommendationCategoryCoding(value, artDerTherapiePropcat))
@@ -123,14 +125,13 @@ public class EinzelempfehlungWirkstoffDataMapper
         .collect(Collectors.toList());
   }
 
+  @Nullable
   private MtbMedicationRecommendationCategoryCoding getMtbMedicationRecommendationCategoryCoding(
-      String code, Integer version) {
-    if (code == null
-        || version == null
-        || !Arrays.stream(MtbMedicationRecommendationCategoryCodingCode.values())
-            .map(MtbMedicationRecommendationCategoryCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(code)) {
+      @NonNull String code, @NonNull Integer version) {
+    if (!Arrays.stream(MtbMedicationRecommendationCategoryCodingCode.values())
+        .map(MtbMedicationRecommendationCategoryCodingCode::toValue)
+        .collect(Collectors.toSet())
+        .contains(code)) {
       return null;
     }
 
@@ -149,14 +150,13 @@ public class EinzelempfehlungWirkstoffDataMapper
     return resultBuilder.build();
   }
 
+  @Nullable
   private MtbMedicationRecommendationUseTypeCoding getMtbMedicationRecommendationUseTypeCoding(
-      String code, Integer version) {
-    if (code == null
-        || version == null
-        || !Arrays.stream(MtbMedicationRecommendationUseTypeCodingCode.values())
-            .map(MtbMedicationRecommendationUseTypeCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(code)) {
+      @NonNull String code, @NonNull Integer version) {
+    if (!Arrays.stream(MtbMedicationRecommendationUseTypeCodingCode.values())
+        .map(MtbMedicationRecommendationUseTypeCodingCode::toValue)
+        .collect(Collectors.toSet())
+        .contains(code)) {
       return null;
     }
 
