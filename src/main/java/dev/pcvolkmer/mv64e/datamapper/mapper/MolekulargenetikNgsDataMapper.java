@@ -314,6 +314,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     final var builder =
         NgsReportCoding.builder().system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type");
 
+    if (artdersequenzierung == null) return null;
     switch (artdersequenzierung) {
       case "WES":
         return builder.code(NgsReportCodingCode.EXOME).display("Exome").build();

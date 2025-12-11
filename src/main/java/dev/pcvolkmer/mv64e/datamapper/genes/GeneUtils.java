@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.csv.CSVFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for genes
@@ -36,6 +38,8 @@ import org.apache.commons.csv.CSVFormat;
  * @since 0.1
  */
 public class GeneUtils {
+
+  private static final Logger logger = LoggerFactory.getLogger(GeneUtils.class);
 
   private GeneUtils() {
     // Empty
@@ -93,6 +97,12 @@ public class GeneUtils {
       return result;
     } catch (IOException e) {
       return List.of();
+    } catch (NoSuchMethodError e) {
+      logger.error(
+          "CSVFormat.get() not found! VERSION: "
+              + org.apache.commons.csv.CSVFormat.class.getPackage().getImplementationVersion(),
+          e);
+      throw e;
     }
   }
 }

@@ -134,11 +134,12 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
 
   @Nullable
   private MtbDiagnosisGuidelineTreatmentStatusCoding getMtbDiagnosisGuidelineTreatmentStatusCoding(
-      @NonNull final String code, final int version) {
-    if (!Arrays.stream(MtbDiagnosisGuidelineTreatmentStatusCodingCode.values())
-        .map(MtbDiagnosisGuidelineTreatmentStatusCodingCode::toValue)
-        .collect(Collectors.toSet())
-        .contains(code)) {
+      @NonNull final String code, final Integer version) {
+    if (version == null
+        || !Arrays.stream(MtbDiagnosisGuidelineTreatmentStatusCodingCode.values())
+            .map(MtbDiagnosisGuidelineTreatmentStatusCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(code)) {
       return null;
     }
 

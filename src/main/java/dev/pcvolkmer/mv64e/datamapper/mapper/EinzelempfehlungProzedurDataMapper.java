@@ -116,8 +116,9 @@ public class EinzelempfehlungProzedurDataMapper
   }
 
   private MtbProcedureRecommendationCategoryCoding getMtbProcedureRecommendationCategoryCoding(
-      String code, int version) {
+      String code, Integer version) {
     if (code == null
+        || version == null
         || !Arrays.stream(MtbProcedureRecommendationCategoryCodingCode.values())
             .map(MtbProcedureRecommendationCategoryCodingCode::toValue)
             .collect(Collectors.toSet())

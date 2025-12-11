@@ -176,6 +176,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     var propertyCatalogueEntry =
         propertyCatalogue.getByCodeAndVersion(
             resultSet.getString("morphologie"), morphologiePropcatVersion);
+    if (propertyCatalogueEntry == null) return null;
 
     return Coding.builder()
         .code(propertyCatalogueEntry.getCode())
