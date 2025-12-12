@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.4...v0.2.5) (2025-12-12)
+
+
+### Features
+
+* add try-catch chain and related methods ([#77](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/77)) ([a28989c](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/a28989cd73a31ea5d76526c7f9ab957a7945b7e7))
+* add tuple result values for try-catch chain ([#79](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/79)) ([8e4681d](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/8e4681d54a7bc18a2454dd8a568bcf4174121b44))
+* ignore diagnosis mapping errors from [#63](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/63) ([#80](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/80)) ([e0126bf](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/e0126bf5344ac327adef7eab6c9622c271806b66))
+
 ## [0.2.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.3...v0.2.4) (2025-12-10)
 
 
