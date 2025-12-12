@@ -20,7 +20,8 @@
 
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
-import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
+import static dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog.tryAndLogWithResult;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.jspecify.annotations.NonNull;
@@ -50,12 +51,7 @@ public class MapperUtils {
    * @param <T> The type of the supplied value
    */
   public static <T> Optional<T> tryAndReturnOrLog(@NonNull final Supplier<T> supplier) {
-    try {
-      return Optional.ofNullable(supplier.get());
-    } catch (IgnorableMappingException e) {
-      logger.error(e.getMessage());
-      return Optional.empty();
-    }
+    return tryAndLogWithResult(supplier, logger).ok();
   }
 
   /**
@@ -69,11 +65,6 @@ public class MapperUtils {
    */
   public static <T> Optional<T> tryAndReturnOrLog(
       @NonNull final Supplier<T> supplier, @NonNull final Logger logger) {
-    try {
-      return Optional.ofNullable(supplier.get());
-    } catch (IgnorableMappingException e) {
-      logger.error(e.getMessage());
-      return Optional.empty();
-    }
+    return tryAndLogWithResult(supplier, logger).ok();
   }
 }
