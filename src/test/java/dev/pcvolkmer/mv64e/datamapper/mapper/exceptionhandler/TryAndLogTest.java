@@ -31,6 +31,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
+import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple;
+import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple2;
 import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -261,5 +263,35 @@ class TryAndLogTest {
 
     assertThat(actual).isEqualTo("Test");
     assertThat(listAppender.list).isEmpty();
+  }
+
+  @Test
+  void testShouldReturnTupleOnTryAndLog() {
+    var actual =
+        tryAndLogWithResult(() -> "Test1", this.logger)
+            .andTryWithResult(value -> Tuple.from(value, "Test2"))
+            .okOrNull();
+
+    assertThat(actual).isInstanceOf(Tuple2.class);
+    assertThat(actual.get1()).isEqualTo("Test1");
+    assertThat(actual.get2()).isEqualTo("Test2");
+  }
+
+  @Test
+  void testShouldNotReturnTupleOnTryAndLog() {
+    var actual =
+        tryAndLogWithResult(() -> "Test1", this.logger)
+            .andTryWithResult(
+                value -> {
+                  // Simulate error in step 2
+                  if (!value.isBlank()) {
+                    throw new IgnorableMappingException("Error2");
+                  }
+                  return Tuple.from(value, "Test2");
+                })
+            .andTryWithResult(value -> Tuple.from(value.get1(), value.get2(), "Test3"))
+            .okOrNull();
+
+    assertThat(actual).isNull();
   }
 }
