@@ -318,13 +318,12 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .msiFindings(msiFindings.collect(Collectors.toList()));
 
       // Consent - as far as present
-      var consentId = kpaCatalogue.getById(kpaId).getString("consentmv64e");
+      var consentId = kpaCatalogue.getById(kpaId).getInteger("consentmv64e");
       if (null != consentId) {
         resultBuilder.metadata(
             MvhMetadata.builder()
                 .modelProjectConsent(
-                    consentMvDataMapper.getById(
-                        kpaCatalogue.getById(kpaId).getInteger("consentmv64e")))
+                    consentMvDataMapper.getById(consentId))
                 .type(MvhSubmissionType.INITIAL)
                 .build());
       }
