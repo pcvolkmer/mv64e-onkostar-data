@@ -300,8 +300,6 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       resultBuilder
           .patient(kpaPatient)
           .episodesOfCare(List.of(mtbEpisodeDataMapper.getById(kpaId)))
-          .guidelineProcedures(prozedurMapper.getByParentId(kpaId))
-          .guidelineTherapies(therapielinieMapper.getByParentId(kpaId))
           .performanceStatus(ecogMapper.getByParentId(kpaId))
           .familyMemberHistories(verwandteDataMapper.getByParentId(kpaId))
           // Vorbefunde
@@ -316,6 +314,14 @@ public class MtbDataMapper implements DataMapper<Mtb> {
                   kpaId, kpaHistologieDataMapper.getMolGenIdsFromHistoOfTypeSequence(kpaId)))
           // MSI Befunde
           .msiFindings(msiFindings.collect(Collectors.toList()));
+
+      tryAndLogWithResult(() -> prozedurMapper.getByParentId(kpaId))
+          .ok()
+          .ifPresent(resultBuilder::guidelineProcedures);
+
+      tryAndLogWithResult(() -> therapielinieMapper.getByParentId(kpaId))
+          .ok()
+          .ifPresent(resultBuilder::guidelineTherapies);
 
       // Consent - as far as present
       var consentId = kpaCatalogue.getById(kpaId).getInteger("consentmv64e");

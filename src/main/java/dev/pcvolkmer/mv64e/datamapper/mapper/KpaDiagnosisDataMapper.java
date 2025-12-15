@@ -27,7 +27,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KeimbahndiagnoseCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorgradingCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
@@ -83,7 +83,8 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
     final var icd10PropcatVersion = data.getInteger("icd10_propcat_version");
 
     if (null == icd10 || null == icd10PropcatVersion) {
-      throw new DataAccessException("Cannot get expected ICD10 code or property catalogue entry");
+      throw new IgnorableMappingException(
+          "Cannot get expected ICD10 code or property catalogue entry");
     }
 
     var builder = MtbDiagnosis.builder();

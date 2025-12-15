@@ -23,7 +23,6 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
@@ -56,7 +55,7 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     if (null != date) {
       return date;
     }
-    throw new DataAccessException("Cannot map datum for ProcedureRecommendation");
+    throw new IgnorableMappingException("Cannot map datum for ProcedureRecommendation");
   }
 
   @NullMarked
@@ -65,7 +64,7 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     if (null != kpaId) {
       return kpaId;
     }
-    throw new DataAccessException("Cannot map KPA as Diagnosis");
+    throw new IgnorableMappingException("Cannot map KPA as Diagnosis");
   }
 
   @Nullable
