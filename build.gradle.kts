@@ -12,7 +12,7 @@ group = "dev.pcvolkmer.mv64e"
 version = "0.2.5" // x-release-please-version
 
 var versions = mapOf(
-    "mtb-dto" to "0.1.2",
+    "mtb-dto" to "0.2.0",
     "commons-csv" to "1.10.0",
     "slf4j" to "2.0.17",
     "junit" to "5.14.1",
