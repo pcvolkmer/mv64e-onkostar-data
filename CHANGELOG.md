@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.5...v0.3.0) (2025-12-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* update dto lib to version 0.2.0 ([#83](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/83))
+
+### deps
+
+* update dto lib to version 0.2.0 ([#83](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/83)) ([9a63d67](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/9a63d6798a01f9afe2e350e0031040d207f02389))
+
 ## [0.2.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.4...v0.2.5) (2025-12-15)
 
 
