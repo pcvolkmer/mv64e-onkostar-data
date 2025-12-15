@@ -322,8 +322,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       if (null != consentId) {
         resultBuilder.metadata(
             MvhMetadata.builder()
-                .modelProjectConsent(
-                    consentMvDataMapper.getById(consentId))
+                .modelProjectConsent(consentMvDataMapper.getById(consentId))
                 .type(MvhSubmissionType.INITIAL)
                 .build());
       }
