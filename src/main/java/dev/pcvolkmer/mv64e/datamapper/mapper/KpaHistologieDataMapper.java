@@ -97,10 +97,8 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     if (null == histoId) {
       return false;
     }
-    var osMolGen = molekulargenetikCatalogue.getById(histoId);
 
-    var analyseMethodenMerkmalliste = osMolGen.getMerkmalList("AnalyseMethoden");
-    return analyseMethodenMerkmalliste != null && analyseMethodenMerkmalliste.contains("S");
+    return molekulargenetikCatalogue.isOfTypeSeqencing(histoId);
   }
 
   @Nullable

@@ -76,7 +76,9 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
     builder
         .id(data.getString("id"))
         .patient(data.getPatientReference())
-        .type(getTumorSpecimenCoding(data.getString("materialfixierung")))
+        .type(
+            getTumorSpecimenCoding(
+                data.getString("materialfixierung"), data.getString("probenmaterial")))
         .collection(getCollection(data))
     // diagnosis is added in getAllByKpaId()
     ;
@@ -164,12 +166,22 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
   }
 
   // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
-  private TumorSpecimenCoding getTumorSpecimenCoding(String value) {
-    if (value == null) {
+  private TumorSpecimenCoding getTumorSpecimenCoding(String value, String probenMaterial) {
+
+    // If value not set and it's blood, always take
+    // TumorSpecimenCodingCode.FRESH_TISSUE
+    boolean isBlood = "B".equalsIgnoreCase(probenMaterial != null ? probenMaterial.trim() : null);
+
+    if (value == null && !isBlood) {
       return null;
     }
 
     var resultBuilder = TumorSpecimenCoding.builder().system("dnpm-dip/mtb/tumor-specimen/type");
+
+    if (value == null && isBlood) {
+      resultBuilder.code(TumorSpecimenCodingCode.FRESH_TISSUE).display("Frischgewebe");
+      return resultBuilder.build();
+    }
 
     switch (value) {
       case "2":

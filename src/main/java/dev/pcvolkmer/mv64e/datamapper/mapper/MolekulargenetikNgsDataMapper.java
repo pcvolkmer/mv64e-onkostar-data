@@ -70,6 +70,13 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   public SomaticNgsReport getById(final int id) {
     var data = catalogue.getById(id);
 
+    if (!catalogue.isOfTypeSeqencing(id)) {
+      logger.warn(
+          "Molekulargenetik record with id "
+              + id
+              + " is not of sequencing type. Aborting NGS mapping.");
+      return null;
+    }
     var builder = SomaticNgsReport.builder();
     builder
         .id(data.getString("id"))
@@ -97,6 +104,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     return this.catalogue.getIdsByKpaId(kpaId).stream()
         .distinct()
         .map(this::getById)
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
@@ -118,6 +126,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
             molgenIdsFromHisto != null ? molgenIdsFromHisto.stream() : Stream.empty())
         .distinct()
         .map(this::getById)
+        .filter(Objects::nonNull)
         .distinct()
         .collect(Collectors.toList());
   }
