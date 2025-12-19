@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.3.0...v0.3.1) (2025-12-19)
+
+
+### Features
+
+* use "fresh-tissue" as sample-conservation in case "blood" ([#85](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/85)) ([1223d2e](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/1223d2eccce5a24a3a0a308e1c633afea8214e7f))
+
+
+### Bug Fixes
+
+* map "EudraCT" from PropCat as value for study system ([#86](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/86)) ([18e8d37](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/18e8d37e420436032767cbd03c7e5a5aad9405ae))
+
 ## [0.3.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.2.5...v0.3.0) (2025-12-15)
 
 
