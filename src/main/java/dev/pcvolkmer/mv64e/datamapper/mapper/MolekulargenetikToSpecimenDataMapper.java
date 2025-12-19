@@ -27,6 +27,9 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map patient data from database table 'dk_molekulargenetik'
@@ -68,6 +71,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
    * @param id The database id of the procedure data set
    * @return The loaded Patient data
    */
+  @NullMarked
   @Override
   public TumorSpecimen getById(int id) {
     var data = molekulargenetikCatalogue.getById(id);
@@ -105,6 +109,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
                         .map(
                             einzelempfehlung ->
                                 einzelempfehlung.getInteger("ref_molekulargenetik")))
+            .filter(Objects::nonNull)
             .collect(Collectors.toSet());
 
     // Addition: Rebiopsie
@@ -117,6 +122,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
                         .map(
                             einzelempfehlung ->
                                 einzelempfehlung.getInteger("ref_molekulargenetik")))
+            .filter(Objects::nonNull)
             .collect(Collectors.toSet()));
 
     // Addition: Reevaluation
@@ -129,6 +135,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
                         .map(
                             einzelempfehlung ->
                                 einzelempfehlung.getInteger("ref_molekulargenetik")))
+            .filter(Objects::nonNull)
             .collect(Collectors.toSet()));
 
     // Vorbefunde anhand Einsendenummer
@@ -155,6 +162,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
             .map(rs -> rs.getInteger("histologie"))
             .map(molekulargenetikCatalogue::getById)
             .map(ResultSet::getId)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList()));
 
     return osMolGen.stream()
@@ -166,7 +174,9 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
   }
 
   // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
-  private TumorSpecimenCoding getTumorSpecimenCoding(String value, String probenMaterial) {
+  @Nullable
+  private TumorSpecimenCoding getTumorSpecimenCoding(
+      @Nullable String value, @Nullable String probenMaterial) {
 
     // If value not set and it's blood, always take
     // TumorSpecimenCodingCode.FRESH_TISSUE
@@ -178,7 +188,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
 
     var resultBuilder = TumorSpecimenCoding.builder().system("dnpm-dip/mtb/tumor-specimen/type");
 
-    if (value == null && isBlood) {
+    if (value == null) {
       resultBuilder.code(TumorSpecimenCodingCode.FRESH_TISSUE).display("Frischgewebe");
       return resultBuilder.build();
     }
@@ -198,10 +208,12 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
     return resultBuilder.build();
   }
 
-  private Collection getCollection(ResultSet data) {
-    if (data == null
-        || data.getString("entnahmemethode") == null
-        || data.getString("probenmaterial") == null) {
+  @Nullable
+  private Collection getCollection(@NonNull ResultSet data) {
+    final var entnahmemethode = data.getString("entnahmemethode");
+    final var probenmaterial = data.getString("probenmaterial");
+
+    if (null == entnahmemethode || null == probenmaterial) {
       return null;
     }
 
@@ -209,7 +221,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
         TumorSpecimenCollectionMethodCoding.builder()
             .system("dnpm-dip/mtb/tumor-specimen/collection/method");
 
-    switch (data.getString("entnahmemethode")) {
+    switch (entnahmemethode) {
       case "B":
         methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.BIOPSY).display("Biopsie");
         break;
@@ -235,7 +247,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
         TumorSpecimenCollectionLocalizationCoding.builder()
             .system("dnpm-dip/mtb/tumor-specimen/collection/localization");
 
-    switch (data.getString("probenmaterial")) {
+    switch (probenmaterial) {
       case "T":
         localizationBuilder
             .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
