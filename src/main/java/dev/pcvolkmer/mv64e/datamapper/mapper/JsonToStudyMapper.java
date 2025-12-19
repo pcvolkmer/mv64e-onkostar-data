@@ -29,6 +29,7 @@ import dev.pcvolkmer.mv64e.mtb.StudyReference;
 import dev.pcvolkmer.mv64e.mtb.StudySystem;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Maps JSON strings used in form into DNPM study
@@ -65,7 +66,8 @@ public class JsonToStudyMapper {
     }
   }
 
-  private static StudySystem getStudySystem(String code) {
+  @Nullable
+  private static StudySystem getStudySystem(@Nullable String code) {
     if (code == null) return null;
 
     // possible values from DNPM Datamodel
