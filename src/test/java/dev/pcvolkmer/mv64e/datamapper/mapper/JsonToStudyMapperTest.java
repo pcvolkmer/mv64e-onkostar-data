@@ -23,7 +23,11 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.pcvolkmer.mv64e.mtb.StudySystem;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class JsonToStudyMapperTest {
 
@@ -48,5 +52,32 @@ class JsonToStudyMapperTest {
     // Studien-Name gesetzt werden.
     assertThat(study.getSystem()).isEqualTo(StudySystem.NCT);
     assertThat(study.getType()).isEqualTo("Study");
+  }
+
+  @ParameterizedTest
+  @MethodSource("studySystems")
+  void shouldMapStudySystemInJson(String system, StudySystem expected) {
+    var json =
+        "[\n"
+            + "    {\"studie\":\"TestInhibitor\",\"system\":\""
+            + system
+            + "\",\"id\":\"12345678\",\"nct\":\"12345678\",\"ort\":\"Teststadt\",\"internextern\":\"e\"}\n"
+            + "]";
+
+    var actual = JsonToStudyMapper.map(json);
+
+    assertThat(actual).hasSize(1);
+    assertThat(actual.get(0).getSystem()).isEqualTo(expected);
+  }
+
+  private static Stream<Arguments> studySystems() {
+    return Stream.of(
+        Arguments.of("NCT", StudySystem.NCT),
+        // Onkostar Property Catalogue
+        Arguments.of("EudraCT", StudySystem.EUDRA_CT),
+        // DNPM-Datamodel value
+        Arguments.of("Eudra-CT", StudySystem.EUDRA_CT),
+        Arguments.of("DRKS", StudySystem.DRKS),
+        Arguments.of("EUDAMED", StudySystem.EUDAMED));
   }
 }

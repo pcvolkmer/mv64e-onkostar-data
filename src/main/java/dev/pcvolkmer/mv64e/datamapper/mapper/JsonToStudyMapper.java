@@ -27,9 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.StudyReference;
 import dev.pcvolkmer.mv64e.mtb.StudySystem;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Maps JSON strings used in form into DNPM study
@@ -66,19 +66,29 @@ public class JsonToStudyMapper {
     }
   }
 
-  private static StudySystem getStudySystem(String code) {
-    if (code == null
-        || !Arrays.stream(StudySystem.values())
-            .map(StudySystem::toValue)
-            .collect(Collectors.toSet())
-            .contains(code)) {
-      return null;
-    }
+  @Nullable
+  private static StudySystem getStudySystem(@Nullable String code) {
+    if (code == null) return null;
 
-    try {
-      return StudySystem.valueOf(code);
-    } catch (IllegalArgumentException e) {
-      return null;
+    // possible values from DNPM Datamodel
+    switch (code) {
+      case "NCT":
+        return StudySystem.NCT;
+      case "EudraCT": // Additional value from Onkostar Property Catalogue
+      case "Eudra-CT":
+        return StudySystem.EUDRA_CT;
+      case "DRKS":
+        return StudySystem.DRKS;
+      case "EUDAMED":
+        return StudySystem.EUDAMED;
+
+      // Or try to map from Enum values
+      default:
+        try {
+          return StudySystem.valueOf(code);
+        } catch (IllegalArgumentException e) {
+          return null;
+        }
     }
   }
 
