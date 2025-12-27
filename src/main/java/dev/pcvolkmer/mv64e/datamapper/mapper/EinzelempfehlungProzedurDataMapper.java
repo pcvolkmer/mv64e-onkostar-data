@@ -76,12 +76,6 @@ public class EinzelempfehlungProzedurDataMapper
         .ok()
         .ifPresent(resultBuilder::priority);
 
-    final var evidenzlevel = resultSet.getString("evidenzlevel");
-    final var evidenzlevelPropcat = resultSet.getInteger("evidenzlevel_propcat_version");
-    if (null != evidenzlevel && null != evidenzlevelPropcat) {
-      resultBuilder.priority(getRecommendationPriorityCoding(evidenzlevel, evidenzlevelPropcat));
-    }
-
     // Nur der erste Eintrag!
     final var artDerTherapie = resultSet.getMerkmalList("art_der_therapie");
     if (!artDerTherapie.isEmpty()) {

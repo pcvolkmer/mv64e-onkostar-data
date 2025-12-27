@@ -23,6 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.datacatalogues;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -70,6 +71,7 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
         .stream()
         .map(ResultSet::from)
         .map(rs -> rs.getInteger("id"))
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
@@ -95,6 +97,7 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
         .stream()
         .map(ResultSet::from)
         .map(rs -> rs.getInteger("ref_molekulargenetik"))
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
@@ -120,6 +123,7 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
         .stream()
         .map(ResultSet::from)
         .map(rs -> rs.getInteger("ref_molekulargenetik"))
+        .filter(Objects::nonNull)
         .distinct()
         .collect(Collectors.toList());
   }
