@@ -28,6 +28,7 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -77,12 +78,12 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     return getRecommendationPriorityCoding(resultSet.getInteger("prio"));
   }
 
-  protected RecommendationPriorityCoding getRecommendationPriorityCoding(String code, int version) {
-    if (code == null
-        || !Arrays.stream(RecommendationPriorityCodingCode.values())
-            .map(RecommendationPriorityCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(code)) {
+  protected RecommendationPriorityCoding getRecommendationPriorityCoding(
+      @NonNull String code, int version) {
+    if (!Arrays.stream(RecommendationPriorityCodingCode.values())
+        .map(RecommendationPriorityCodingCode::toValue)
+        .collect(Collectors.toSet())
+        .contains(code)) {
       return null;
     }
 
@@ -99,10 +100,7 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   }
 
   @Nullable
-  protected LevelOfEvidence getLevelOfEvidence(ResultSet resultSet) {
-    if (resultSet == null) {
-      return null;
-    }
+  protected LevelOfEvidence getLevelOfEvidence(@NonNull ResultSet resultSet) {
 
     var resultBuilder = LevelOfEvidence.builder();
 

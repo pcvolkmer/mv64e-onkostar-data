@@ -27,7 +27,10 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -279,12 +282,12 @@ public class ResultSet {
   }
 
   /**
-   * Runs given function if value is not null or throws exception
+   * Runs given function if value is not null or throws an exception
    *
    * @param columnName The name of the column
    * @param clazz The expected column type
    * @param f The function to be used if a value is present
-   * @param e The exception to be thrown if value is null
+   * @param e The exception to be thrown if the value is null
    * @param <T> The type of the given column value
    */
   public <T> void ifValueNotNull(
@@ -296,13 +299,93 @@ public class ResultSet {
   }
 
   /**
+   * Runs given function if property value and property version are not null. This is a specialized
+   * method of {@link #ifValueNotNull} for use with property catalogues. A Property is assumed to be
+   * a value with a property catalogue version with the column name `..._propcat_version`.
+   *
+   * @param columnName The name of the column
+   * @param clazz The expected column type
+   * @param f The function to be used if a property is present
+   * @param <T> The type of the given column value
+   */
+  @SuppressWarnings("unchecked")
+  public <T> void ifPropertyNotNull(String columnName, Class<T> clazz, ObjIntConsumer<T> f) {
+
+    final var propertyVersionColumnName = String.format("%s_propcat_version", columnName);
+    final var propertyVersion = this.getInteger(propertyVersionColumnName);
+    if (this.isNull(columnName) || null == propertyVersion) {
+      return;
+    }
+
+    if (String.class == clazz) {
+      f.accept((T) this.getString(columnName), propertyVersion);
+    } else if (Integer.class == clazz) {
+      f.accept((T) this.getInteger(columnName), propertyVersion);
+    } else if (Long.class == clazz) {
+      f.accept((T) this.getLong(columnName), propertyVersion);
+    } else if (Double.class == clazz) {
+      f.accept((T) this.getDouble(columnName), propertyVersion);
+    } else if (Date.class == clazz) {
+      f.accept((T) this.getDate(columnName), propertyVersion);
+    } else if (Boolean.class == clazz) {
+      f.accept((T) (Boolean) this.isTrue(columnName), propertyVersion);
+    }
+  }
+
+  /**
+   * Runs given function if property value and property version are not null or throws an exception.
+   * This is a specialized method of {@link #ifValueNotNull} for use with property catalogues. A
+   * Property is assumed to be a value with a property catalogue version with the column name
+   * `..._propcat_version`.
+   *
+   * @param columnName The name of the column
+   * @param clazz The expected column type
+   * @param f The function to be used if the property is present
+   * @param e The exception to be thrown if the property is null
+   * @param <T> The type of the given column value
+   */
+  public <T> void ifPropertyNotNull(
+      String columnName, Class<T> clazz, ObjIntConsumer<T> f, DataAccessException e) {
+    if (this.isNull(columnName)) {
+      throw e;
+    }
+    ifPropertyNotNull(columnName, clazz, f);
+  }
+
+  /**
+   * Ensures that the value associated with the specified column name is not null. Throws a {@code
+   * NullPointerException} if the value is null.
+   *
+   * @param columnName The name of the column whose value should be checked for null. Cannot be null
+   *     itself.
+   * @throws NullPointerException if the value corresponding to {@code columnName} is null.
+   */
+  public void requireNotNull(@NonNull String columnName) {
+    Objects.requireNonNull(this.rawData.get(columnName), "Column '" + columnName + "' is null");
+  }
+
+  /**
+   * Ensures that the values associated with the specified column names are not null. Throws a
+   * {@code NullPointerException} if any value is null.
+   *
+   * @param columnNames The names of the columns whose values should be checked for null. Cannot be
+   *     null itself.
+   * @throws NullPointerException if any value corresponding to a column name is null.
+   */
+  public void requireAllNotNull(@NonNull String... columnNames) {
+    for (String columnName : columnNames) {
+      requireNotNull(columnName);
+    }
+  }
+
+  /**
    * Get Merkmal values as List of Strings
    *
    * @param columnName The name of the column
    * @return The related Merkmal value(s) as List of Strings
    */
   @SuppressWarnings("unchecked")
-  public List<String> getMerkmalList(String columnName) {
+  public List<String> getMerkmalList(@NonNull String columnName) {
     var raw = this.rawData.get(columnName);
 
     if (raw == null) {

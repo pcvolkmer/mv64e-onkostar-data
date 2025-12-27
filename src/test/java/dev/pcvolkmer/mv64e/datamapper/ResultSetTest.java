@@ -120,6 +120,71 @@ class ResultSetTest {
   }
 
   @Test
+  void shouldNotThrowExceptionIfNonNullIsRequired() {
+    var data = getTestData();
+
+    try {
+      data.requireNotNull("string");
+    } catch (NullPointerException e) {
+      fail("Expected no exception, but got: " + e.getMessage());
+    }
+  }
+
+  @Test
+  void shouldThrowExceptionIfNonNullValueIsRequired() {
+    var data = getTestData();
+
+    var e = assertThrows(NullPointerException.class, () -> data.requireNotNull("null"));
+
+    assertThat(e).hasMessage("Column 'null' is null");
+  }
+
+  @Test
+  void shouldThrowExceptionIfAnyNonNullValueIsRequired() {
+    var data = getTestData();
+
+    var e =
+        assertThrows(NullPointerException.class, () -> data.requireAllNotNull("string", "null"));
+
+    assertThat(e).hasMessage("Column 'null' is null");
+  }
+
+  @Test
+  void shouldNotThrowExceptionIfPropertyIsPresent() {
+    var data = getTestData();
+
+    List<Object> results = new ArrayList<>();
+
+    data.ifPropertyNotNull(
+        "evidenzlevel",
+        String.class,
+        (value, version) -> {
+          results.add(value);
+          results.add(version);
+        },
+        new DataAccessException("TestException"));
+
+    assertThat(results).containsExactly("1", 1234);
+  }
+
+  @Test
+  void shouldThrowExceptionIfPropertyIsNull() {
+    var data = getTestData();
+
+    var e =
+        assertThrows(
+            DataAccessException.class,
+            () ->
+                data.ifPropertyNotNull(
+                    "null",
+                    String.class,
+                    (value, version) -> {},
+                    new DataAccessException("TestException")));
+
+    assertThat(e).hasMessage("TestException");
+  }
+
+  @Test
   void shouldNotThrowExceptionIfValueIsNull() {
     var data = getTestData();
     List<Object> results = new ArrayList<>();
@@ -159,6 +224,10 @@ class ResultSetTest {
             "id",
             22,
             "hauptprozedur_id",
-            11));
+            11,
+            "evidenzlevel",
+            "1",
+            "evidenzlevel_propcat_version",
+            1234));
   }
 }
