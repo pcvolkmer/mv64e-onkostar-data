@@ -60,35 +60,25 @@ class KpaPatientDataMapperTest {
   }
 
   @Test
-  void shouldCreatePatientAlive(@Mock ResultSet resultSet) {
-    var testData =
+  void shouldCreatePatientDead() {
+    Map<String, Object> testData =
         Map.of(
-            "patient_id", "1",
-            "geschlecht", "m",
+            "patient_id",
+            1,
+            "geschlecht",
+            "m",
             "geburtsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
+            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
             "todesdatum",
-                new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
-            "krankenkasse", "12345678",
-            "artderkrankenkasse", "GKV");
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
+            "krankenkasse",
+            "12345678",
+            "artderkrankenkasse",
+            "GKV",
+            "artderkrankenkasse_propcat_version",
+            42);
 
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getString(anyString());
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getDate(anyString());
-
-    doAnswer(invocationOnMock -> resultSet).when(kpaCatalogue).getById(anyInt());
+    doAnswer(invocationOnMock -> ResultSet.from(testData)).when(kpaCatalogue).getById(anyInt());
 
     doAnswer(
             invocationOnMock ->
@@ -101,8 +91,8 @@ class KpaPatientDataMapperTest {
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("1");
     assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
-    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T12:00:00Z")));
-    assertThat(actual.getDateOfDeath()).isEqualTo(Date.from(Instant.parse("2024-06-19T12:00:00Z")));
+    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
+    assertThat(actual.getDateOfDeath()).isEqualTo(Date.from(Instant.parse("2024-06-19T00:00:00Z")));
     assertThat(actual.getHealthInsurance())
         .isEqualTo(
             HealthInsurance.builder()
@@ -122,33 +112,23 @@ class KpaPatientDataMapperTest {
   }
 
   @Test
-  void shouldCreatePatientDead(@Mock ResultSet resultSet) {
-    var testData =
+  void shouldCreatePatientAlive() {
+    Map<String, Object> testData =
         Map.of(
-            "patient_id", "1",
-            "geschlecht", "w",
+            "patient_id",
+            "1",
+            "geschlecht",
+            "w",
             "geburtsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
-            "krankenkasse", "12345678",
-            "artderkrankenkasse", "PKV");
+            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
+            "krankenkasse",
+            "12345678",
+            "artderkrankenkasse",
+            "PKV",
+            "artderkrankenkasse_propcat_version",
+            42);
 
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getString(anyString());
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getDate(anyString());
-
-    doAnswer(invocationOnMock -> resultSet).when(kpaCatalogue).getById(anyInt());
+    doAnswer(invocationOnMock -> ResultSet.from(testData)).when(kpaCatalogue).getById(anyInt());
 
     doAnswer(
             invocationOnMock ->
@@ -161,7 +141,7 @@ class KpaPatientDataMapperTest {
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("1");
     assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.FEMALE);
-    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T12:00:00Z")));
+    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isNull();
     assertThat(actual.getHealthInsurance())
         .isEqualTo(

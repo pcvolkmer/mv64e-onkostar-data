@@ -67,46 +67,27 @@ class KpaVorbefundeDataMapperTest {
   }
 
   @Test
-  void shouldMapResultSet(@Mock ResultSet resultSet) {
+  void shouldMapResultSet() {
     Map<String, Object> testData =
         Map.of(
-            "id", "1",
-            "patienten_id", "42",
+            "id",
+            1,
+            "patienten_id",
+            42,
             "erstellungsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2000-07-06T12:00:00Z")).getTime()),
-            "befundnummer", "X/2025/1234",
-            "ergebnisse", "Befundtext",
-            "artderdiagnostik", "panel",
-            "artderdiagnostik_propcat_version", "1234");
+            new java.sql.Date(Date.from(Instant.parse("2000-07-06T00:00:00Z")).getTime()),
+            "befundnummer",
+            "X/2025/1234",
+            "ergebnisse",
+            "Befundtext",
+            "artderdiagnostik",
+            "panel",
+            "artderdiagnostik_propcat_version",
+            1234);
 
-    doAnswer(
-            invocationOnMock ->
-                Reference.builder()
-                    .id(testData.get("patienten_id").toString())
-                    .type("Patient")
-                    .build())
-        .when(resultSet)
-        .getPatientReference();
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getDate(anyString());
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getString(anyString());
-
-    when(resultSet.getId()).thenReturn(1);
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getAllByParentId(anyInt());
 
     doAnswer(invocationOnMock -> ResultSet.from(Map.of("id", 1, "einsendenummer", "X/2025/1234")))
         .when(molekulargenetikCatalogue)
@@ -131,7 +112,7 @@ class KpaVorbefundeDataMapperTest {
     assertThat(actual.getId()).isEqualTo("1");
     assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
     assertThat(actual.getIssuedOn())
-        .isEqualTo(new java.sql.Date(Date.from(Instant.parse("2000-07-06T12:00:00Z")).getTime()));
+        .isEqualTo(new java.sql.Date(Date.from(Instant.parse("2000-07-06T00:00:00Z")).getTime()));
     assertThat(actual.getSpecimen())
         .isEqualTo(Reference.builder().id("1").type("Specimen").build());
     assertThat(actual.getType())

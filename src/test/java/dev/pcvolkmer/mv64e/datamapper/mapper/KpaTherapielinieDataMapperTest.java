@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
@@ -32,6 +31,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,59 +56,44 @@ class KpaTherapielinieDataMapperTest {
   }
 
   @Test
-  void shouldMapResultSet(@Mock ResultSet resultSet) {
-    var testData =
+  void shouldMapResultSet() {
+    var testData = new HashMap<String, Object>();
+    testData.putAll(
         Map.of(
-            "id", "1",
-            "nummer", 42L,
-            "beginn", new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
-            "ende", new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            "id",
+            1,
+            "nummer",
+            42L,
+            "beginn",
+            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
+            "ende",
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
             "erfassungsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
-            "intention", "S",
-            "status", "stopped",
-            "statusgrund", "patient-death",
-            "patienten_id", "42");
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
+            "patienten_id",
+            42));
+    testData.putAll(
+        Map.of(
+            "intention",
+            "S",
+            "intention_propcat_version",
+            40,
+            "status",
+            "stopped",
+            "status_propcat_version",
+            41,
+            "statusgrund",
+            "patient-death",
+            "statusgrund_propcat_version",
+            43));
 
-    doAnswer(
-            invocationOnMock ->
-                Reference.builder()
-                    .id(testData.get("patienten_id").toString())
-                    .type("Patient")
-                    .build())
-        .when(resultSet)
-        .getPatientReference();
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getAllByParentId(anyInt());
 
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getString(anyString());
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getLong(anyString());
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getDate(anyString());
-
-    when(resultSet.getInteger(anyString())).thenReturn(1);
-    when(resultSet.getId()).thenReturn(1);
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getDiseases(anyInt());
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getDiseases(anyInt());
 
     doAnswer(
             invocationOnMock -> {
@@ -136,10 +121,10 @@ class KpaTherapielinieDataMapperTest {
     assertThat(actual.getPeriod())
         .isEqualTo(
             PeriodDate.builder()
-                .start(Date.from(Instant.parse("2000-01-01T12:00:00Z")))
-                .end(Date.from(Instant.parse("2024-06-19T12:00:00Z")))
+                .start(Date.from(Instant.parse("2000-01-01T00:00:00Z")))
+                .end(Date.from(Instant.parse("2024-06-19T00:00:00Z")))
                 .build());
-    assertThat(actual.getRecordedOn()).isEqualTo(Date.from(Instant.parse("2024-06-19T12:00:00Z")));
+    assertThat(actual.getRecordedOn()).isEqualTo(Date.from(Instant.parse("2024-06-19T00:00:00Z")));
     assertThat(actual.getIntent())
         .isEqualTo(
             MtbTherapyIntentCoding.builder()
@@ -164,40 +149,42 @@ class KpaTherapielinieDataMapperTest {
   }
 
   @Test
-  void shouldNotGetTherapielinenWithoutStart(@Mock ResultSet resultSet) {
-    var testData =
+  void shouldNotGetTherapielinenWithoutStart() {
+    var testData = new HashMap<String, Object>();
+    testData.putAll(
         Map.of(
             "id",
-            "1",
+            1,
+            "nummer",
+            42L,
+            // No begin
             "ende",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
             "erfassungsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
+            "patienten_id",
+            42));
+    testData.putAll(
+        Map.of(
             "intention",
             "S",
+            "intention_propcat_version",
+            40,
             "status",
             "stopped",
+            "status_propcat_version",
+            41,
             "statusgrund",
             "patient-death",
-            "therapielinie",
-            1L,
-            "typ",
-            "surgery",
-            "patienten_id",
-            "42");
+            "statusgrund_propcat_version",
+            43));
 
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getDate(anyString());
-
-    when(resultSet.getId()).thenReturn(1);
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getDiseases(anyInt());
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getAllByParentId(anyInt());
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getDiseases(anyInt());
 
     var actual = dataMapper.getByParentId(1);
 
@@ -205,40 +192,42 @@ class KpaTherapielinieDataMapperTest {
   }
 
   @Test
-  void shouldNotGetTherapielinenWithoutErfassungsdatum(@Mock ResultSet resultSet) {
-    var testData =
+  void shouldNotGetTherapielinenWithoutErfassungsdatum() {
+    var testData = new HashMap<String, Object>();
+    testData.putAll(
         Map.of(
             "id",
-            "1",
-            "ende",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T12:00:00Z")).getTime()),
+            1,
+            "nummer",
+            42L,
             "beginn",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
+            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
+            "ende",
+            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
+            // No erfassungsdatum
+            "patienten_id",
+            42));
+    testData.putAll(
+        Map.of(
             "intention",
             "S",
+            "intention_propcat_version",
+            40,
             "status",
             "stopped",
+            "status_propcat_version",
+            41,
             "statusgrund",
             "patient-death",
-            "therapielinie",
-            1L,
-            "typ",
-            "surgery",
-            "patienten_id",
-            "42");
+            "statusgrund_propcat_version",
+            43));
 
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getDate(anyString());
-
-    when(resultSet.getId()).thenReturn(1);
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getDiseases(anyInt());
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getAllByParentId(anyInt());
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+        .when(catalogue)
+        .getDiseases(anyInt());
 
     var actual = dataMapper.getByParentId(1);
 

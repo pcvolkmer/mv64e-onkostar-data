@@ -75,11 +75,11 @@ class TherapieplanDataMapperTest {
   }
 
   @Test
-  void shouldCreateCarePlan(@Mock ResultSet resultSet) {
-    final var testData =
+  void shouldCreateCarePlan() {
+    final Map<String, Object> testData =
         Map.of(
             "id",
-            "1",
+            1,
             "hauptprozedur_id",
             100,
             "patienten_id",
@@ -89,24 +89,7 @@ class TherapieplanDataMapperTest {
             "empfehlungskategorie",
             "systemisch");
 
-    doAnswer(
-            invocationOnMock ->
-                Reference.builder()
-                    .id(testData.get("patienten_id").toString())
-                    .type("Patient")
-                    .build())
-        .when(resultSet)
-        .getPatientReference();
-
-    doAnswer(
-            invocationOnMock -> {
-              var columnName = invocationOnMock.getArgument(0, String.class);
-              return testData.get(columnName);
-            })
-        .when(resultSet)
-        .getString(anyString());
-
-    doAnswer(invocationOnMock -> List.of(resultSet))
+    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
 
@@ -117,12 +100,12 @@ class TherapieplanDataMapperTest {
                         "id",
                         100,
                         "patienten_id",
-                        "42",
+                        42,
                         "datum",
                         new java.sql.Date(
                             Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
                         "ref_dnpm_klinikanamnese",
-                        "4711",
+                        4711,
                         "protokollauszug",
                         "Das ist ein Protokollauszug",
                         "mit_einzelempfehlung",
