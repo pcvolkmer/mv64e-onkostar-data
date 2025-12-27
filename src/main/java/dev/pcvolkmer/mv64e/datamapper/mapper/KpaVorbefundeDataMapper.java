@@ -107,10 +107,7 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
         .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
         .type(getMolecularDiagnosticReportCoding(artderdiagnostik, artderdiagnostikPropcat));
 
-    var ergebnisse = resultSet.getString("ergebnisse");
-    if (null != ergebnisse) {
-      builder.results(List.of(ergebnisse));
-    }
+    resultSet.ifValueNotNull("ergebnisse", String.class, value -> builder.results(List.of(value)));
 
     return builder.build();
   }

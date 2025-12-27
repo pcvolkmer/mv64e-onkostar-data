@@ -199,7 +199,9 @@ class KpaProzedurDataMapperTest {
             "typ_propcat_version",
             45,
             "patienten_id",
-            42));
+            42,
+            "ref_einzelempfehlung",
+            999));
 
     doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
         .when(catalogue)
@@ -267,5 +269,6 @@ class KpaProzedurDataMapperTest {
                 .display("OP")
                 .system("dnpm-dip/therapy/type")
                 .build());
+    assertThat(actual.getBasedOn()).isEqualTo(Reference.builder().id("999").build());
   }
 }

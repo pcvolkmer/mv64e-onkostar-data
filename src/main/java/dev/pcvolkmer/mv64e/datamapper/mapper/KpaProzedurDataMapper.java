@@ -95,29 +95,34 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
                 .type("MTBDiagnosis")
                 .build())
         .recordedOn(erfassungsdatum)
-        .intent(
-            getMtbTherapyIntentCoding(
-                resultSet.getString("intention"),
-                resultSet.getInteger("intention_propcat_version")))
-        .status(
-            getTherapyStatusCoding(
-                resultSet.getString("status"), resultSet.getInteger("status_propcat_version")))
-        .statusReason(
-            getMtbTherapyStatusReasonCoding(
-                resultSet.getString("statusgrund"),
-                resultSet.getInteger("statusgrund_propcat_version")))
-        .period(PeriodDate.builder().start(start).end(resultSet.getDate("ende")).build())
-        .code(
-            getOncoProcedureCoding(
-                resultSet.getString("typ"), resultSet.getInteger("typ_propcat_version")));
+        .period(PeriodDate.builder().start(start).end(resultSet.getDate("ende")).build());
 
-    if (!resultSet.isNull("therapielinie")) {
-      builder.therapyLine(resultSet.getLong("therapielinie"));
-    }
+    resultSet.ifPropertyNotNull(
+        "intention",
+        String.class,
+        (value, version) -> builder.intent(getMtbTherapyIntentCoding(value, version)));
 
-    if (resultSet.getString("ref_einzelempfehlung") != null) {
-      builder.basedOn(Reference.builder().id(resultSet.getString("ref_einzelempfehlung")).build());
-    }
+    resultSet.ifPropertyNotNull(
+        "status",
+        String.class,
+        (value, version) -> builder.status(getTherapyStatusCoding(value, version)));
+
+    resultSet.ifPropertyNotNull(
+        "statusgrund",
+        String.class,
+        (value, version) -> builder.statusReason(getMtbTherapyStatusReasonCoding(value, version)));
+
+    resultSet.ifPropertyNotNull(
+        "typ",
+        String.class,
+        (value, version) -> builder.code(getOncoProcedureCoding(value, version)));
+
+    resultSet.ifValueNotNull("therapielinie", Long.class, builder::therapyLine);
+
+    resultSet.ifValueNotNull(
+        "ref_einzelempfehlung",
+        String.class,
+        value -> builder.basedOn(Reference.builder().id(value).build()));
 
     final var anmerkungen = resultSet.getString("anmerkungen");
     if (null != anmerkungen && !anmerkungen.isBlank()) {

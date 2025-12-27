@@ -112,13 +112,12 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
         .germlineCodes(getGermlineCodes(id))
         .histology(getHistologyReferences(id));
 
-    final var leitlinienstatus = data.getString("leitlinienstatus");
-    final var leitlinienstatusPropcatVersion = data.getInteger("leitlinienstatus_propcat_version");
-    if (null != leitlinienstatus && null != leitlinienstatusPropcatVersion) {
-      builder.guidelineTreatmentStatus(
-          getMtbDiagnosisGuidelineTreatmentStatusCoding(
-              leitlinienstatus, leitlinienstatusPropcatVersion));
-    }
+    data.ifPropertyNotNull(
+        "leitlinienstatus",
+        String.class,
+        (value, version) ->
+            builder.guidelineTreatmentStatus(
+                getMtbDiagnosisGuidelineTreatmentStatusCoding(value, version)));
 
     return builder.build();
   }

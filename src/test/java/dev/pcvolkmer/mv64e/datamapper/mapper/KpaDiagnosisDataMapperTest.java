@@ -33,6 +33,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorgradingCatalogue;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
+import dev.pcvolkmer.mv64e.mtb.MtbDiagnosisGuidelineTreatmentStatusCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
 import java.util.Map;
@@ -116,9 +117,24 @@ class KpaDiagnosisDataMapperTest {
 
     assertThat(actual.getGermlineCodes()).hasSize(1);
     assertThat(actual.getGermlineCodes().get(0).getCode()).isEqualTo("C00.0");
+
+    assertThat(actual.getGuidelineTreatmentStatus().getCode())
+        .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCodingCode.EXHAUSTED);
   }
 
   private static Map<String, Object> testData() {
-    return Map.of("id", "1", "icd10", "F79.9", "icd10_propcat_version", 42, "patienten_id", "42");
+    return Map.of(
+        "id",
+        "1",
+        "icd10",
+        "F79.9",
+        "icd10_propcat_version",
+        42,
+        "patienten_id",
+        "42",
+        "leitlinienstatus",
+        "exhausted",
+        "leitlinienstatus_propcat_version",
+        43);
   }
 }

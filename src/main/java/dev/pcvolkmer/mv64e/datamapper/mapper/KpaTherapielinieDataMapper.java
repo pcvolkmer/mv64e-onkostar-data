@@ -100,23 +100,21 @@ public class KpaTherapielinieDataMapper
           .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffcodes")));
 
       // --- Codings with null checks ---
-      var intentionPropcatVersion = resultSet.getInteger("intention_propcat_version");
-      if (null != intentionPropcatVersion) {
-        builder.intent(
-            getMtbTherapyIntentCoding(resultSet.getString("intention"), intentionPropcatVersion));
-      }
+      resultSet.ifPropertyNotNull(
+          "intention",
+          String.class,
+          (value, version) -> builder.intent(getMtbTherapyIntentCoding(value, version)));
 
-      var statusPropcatVersion = resultSet.getInteger("status_propcat_version");
-      if (null != statusPropcatVersion) {
-        builder.status(getTherapyStatusCoding(resultSet.getString("status"), statusPropcatVersion));
-      }
+      resultSet.ifPropertyNotNull(
+          "status",
+          String.class,
+          (value, version) -> builder.status(getTherapyStatusCoding(value, version)));
 
-      var statusgrundPropcatVersion = resultSet.getInteger("statusgrund_propcat_version");
-      if (null != statusgrundPropcatVersion) {
-        builder.statusReason(
-            getMtbTherapyStatusReasonCoding(
-                resultSet.getString("statusgrund"), statusgrundPropcatVersion));
-      }
+      resultSet.ifPropertyNotNull(
+          "statusgrund",
+          String.class,
+          (value, version) ->
+              builder.statusReason(getMtbTherapyStatusReasonCoding(value, version)));
 
       // --- Period Date with null checks ---
       var pdb = PeriodDate.builder().start(start);

@@ -121,6 +121,7 @@ class KpaVorbefundeDataMapperTest {
                 .code(MolecularDiagnosticReportCodingCode.PANEL)
                 .display("Panel")
                 .build());
+    assertThat(actual.getResults()).containsExactly("Befundtext");
   }
 
   @Test
