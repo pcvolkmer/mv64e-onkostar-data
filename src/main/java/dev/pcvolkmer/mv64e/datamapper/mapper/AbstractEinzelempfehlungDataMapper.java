@@ -175,6 +175,9 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
                 .system(GRADING_SYSTEM)
                 .build());
         break;
+      default:
+        // Cannot map grading level
+        return null;
     }
 
     var evidenzlevelZusatz = new ArrayList<LevelOfEvidenceAddendumCoding>();
