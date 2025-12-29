@@ -26,17 +26,18 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KeimbahndiagnoseCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorgradingCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosisGuidelineTreatmentStatusCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,7 +88,15 @@ class KpaDiagnosisDataMapperTest {
 
   @Test
   void shouldCreateDiagnosis() {
-    doAnswer(invocationOnMock -> ResultSet.from(testData())).when(kpaCatalogue).getById(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    PropcatColumn.name("icd10").value("F79.9"),
+                    PropcatColumn.name("leitlinienstatus").value("exhausted")))
+        .when(kpaCatalogue)
+        .getById(anyInt());
 
     doAnswer(
             invocationOnMock ->
@@ -101,11 +110,9 @@ class KpaDiagnosisDataMapperTest {
     doAnswer(
             invocationOnMock ->
                 List.of(
-                    ResultSet.from(
-                        Map.of(
-                            "id", 1,
-                            "icd10", "C00.0",
-                            "icd10_propcat_version", 42))))
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        PropcatColumn.name("icd10").value("C00.0"))))
         .when(keimbahndiagnoseCatalogue)
         .getAllByParentId(anyInt());
 
@@ -120,21 +127,5 @@ class KpaDiagnosisDataMapperTest {
 
     assertThat(actual.getGuidelineTreatmentStatus().getCode())
         .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCodingCode.EXHAUSTED);
-  }
-
-  private static Map<String, Object> testData() {
-    return Map.of(
-        "id",
-        "1",
-        "icd10",
-        "F79.9",
-        "icd10_propcat_version",
-        42,
-        "patienten_id",
-        "42",
-        "leitlinienstatus",
-        "exhausted",
-        "leitlinienstatus_propcat_version",
-        43);
   }
 }

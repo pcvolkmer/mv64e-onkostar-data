@@ -26,12 +26,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,24 +63,17 @@ class KpaPatientDataMapperTest {
 
   @Test
   void shouldCreatePatientDead() {
-    Map<String, Object> testData =
-        Map.of(
-            "patient_id",
-            1,
-            "geschlecht",
-            "m",
-            "geburtsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "todesdatum",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            "krankenkasse",
-            "12345678",
-            "artderkrankenkasse",
-            "GKV",
-            "artderkrankenkasse_propcat_version",
-            42);
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData)).when(kpaCatalogue).getById(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name("patient_id").value(1),
+                    Column.name("geschlecht").value("m"),
+                    DateColumn.name("geburtsdatum").value("2000-01-01"),
+                    DateColumn.name("todesdatum").value("2024-06-19"),
+                    Column.name("krankenkasse").value("12345678"),
+                    PropcatColumn.name("artderkrankenkasse").value("GKV")))
+        .when(kpaCatalogue)
+        .getById(anyInt());
 
     doAnswer(
             invocationOnMock ->
@@ -113,22 +108,16 @@ class KpaPatientDataMapperTest {
 
   @Test
   void shouldCreatePatientAlive() {
-    Map<String, Object> testData =
-        Map.of(
-            "patient_id",
-            "1",
-            "geschlecht",
-            "w",
-            "geburtsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "krankenkasse",
-            "12345678",
-            "artderkrankenkasse",
-            "PKV",
-            "artderkrankenkasse_propcat_version",
-            42);
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData)).when(kpaCatalogue).getById(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name("patient_id").value(1),
+                    Column.name("geschlecht").value("w"),
+                    DateColumn.name("geburtsdatum").value("2000-01-01"),
+                    Column.name("krankenkasse").value("12345678"),
+                    PropcatColumn.name("artderkrankenkasse").value("PKV")))
+        .when(kpaCatalogue)
+        .getById(anyInt());
 
     doAnswer(
             invocationOnMock ->

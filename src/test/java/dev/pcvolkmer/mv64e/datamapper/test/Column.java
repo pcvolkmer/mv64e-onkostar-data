@@ -28,6 +28,10 @@ package dev.pcvolkmer.mv64e.datamapper.test;
  */
 public class Column {
 
+  public static final String ID = "id";
+  public static final String HAUPTPROZEDUR_ID = "hauptprozedur_id";
+  public static final String PATIENTEN_ID = "patienten_id";
+
   String name;
   Object value;
 

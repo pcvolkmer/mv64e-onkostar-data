@@ -24,8 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EcogCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.EcogCoding;
 import dev.pcvolkmer.mv64e.mtb.EcogCodingCode;
 import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
@@ -33,7 +35,6 @@ import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,18 +56,14 @@ class KpaEcogDataMapperTest {
 
   @Test
   void shouldMapResultSet() {
-    Map<String, Object> testData =
-        Map.of(
-            "id",
-            1,
-            "patienten_id",
-            42,
-            "datum",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "ecog",
-            "1");
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        DateColumn.name("datum").value("2000-01-01"),
+                        Column.name("ecog").value("1"))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 

@@ -25,14 +25,15 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.MtbEpisodeOfCare;
 import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,14 +57,14 @@ class MtbEpisodeDataMapperTest {
 
   @Test
   void shouldMapData() {
-    final Map<String, Object> kpaData =
-        Map.of(
-            "id", 4711,
-            "patienten_id", 42,
-            "anmeldedatummtb",
-                new java.sql.Date(Date.from(Instant.parse("2025-06-28T12:00:00Z")).getTime()));
-
-    doAnswer(invocationOnMock -> ResultSet.from(kpaData)).when(kpaCatalogue).getById(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(4711),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("anmeldedatummtb").value("2025-06-28")))
+        .when(kpaCatalogue)
+        .getById(anyInt());
 
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(MtbEpisodeOfCare.class);

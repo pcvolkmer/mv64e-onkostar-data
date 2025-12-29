@@ -26,12 +26,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,41 +59,25 @@ class KpaTherapielinieDataMapperTest {
 
   @Test
   void shouldMapResultSet() {
-    var testData = new HashMap<String, Object>();
-    testData.putAll(
-        Map.of(
-            "id",
-            1,
-            "nummer",
-            42L,
-            "beginn",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "ende",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            "erfassungsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            "patienten_id",
-            42));
-    testData.putAll(
-        Map.of(
-            "intention",
-            "S",
-            "intention_propcat_version",
-            40,
-            "status",
-            "stopped",
-            "status_propcat_version",
-            41,
-            "statusgrund",
-            "patient-death",
-            "statusgrund_propcat_version",
-            43));
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        DateColumn.name("beginn").value("2000-01-01"),
+                        DateColumn.name("ende").value("2024-06-19"),
+                        DateColumn.name("erfassungsdatum").value("2024-06-19"),
+                        PropcatColumn.name("intention").value("S"),
+                        PropcatColumn.name("status").value("stopped"),
+                        PropcatColumn.name("statusgrund").value("patient-death"),
+                        PropcatColumn.name("typ").value("surgery"),
+                        Column.name("nummer").value(42L))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock -> List.of(TestResultSet.withColumns(Column.name(Column.ID).value(1))))
         .when(catalogue)
         .getDiseases(anyInt());
 
@@ -150,39 +136,25 @@ class KpaTherapielinieDataMapperTest {
 
   @Test
   void shouldNotGetTherapielinenWithoutStart() {
-    var testData = new HashMap<String, Object>();
-    testData.putAll(
-        Map.of(
-            "id",
-            1,
-            "nummer",
-            42L,
-            // No begin
-            "ende",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            "erfassungsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            "patienten_id",
-            42));
-    testData.putAll(
-        Map.of(
-            "intention",
-            "S",
-            "intention_propcat_version",
-            40,
-            "status",
-            "stopped",
-            "status_propcat_version",
-            41,
-            "statusgrund",
-            "patient-death",
-            "statusgrund_propcat_version",
-            43));
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        // No beginn,
+                        DateColumn.name("ende").value("2024-06-19"),
+                        DateColumn.name("erfassungsdatum").value("2024-06-19"),
+                        PropcatColumn.name("intention").value("S"),
+                        PropcatColumn.name("status").value("stopped"),
+                        PropcatColumn.name("statusgrund").value("patient-death"),
+                        PropcatColumn.name("typ").value("surgery"),
+                        Column.name("nummer").value(42L))))
         .when(catalogue)
         .getAllByParentId(anyInt());
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+
+    doAnswer(
+            invocationOnMock -> List.of(TestResultSet.withColumns(Column.name(Column.ID).value(1))))
         .when(catalogue)
         .getDiseases(anyInt());
 
@@ -193,39 +165,25 @@ class KpaTherapielinieDataMapperTest {
 
   @Test
   void shouldNotGetTherapielinenWithoutErfassungsdatum() {
-    var testData = new HashMap<String, Object>();
-    testData.putAll(
-        Map.of(
-            "id",
-            1,
-            "nummer",
-            42L,
-            "beginn",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "ende",
-            new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            // No erfassungsdatum
-            "patienten_id",
-            42));
-    testData.putAll(
-        Map.of(
-            "intention",
-            "S",
-            "intention_propcat_version",
-            40,
-            "status",
-            "stopped",
-            "status_propcat_version",
-            41,
-            "statusgrund",
-            "patient-death",
-            "statusgrund_propcat_version",
-            43));
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        DateColumn.name("beginn").value("2000-01-01"),
+                        DateColumn.name("ende").value("2024-06-19"),
+                        // No erfassungsdatum,
+                        PropcatColumn.name("intention").value("S"),
+                        PropcatColumn.name("status").value("stopped"),
+                        PropcatColumn.name("statusgrund").value("patient-death"),
+                        PropcatColumn.name("typ").value("surgery"),
+                        Column.name("nummer").value(42L))))
         .when(catalogue)
         .getAllByParentId(anyInt());
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+
+    doAnswer(
+            invocationOnMock -> List.of(TestResultSet.withColumns(Column.name(Column.ID).value(1))))
         .when(catalogue)
         .getDiseases(anyInt());
 

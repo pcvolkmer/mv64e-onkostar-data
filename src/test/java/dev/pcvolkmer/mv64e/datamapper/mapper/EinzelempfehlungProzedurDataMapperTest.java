@@ -38,6 +38,7 @@ class EinzelempfehlungProzedurDataMapperTest {
     doAnswer(
             invocationOnMock ->
                 TestResultSet.withColumns(
+                    Column.name(Column.ID).value(100),
                     DateColumn.name("datum").value("2025-07-11"),
                     Column.name("ref_dnpm_klinikanamnese").value("4711")))
         .when(therapieplanCatalogue)
@@ -48,7 +49,7 @@ class EinzelempfehlungProzedurDataMapperTest {
   void shouldMapEinzelempfehlungEvenWithoutEvidenzlevel() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
+            Column.name(Column.ID).value(1),
             Column.name("hauptprozedur_id").value(100),
             Column.name("patienten_id").value(42),
             Column.name("prio").value(1));
@@ -63,7 +64,7 @@ class EinzelempfehlungProzedurDataMapperTest {
   void shouldMapEvidenzlevel() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
+            Column.name(Column.ID).value(1),
             Column.name("hauptprozedur_id").value(100),
             Column.name("patienten_id").value(42),
             Column.name("prio").value(1),
@@ -115,7 +116,7 @@ class EinzelempfehlungProzedurDataMapperTest {
   void shouldMapEvidenzlevelWithoutPublications() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
+            Column.name(Column.ID).value(1),
             Column.name("hauptprozedur_id").value(100),
             Column.name("patienten_id").value(42),
             Column.name("prio").value(1),
@@ -148,7 +149,7 @@ class EinzelempfehlungProzedurDataMapperTest {
   void shouldMapIssuedOn() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
+            Column.name(Column.ID).value(1),
             Column.name("hauptprozedur_id").value(100),
             Column.name("patienten_id").value(42),
             Column.name("prio").value(1));
@@ -164,7 +165,7 @@ class EinzelempfehlungProzedurDataMapperTest {
   void shouldMapDefaultLowestPrio() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
+            Column.name(Column.ID).value(1),
             Column.name("hauptprozedur_id").value(100),
             Column.name("patienten_id").value(42),
             Column.name("prio").value(99));

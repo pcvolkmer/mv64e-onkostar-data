@@ -26,11 +26,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.RebiopsieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ReevaluationCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
@@ -76,40 +79,29 @@ class TherapieplanDataMapperTest {
 
   @Test
   void shouldCreateCarePlan() {
-    final Map<String, Object> testData =
-        Map.of(
-            "id",
-            1,
-            "hauptprozedur_id",
-            100,
-            "patienten_id",
-            42,
-            "wirkstoffe_json",
-            "[{\"code\":\"\",\"name\":\"PARP-Inhibierung\",\"system\":\"UNREGISTERED\"}]",
-            "empfehlungskategorie",
-            "systemisch");
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        Column.name("wirkstoffe_json")
+                            .value(
+                                "[{\"code\":\"\",\"name\":\"PARP-Inhibierung\",\"system\":\"UNREGISTERED\"}]"),
+                        PropcatColumn.name("empfehlungskategorie").value("systemisch"))))
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
 
     doAnswer(
             invocationOnMock ->
-                ResultSet.from(
-                    Map.of(
-                        "id",
-                        100,
-                        "patienten_id",
-                        42,
-                        "datum",
-                        new java.sql.Date(
-                            Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
-                        "ref_dnpm_klinikanamnese",
-                        4711,
-                        "protokollauszug",
-                        "Das ist ein Protokollauszug",
-                        "mit_einzelempfehlung",
-                        true)))
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(100),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2025-07-11"),
+                    Column.name("ref_dnpm_klinikanamnese").value(4711),
+                    Column.name("protokollauszug").value("Das ist ein Protokollauszug"),
+                    Column.name("mit_einzelempfehlung").value(true)))
         .when(this.therapieplanCatalogue)
         .getById(anyInt());
 
@@ -137,13 +129,12 @@ class TherapieplanDataMapperTest {
 
   @Test
   void shouldSetRecommendationsMissingReason() {
-    final Map<String, Object> testData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42,
-            "status_begruendung", "no-target");
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData))
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    PropcatColumn.name("status_begruendung").value("no-target")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -162,13 +153,12 @@ class TherapieplanDataMapperTest {
 
   @Test
   void shouldSetNoSequencingPerformedReason() {
-    final Map<String, Object> testData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42,
-            "status_begruendung", "non-genetic-cause");
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData))
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -187,15 +177,13 @@ class TherapieplanDataMapperTest {
 
   @Test
   void shouldMapHumGenBeratung() {
-    final Map<String, Object> testData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42,
-            "humangen_beratung", 1,
-            "humangen_ber_grund", "other",
-            "humangen_ber_grund_propcat_version", 1234);
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData))
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    Column.name("humangen_beratung").value(1),
+                    PropcatColumn.name("humangen_ber_grund").value("other")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 

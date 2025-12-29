@@ -38,6 +38,7 @@ class EinzelempfehlungStudieDataMapperTest {
     doAnswer(
             invocationOnMock ->
                 TestResultSet.withColumns(
+                    Column.name(Column.ID).value(100),
                     DateColumn.name("datum").value("2025-07-11"),
                     Column.name("ref_dnpm_klinikanamnese").value("4711")))
         .when(therapieplanCatalogue)
@@ -48,9 +49,9 @@ class EinzelempfehlungStudieDataMapperTest {
   void shouldMapEinzelempfehlungEvenWithoutEvidenzlevel() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
-            Column.name("hauptprozedur_id").value(100),
-            Column.name("patienten_id").value(42),
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
             Column.name("prio").value(1));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
@@ -63,9 +64,9 @@ class EinzelempfehlungStudieDataMapperTest {
   void shouldMapEvidenzlevel() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
-            Column.name("hauptprozedur_id").value(100),
-            Column.name("patienten_id").value(42),
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
             Column.name("prio").value(1),
             PropcatColumn.name("evidenzlevel").value("3"),
             Column.name("evidenzlevel_publication").value("12345678\n12.2024/123"));
@@ -115,9 +116,9 @@ class EinzelempfehlungStudieDataMapperTest {
   void shouldMapEvidenzlevelWithoutPublications() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
-            Column.name("hauptprozedur_id").value(100),
-            Column.name("patienten_id").value(42),
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
             Column.name("prio").value(1),
             PropcatColumn.name("evidenzlevel").value("3"));
 
@@ -148,9 +149,9 @@ class EinzelempfehlungStudieDataMapperTest {
   void shouldNotMapEmptyEvidenzlevel() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
-            Column.name("hauptprozedur_id").value(100),
-            Column.name("patienten_id").value(42),
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
             Column.name("prio").value(1));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
@@ -164,9 +165,9 @@ class EinzelempfehlungStudieDataMapperTest {
   void shouldMapIssuedOn() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
-            Column.name("hauptprozedur_id").value(100),
-            Column.name("patienten_id").value(42),
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
             Column.name("prio").value(1));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
@@ -180,9 +181,9 @@ class EinzelempfehlungStudieDataMapperTest {
   void shouldMapDefaultLowestPrio() {
     var resultSet =
         TestResultSet.withColumns(
-            Column.name("id").value(1),
-            Column.name("hauptprozedur_id").value(100),
-            Column.name("patienten_id").value(42),
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
             Column.name("prio").value(99));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);

@@ -24,15 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.TumorStaging;
 import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCoding;
 import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCodingCode;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,21 +58,20 @@ class KpaTumorausbreitungDataMapperTest {
 
   @Test
   void shouldMapResultSet() {
-    Map<String, Object> testData =
-        Map.of(
-            "id", "1",
-            "zeitpunkt",
-                new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "typ", "pathologic",
-            "wert", "tumor-free",
-            "tnmtprefix", "p",
-            "tnmt", "0",
-            "tnmnprefix", "p",
-            "tnmn", "0",
-            "tnmmprefix", "p",
-            "tnmm", "0");
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        DateColumn.name("zeitpunkt").value("2000-01-01"),
+                        PropcatColumn.name("typ").value("pathologic"),
+                        PropcatColumn.name("wert").value("tumor-free"),
+                        PropcatColumn.name("tnmtprefix").value("p"),
+                        PropcatColumn.name("tnmt").value("0"),
+                        PropcatColumn.name("tnmnprefix").value("p"),
+                        PropcatColumn.name("tnmn").value("0"),
+                        PropcatColumn.name("tnmmprefix").value("p"),
+                        PropcatColumn.name("tnmm").value("0"))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -96,30 +97,20 @@ class KpaTumorausbreitungDataMapperTest {
 
   @Test
   void shouldNotUseNullTnmForUnsableValue() {
-    Map<String, Object> testData =
-        Map.of(
-            "id",
-            "1",
-            "zeitpunkt",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "typ",
-            "pathologic",
-            "wert",
-            "tumor-free",
-            "tnmtprefix",
-            "p",
-            "tnmt",
-            "4e",
-            "tnmnprefix",
-            "p",
-            "tnmn",
-            "0",
-            "tnmmprefix",
-            "p",
-            "tnmm",
-            "0");
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        DateColumn.name("zeitpunkt").value("2000-01-01"),
+                        PropcatColumn.name("typ").value("pathologic"),
+                        PropcatColumn.name("wert").value("tumor-free"),
+                        PropcatColumn.name("tnmtprefix").value("p"),
+                        PropcatColumn.name("tnmt").value("4e"), // <- Invalid value "4e"
+                        PropcatColumn.name("tnmnprefix").value("p"),
+                        PropcatColumn.name("tnmn").value("0"),
+                        PropcatColumn.name("tnmmprefix").value("p"),
+                        PropcatColumn.name("tnmm").value("0"))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 

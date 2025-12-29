@@ -24,14 +24,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PatientCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.Address;
 import dev.pcvolkmer.mv64e.mtb.GenderCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Patient;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,40 +60,16 @@ class PatientDataMapperTest {
 
   @Test
   void shouldCreatePatientAlive() {
-    Map<String, Object> testData =
-        Map.of(
-            "id", "1",
-            "patienten_id", "20001234",
-            "geschlecht", "M",
-            "geburtsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "sterbedatum",
-                new java.sql.Date(Date.from(Instant.parse("2024-06-19T00:00:00Z")).getTime()),
-            "GKZ", "06634022");
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData)).when(patientCatalogue).getById(anyInt());
-
-    var actual = this.dataMapper.getById(1);
-    assertThat(actual).isInstanceOf(Patient.class);
-    assertThat(actual.getId()).isEqualTo("20001234");
-    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
-    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
-    assertThat(actual.getDateOfDeath()).isEqualTo(Date.from(Instant.parse("2024-06-19T00:00:00Z")));
-    assertThat(actual.getAddress()).isEqualTo(Address.builder().municipalityCode("06634").build());
-  }
-
-  @Test
-  void shouldCreatePatientDead() {
-    Map<String, Object> testData =
-        Map.of(
-            "id", "1",
-            "patienten_id", "20001234",
-            "geschlecht", "M",
-            "geburtsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2000-01-01T00:00:00Z")).getTime()),
-            "GKZ", "06634022");
-
-    doAnswer(invocationOnMock -> ResultSet.from(testData)).when(patientCatalogue).getById(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value("20001234"),
+                    Column.name("geschlecht").value("M"),
+                    DateColumn.name("geburtsdatum").value("2000-01-01"),
+                    Column.name("GKZ").value("06634022")))
+        .when(patientCatalogue)
+        .getById(anyInt());
 
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(Patient.class);
@@ -100,6 +77,29 @@ class PatientDataMapperTest {
     assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isNull();
+    assertThat(actual.getAddress()).isEqualTo(Address.builder().municipalityCode("06634").build());
+  }
+
+  @Test
+  void shouldCreatePatientDead() {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value("20001234"),
+                    Column.name("geschlecht").value("M"),
+                    DateColumn.name("geburtsdatum").value("2000-01-01"),
+                    DateColumn.name("sterbedatum").value("2024-06-19"),
+                    Column.name("GKZ").value("06634022")))
+        .when(patientCatalogue)
+        .getById(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isInstanceOf(Patient.class);
+    assertThat(actual.getId()).isEqualTo("20001234");
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
+    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
+    assertThat(actual.getDateOfDeath()).isEqualTo(Date.from(Instant.parse("2024-06-19T00:00:00Z")));
     assertThat(actual.getAddress()).isEqualTo(Address.builder().municipalityCode("06634").build());
   }
 }

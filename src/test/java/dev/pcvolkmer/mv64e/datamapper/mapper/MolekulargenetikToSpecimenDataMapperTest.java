@@ -26,14 +26,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,7 +97,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 40)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(40)));
             })
         .when(rebiopsieCatalogue)
         .getAllByParentId(anyInt());
@@ -104,7 +109,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 41)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(41)));
             })
         .when(reevaluationCatalogue)
         .getAllByParentId(anyInt());
@@ -113,7 +121,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42)));
             })
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -122,16 +133,11 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return ResultSet.from(
-                  Map.of(
-                      "id",
-                      id,
-                      "patienten_id",
-                      4711,
-                      "entnahmemethode",
-                      "B",
-                      "probenmaterial",
-                      "T"));
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
             })
         .when(molekulargenetikCatalogue)
         .getById(anyInt());
@@ -159,8 +165,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
               return List.of(
-                  ResultSet.from(
-                      Map.of("id", id, "ref_molekulargenetik", 42, "befundnummer", "H/2025/1234")));
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42),
+                      Column.name("befundnummer").value("H/2025/1234")));
             })
         .when(vorbefundeCatalogue)
         .getAllByParentId(anyInt());
@@ -183,7 +191,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 40)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(40)));
             })
         .when(rebiopsieCatalogue)
         .getAllByParentId(anyInt());
@@ -192,7 +203,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 40)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(40)));
             })
         .when(reevaluationCatalogue)
         .getAllByParentId(anyInt());
@@ -201,7 +215,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42)));
             })
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -210,16 +227,11 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return ResultSet.from(
-                  Map.of(
-                      "id",
-                      id,
-                      "patienten_id",
-                      4711,
-                      "entnahmemethode",
-                      "B",
-                      "probenmaterial",
-                      "T"));
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
             })
         .when(molekulargenetikCatalogue)
         .getById(anyInt());
@@ -243,7 +255,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42)));
             })
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -252,18 +267,12 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return ResultSet.from(
-                  Map.of(
-                      "id",
-                      id,
-                      "patienten_id",
-                      4711,
-                      "materialfixierung",
-                      value,
-                      "entnahmemethode",
-                      "B",
-                      "probenmaterial",
-                      "T"));
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("materialfixierung").value(value),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
             })
         .when(molekulargenetikCatalogue)
         .getById(anyInt());
@@ -335,7 +344,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42)));
             })
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -344,16 +356,11 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return ResultSet.from(
-                  Map.of(
-                      "id",
-                      id,
-                      "patienten_id",
-                      4711,
-                      "entnahmemethode",
-                      value,
-                      "probenmaterial",
-                      "T"));
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("entnahmemethode").value(value),
+                  PropcatColumn.name("probenmaterial").value("T"));
             })
         .when(molekulargenetikCatalogue)
         .getById(anyInt());
@@ -418,7 +425,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42)));
             })
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -427,16 +437,11 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return ResultSet.from(
-                  Map.of(
-                      "id",
-                      id,
-                      "patienten_id",
-                      4711,
-                      "entnahmemethode",
-                      "B",
-                      "probenmaterial",
-                      value));
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value(value));
             })
         .when(molekulargenetikCatalogue)
         .getById(anyInt());
@@ -457,7 +462,10 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return List.of(ResultSet.from(Map.of("id", id, "ref_molekulargenetik", 42)));
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name("ref_molekulargenetik").value(42)));
             })
         .when(einzelempfehlungCatalogue)
         .getAllByParentId(anyInt());
@@ -466,18 +474,12 @@ class MolekulargenetikToSpecimenDataMapperTest {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
-              return ResultSet.from(
-                  Map.of(
-                      "id",
-                      id,
-                      "patienten_id",
-                      4711,
-                      "entnahmemethode",
-                      "B",
-                      "entnahmedatum",
-                      new java.sql.Date(Date.from(Instant.parse("2025-06-28T12:00:00Z")).getTime()),
-                      "probenmaterial",
-                      "T"));
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  DateColumn.name("entnahmedatum").value("2025-06-28"),
+                  PropcatColumn.name("probenmaterial").value("T"));
             })
         .when(molekulargenetikCatalogue)
         .getById(anyInt());

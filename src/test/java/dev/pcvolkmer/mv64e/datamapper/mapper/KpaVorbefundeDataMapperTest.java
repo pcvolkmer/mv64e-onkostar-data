@@ -31,6 +31,10 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.VorbefundeCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCoding;
 import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCodingCode;
 import dev.pcvolkmer.mv64e.mtb.PriorDiagnosticReport;
@@ -68,24 +72,16 @@ class KpaVorbefundeDataMapperTest {
 
   @Test
   void shouldMapResultSet() {
-    Map<String, Object> testData =
-        Map.of(
-            "id",
-            1,
-            "patienten_id",
-            42,
-            "erstellungsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2000-07-06T00:00:00Z")).getTime()),
-            "befundnummer",
-            "X/2025/1234",
-            "ergebnisse",
-            "Befundtext",
-            "artderdiagnostik",
-            "panel",
-            "artderdiagnostik_propcat_version",
-            1234);
-
-    doAnswer(invocationOnMock -> List.of(ResultSet.from(testData)))
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        DateColumn.name("erstellungsdatum").value("2000-07-06"),
+                        Column.name("befundnummer").value("X/2025/1234"),
+                        Column.name("ergebnisse").value("Befundtext"),
+                        PropcatColumn.name("artderdiagnostik").value("panel"))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -97,7 +93,6 @@ class KpaVorbefundeDataMapperTest {
             invocationOnMock -> {
               var testPropertyData =
                   Map.of("panel", new PropertyCatalogue.Entry("panel", "Panel", "Panel"));
-
               var code = invocationOnMock.getArgument(0, String.class);
               return testPropertyData.get(code);
             })

@@ -25,14 +25,13 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,46 +58,27 @@ class KpaHistologieDataMapperTest {
     this.dataMapper =
         new KpaHistologieDataMapper(catalogue, molekulargenetikCatalogue, propertyCatalogue);
 
-    Map<String, Object> histologieTestData =
-        Map.of(
-            "id",
-            1,
-            "patienten_id",
-            42,
-            "histologie",
-            100,
-            "erstellungsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
-            "tumorzellgehalt",
-            80);
-
-    Map<String, Object> molekulargenetikTestData =
-        Map.of(
-            "id", 100,
-            "patienten_id", 42,
-            "histologie", 100,
-            "datum", new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()));
-
     when(this.catalogue.getAllByParentId(anyInt()))
-        .thenReturn(List.of(ResultSet.from(histologieTestData)));
+        .thenReturn(
+            List.of(
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    Column.name("histologie").value(100),
+                    DateColumn.name("erstellungsdatum").value("2000-01-01"),
+                    Column.name("tumorzellgehalt").value(80))));
+
     when(this.molekulargenetikCatalogue.getById(anyInt()))
-        .thenReturn(ResultSet.from(molekulargenetikTestData));
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(100),
+                Column.name(Column.PATIENTEN_ID).value(42),
+                Column.name("histologie").value(100),
+                DateColumn.name("datum").value("2000-01-01")));
   }
 
   @Test
   void shouldMapResultSet() {
-    Map<String, Object> histologieTestData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42,
-            "histologie", 100,
-            "erstellungsdatum",
-                new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()),
-            "tumorzellgehalt", 80);
-
-    when(this.catalogue.getAllByParentId(anyInt()))
-        .thenReturn(List.of(ResultSet.from(histologieTestData)));
-
     var actualList = this.dataMapper.getByParentId(1);
     assertThat(actualList).hasSize(1);
 
@@ -126,19 +106,14 @@ class KpaHistologieDataMapperTest {
   // See https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783/ - Line 130
   @Test
   void shouldMapResultSetWithoutTumorCellContent() {
-    Map<String, Object> histologieTestData =
-        Map.of(
-            "id",
-            1,
-            "patienten_id",
-            42,
-            "histologie",
-            100,
-            "erstellungsdatum",
-            new java.sql.Date(Date.from(Instant.parse("2000-01-01T12:00:00Z")).getTime()));
-
     when(this.catalogue.getAllByParentId(anyInt()))
-        .thenReturn(List.of(ResultSet.from(histologieTestData)));
+        .thenReturn(
+            List.of(
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    Column.name("histologie").value(100),
+                    DateColumn.name("erstellungsdatum").value("2000-01-01"))));
 
     var actualList = this.dataMapper.getByParentId(1);
     assertThat(actualList).hasSize(1);

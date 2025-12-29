@@ -56,7 +56,10 @@ public class TestResultSet extends ResultSet {
     for (Column column : columns) {
       rawData.put(column.name, column.value);
       if (column instanceof PropcatColumn) {
-        rawData.put(column.name + "_propcat_version", (column.name + column.value).hashCode());
+        var propcatVersion = (column.name + column.value).hashCode();
+        rawData.put(
+            column.name + "_propcat_version",
+            propcatVersion >= 0 ? propcatVersion : -propcatVersion);
       }
     }
     return new TestResultSet(rawData);

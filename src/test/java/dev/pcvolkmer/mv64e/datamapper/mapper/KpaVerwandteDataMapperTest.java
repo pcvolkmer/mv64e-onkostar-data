@@ -25,15 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.VerwandteCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistory;
 import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCoding;
 import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,14 +56,15 @@ class KpaVerwandteDataMapperTest {
 
   @Test
   void shouldMapResultSet() {
-    Map<String, Object> testData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42,
-            "verwandtschaftsgrad", "EXT");
-    var resultSet = ResultSet.from(testData);
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42),
+                        PropcatColumn.name("verwandtschaftsgrad").value("EXT"))))
+        .when(catalogue)
+        .getAllByParentId(anyInt());
 
     var actualList = this.dataMapper.getByParentId(1);
     assertThat(actualList).hasSize(1);
@@ -82,13 +84,14 @@ class KpaVerwandteDataMapperTest {
 
   @Test
   void shouldThrowExceptionOnInvalidRelationship() {
-    Map<String, Object> testData =
-        Map.of(
-            "id", 1,
-            "patienten_id", 42);
-    var resultSet = ResultSet.from(testData);
-
-    doAnswer(invocationOnMock -> List.of(resultSet)).when(catalogue).getAllByParentId(anyInt());
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        Column.name(Column.PATIENTEN_ID).value(42))))
+        .when(catalogue)
+        .getAllByParentId(anyInt());
 
     var e = assertThrows(DataAccessException.class, () -> this.dataMapper.getByParentId(1));
     assertThat(e).hasMessage("Unknown family member history relationship type: No Value present");
