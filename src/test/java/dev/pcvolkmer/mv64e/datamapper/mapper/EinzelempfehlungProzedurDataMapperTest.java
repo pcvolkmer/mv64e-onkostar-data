@@ -5,14 +5,16 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.test.Column;
+import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,22 +37,21 @@ class EinzelempfehlungProzedurDataMapperTest {
     // Care Plan
     doAnswer(
             invocationOnMock ->
-                ResultSet.from(
-                    Map.of(
-                        "datum",
-                        new java.sql.Date(
-                            Date.from(Instant.parse("2025-07-11T12:00:00Z")).getTime()),
-                        "ref_dnpm_klinikanamnese",
-                        "4711")))
+                TestResultSet.withColumns(
+                    DateColumn.name("datum").value("2025-07-11"),
+                    Column.name("ref_dnpm_klinikanamnese").value("4711")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
   }
 
   @Test
   void shouldMapEinzelempfehlungEvenWithoutEvidenzlevel() {
-    Map<String, Object> testData =
-        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 1);
-    var resultSet = ResultSet.from(testData);
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name("id").value(1),
+            Column.name("hauptprozedur_id").value(100),
+            Column.name("patienten_id").value(42),
+            Column.name("prio").value(1));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
@@ -60,23 +61,14 @@ class EinzelempfehlungProzedurDataMapperTest {
 
   @Test
   void shouldMapEvidenzlevel() {
-    Map<String, Object> testData =
-        Map.of(
-            "id",
-            1,
-            "hauptprozedur_id",
-            100,
-            "patienten_id",
-            42,
-            "prio",
-            1,
-            "evidenzlevel",
-            "1",
-            "evidenzlevel_publication",
-            "12345678\n12.2024/123",
-            "evidenzlevel_propcat_version",
-            42);
-    var resultSet = ResultSet.from(testData);
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name("id").value(1),
+            Column.name("hauptprozedur_id").value(100),
+            Column.name("patienten_id").value(42),
+            Column.name("prio").value(1),
+            PropcatColumn.name("evidenzlevel").value("1"),
+            Column.name("evidenzlevel_publication").value("12345678\n12.2024/123"));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
@@ -121,21 +113,13 @@ class EinzelempfehlungProzedurDataMapperTest {
 
   @Test
   void shouldMapEvidenzlevelWithoutPublications() {
-    Map<String, Object> testData =
-        Map.of(
-            "id",
-            1,
-            "hauptprozedur_id",
-            100,
-            "patienten_id",
-            42,
-            "prio",
-            1,
-            "evidenzlevel",
-            "1",
-            "evidenzlevel_propcat_version",
-            42);
-    var resultSet = ResultSet.from(testData);
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name("id").value(1),
+            Column.name("hauptprozedur_id").value(100),
+            Column.name("patienten_id").value(42),
+            Column.name("prio").value(1),
+            PropcatColumn.name("evidenzlevel").value("1"));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
@@ -162,9 +146,12 @@ class EinzelempfehlungProzedurDataMapperTest {
 
   @Test
   void shouldMapIssuedOn() {
-    Map<String, Object> testData =
-        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 1);
-    var resultSet = ResultSet.from(testData);
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name("id").value(1),
+            Column.name("hauptprozedur_id").value(100),
+            Column.name("patienten_id").value(42),
+            Column.name("prio").value(1));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
@@ -175,9 +162,12 @@ class EinzelempfehlungProzedurDataMapperTest {
 
   @Test
   void shouldMapDefaultLowestPrio() {
-    Map<String, Object> testData =
-        Map.of("id", 1, "hauptprozedur_id", 100, "patienten_id", 42, "prio", 99);
-    var resultSet = ResultSet.from(testData);
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name("id").value(1),
+            Column.name("hauptprozedur_id").value(100),
+            Column.name("patienten_id").value(42),
+            Column.name("prio").value(99));
 
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 

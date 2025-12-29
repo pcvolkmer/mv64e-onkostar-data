@@ -24,10 +24,7 @@ import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.ObjIntConsumer;
 import org.jspecify.annotations.NonNull;
@@ -46,7 +43,7 @@ public class ResultSet {
 
   private final Map<String, Object> rawData;
 
-  private ResultSet(final Map<String, Object> rawData) {
+  protected ResultSet(final Map<String, Object> rawData) {
     this.rawData = rawData;
   }
 
