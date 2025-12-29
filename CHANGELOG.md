@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.3.1...v0.3.2) (2025-12-29)
+
+
+### Features
+
+* extract propcat entries from data catalogues ([#88](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/88)) ([77721d6](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/77721d6b811a2e1192034ae8f9e629c6bae72834))
+* ignore invalid evidence grading ([#92](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/92)) ([3a4b232](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/3a4b2329be2d2546b69c55ba3abd1cb7714c320e))
+
 ## [0.3.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.3.0...v0.3.1) (2025-12-19)
 
 
