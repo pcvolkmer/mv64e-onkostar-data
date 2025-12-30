@@ -160,6 +160,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
     osMolGen.addAll(
         histologieCatalogue.getAllByParentId(kpaId).stream()
             .map(rs -> rs.getInteger("histologie"))
+            .filter(Objects::nonNull)
             .map(molekulargenetikCatalogue::getById)
             .map(ResultSet::getId)
             .filter(Objects::nonNull)

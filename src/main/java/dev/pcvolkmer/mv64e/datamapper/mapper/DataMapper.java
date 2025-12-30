@@ -20,6 +20,8 @@
 
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * General interface for all data mappers
  *
@@ -35,5 +37,5 @@ public interface DataMapper<T> {
    * @param id The database id of the root procedure data set
    * @return The data set to be loaded
    */
-  T getById(int id);
+  @Nullable T getById(int id);
 }

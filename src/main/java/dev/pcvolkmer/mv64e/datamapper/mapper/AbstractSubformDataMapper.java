@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Abstract common implementation for all subform data mappers
@@ -64,5 +65,6 @@ public abstract class AbstractSubformDataMapper<T> implements SubformDataMapper<
    * @param resultSet The result set to start from
    * @return The destination object
    */
+  @Nullable
   protected abstract T map(ResultSet resultSet);
 }

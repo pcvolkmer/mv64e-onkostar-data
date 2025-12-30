@@ -71,6 +71,7 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
     return builder.build();
   }
 
+  @Nullable
   private TumorStagingMethodCoding getTumorStagingMethodCoding(final String value) {
     if (value == null
         || !Arrays.stream(TumorStagingMethodCodingCode.values())
@@ -91,6 +92,7 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
     return resultBuilder.build();
   }
 
+  @Nullable
   private TnmClassification getTnmClassification(final ResultSet resultSet) {
     var tnpmClassificationBuilder = TnmClassification.builder();
 

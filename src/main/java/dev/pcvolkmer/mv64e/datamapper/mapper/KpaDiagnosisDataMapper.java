@@ -182,7 +182,8 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                                 .system("https://www.basisdatensatz.de/feld/161/grading")
                                 // TODO Annahme: "v1" ist Version 2025
                                 .version(
-                                    propertyEntry.getVersionDescription().equals("v1")
+                                    null != propertyEntry.getVersionDescription()
+                                            && propertyEntry.getVersionDescription().equals("v1")
                                         ? "2025"
                                         : null)
                                 .display(propertyEntry.getShortdesc())

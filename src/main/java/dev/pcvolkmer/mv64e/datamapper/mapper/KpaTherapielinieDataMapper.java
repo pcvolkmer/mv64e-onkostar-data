@@ -55,6 +55,7 @@ public class KpaTherapielinieDataMapper
    * @param id The database id of the procedure data set
    * @return The loaded MtbDiagnosis file
    */
+  @Nullable
   @Override
   public MtbSystemicTherapy getById(final int id) {
     var data = catalogue.getById(id);

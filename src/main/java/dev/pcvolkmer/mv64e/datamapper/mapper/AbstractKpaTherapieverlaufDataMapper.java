@@ -26,6 +26,7 @@ import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Abstract Mapper class for similar 'dk_dnpm_therapielinie' and 'dk_dnpm_uf_procedure'
@@ -43,6 +44,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     this.propertyCatalogue = propertyCatalogue;
   }
 
+  @Nullable
   protected MtbTherapyIntentCoding getMtbTherapyIntentCoding(String value, Integer version) {
     if (value == null
         || version == null
@@ -76,6 +78,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     return resultBuilder.build();
   }
 
+  @Nullable
   protected TherapyStatusCoding getTherapyStatusCoding(String value, Integer version) {
     if (value == null
         || version == null
@@ -109,6 +112,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     return resultBuilder.build();
   }
 
+  @Nullable
   protected MtbTherapyStatusReasonCoding getMtbTherapyStatusReasonCoding(
       String value, Integer version) {
     if (value == null
@@ -134,6 +138,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     return resultBuilder.build();
   }
 
+  @Nullable
   protected MtbSystemicTherapyRecommendationFulfillmentStatusCoding
       getMtbSystemicTherapyRecommendationFulfillmentStatusCoding(String value, Integer version) {
     if (value == null
@@ -159,6 +164,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     return resultBuilder.build();
   }
 
+  @Nullable
   protected MtbSystemicTherapyCategoryCoding getMtbSystemicTherapyCategoryCoding(
       String value, Integer version) {
     if (value == null
@@ -183,6 +189,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     return resultBuilder.build();
   }
 
+  @Nullable
   protected MtbSystemicTherapyDosageDensityCoding getMtbSystemicTherapyDosageDensityCoding(
       String value, Integer version) {
     if (value == null
@@ -207,6 +214,7 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     return resultBuilder.build();
   }
 
+  @Nullable
   protected OncoProcedureCoding getOncoProcedureCoding(String value, Integer version) {
     if (value == null
         || version == null

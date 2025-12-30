@@ -66,6 +66,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
    * @param id The database id of the procedure data set
    * @return The loaded Procedure
    */
+  @Nullable
   @Override
   public SomaticNgsReport getById(final int id) {
     var data = catalogue.getById(id);

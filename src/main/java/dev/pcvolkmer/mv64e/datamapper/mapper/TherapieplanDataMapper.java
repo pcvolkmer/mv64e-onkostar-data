@@ -138,6 +138,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     return builder.build();
   }
 
+  @Nullable
   private CarePlanNoSequencingPerformedReasonCoding getCarePlanNoSequencingPerformedReasonCoding(
       String value) {
     if (value == null

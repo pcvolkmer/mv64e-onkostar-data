@@ -78,6 +78,7 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     return getRecommendationPriorityCoding(resultSet.getInteger("prio"));
   }
 
+  @Nullable
   protected RecommendationPriorityCoding getRecommendationPriorityCoding(
       @NonNull String code, int version) {
     if (!Arrays.stream(RecommendationPriorityCodingCode.values())

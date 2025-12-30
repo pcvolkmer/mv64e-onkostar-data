@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -108,6 +109,7 @@ public class EinzelempfehlungProzedurDataMapper
         .collect(Collectors.toList());
   }
 
+  @Nullable
   private MtbProcedureRecommendationCategoryCoding getMtbProcedureRecommendationCategoryCoding(
       String code) {
     if (code == null

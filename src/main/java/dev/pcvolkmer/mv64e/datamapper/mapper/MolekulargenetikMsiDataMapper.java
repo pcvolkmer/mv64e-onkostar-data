@@ -85,6 +85,7 @@ public class MolekulargenetikMsiDataMapper extends AbstractSubformDataMapper<Msi
     return null;
   }
 
+  @Nullable
   private MsiMethodCoding getMethodCode(final ResultSet resultSet) {
     var builder = MsiMethodCoding.builder().system("dnpm-dip/mtb/msi/method");
 
