@@ -24,12 +24,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ConsentMvCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ConsentMvVerlaufCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.ConsentProvision;
 import dev.pcvolkmer.mv64e.mtb.ModelProjectConsent;
 import dev.pcvolkmer.mv64e.mtb.ModelProjectConsentPurpose;
@@ -44,7 +47,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class ConsentMvDataMapperTest {
 
   ConsentMvCatalogue catalogue;
@@ -110,5 +113,33 @@ class ConsentMvDataMapperTest {
                     .purpose(ModelProjectConsentPurpose.REIDENTIFICATION)
                     .type(ConsentProvision.DENY)
                     .build()));
+  }
+
+  @FuzzNullTest(initMethod = "testData")
+  void shouldNotThrowNPEInFuzzyTest2(ResultSet resultSet) {
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    resultSet,
+                    TestResultSet.withColumns(
+                        Column.name("id").value(1),
+                        DateColumn.name("date").value("2025-07-12"),
+                        Column.name("version").value("02"),
+                        PropcatColumn.name("sequencing").value("permit"),
+                        PropcatColumn.name("caseidentification").value("permit"))))
+        .when(consentMvVerlaufCatalogue)
+        .getAllByParentId(anyInt());
+
+    this.dataMapper.getById(1);
+  }
+
+  static ResultSet testData() {
+    return TestResultSet.withColumns(
+        Column.name("id").value(1),
+        DateColumn.name("date").value("2025-07-11"),
+        Column.name("version").value("01"),
+        PropcatColumn.name("sequencing").value("permit"),
+        PropcatColumn.name("caseidentification").value("deny"),
+        PropcatColumn.name("reidentification").value("deny"));
   }
 }

@@ -121,3 +121,46 @@ var additional2 = customMetadataMapper.getLatestByPatientIdAndTumorId("200012345
 ```
 
 Aktuell wird hier die Fallnummer und Krankenversicherungsnummer abgerufen.
+
+## Fuzz Tests
+
+In Tests sind einige Methoden mit `@FuzzNullTest` annotiert.
+Die Implementierung dieser JUnit5-Erweiterung befindet sich in
+[`FuzzNullExtension.java`](src/test/java/dev/pcvolkmer/mv64e/datamapper/test/fuzz/FuzzNullExtension.java).
+
+Entsprechende Test-Methoden simulieren den Fall, dass einzelne Spalten in einem ResultSet auf `null` gesetzt sind.
+Einzige Ausnahme ist die Spalte `id` mit dem Primary Key des Datensatzes; diese bleibt erhalten.
+
+Dadurch können `NullPointerExceptions` bei der Verarbeitung von `null`-Werten in den Mappings besser erkannt werden.
+
+```java
+
+@ExtendWith(FuzzyNullExtension.class)
+class DemoTest {
+   // ...
+
+   @FuzzNullTest(initMethod = "testData")
+   void shouldNotSetIdToNull(final ResultSet resultSet) {
+      assertThat(resultSet.getId()).isEqualTo(1);
+   }
+
+   @FuzzNullTest(initMethod = "testData")
+   void exampleShouldThrowIgnorableMappingExceptionOnNullColumns(final ResultSet resultSet) {
+      // Expect an IgnorableMappingException not NullPointerException!
+      var exception = assertThrows(
+              IgnorableMappingException.class,
+              () -> this.dataMapper.getById(1)
+      );
+      assertThat(exception.getMessage()).isEqualTo("...");
+   }
+
+   static ResultSet testData() {
+      return TestResultSet.withColumns(
+              Column.name(Column.ID).value(1),
+              DateColumn.name("date").value("2025-07-11"),
+              Column.name("value").value("Test")
+      );
+   }
+}
+
+```
