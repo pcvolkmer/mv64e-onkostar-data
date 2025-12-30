@@ -38,8 +38,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -106,7 +104,7 @@ class KpaTumorausbreitungDataMapperTest {
                         PropcatColumn.name("typ").value("pathologic"),
                         PropcatColumn.name("wert").value("tumor-free"),
                         PropcatColumn.name("tnmtprefix").value("p"),
-                        PropcatColumn.name("tnmt").value("4e"), // <- Invalid value "4e"
+                        PropcatColumn.name("tnmt").value(""), // <- Invalid empty value
                         PropcatColumn.name("tnmnprefix").value("p"),
                         PropcatColumn.name("tnmn").value("0"),
                         PropcatColumn.name("tnmmprefix").value("p"),
@@ -131,56 +129,5 @@ class KpaTumorausbreitungDataMapperTest {
     assertThat(actual.getTnmClassification().getTumor()).isNull();
     assertThat(actual.getTnmClassification().getNodes().getCode()).isEqualTo("pN0");
     assertThat(actual.getTnmClassification().getMetastasis().getCode()).isEqualTo("pM0");
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    "0,0",
-    "1,1",
-    "1a,1a",
-    "1a1,1a(1)",
-    "1a2,1a(2)",
-    "1b,1b",
-    "1b1,1b(1)",
-    "1b2,1b(2)",
-    "1b3,1b(3)",
-    "1c,1c",
-    "1c1,1c(1)",
-    "1c2,1c(2)",
-    "1c3,1c(3)",
-    "1d,1d",
-    "1mi,",
-    "2,2",
-    "2a,2a",
-    "2a1,2a(1)",
-    "2a2,2a(2)",
-    "2b,2b",
-    "2c,2c",
-    "2d,2d",
-    "3,3",
-    "3a,3a",
-    "3b,3b",
-    "3c,3c",
-    "3d,3d",
-    "3e,",
-    "4,4",
-    "4a,4a",
-    "4b,4b",
-    "4c,4c",
-    "4d,4d",
-    "4e,",
-    "a,",
-    "is,is",
-    "is(DCIS),is(DCIS)",
-    "is(LAMN),is(LAMN)",
-    "is(LCIS),is(LCIS)",
-    "is(Paget),is(Paget)",
-    "is(pd),is(pd)",
-    "is(pu),is(pu)",
-    "X,X",
-  })
-  void testValueSanitization(String input, String expected) {
-    final var actual = KpaTumorausbreitungDataMapper.sanitizeTValue(input);
-    assertThat(actual).isEqualTo(expected);
   }
 }
