@@ -116,7 +116,7 @@ class ConsentMvDataMapperTest {
   }
 
   @FuzzNullTest(initMethod = "testData")
-  void shouldNotThrowNPEInFuzzyTest2(ResultSet resultSet) {
+  void shouldNotThrowNPEInFuzzyTest(ResultSet resultSet) {
     doAnswer(
             invocationOnMock ->
                 List.of(
