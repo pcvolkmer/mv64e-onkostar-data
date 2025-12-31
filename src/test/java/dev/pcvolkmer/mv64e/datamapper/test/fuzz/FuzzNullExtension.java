@@ -55,7 +55,13 @@ public class FuzzNullExtension implements TestTemplateInvocationContextProvider 
       sourceMethod.setAccessible(true);
       var source = sourceMethod.invoke(null);
       if (source instanceof ResultSet) {
+        var includeList = Arrays.asList(fuzzyTest.includeColumns());
+        var excludeList = Arrays.asList(fuzzyTest.excludeColumns());
         return nulledResultSets((ResultSet) source).entrySet().stream()
+            .filter(entry -> includeList.isEmpty() || includeList.contains(entry.getKey()))
+            .filter(
+                entry ->
+                    !excludeList.contains(entry.getKey()) || includeList.contains(entry.getKey()))
             .map(entry -> this.invocationContext(entry.getKey(), entry.getValue()));
       }
     } catch (Exception e) {

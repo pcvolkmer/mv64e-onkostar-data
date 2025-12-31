@@ -164,3 +164,8 @@ class DemoTest {
 }
 
 ```
+
+Durch `@FuzzNullTest(/*...*/, includeColumns = {"date"})` können einzelne Spalten explizit im Null-Fuzzing eingeschlossen 
+und andere Spalten dadurch implizit ausgeschlossen werden.
+Mit `@FuzzNullTest(/*...*/, excludeColumns = {"value"})` können Spalten explizit ausgeschlossen werden.
+Der Einschluss einer Spalte hat Vorrang vor einem Ausschluss.

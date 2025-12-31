@@ -20,17 +20,46 @@
 
 package dev.pcvolkmer.mv64e.datamapper.test.fuzz;
 
-import static org.apiguardian.api.API.Status.STABLE;
+import static org.apiguardian.api.API.Status.INTERNAL;
 
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import java.lang.annotation.*;
 import org.apiguardian.api.API;
 import org.junit.jupiter.api.TestTemplate;
 
+/**
+ * Annotation for fuzzing null values in database queries.
+ *
+ * @author Paul-Christian Volkmer
+ * @since 0.3.3
+ */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@API(status = STABLE, since = "0.3.3")
+@API(status = INTERNAL, since = "0.3.3")
 @TestTemplate
 public @interface FuzzNullTest {
+  /**
+   * Specifies the name of a static method that initializes and returns a {@link ResultSet} for use
+   * in fuzz null testing.
+   *
+   * @return the name of the static initialization method that provides a {@link ResultSet} instance
+   *     for testing with columns set to null.
+   */
   String initMethod();
+
+  /**
+   * Specifies columns to be included in null fuzzing. Including a column will override any
+   * exclusion specified by {@link #excludeColumns()}.
+   *
+   * @return an array of column names to be included in null fuzzing.
+   */
+  String[] includeColumns() default {};
+
+  /**
+   * Specifies columns to exclude from null fuzzing.
+   *
+   * @return an array of column names to exclude from null fuzzing.
+   */
+  String[] excludeColumns() default {};
 }

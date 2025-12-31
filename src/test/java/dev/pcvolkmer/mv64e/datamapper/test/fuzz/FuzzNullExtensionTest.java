@@ -55,12 +55,40 @@ class FuzzNullExtensionTest {
   }
 
   @FuzzNullTest(initMethod = "testData")
-  void shouldThrowIgnorableMappingExceptionOnNullContent(final ResultSet resultSet) {
+  void shouldThrowIgnorableMappingExceptionOnNullColumnValue(final ResultSet resultSet) {
     when(this.catalogue.getById(anyInt())).thenReturn(resultSet);
 
     // getById(..) throws an IgnorableMappingException if any value other than ID is null
     var exception = assertThrows(IgnorableMappingException.class, () -> this.mapper.getById(1));
     assertThat(exception.getMessage()).isEqualTo("...");
+  }
+
+  @FuzzNullTest(
+      initMethod = "testData",
+      excludeColumns = {"date"})
+  void shouldNotSetDateColumnToNull(final ResultSet resultSet) {
+    assertThat(resultSet.getId()).isEqualTo(1);
+    assertThat(resultSet.getDate("date")).isNotNull();
+    assertThat(resultSet.getString("value")).isIn("Test", null);
+  }
+
+  @FuzzNullTest(
+      initMethod = "testData",
+      includeColumns = {"date"})
+  void shouldOnlySetDateColumnToNull(final ResultSet resultSet) {
+    assertThat(resultSet.getId()).isEqualTo(1);
+    assertThat(resultSet.getDate("date")).isNull();
+    assertThat(resultSet.getString("value")).isEqualTo("Test");
+  }
+
+  @FuzzNullTest(
+      initMethod = "testData",
+      includeColumns = {"date"},
+      excludeColumns = {"date", "value"})
+  void shouldIncludeOverExclude(final ResultSet resultSet) {
+    assertThat(resultSet.getId()).isEqualTo(1);
+    assertThat(resultSet.getDate("date")).isNull();
+    assertThat(resultSet.getString("value")).isNotNull();
   }
 
   static ResultSet testData() {
