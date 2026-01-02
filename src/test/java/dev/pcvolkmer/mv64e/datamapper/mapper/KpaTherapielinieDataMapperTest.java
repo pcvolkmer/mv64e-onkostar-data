@@ -24,13 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
@@ -41,8 +45,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class KpaTherapielinieDataMapperTest {
 
   TherapielinieCatalogue catalogue;
@@ -190,5 +196,51 @@ class KpaTherapielinieDataMapperTest {
     var actual = dataMapper.getByParentId(1);
 
     assertThat(actual).isEmpty();
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      excludeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID},
+      maxNullColumns = 2)
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(catalogue.getAllByParentId(anyInt())).thenReturn(List.of(resultSet));
+
+    when(catalogue.getDiseases(anyInt()))
+        .thenReturn(List.of(TestResultSet.withColumns(Column.name(Column.ID).value(1))));
+
+    doAnswer(
+            invocationOnMock -> {
+              var testPropertyData =
+                  Map.of(
+                      "S",
+                      new PropertyCatalogue.Entry("S", "Sonstiges", "Sonstiges"),
+                      "stopped",
+                      new PropertyCatalogue.Entry("stopped", "Abgebrochen", "Abgebrochen"),
+                      "patient-death",
+                      new PropertyCatalogue.Entry("patient-death", "Tod", "Tod"));
+
+              var code = invocationOnMock.getArgument(0, String.class);
+              return testPropertyData.get(code);
+            })
+        .when(propertyCatalogue)
+        .getByCodeAndVersion(anyString(), anyInt());
+
+    var actual = this.dataMapper.getByParentId(1);
+    assertThat(actual).isNotNull();
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        Column.name(Column.PATIENTEN_ID).value(42),
+        DateColumn.name("beginn").value("2000-01-01"),
+        DateColumn.name("ende").value("2024-06-19"),
+        DateColumn.name("erfassungsdatum").value("2024-06-19"),
+        PropcatColumn.name("intention").value("S"),
+        PropcatColumn.name("status").value("stopped"),
+        PropcatColumn.name("statusgrund").value("patient-death"),
+        PropcatColumn.name("typ").value("surgery"),
+        Column.name("nummer").value(42L));
   }
 }

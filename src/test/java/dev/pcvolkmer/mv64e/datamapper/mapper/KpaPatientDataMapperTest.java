@@ -24,13 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
@@ -40,8 +44,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class KpaPatientDataMapperTest {
 
   KpaCatalogue kpaCatalogue;
@@ -148,5 +154,34 @@ class KpaPatientDataMapperTest {
                         .system("http://fhir.de/CodeSystem/versicherungsart-de-basis")
                         .build())
                 .build());
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      excludeColumns = {"patienten_id"},
+      maxNullColumns = 2)
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(kpaCatalogue.getById(anyInt())).thenReturn(resultSet);
+
+    doAnswer(
+            invocationOnMock ->
+                new PropertyCatalogue.Entry(
+                    "GKV", "Gesetzliche Krankenversicherung", "Gesetzliche Krankenversicherung"))
+        .when(propertyCatalogue)
+        .getByCodeAndVersion(anyString(), anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isNotNull();
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.PATIENTEN_ID).value(1),
+        Column.name("geschlecht").value("m"),
+        DateColumn.name("geburtsdatum").value("2000-01-01"),
+        DateColumn.name("todesdatum").value("2024-06-19"),
+        Column.name("krankenkasse").value("12345678"),
+        PropcatColumn.name("artderkrankenkasse").value("GKV"));
   }
 }

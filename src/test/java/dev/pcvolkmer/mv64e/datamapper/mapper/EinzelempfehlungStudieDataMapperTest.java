@@ -1,16 +1,21 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.time.Instant;
 import java.util.Date;
@@ -20,8 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class EinzelempfehlungStudieDataMapperTest {
 
   EinzelempfehlungCatalogue catalogue;
@@ -192,5 +199,36 @@ class EinzelempfehlungStudieDataMapperTest {
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
     assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCodingCode.CODE_4);
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      excludeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID})
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      includeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID})
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void fuzzTestNullColumnsThrowsDataAccessException(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var ex = assertThrows(DataAccessException.class, () -> this.mapper.getById(1));
+    assertThat(ex.getMessage()).isIn("No patient id found", "Cannot fetch 'Therapieplan'");
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        Column.name("hauptprozedur_id").value(100),
+        Column.name("patienten_id").value(42),
+        Column.name("prio").value(1),
+        PropcatColumn.name("evidenzlevel").value("1"),
+        Column.name("evidenzlevel_publication").value("12345678\n12.2024/123"));
   }
 }

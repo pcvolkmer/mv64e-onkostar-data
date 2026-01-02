@@ -21,19 +21,25 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KeimbahndiagnoseCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorgradingCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosisGuidelineTreatmentStatusCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Reference;
@@ -45,7 +51,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class KpaDiagnosisDataMapperTest {
 
   KpaCatalogue kpaCatalogue;
@@ -127,5 +133,56 @@ class KpaDiagnosisDataMapperTest {
 
     assertThat(actual.getGuidelineTreatmentStatus().getCode())
         .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCodingCode.EXHAUSTED);
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      excludeColumns = {
+        Column.PATIENTEN_ID,
+        Column.HAUPTPROZEDUR_ID,
+        "icd10",
+        "icd10_propcat_version"
+      })
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(kpaCatalogue.getById(anyInt())).thenReturn(resultSet);
+
+    doAnswer(
+            invocationOnMock ->
+                new PropertyCatalogue.Entry(
+                    "C00.0",
+                    "Bösartige Neubildung: Äußere Oberlippe",
+                    "Bösartige Neubildung: Äußere Oberlippe"))
+        .when(propertyCatalogue)
+        .getByCodeAndVersion(anyString(), anyInt());
+
+    doAnswer(
+            invocationOnMock ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1),
+                        PropcatColumn.name("icd10").value("C00.0"))))
+        .when(keimbahndiagnoseCatalogue)
+        .getAllByParentId(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isNotNull();
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      includeColumns = {"icd10", "icd10_propcat_version"})
+  void fuzzTestShouldThrowIgnorableMappingException(final ResultSet resultSet) {
+    when(kpaCatalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var exception = assertThrows(IgnorableMappingException.class, () -> this.dataMapper.getById(1));
+    assertThat(exception).hasMessage("Cannot get expected ICD10 code or property catalogue entry");
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        Column.name(Column.PATIENTEN_ID).value(42),
+        PropcatColumn.name("icd10").value("F79.9"),
+        PropcatColumn.name("leitlinienstatus").value("exhausted"));
   }
 }

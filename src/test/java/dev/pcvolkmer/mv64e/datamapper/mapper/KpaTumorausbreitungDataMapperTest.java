@@ -23,12 +23,16 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.TumorStaging;
 import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCoding;
 import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCodingCode;
@@ -40,8 +44,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class KpaTumorausbreitungDataMapperTest {
 
   TumorausbreitungCatalogue catalogue;
@@ -94,7 +100,7 @@ class KpaTumorausbreitungDataMapperTest {
   }
 
   @Test
-  void shouldNotUseNullTnmForUnsableValue() {
+  void shouldNotUseNullTnmForUnusableValue() {
     doAnswer(
             invocationOnMock ->
                 List.of(
@@ -129,5 +135,28 @@ class KpaTumorausbreitungDataMapperTest {
     assertThat(actual.getTnmClassification().getTumor()).isNull();
     assertThat(actual.getTnmClassification().getNodes().getCode()).isEqualTo("pN0");
     assertThat(actual.getTnmClassification().getMetastasis().getCode()).isEqualTo("pM0");
+  }
+
+  @FuzzNullTest(initMethod = "fuzzInitData")
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.dataMapper.getByParentId(1);
+    assertThat(actual).isNotNull();
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        DateColumn.name("zeitpunkt").value("2000-01-01"),
+        PropcatColumn.name("typ").value("pathologic"),
+        PropcatColumn.name("wert").value("tumor-free"),
+        PropcatColumn.name("tnmtprefix").value("p"),
+        PropcatColumn.name("tnmt").value("0"),
+        PropcatColumn.name("tnmnprefix").value("p"),
+        PropcatColumn.name("tnmn").value("0"),
+        PropcatColumn.name("tnmmprefix").value("p"),
+        PropcatColumn.name("tnmm").value("0"));
   }
 }

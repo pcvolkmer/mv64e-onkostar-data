@@ -25,11 +25,14 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,8 +40,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 class KpaHistologieDataMapperTest {
 
   HistologieCatalogue catalogue;
@@ -115,6 +121,14 @@ class KpaHistologieDataMapperTest {
                     Column.name("histologie").value(100),
                     DateColumn.name("erstellungsdatum").value("2000-01-01"))));
 
+    when(this.molekulargenetikCatalogue.getById(anyInt()))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(100),
+                Column.name(Column.PATIENTEN_ID).value(42),
+                Column.name("histologie").value(100),
+                DateColumn.name("datum").value("2000-01-01")));
+
     var actualList = this.dataMapper.getByParentId(1);
     assertThat(actualList).hasSize(1);
 
@@ -126,5 +140,39 @@ class KpaHistologieDataMapperTest {
               assertThat(histologyReport.getPatient().getId()).isEqualTo("42");
               assertThat(histologyReport.getResults().getTumorCellContent()).isNull();
             });
+  }
+
+  @Test
+  void shouldReturnNullIfColumnHistologieMissing() {
+    when(catalogue.getById(anyInt()))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1),
+                Column.name(Column.PATIENTEN_ID).value(42),
+                DateColumn.name("erstellungsdatum").value("2000-01-01"),
+                Column.name("tumorzellgehalt").value(80)));
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isNull();
+  }
+
+  // Note: If column "erstellungsdatum" missing, this should fail in DNPM:DIP
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      includeColumns = {"tumorzellgehalt", "erstellungsdatum"})
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isInstanceOf(HistologyReport.class);
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        Column.name(Column.PATIENTEN_ID).value(42),
+        Column.name("histologie").value(100),
+        DateColumn.name("erstellungsdatum").value("2000-01-01"),
+        Column.name("tumorzellgehalt").value(80));
   }
 }

@@ -35,6 +35,8 @@ import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCoding;
 import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCodingCode;
 import dev.pcvolkmer.mv64e.mtb.PriorDiagnosticReport;
@@ -48,8 +50,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class KpaVorbefundeDataMapperTest {
 
   VorbefundeCatalogue catalogue;
@@ -125,5 +129,35 @@ class KpaVorbefundeDataMapperTest {
 
     var actualList = this.dataMapper.getByParentId(1);
     assertThat(actualList).isEmpty();
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      excludeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID})
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void fuzzTestNullColumns(final ResultSet resultSet) {
+    when(catalogue.getAllByParentId(anyInt())).thenReturn(List.of(resultSet));
+
+    when(molekulargenetikCatalogue.getByEinsendenummer(anyString()))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1),
+                Column.name("eindendenummer").value("X/2025/1234")));
+
+    when(propertyCatalogue.getByCodeAndVersion(anyString(), anyInt()))
+        .thenReturn(new PropertyCatalogue.Entry("panel", "Panel", "Panel"));
+
+    var actual = this.dataMapper.getByParentId(1);
+    assertThat(actual).isNotNull();
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        Column.name(Column.PATIENTEN_ID).value(42),
+        DateColumn.name("erstellungsdatum").value("2000-07-06"),
+        Column.name("befundnummer").value("X/2025/1234"),
+        Column.name("ergebnisse").value("Befundtext"),
+        PropcatColumn.name("artderdiagnostik").value("panel"));
   }
 }
