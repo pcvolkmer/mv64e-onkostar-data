@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.3.2...v0.4.0) (2026-01-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* accept missing ecog and fail in DNPM:DIP ([#103](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/103))
+
+### Features
+
+* revert commit d35e850 due to DNPM:DIP changes ([#95](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/95)) ([29846ae](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/29846aedbd276b1f5d836c76ea52d4f6a39cff81))
+
+
+### Bug Fixes
+
+* accept missing ecog and fail in DNPM:DIP ([#103](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/103)) ([7132157](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/7132157ae0040645af862b42ba062c11f1421e64))
+* return null if ecog date is missing ([#101](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/101)) ([8484a0f](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/8484a0f164eeeb01944cac710f818b474aba00bf))
+
 ## [0.3.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.3.1...v0.3.2) (2025-12-29)
 
 
