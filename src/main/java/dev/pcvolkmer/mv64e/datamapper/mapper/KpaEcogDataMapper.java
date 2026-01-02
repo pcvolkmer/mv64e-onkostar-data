@@ -75,8 +75,9 @@ public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStat
   @Override
   protected PerformanceStatus map(final ResultSet resultSet) {
     final var ecog = resultSet.getString("ecog");
+    final var date = resultSet.getDate("datum");
 
-    if (null == ecog) {
+    if (null == ecog || null == date) {
       return null;
     }
 

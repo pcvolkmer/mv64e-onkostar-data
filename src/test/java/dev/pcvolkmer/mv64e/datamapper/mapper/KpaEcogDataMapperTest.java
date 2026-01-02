@@ -21,13 +21,19 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EcogCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.EcogCoding;
 import dev.pcvolkmer.mv64e.mtb.EcogCodingCode;
 import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
@@ -41,7 +47,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class KpaEcogDataMapperTest {
 
   EcogCatalogue catalogue;
@@ -83,5 +89,33 @@ class KpaEcogDataMapperTest {
                 .display("ECOG 1")
                 .system("ECOG-Performance-Status")
                 .build());
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      includeColumns = {"ecog", "datum"})
+  void shouldReturnNullIfEcogOrDateIsNull(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isNull();
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      includeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID})
+  void fuzzTestNullColumnsThrowsDataAccessException(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var ex = assertThrows(DataAccessException.class, () -> this.dataMapper.getById(1));
+    assertThat(ex.getMessage()).isIn("No patient id found", "Cannot fetch 'Therapieplan'");
+  }
+
+  static ResultSet fuzzInitData() {
+    return TestResultSet.withColumns(
+        Column.name(Column.ID).value(1),
+        Column.name(Column.PATIENTEN_ID).value(42),
+        DateColumn.name("datum").value("2000-01-01"),
+        Column.name("ecog").value("1"));
   }
 }
