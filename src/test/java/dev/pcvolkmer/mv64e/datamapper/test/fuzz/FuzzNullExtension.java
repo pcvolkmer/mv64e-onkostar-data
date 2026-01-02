@@ -21,8 +21,10 @@
 package dev.pcvolkmer.mv64e.datamapper.test.fuzz;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
+import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple2;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.PreconditionViolationException;
@@ -55,6 +57,11 @@ public class FuzzNullExtension implements TestTemplateInvocationContextProvider 
   }
 
   @Override
+  public boolean mayReturnZeroTestTemplateInvocationContexts(ExtensionContext context) {
+    return true;
+  }
+
+  @Override
   public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(
       ExtensionContext context) {
     var method = context.getRequiredTestMethod();
@@ -65,24 +72,28 @@ public class FuzzNullExtension implements TestTemplateInvocationContextProvider 
       sourceMethod.setAccessible(true);
       var source = sourceMethod.invoke(null);
       if (source instanceof ResultSet) {
-        var includeList = Arrays.asList(fuzzyTest.includeColumns());
-        var excludeList = Arrays.asList(fuzzyTest.excludeColumns());
-        var maxNullColumns =
+        final var includeList = Arrays.asList(fuzzyTest.includeColumns());
+        final var excludeList = Arrays.asList(fuzzyTest.excludeColumns());
+        final var maxNullColumns =
             Math.min(
                 Math.max(fuzzyTest.maxNullColumns(), 1), ((ResultSet) source).getRawData().size());
-        return nulledResultSets((ResultSet) source, maxNullColumns).entrySet().stream()
-            .filter(entry -> includeList.isEmpty() || includeList.contains(entry.getKey()))
-            .filter(
-                entry ->
-                    !excludeList.contains(entry.getKey()) || includeList.contains(entry.getKey()))
-            .map(entry -> this.invocationContext(entry.getKey(), entry.getValue()));
+        final var columns =
+            ((ResultSet) source)
+                .getRawData().keySet().stream()
+                    .filter(column -> includeList.isEmpty() || includeList.contains(column))
+                    .filter(column -> !excludeList.contains(column) || includeList.contains(column))
+                    .collect(Collectors.toSet());
+
+        return nulledResultSets((ResultSet) source, columns, maxNullColumns).entrySet().stream()
+            .map(entry -> Tuple2.from(entry.getKey(), entry.getValue()))
+            .map(entry -> this.invocationContext(entry.get1(), entry.get2()));
       }
     } catch (Exception e) {
       // Nop
     }
 
     throw new PreconditionViolationException(
-        "You must configure a valid static initMethod that returns a ResultSet for @FuzzyNullTest");
+        "You must configure a valid static initMethod that returns at least one ResultSet for @FuzzyNullTest");
   }
 
   private static Set<Set<String>> selections(Set<String> columns, int maxColumns) {
@@ -108,26 +119,29 @@ public class FuzzNullExtension implements TestTemplateInvocationContextProvider 
     return result;
   }
 
-  private Map<String, ResultSet> nulledResultSets(ResultSet resultSet, int maxColumnsNulled) {
-    var resultSets = new TreeMap<String, ResultSet>();
+  private Map<Set<String>, ResultSet> nulledResultSets(
+      ResultSet resultSet, Set<String> columns, int maxColumnsNulled) {
+    var resultSets = new HashMap<Set<String>, ResultSet>();
 
-    for (var selection : selections(resultSet.getRawData().keySet(), maxColumnsNulled)) {
+    for (var selection : selections(columns, maxColumnsNulled)) {
       var fuzzyNullMap = new HashMap<String, Object>();
       for (var column : resultSet.getRawData().keySet()) {
         if (!selection.contains(column)) {
           fuzzyNullMap.put(column, resultSet.getRawData().get(column));
         }
       }
-      resultSets.put(String.join(",", selection), TestResultSet.from(fuzzyNullMap));
+      resultSets.put(selection, TestResultSet.from(fuzzyNullMap));
     }
     return resultSets;
   }
 
-  private TestTemplateInvocationContext invocationContext(String columnNames, ResultSet resultSet) {
+  private TestTemplateInvocationContext invocationContext(
+      Set<String> columnNames, ResultSet resultSet) {
     return new TestTemplateInvocationContext() {
       @Override
       public String getDisplayName(int invocationIndex) {
-        return String.format("[%d] with column(s) [%s] set to null", invocationIndex, columnNames);
+        return String.format(
+            "[%d] with column(s) [%s] set to null", invocationIndex, String.join(",", columnNames));
       }
 
       @Override

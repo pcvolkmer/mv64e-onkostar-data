@@ -115,6 +115,16 @@ class FuzzNullExtensionTest {
     assertThat(resultSet).isNotIn(testData());
   }
 
+  @FuzzNullTest(
+      initMethod = "testData",
+      excludeColumns = {"date", "value"},
+      maxNullColumns = 2)
+  void shouldExcludeAllNonIdColumns(final ResultSet resultSet) {
+    assertThat(resultSet.getId()).isEqualTo(1);
+    assertThat(resultSet.getDate("date")).isNotNull();
+    assertThat(resultSet.getString("value")).isNotNull();
+  }
+
   static ResultSet testData() {
     return TestResultSet.withColumns(
         Column.name(Column.ID).value(1),
