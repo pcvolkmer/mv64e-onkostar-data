@@ -62,4 +62,12 @@ public @interface FuzzNullTest {
    * @return an array of column names to exclude from null fuzzing.
    */
   String[] excludeColumns() default {};
+
+  /**
+   * Maximum columns to be set to null in a single test. Defaults to 1 and should not exceed the
+   * number of columns in the ResultSet.
+   *
+   * @return the maximum number of null columns to test
+   */
+  int maxNullColumns() default 1;
 }

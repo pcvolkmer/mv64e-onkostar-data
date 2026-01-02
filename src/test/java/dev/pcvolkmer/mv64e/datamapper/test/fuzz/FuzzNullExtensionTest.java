@@ -91,6 +91,30 @@ class FuzzNullExtensionTest {
     assertThat(resultSet.getString("value")).isNotNull();
   }
 
+  @FuzzNullTest(initMethod = "testData", maxNullColumns = -2)
+  void testDefaultMaxNullColumnsPermutations(ResultSet resultSet) {
+    assertThat(resultSet)
+        .isIn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), Column.name("value").value("Test")),
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), DateColumn.name("date").value("2025-07-11")));
+    assertThat(resultSet)
+        .isNotIn(testData(), TestResultSet.withColumns(Column.name(Column.ID).value(1)));
+  }
+
+  @FuzzNullTest(initMethod = "testData", maxNullColumns = 2)
+  void testAllPermutations(ResultSet resultSet) {
+    assertThat(resultSet)
+        .isIn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), Column.name("value").value("Test")),
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), DateColumn.name("date").value("2025-07-11")),
+            TestResultSet.withColumns(Column.name(Column.ID).value(1)));
+    assertThat(resultSet).isNotIn(testData());
+  }
+
   static ResultSet testData() {
     return TestResultSet.withColumns(
         Column.name(Column.ID).value(1),

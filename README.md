@@ -167,5 +167,18 @@ class DemoTest {
 
 Durch `@FuzzNullTest(/*...*/, includeColumns = {"date"})` können einzelne Spalten explizit im Null-Fuzzing eingeschlossen 
 und andere Spalten dadurch implizit ausgeschlossen werden.
+
 Mit `@FuzzNullTest(/*...*/, excludeColumns = {"value"})` können Spalten explizit ausgeschlossen werden.
 Der Einschluss einer Spalte hat Vorrang vor einem Ausschluss.
+
+### Anzahl der Null-Fuzz-Tests
+
+Die Anzahl der Spalten je Test, die maximal auf `null` gesetzt werden, kann durch
+`@FuzzNullTest(/*...*/, maxNullColumns = ...)` festgelegt werden.
+Der Standardwert ist 1 und sollte nicht kleiner als 1 oder größer als die Anzahl der Spalten im ResultSet sein.
+Werte kleiner als 1 werden ignoriert.
+
+**Vorsicht**: Die Anzahl der ausgeführten Tests kann sehr hoch sein und entsprechend lange dauern.
+
+Für $`n`$ = 8 Spalten (exklusive `id`) und `maxNullColumns = 4`  gilt bereits:
+$`\sum_{r=1}^{4} {n! \over r!(n-i)!} = 162`$ Tests.

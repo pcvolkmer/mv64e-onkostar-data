@@ -393,4 +393,14 @@ public class ResultSet {
 
     throw new IllegalArgumentException("Cannot get " + columnName + " as List of Strings");
   }
+
+  @Override
+  public int hashCode() {
+    return rawData.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof ResultSet && this.rawData.equals(((ResultSet) obj).rawData);
+  }
 }
