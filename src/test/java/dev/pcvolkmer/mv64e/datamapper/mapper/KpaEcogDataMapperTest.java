@@ -98,7 +98,7 @@ class KpaEcogDataMapperTest {
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
     var actual = this.dataMapper.getById(1);
-    assertThat(actual).isNull();
+    assertThat(actual).isInstanceOf(PerformanceStatus.class);
   }
 
   @FuzzNullTest(

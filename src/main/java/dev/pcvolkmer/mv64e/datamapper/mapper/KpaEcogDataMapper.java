@@ -31,7 +31,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -77,26 +76,24 @@ public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStat
     final var ecog = resultSet.getString("ecog");
     final var date = resultSet.getDate("datum");
 
-    if (null == ecog || null == date) {
-      return null;
-    }
-
     var builder = PerformanceStatus.builder();
     builder
         .id(resultSet.getId().toString())
         .patient(resultSet.getPatientReference())
-        .effectiveDate(resultSet.getDate("datum"))
+        .effectiveDate(date)
+        // Null value will fail in DNPM:DIP
         .value(getEcogCoding(ecog));
 
     return builder.build();
   }
 
   @Nullable
-  private EcogCoding getEcogCoding(@NonNull final String value) {
-    if (!Arrays.stream(EcogCodingCode.values())
-        .map(EcogCodingCode::toValue)
-        .collect(Collectors.toSet())
-        .contains(value)) {
+  private EcogCoding getEcogCoding(@Nullable final String value) {
+    if (null == value
+        || !Arrays.stream(EcogCodingCode.values())
+            .map(EcogCodingCode::toValue)
+            .collect(Collectors.toSet())
+            .contains(value)) {
       return null;
     }
 
