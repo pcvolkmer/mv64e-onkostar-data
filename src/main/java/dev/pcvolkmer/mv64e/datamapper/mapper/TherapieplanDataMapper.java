@@ -106,19 +106,17 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
       builder.notes(List.of(protokollauszug));
     }
 
+    // Formularfeld "target"
+    var target = therapieplanData.getString("target");
+    if ("KT".equals(target)) {
+      builder.recommendationsMissingReason(getCarePlanRecommendationsMissingReasonCoding(target));
+    }
+
     // Formularfeld "status_begruendung"
     var statusBegruendung = therapieplanData.getString("status_begruendung");
-    if (null != statusBegruendung
-        && statusBegruendung.equals(
-            MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET.toValue())) {
-      builder.recommendationsMissingReason(
-          MtbCarePlanRecommendationsMissingReasonCoding.builder()
-              .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET)
-              .build());
-    } else {
+    if (null != statusBegruendung) {
       builder.noSequencingPerformedReason(
-          getCarePlanNoSequencingPerformedReasonCoding(
-              therapieplanData.getString("status_begruendung")));
+          getCarePlanNoSequencingPerformedReasonCoding(statusBegruendung));
     }
 
     // Humangenetische Beratung
@@ -136,6 +134,20 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     }
 
     return builder.build();
+  }
+
+  @Nullable
+  private MtbCarePlanRecommendationsMissingReasonCoding
+      getCarePlanRecommendationsMissingReasonCoding(String value) {
+    if (!"KT".equals(value)) {
+      return null;
+    }
+
+    var resultBuilder =
+        MtbCarePlanRecommendationsMissingReasonCoding.builder()
+            .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET);
+
+    return resultBuilder.build();
   }
 
   @Nullable

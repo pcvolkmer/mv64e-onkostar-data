@@ -42,6 +42,8 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -128,13 +130,31 @@ class TherapieplanDataMapperTest {
   }
 
   @Test
-  void shouldSetRecommendationsMissingReason() {
+  void shouldNotSetRecommendationMissingReasonAndNoSequencingPerformedReason() {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1), Column.name(Column.PATIENTEN_ID).value(42)))
+        .when(therapieplanCatalogue)
+        .getById(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isInstanceOf(MtbCarePlan.class);
+    assertThat(actual.getId()).isEqualTo("1");
+
+    assertThat(actual.getRecommendationsMissingReason()).isNull();
+    assertThat(actual.getNoSequencingPerformedReason()).isNull();
+  }
+
+  @Test
+  void shouldSetRecommendationMissingReasonAndNoSequencingPerformedReason() {
     doAnswer(
             invocationOnMock ->
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
-                    PropcatColumn.name("status_begruendung").value("no-target")))
+                    PropcatColumn.name("target").value("KT"),
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -148,6 +168,54 @@ class TherapieplanDataMapperTest {
                 .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET)
                 .build());
 
+    assertThat(actual.getNoSequencingPerformedReason())
+        .isEqualTo(
+            CarePlanNoSequencingPerformedReasonCoding.builder()
+                .code(NoSequencingPerformedReasonCode.NON_GENETIC_CAUSE)
+                .build());
+  }
+
+  @Test
+  void shouldSetRecommendationsMissingReason() {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    PropcatColumn.name("target").value("KT")))
+        .when(therapieplanCatalogue)
+        .getById(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isInstanceOf(MtbCarePlan.class);
+    assertThat(actual.getId()).isEqualTo("1");
+
+    assertThat(actual.getRecommendationsMissingReason())
+        .isEqualTo(
+            MtbCarePlanRecommendationsMissingReasonCoding.builder()
+                .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET)
+                .build());
+
+    assertThat(actual.getNoSequencingPerformedReason()).isNull();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"TG", "U"})
+  void shouldNotSetRecommendationsMissingReason(String targetFoundCode) {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    PropcatColumn.name("target").value(targetFoundCode)))
+        .when(therapieplanCatalogue)
+        .getById(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isInstanceOf(MtbCarePlan.class);
+    assertThat(actual.getId()).isEqualTo("1");
+
+    assertThat(actual.getRecommendationsMissingReason()).isNull();
     assertThat(actual.getNoSequencingPerformedReason()).isNull();
   }
 
