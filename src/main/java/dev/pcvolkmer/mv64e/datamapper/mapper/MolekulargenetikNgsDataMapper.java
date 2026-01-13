@@ -24,12 +24,15 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.genes.GeneUtils;
+import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple;
+import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple2;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
@@ -211,7 +214,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                   }
                   final var proteinebenenomenklatur = subform.getString("proteinebenenomenklatur");
                   if (null != proteinebenenomenklatur) {
-                    snvBuilder.proteinChange(proteinebenenomenklatur);
+                    snvBuilder.proteinChange(mapProteinChangeToLongFormat(proteinebenenomenklatur));
                   }
                   final var allelfrequenz = subform.getLong("allelfrequenz");
                   if (null != allelfrequenz) {
@@ -370,5 +373,62 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
 
     return resultBuilder.build();
+  }
+
+  private static String mapProteinChangeToLongFormat(final String input) {
+    final var mappingTable =
+        List.of(
+            Tuple.from("*", "*"),
+            Tuple.from("F", "Phe"),
+            Tuple.from("L", "Leu"),
+            Tuple.from("S", "Ser"),
+            Tuple.from("Y", "Tyr"),
+            Tuple.from("C", "Cys"),
+            Tuple.from("W", "Trp"),
+            Tuple.from("P", "Pro"),
+            Tuple.from("H", "His"),
+            Tuple.from("Q", "Gln"),
+            Tuple.from("R", "Arg"),
+            Tuple.from("I", "Ile"),
+            Tuple.from("M", "Met"),
+            Tuple.from("T", "Thr"),
+            Tuple.from("N", "Asn"),
+            Tuple.from("K", "Lys"),
+            Tuple.from("V", "Val"),
+            Tuple.from("A", "Ala"),
+            Tuple.from("D", "Asp"),
+            Tuple.from("E", "Glu"),
+            Tuple.from("G", "Gly"));
+
+    final var pattern =
+        Pattern.compile(
+            "p\\.(?<ref>[*FLSYCWPHQRIMTNKVADEG])(?<pos>\\d+|del)(?<alt>[*FLSYCWPHQRIMTNKVADEG])");
+
+    final var matcher = pattern.matcher(input);
+
+    if (matcher.matches()) {
+      var ref = matcher.group("ref");
+      var pos = matcher.group("pos");
+      var alt = matcher.group("alt");
+
+      var longRef =
+          mappingTable.stream()
+              .filter(value -> value.get1().equals(ref))
+              .map(Tuple2::get2)
+              .findFirst();
+      var longAlt =
+          mappingTable.stream()
+              .filter(value -> value.get1().equals(alt))
+              .map(Tuple2::get2)
+              .findFirst();
+
+      if (longRef.isEmpty() || longAlt.isEmpty()) {
+        return input;
+      }
+
+      return String.format("p.%s%s%s", longRef.get(), pos, longAlt.get());
+    }
+
+    return input;
   }
 }
