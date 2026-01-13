@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.1...v0.4.2) (2026-01-13)
+
+
+### Features
+
+* map simple variants without (optional) end position ([#107](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/107)) ([180da19](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/180da199ac74643d651040c1e03ac8b7471f4ac2))
+
 ## [0.4.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.0...v0.4.1) (2026-01-09)
 
 
