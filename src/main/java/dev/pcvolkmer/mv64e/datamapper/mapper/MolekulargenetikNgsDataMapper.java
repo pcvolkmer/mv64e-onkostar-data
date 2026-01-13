@@ -232,7 +232,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
                   var posStart = subform.getDouble("EVStart");
                   var posEnd = subform.getDouble("EVEnde");
-                  if (null != posStart && null != posEnd) {
+                  if (null != posStart) {
                     snvBuilder.position(Position.builder().start(posStart).end(posEnd).build());
                   }
 
