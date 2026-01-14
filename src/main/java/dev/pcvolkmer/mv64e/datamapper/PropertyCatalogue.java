@@ -21,6 +21,7 @@
 package dev.pcvolkmer.mv64e.datamapper;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import java.util.Objects;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -36,6 +37,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class PropertyCatalogue {
 
   private final JdbcTemplate jdbcTemplate;
+  private static final org.slf4j.Logger logger =
+      org.slf4j.LoggerFactory.getLogger(PropertyCatalogue.class);
 
   private PropertyCatalogue(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
@@ -83,6 +86,21 @@ public class PropertyCatalogue {
       throw new DataAccessException(
           String.format(
               "Cannot request property catalogue entry for '%s' version '%d'", code, version));
+    }
+  }
+
+  public String getShortdescOrEmptyByCodeAndVersion(final String code, final Integer version) {
+
+    if (null == code || null == version) return "";
+
+    try {
+      return (Objects.requireNonNullElse(getByCodeAndVersion(code, version).getShortdesc(), ""));
+    } catch (DataAccessException e) {
+      logger.warn(
+          "Cannot get property catalogue entry for code '{}' and version '{}'. Returning empty string.",
+          code,
+          version);
+      return "";
     }
   }
 

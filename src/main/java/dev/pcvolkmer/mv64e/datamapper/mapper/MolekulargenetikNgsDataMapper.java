@@ -49,6 +49,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   private final MolekulargenetikCatalogue catalogue;
   private final MolekulargenuntersuchungCatalogue untersuchungCatalogue;
   private final TumorCellContentMethodCodingCode tumorCellContentMethod;
+  private final PropertyCatalogue propertyCatalogue;
 
   public MolekulargenetikNgsDataMapper(
       final MolekulargenetikCatalogue catalogue,
@@ -58,6 +59,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     this.catalogue = catalogue;
     this.untersuchungCatalogue = untersuchungCatalogue;
     this.tumorCellContentMethod = tumorCellContentMethod;
+    this.propertyCatalogue = propertyCatalogue;
   }
 
   /**
@@ -83,12 +85,12 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         .patient(data.getPatientReference())
         .issuedOn(data.getDate("datum"))
         .specimen(Reference.builder().id(data.getString("id")).type("Specimen").build())
-        .results(this.getNgsReportResults(data));
+        .results(this.getNgsReportResults(data))
+        .metadata(List.of(getNgsReportMetadata(data)));
 
     final var artdersequenzierung = data.getString("artdersequenzierung");
     if (null != artdersequenzierung) {
       builder.type(getNgsReportCoding(artdersequenzierung));
-      builder.metadata(List.of(getNgsReportMetadata(artdersequenzierung)));
     }
 
     return builder.build();
@@ -353,22 +355,29 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
   }
 
-  private NgsReportMetadata getNgsReportMetadata(final String artdersequenzierung) {
-    var resultBuilder = NgsReportMetadata.builder();
+  private NgsReportMetadata getNgsReportMetadata(final ResultSet osMolResultSet) {
 
-    logger.warn("No values for NGS report metadata available");
-
-    switch (artdersequenzierung) {
-      // TODO: Replace with real data in properties file
-      default:
-        resultBuilder
-            .sequencer("")
-            .kitManufacturer("")
-            .pipeline("")
-            .kitType("")
-            .referenceGenome("");
-    }
-
-    return resultBuilder.build();
+    return NgsReportMetadata.builder()
+        .sequencer(
+            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
+                osMolResultSet.getString("sequenziergeraet"),
+                osMolResultSet.getInteger("sequenziergeraet_propcat_version")))
+        .kitType(
+            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
+                osMolResultSet.getString("SeqKitTyp"),
+                osMolResultSet.getInteger("seqkittyp_propcat_version")))
+        .kitManufacturer(
+            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
+                osMolResultSet.getString("SeqKitHersteller"),
+                osMolResultSet.getInteger("seqkithersteller_propcat_version")))
+        .pipeline(
+            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
+                osMolResultSet.getString("SeqPipeline"),
+                osMolResultSet.getInteger("seqpipeline_propcat_version")))
+        .referenceGenome(
+            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
+                osMolResultSet.getString("referenzgenom"),
+                osMolResultSet.getInteger("referenzgenom_propcat_version")))
+        .build();
   }
 }
