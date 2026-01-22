@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.1...v0.4.2) (2026-01-22)
+
+
+### Features
+
+* extract sequencing metadata from the corresponding property catalog as it can be documented in MolGen ([#110](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/110)) ([994478f](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/994478f0e58d1e53260fce698b807dff3d261773))
+* map short protein change to required long form ([#109](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/109)) ([454e907](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/454e907d70beebb6c270c277e2c6d3067e70eb8f))
+* map simple variants without (optional) end position ([#107](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/107)) ([180da19](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/180da199ac74643d651040c1e03ac8b7471f4ac2))
+
 ## [0.4.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.0...v0.4.1) (2026-01-09)
 
 
