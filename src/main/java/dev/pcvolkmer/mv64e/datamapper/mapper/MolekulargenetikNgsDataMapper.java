@@ -246,12 +246,6 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                   return snvBuilder.build();
                 })
             .filter(Objects::nonNull)
-            // TODO: Filter missing position, altAllele, refAllele
-            .filter(
-                snv ->
-                    snv.getPosition() != null
-                        && snv.getAltAllele() != null
-                        && snv.getRefAllele() != null)
             .collect(Collectors.toList()));
 
     resultBuilder.copyNumberVariants(
