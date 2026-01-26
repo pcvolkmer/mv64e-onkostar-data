@@ -67,6 +67,7 @@ public class PropertyCatalogue {
    * @param version The entries version
    * @return The sub procedures
    */
+  @NullMarked
   public Entry getByCodeAndVersion(String code, int version) {
     try {
       return this.jdbcTemplate.queryForObject(
@@ -89,10 +90,8 @@ public class PropertyCatalogue {
     }
   }
 
+  @NullMarked
   public String getShortdescOrEmptyByCodeAndVersion(final String code, final Integer version) {
-
-    if (null == code || null == version) return "";
-
     try {
       return (Objects.requireNonNullElse(getByCodeAndVersion(code, version).getShortdesc(), ""));
     } catch (DataAccessException e) {
