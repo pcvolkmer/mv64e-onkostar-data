@@ -23,6 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenuntersuchungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
@@ -47,16 +48,19 @@ public class EinzelempfehlungWirkstoffDataMapper
     extends AbstractEinzelempfehlungDataMapper<MtbMedicationRecommendation> {
 
   private final PropertyCatalogue propertyCatalogue;
+  private final MolekulargenuntersuchungCatalogue untersuchungCatalogue;
 
   public EinzelempfehlungWirkstoffDataMapper(
       EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       TherapieplanCatalogue therapieplanCatalogue,
+      MolekulargenuntersuchungCatalogue untersuchungCatalogue,
       PropertyCatalogue propertyCatalogue) {
     super(
         einzelempfehlungCatalogue,
         therapieplanCatalogue,
         LoggerFactory.getLogger(EinzelempfehlungWirkstoffDataMapper.class));
     this.propertyCatalogue = propertyCatalogue;
+    this.untersuchungCatalogue = untersuchungCatalogue;
   }
 
   @Override
@@ -103,7 +107,44 @@ public class EinzelempfehlungWirkstoffDataMapper
     // As of now: Simple variant and CSV only!
     var supportingVariants = resultSet.getString("st_mol_alt_variante_json");
     if (null != supportingVariants) {
-      resultBuilder.supportingVariants(JsonToMolAltVarianteMapper.map(supportingVariants));
+      var parsedSupportingVariants = JsonToMolAltVarianteMapper.mapIds(supportingVariants);
+      var geneAlterationReferences =
+          parsedSupportingVariants.stream()
+              .map(
+                  id -> {
+                    try {
+                      var geneAlteration = untersuchungCatalogue.getById(id);
+                      var untersucht = geneAlteration.getString("untersucht");
+                      var hgncId = geneAlteration.getString("evhgncid");
+                      if (null == untersucht || null == hgncId) {
+                        return null;
+                      }
+                      return GeneAlterationReference.builder()
+                          .gene(
+                              Coding.builder()
+                                  .code(hgncId)
+                                  .display(untersucht)
+                                  .system("https://www.genenames.org/")
+                                  .build())
+                          .variant(
+                              Reference.builder()
+                                  .id(geneAlteration.getId().toString())
+                                  .type("Variant")
+                                  .build())
+                          .build();
+                    } catch (Exception e) {
+                      log.warn("Cannot fetch referenced alteration '{}'", id);
+                      return null;
+                    }
+                  })
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList());
+      if (parsedSupportingVariants.size() == geneAlterationReferences.size()) {
+        resultBuilder.supportingVariants(geneAlterationReferences);
+      } else {
+        // Fallback: Map using gene list
+        resultBuilder.supportingVariants(JsonToMolAltVarianteMapper.map(supportingVariants));
+      }
     }
 
     return resultBuilder.build();

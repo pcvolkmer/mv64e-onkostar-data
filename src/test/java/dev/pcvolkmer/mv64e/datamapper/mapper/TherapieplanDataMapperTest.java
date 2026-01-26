@@ -26,10 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.RebiopsieCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ReevaluationCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
@@ -64,6 +61,7 @@ class TherapieplanDataMapperTest {
       @Mock RebiopsieCatalogue rebiopsieCatalogue,
       @Mock ReevaluationCatalogue reevaluationCatalogue,
       @Mock EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      @Mock MolekulargenuntersuchungCatalogue molekulargenuntersuchungCatalogue,
       @Mock PropertyCatalogue propertyCatalogue) {
     this.therapieplanCatalogue = therapieplanCatalogue;
     this.rebiopsieCatalogue = rebiopsieCatalogue;
@@ -76,6 +74,7 @@ class TherapieplanDataMapperTest {
             rebiopsieCatalogue,
             reevaluationCatalogue,
             einzelempfehlungCatalogue,
+            molekulargenuntersuchungCatalogue,
             propertyCatalogue);
   }
 

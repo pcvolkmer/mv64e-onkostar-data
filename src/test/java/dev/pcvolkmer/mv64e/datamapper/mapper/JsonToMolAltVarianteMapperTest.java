@@ -51,4 +51,17 @@ class JsonToMolAltVarianteMapperTest {
                 .variant(Reference.builder().id("22641112").type("Variant").build())
                 .build());
   }
+
+  @Test
+  void shouldMapJsonToIds() {
+    var json =
+        "[{\"id\":22641112,\"ergebnis\":\"Einfache Variante (Mutation)\",\"gen\":\"BRAF\",\"exon\":\"-\",\"pathogenitaetsklasse\":\"-\"}]";
+
+    var actual = JsonToMolAltVarianteMapper.mapIds(json);
+
+    assertThat(actual).hasSize(1);
+
+    var variant = actual.get(0);
+    assertThat(variant).isEqualTo(22641112);
+  }
 }

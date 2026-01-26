@@ -12,8 +12,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenuntersuchungCat
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
-import dev.pcvolkmer.mv64e.mtb.SomaticNgsReport;
-import dev.pcvolkmer.mv64e.mtb.TumorCellContentMethodCodingCode;
+import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +91,7 @@ class MolekulargenetikNgsDataMapperTest {
   }
 
   @Test
-  void shouldContainSimpleVariant() {
+  void shouldContainSimpleVariantWithDataAsIs() {
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
@@ -119,7 +118,11 @@ class MolekulargenetikNgsDataMapperTest {
                       Column.name("EVStart").value(123),
                       Column.name("EVEnde").value(125),
                       Column.name("evaltnucleotide").value("C"),
-                      Column.name("evrefnucleotide").value("A")));
+                      Column.name("evrefnucleotide").value("A"),
+                      // Not real data - just for testing purposes
+                      Column.name("evhgncid").value("HGNC:1234"),
+                      Column.name("evchromosom").value("chr1"),
+                      Column.name("evensemblid").value("ENSG00000123456")));
             })
         .when(molekulargenuntersuchungCatalogue)
         .getAllByParentId(anyInt());
@@ -138,11 +141,93 @@ class MolekulargenetikNgsDataMapperTest {
                   .satisfies(
                       simpleVariants -> {
                         assertThat(simpleVariants).hasSize(1);
+                        assertThat(simpleVariants.get(0).getChromosome())
+                            .isEqualTo(Chromosome.CHR1);
+                        assertThat(simpleVariants.get(0).getGene().getCode())
+                            .isEqualTo("HGNC:1234");
+                        assertThat(simpleVariants.get(0).getGene().getDisplay()).isEqualTo("BRAF");
+                        assertThat(simpleVariants.get(0).getGene().getSystem())
+                            .isEqualTo("https://www.genenames.org/");
+                        assertThat(simpleVariants.get(0).getTranscriptId())
+                            .isEqualTo(
+                                TranscriptId.builder()
+                                    .value("ENSG00000123456")
+                                    .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                    .build());
+                        assertThat(simpleVariants.get(0).getPosition())
+                            .satisfies(
+                                position -> {
+                                  assertThat(position.getStart()).isEqualTo(123);
+                                  assertThat(position.getEnd()).isEqualTo(125);
+                                });
+                        assertThat(simpleVariants.get(0).getRefAllele()).isEqualTo("A");
+                        assertThat(simpleVariants.get(0).getAltAllele()).isEqualTo("C");
+                      });
+            });
+  }
+
+  @Test
+  void shouldContainSimpleVariantWithMissingDataFromGeneList() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(eq(1));
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name(Column.PATIENTEN_ID).value(4711),
+                      Column.name(Column.HAUPTPROZEDUR_ID).value(1),
+                      PropcatColumn.name("ergebnis").value("P"),
+                      Column.name("untersucht").value("BRAF"),
+                      Column.name("EVStart").value(123),
+                      Column.name("EVEnde").value(125),
+                      Column.name("evaltnucleotide").value("C"),
+                      Column.name("evrefnucleotide").value("A")
+                      // Not more data - fetch Information from gene list
+                      ));
+            })
+        .when(molekulargenuntersuchungCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+    assertThat(actual.getResults()).isNotNull();
+    assertThat(actual.getResults())
+        .satisfies(
+            results -> {
+              assertThat(results).isNotNull();
+              assertThat(results.getSimpleVariants())
+                  .satisfies(
+                      simpleVariants -> {
+                        assertThat(simpleVariants).hasSize(1);
+                        assertThat(simpleVariants.get(0).getChromosome())
+                            .isEqualTo(Chromosome.CHR7);
                         assertThat(simpleVariants.get(0).getGene().getCode())
                             .isEqualTo("HGNC:1097");
                         assertThat(simpleVariants.get(0).getGene().getDisplay()).isEqualTo("BRAF");
                         assertThat(simpleVariants.get(0).getGene().getSystem())
                             .isEqualTo("https://www.genenames.org/");
+                        assertThat(simpleVariants.get(0).getTranscriptId())
+                            .isEqualTo(
+                                TranscriptId.builder()
+                                    .value("ENSG00000157764")
+                                    .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                    .build());
                         assertThat(simpleVariants.get(0).getPosition())
                             .satisfies(
                                 position -> {

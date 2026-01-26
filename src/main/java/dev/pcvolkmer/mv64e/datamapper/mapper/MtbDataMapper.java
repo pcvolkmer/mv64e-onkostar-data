@@ -184,6 +184,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
             catalogueFactory.catalogue(RebiopsieCatalogue.class),
             catalogueFactory.catalogue(ReevaluationCatalogue.class),
             einzelempfehlungCatalogue,
+            catalogueFactory.catalogue(MolekulargenuntersuchungCatalogue.class),
             propertyCatalogue);
 
     var verwandteDataMapper =

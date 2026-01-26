@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenuntersuchungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
@@ -34,16 +35,19 @@ class EinzelempfehlungWirkstoffDataMapperTest {
 
   EinzelempfehlungCatalogue catalogue;
   EinzelempfehlungWirkstoffDataMapper mapper;
+  MolekulargenuntersuchungCatalogue untersuchungCatalogue;
 
   @BeforeEach
   void setUp(
       @Mock EinzelempfehlungCatalogue catalogue,
       @Mock TherapieplanCatalogue therapieplanCatalogue,
+      @Mock MolekulargenuntersuchungCatalogue untersuchungCatalogue,
       @Mock PropertyCatalogue propertyCatalogue) {
     this.catalogue = catalogue;
+    this.untersuchungCatalogue = untersuchungCatalogue;
     this.mapper =
         new EinzelempfehlungWirkstoffDataMapper(
-            catalogue, therapieplanCatalogue, propertyCatalogue);
+            catalogue, therapieplanCatalogue, untersuchungCatalogue, propertyCatalogue);
 
     // Care Plan
     doAnswer(
@@ -187,6 +191,93 @@ class EinzelempfehlungWirkstoffDataMapperTest {
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
     assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCodingCode.CODE_4);
+  }
+
+  @Test
+  void shouldMapSupportingVariants() {
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
+            Column.name("prio").value(1),
+            Column.name("st_mol_alt_variante_json")
+                .value(
+                    "[{\"id\":22641112,\"ergebnis\":\"Einfache Variante (Mutation)\",\"gen\":\"BRAF\",\"exon\":\"-\",\"pathogenitaetsklasse\":\"-\"}]"),
+            PropcatColumn.name("evidenzlevel").value("2"),
+            Column.name("evidenzlevel_publication").value("12345678\n12.2024/123"));
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(invocationOnMock.getArgument(0, Integer.class)),
+                    Column.name("untersucht").value("BRAF"),
+                    Column.name("evhgncid").value("HGNC:1234")))
+        .when(untersuchungCatalogue)
+        .getById(anyInt());
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getSupportingVariants()).hasSize(1);
+    assertThat(actual.getSupportingVariants().get(0))
+        .satisfies(
+            supportingVariant -> {
+              assertThat(supportingVariant).isNotNull();
+              assertThat(supportingVariant.getVariant())
+                  .isEqualTo(Reference.builder().id("22641112").type("Variant").build());
+              assertThat(supportingVariant.getGene())
+                  .isEqualTo(
+                      Coding.builder()
+                          .code("HGNC:1234")
+                          .display("BRAF")
+                          .system("https://www.genenames.org/")
+                          .build());
+            });
+  }
+
+  @Test
+  void shouldMapSupportingVariantsFromFallbackUsingGeneSymbol() {
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
+            Column.name("prio").value(1),
+            Column.name("st_mol_alt_variante_json")
+                .value(
+                    "[{\"id\":22641112,\"ergebnis\":\"Einfache Variante (Mutation)\",\"gen\":\"BRAF\",\"exon\":\"-\",\"pathogenitaetsklasse\":\"-\"}]"),
+            PropcatColumn.name("evidenzlevel").value("2"),
+            Column.name("evidenzlevel_publication").value("12345678\n12.2024/123"));
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(invocationOnMock.getArgument(0, Integer.class))))
+        .when(untersuchungCatalogue)
+        .getById(anyInt());
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getSupportingVariants()).hasSize(1);
+    assertThat(actual.getSupportingVariants().get(0))
+        .satisfies(
+            supportingVariant -> {
+              assertThat(supportingVariant).isNotNull();
+              assertThat(supportingVariant.getVariant())
+                  .isEqualTo(Reference.builder().id("22641112").type("Variant").build());
+              assertThat(supportingVariant.getGene())
+                  .isEqualTo(
+                      Coding.builder()
+                          // Real HGNC-ID - not faked ID for testing
+                          .code("HGNC:1097")
+                          .display("BRAF")
+                          .system("https://www.genenames.org/")
+                          .build());
+            });
   }
 
   @FuzzNullTest(

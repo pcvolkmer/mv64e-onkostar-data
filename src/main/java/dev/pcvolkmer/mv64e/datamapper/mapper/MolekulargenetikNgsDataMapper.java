@@ -174,37 +174,53 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                     logger.warn("No gene symbol found for simple variant {}", subform);
                     return null;
                   }
-                  final var geneOptional = GeneUtils.findBySymbol(untersucht);
-                  if (geneOptional.isEmpty()) {
-                    logger.warn("Gene symbol {} not found in gene catalogue", untersucht);
-                    return null;
-                  }
-
-                  var gene = geneOptional.get();
 
                   final var snvBuilder =
                       Snv.builder()
                           .id(subform.getString("id"))
                           .patient(subform.getPatientReference());
 
-                  // Check conversion
-                  var coding = GeneUtils.toCoding(gene);
-                  if (coding != null) snvBuilder.gene(coding);
-
-                  // Add transcriptId from gene list if no EnsemblID is available
+                  var chromosome = subform.getString("evchromosom");
+                  var hgncId = subform.getString("evhgncid");
                   var ensemblId = subform.getString("evensemblid");
-                  if (ensemblId != null) {
+
+                  if (null != chromosome && null != hgncId && null != ensemblId) {
+                    try {
+                      snvBuilder.chromosome(Chromosome.forValue(chromosome));
+                    } catch (Exception e) {
+                      logger.warn("No chromosome found for '{}'", chromosome);
+                    }
+                    snvBuilder.gene(
+                        Coding.builder()
+                            .code(hgncId)
+                            .display(untersucht)
+                            .system("https://www.genenames.org/")
+                            .build());
                     snvBuilder.transcriptId(
                         TranscriptId.builder()
                             .value(ensemblId)
                             .system(TranscriptIdSystem.ENSEMBL_ORG)
                             .build());
                   } else {
-                    snvBuilder.transcriptId(
-                        TranscriptId.builder()
-                            .value(gene.getEnsemblId())
-                            .system(TranscriptIdSystem.ENSEMBL_ORG)
-                            .build());
+                    final var geneOptional = GeneUtils.findBySymbol(untersucht);
+                    if (geneOptional.isEmpty()) {
+                      logger.warn("Gene symbol '{}' not found in gene catalogue", untersucht);
+                      return null;
+                    }
+                    geneOptional.ifPresent(
+                        gene -> {
+                          // Add hgncId and symbol from gene list if no HGNC ID is available
+                          snvBuilder.gene(GeneUtils.toCoding(gene));
+                          // Add transcriptId from gene list if no EnsemblID is available
+                          snvBuilder.transcriptId(
+                              TranscriptId.builder()
+                                  .value(gene.getEnsemblId())
+                                  .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                  .build());
+                          // Add chromosome
+                          gene.getSingleChromosomeInPropertyForm()
+                              .ifPresent(snvBuilder::chromosome);
+                        });
                   }
 
                   final var exon = subform.getString("exon");
@@ -241,8 +257,6 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                   if (null != posStart) {
                     snvBuilder.position(Position.builder().start(posStart).end(posEnd).build());
                   }
-
-                  gene.getSingleChromosomeInPropertyForm().ifPresent(snvBuilder::chromosome);
 
                   return snvBuilder.build();
                 })

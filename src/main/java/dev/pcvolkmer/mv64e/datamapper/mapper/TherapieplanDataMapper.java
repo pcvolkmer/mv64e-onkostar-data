@@ -21,10 +21,7 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.RebiopsieCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ReevaluationCatalogue;
-import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
@@ -54,6 +51,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
       final RebiopsieCatalogue rebiopsieCatalogue,
       final ReevaluationCatalogue reevaluationCatalogue,
       final EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      final MolekulargenuntersuchungCatalogue untersuchungCatalogue,
       final PropertyCatalogue propertyCatalogue) {
     this.therapieplanCatalogue = therapieplanCatalogue;
     this.rebiopsieCatalogue = rebiopsieCatalogue;
@@ -64,7 +62,10 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
         new EinzelempfehlungProzedurDataMapper(einzelempfehlungCatalogue, therapieplanCatalogue);
     this.einzelempfehlungWirkstoffDataMapper =
         new EinzelempfehlungWirkstoffDataMapper(
-            einzelempfehlungCatalogue, therapieplanCatalogue, propertyCatalogue);
+            einzelempfehlungCatalogue,
+            therapieplanCatalogue,
+            untersuchungCatalogue,
+            propertyCatalogue);
     this.einzelempfehlungStudieDataMapper =
         new EinzelempfehlungStudieDataMapper(einzelempfehlungCatalogue, therapieplanCatalogue);
   }

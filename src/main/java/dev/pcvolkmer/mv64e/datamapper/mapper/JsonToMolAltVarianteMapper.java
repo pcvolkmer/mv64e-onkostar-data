@@ -46,6 +46,20 @@ public class JsonToMolAltVarianteMapper {
     // intentionally left empty
   }
 
+  @NullMarked
+  public static List<Integer> mapIds(@Nullable String variantsJson) {
+    try {
+      return new ObjectMapper()
+          .readValue(variantsJson, new TypeReference<List<MolAltVariante>>() {}).stream()
+              .map(MolAltVariante::getId)
+              .map(Integer::parseInt)
+              .collect(Collectors.toList());
+    } catch (Exception e) {
+      throw new DataAccessException(
+          String.format("Cannot map gene alteration to ID for %s", variantsJson));
+    }
+  }
+
   public static List<GeneAlterationReference> map(@Nullable String variantsJson) {
     if (variantsJson == null) {
       return List.of();
