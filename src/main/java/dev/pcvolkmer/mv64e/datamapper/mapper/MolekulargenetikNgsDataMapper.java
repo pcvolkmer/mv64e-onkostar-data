@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -352,6 +353,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
   }
 
+  @NullMarked
   private NgsReportMetadata getNgsReportMetadata(final ResultSet osMolResultSet) {
 
     var builder = NgsReportMetadata.builder();
