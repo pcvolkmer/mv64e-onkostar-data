@@ -354,28 +354,39 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
   private NgsReportMetadata getNgsReportMetadata(final ResultSet osMolResultSet) {
 
-    return NgsReportMetadata.builder()
-        .sequencer(
-            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
-                osMolResultSet.getString("sequenziergeraet"),
-                osMolResultSet.getInteger("sequenziergeraet_propcat_version")))
-        .kitType(
-            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
-                osMolResultSet.getString("SeqKitTyp"),
-                osMolResultSet.getInteger("seqkittyp_propcat_version")))
-        .kitManufacturer(
-            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
-                osMolResultSet.getString("SeqKitHersteller"),
-                osMolResultSet.getInteger("seqkithersteller_propcat_version")))
-        .pipeline(
-            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
-                osMolResultSet.getString("SeqPipeline"),
-                osMolResultSet.getInteger("seqpipeline_propcat_version")))
-        .referenceGenome(
-            propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
-                osMolResultSet.getString("referenzgenom"),
-                osMolResultSet.getInteger("referenzgenom_propcat_version")))
-        .build();
+    var builder = NgsReportMetadata.builder();
+
+    var sequenziergeraet = osMolResultSet.getString("sequenziergeraet");
+    var  sequenziergeraetPv = osMolResultSet.getInteger("sequenziergeraet_propcat_version");
+    if (null != sequenziergeraet && null != sequenziergeraetPv) {
+      builder.sequencer(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(sequenziergeraet, sequenziergeraetPv));
+    }
+
+    var seqKitType = osMolResultSet.getString("SeqKitTyp");
+    var seqKitTypePv = osMolResultSet.getInteger("seqkittyp_propcat_version");
+    if (null != seqKitType && null != seqKitTypePv) {
+      builder.kitType(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqKitType, seqKitTypePv));
+    }
+
+    var seqKitManufacturer = osMolResultSet.getString("SeqKitHersteller");
+    var seqKitManufacturerPv = osMolResultSet.getInteger("seqkithersteller_propcat_version");
+    if (null != seqKitManufacturer && null != seqKitManufacturerPv) {
+      builder.kitManufacturer(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqKitManufacturer, seqKitManufacturerPv));
+    }
+
+    var seqPipeline = osMolResultSet.getString("SeqPipeline");
+    var seqPipelinePv = osMolResultSet.getInteger("seqpipeline_propcat_version");
+    if (null != seqPipeline && null != seqPipelinePv) {
+      builder.pipeline(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqPipeline, seqPipelinePv));
+    }
+
+    var referenceGenome = osMolResultSet.getString("referenzgenom");
+    var referenceGenomePv = osMolResultSet.getInteger("referenzgenom_propcat_version");
+    if (null != referenceGenome && null != referenceGenomePv) {
+      builder.referenceGenome(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(referenceGenome, referenceGenomePv));
+    }
+
+    return builder.build();
   }
 
   private static String mapProteinChangeToLongFormat(final String input) {
