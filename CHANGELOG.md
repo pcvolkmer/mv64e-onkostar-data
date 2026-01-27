@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.4.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.2...v0.4.3) (2026-01-27)
+
+
+### Features
+
+* do not filter incomplete data ([#115](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/115)) ([85709a1](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/85709a1b0d3ca6cbb96088666522be46c6bb78f3))
+* do not filter missing position, altAllele and refAllele ([#111](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/111)) ([5806c22](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/5806c22addc0e641e9da896b0aabe64186e0f969))
+* get simple variant data from form as default ([#114](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/114)) ([422172d](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/422172da6d28a68fd812bb694d5baa6e4843eb13))
+
 ## [0.4.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.1...v0.4.2) (2026-01-22)
 
 
