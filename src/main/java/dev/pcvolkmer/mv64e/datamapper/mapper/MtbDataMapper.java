@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Mapper class to load and map Mtb files from database
+ * Mapper class to load and map Mtb files from the database
  *
  * @author Paul-Christian Volkmer
  * @since 0.1
@@ -49,21 +49,18 @@ public class MtbDataMapper implements DataMapper<Mtb> {
   private final DataCatalogueFactory catalogueFactory;
   private final PropertyCatalogue propertyCatalogue;
 
-  private boolean filterIncomplete;
   private TumorCellContentMethodCodingCode tumorCellContentMethod;
 
   // In Würzburg immer histologisch!
   MtbDataMapper(final JdbcTemplate jdbcTemplate) {
-    this(jdbcTemplate, false, TumorCellContentMethodCodingCode.HISTOLOGIC);
+    this(jdbcTemplate, TumorCellContentMethodCodingCode.HISTOLOGIC);
   }
 
   MtbDataMapper(
       final JdbcTemplate jdbcTemplate,
-      final boolean filterIncomplete,
       final TumorCellContentMethodCodingCode tumorCellContentMethod) {
     this.catalogueFactory = DataCatalogueFactory.initialize(jdbcTemplate);
     this.propertyCatalogue = PropertyCatalogue.initialize(jdbcTemplate);
-    this.filterIncomplete = filterIncomplete;
     this.tumorCellContentMethod = tumorCellContentMethod;
   }
 
@@ -90,47 +87,30 @@ public class MtbDataMapper implements DataMapper<Mtb> {
   }
 
   /**
-   * Create instance of the mapper class
+   * Create an instance of the mapper class
    *
    * @param dataSource The datasource to be used
-   * @param filterIncomplete Filter incomplete items
    * @param tumorCellContentMethod Tumor cell count method
    * @return The initialized mapper
    */
   @NullMarked
   public static MtbDataMapper create(
-      final DataSource dataSource,
-      final boolean filterIncomplete,
-      final TumorCellContentMethodCodingCode tumorCellContentMethod) {
-    return new MtbDataMapper(
-        new JdbcTemplate(dataSource), filterIncomplete, tumorCellContentMethod);
+      final DataSource dataSource, final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+    return new MtbDataMapper(new JdbcTemplate(dataSource), tumorCellContentMethod);
   }
 
   /**
    * Create instance of the mapper class
    *
    * @param jdbcTemplate The Spring JdbcTemplate to be used
-   * @param filterIncomplete Filter incomplete items
    * @param tumorCellContentMethod Tumor cell count method
    * @return The initialized mapper
    */
   @NullMarked
   public static MtbDataMapper create(
       final JdbcTemplate jdbcTemplate,
-      final boolean filterIncomplete,
       final TumorCellContentMethodCodingCode tumorCellContentMethod) {
-    return new MtbDataMapper(jdbcTemplate, filterIncomplete, tumorCellContentMethod);
-  }
-
-  /**
-   * Filter incomplete items when using mapper
-   *
-   * @return Instance of MtbDataMapper with enabled filter.
-   */
-  @NullMarked
-  public MtbDataMapper filterIncomplete() {
-    this.filterIncomplete = true;
-    return this;
+    return new MtbDataMapper(jdbcTemplate, tumorCellContentMethod);
   }
 
   /**
@@ -273,7 +253,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       // interpretation not
       // implemented
 
-      if (this.filterIncomplete && specimens != null) {
+      if (specimens != null) {
         carePlans =
             carePlans.peek(
                 therapieplan ->

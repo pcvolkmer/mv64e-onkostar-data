@@ -20,7 +20,6 @@ datasource.setUser("onkostar");
 datasource.setPassword("devpass");
 
 var mtbMapper = MtbDataMapper.create(datasource)
-  .filterIncomplete()
   .tumorCellContentMethod(TumorCellContentMethodCodingCode.HISTOLOGIC);
 
 var jsonResult = Converter.toJsonString(
@@ -28,8 +27,8 @@ var jsonResult = Converter.toJsonString(
 );
 ```
 
-Die Verwendung von `filterIncomplete()` sorgt dafür, dass unvollständige oder nicht referenzierbare Einträge aus
-den Therapieplänen oder MSI-Findings entfernt werden und somit Validierungsfehler in DNPM:DIP vermieden werden.
+Unvollständige Daten aus den Onkostar-Formularen werden "as-is" exportiert. Eine Filterung wird nicht (mehr) durchgeführt.
+Entsprechende Fehler werden durch DNPM:DIP erkannt und als Issue angemerkt.
 
 Mit `tumorCellContentMethod(TumorCellContentMethodCodingCode.HISTOLOGIC)` kann die verwendete Methode zur Feststellung
 des Tumorzellgehalts angegeben werden.
