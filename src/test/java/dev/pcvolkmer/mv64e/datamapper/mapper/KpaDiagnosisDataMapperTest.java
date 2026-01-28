@@ -100,6 +100,7 @@ class KpaDiagnosisDataMapperTest {
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
                     PropcatColumn.name("icd10").value("F79.9"),
+                    PropcatColumn.name("icdo3lokalisation").value("C72.0"),
                     PropcatColumn.name("leitlinienstatus").value("exhausted")))
         .when(kpaCatalogue)
         .getById(anyInt());
@@ -127,6 +128,7 @@ class KpaDiagnosisDataMapperTest {
     assertThat(actual.getId()).isEqualTo("1");
     assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
     assertThat(actual.getCode().getCode()).isEqualTo("F79.9");
+    assertThat(actual.getTopography().getCode()).isEqualTo("C72.0");
 
     assertThat(actual.getGermlineCodes()).hasSize(1);
     assertThat(actual.getGermlineCodes().get(0).getCode()).isEqualTo("C00.0");
@@ -141,7 +143,9 @@ class KpaDiagnosisDataMapperTest {
         Column.PATIENTEN_ID,
         Column.HAUPTPROZEDUR_ID,
         "icd10",
-        "icd10_propcat_version"
+        "icd10_propcat_version",
+        "icdo3lokalisation",
+        "icdo3lokalisation_propcat_version"
       })
   void fuzzTestNullColumns(final ResultSet resultSet) {
     when(kpaCatalogue.getById(anyInt())).thenReturn(resultSet);
@@ -160,7 +164,8 @@ class KpaDiagnosisDataMapperTest {
                 List.of(
                     TestResultSet.withColumns(
                         Column.name(Column.ID).value(1),
-                        PropcatColumn.name("icd10").value("C00.0"))))
+                        PropcatColumn.name("icd10").value("C00.0"),
+                        PropcatColumn.name("icdo3lokalisation").value("C00.0"))))
         .when(keimbahndiagnoseCatalogue)
         .getAllByParentId(anyInt());
 
@@ -170,12 +175,18 @@ class KpaDiagnosisDataMapperTest {
 
   @FuzzNullTest(
       initMethod = "fuzzInitData",
-      includeColumns = {"icd10", "icd10_propcat_version"})
+      includeColumns = {
+        "icd10",
+        "icd10_propcat_version",
+        "icdo3lokalisation",
+        "icdo3lokalisation_propcat_version"
+      })
   void fuzzTestShouldThrowIgnorableMappingException(final ResultSet resultSet) {
     when(kpaCatalogue.getById(anyInt())).thenReturn(resultSet);
 
     var exception = assertThrows(IgnorableMappingException.class, () -> this.dataMapper.getById(1));
-    assertThat(exception).hasMessage("Cannot get expected ICD10 code or property catalogue entry");
+    assertThat(exception)
+        .hasMessageMatching("Cannot get expected ICD(10|O3) code or property catalogue entry.*");
   }
 
   static ResultSet fuzzInitData() {
@@ -183,6 +194,7 @@ class KpaDiagnosisDataMapperTest {
         Column.name(Column.ID).value(1),
         Column.name(Column.PATIENTEN_ID).value(42),
         PropcatColumn.name("icd10").value("F79.9"),
+        PropcatColumn.name("icdo3lokalisation").value("C72.0"),
         PropcatColumn.name("leitlinienstatus").value("exhausted"));
   }
 }

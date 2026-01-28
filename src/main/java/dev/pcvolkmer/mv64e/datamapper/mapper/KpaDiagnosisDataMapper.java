@@ -87,6 +87,15 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
           "Cannot get expected ICD10 code or property catalogue entry");
     }
 
+    // Validate ICDO3 code presence
+    final var icd03 = data.getString("icdo3lokalisation");
+    final var icd03PropcatVersion = data.getInteger("icdo3lokalisation_propcat_version");
+
+    if (null == icd03 || null == icd03PropcatVersion) {
+      throw new IgnorableMappingException(
+          "Cannot get expected ICDO3 code or property catalogue entry");
+    }
+
     var builder = MtbDiagnosis.builder();
     builder
         .id(data.getString("id"))
@@ -105,7 +114,19 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                         .getVersionDescription())
                 .build())
         .recordedOn(data.getDate("datumerstdiagnose"))
-        .topography(Coding.builder().code(data.getString("icdo3lokalisation")).build())
+        .topography(
+            Coding.builder()
+                .code(icd03)
+                .system("http://terminology.hl7.org/CodeSystem/icd-o-3")
+                .display(
+                    propertyCatalogue
+                        .getByCodeAndVersion(icd03, icd03PropcatVersion)
+                        .getShortdesc())
+                .version(
+                    propertyCatalogue
+                        .getByCodeAndVersion(icd03, icd03PropcatVersion)
+                        .getVersionDescription())
+                .build())
         .type(getType(data))
         .grading(getGrading(id))
         .staging(getStaging(id))
