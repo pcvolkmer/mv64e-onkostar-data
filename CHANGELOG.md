@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.3...v0.4.4) (2026-01-28)
+
+
+### Features
+
+* Add ICD-o3 system, display and version to kpa diagnosis ([#116](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/116)) ([9390200](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/93902006c9c799495897899337d43d80c1db140c))
+
 ## [0.4.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.2...v0.4.3) (2026-01-27)
 
 
