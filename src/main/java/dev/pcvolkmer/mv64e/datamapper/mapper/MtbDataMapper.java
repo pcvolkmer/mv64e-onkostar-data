@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2025  Paul-Christian Volkmer
+ * Copyright (C) 2026  Paul-Christian Volkmer
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,7 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,8 +60,18 @@ public class MtbDataMapper implements DataMapper<Mtb> {
   MtbDataMapper(
       final JdbcTemplate jdbcTemplate,
       final TumorCellContentMethodCodingCode tumorCellContentMethod) {
-    this.catalogueFactory = DataCatalogueFactory.initialize(jdbcTemplate);
-    this.propertyCatalogue = PropertyCatalogue.initialize(jdbcTemplate);
+    this(
+        DataCatalogueFactory.initialize(jdbcTemplate),
+        PropertyCatalogue.initialize(jdbcTemplate),
+        tumorCellContentMethod);
+  }
+
+  MtbDataMapper(
+      final DataCatalogueFactory dataCatalogueFactory,
+      final PropertyCatalogue propertyCatalogue,
+      final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+    this.catalogueFactory = dataCatalogueFactory;
+    this.propertyCatalogue = propertyCatalogue;
     this.tumorCellContentMethod = tumorCellContentMethod;
   }
 
@@ -304,15 +315,29 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .ok()
           .ifPresent(resultBuilder::guidelineTherapies);
 
+      var metadataBuilder = MvhMetadata.builder().type(MvhSubmissionType.INITIAL);
+
       // Consent - as far as present
       var consentId = kpaCatalogue.getById(kpaId).getInteger("consentmv64e");
       if (null != consentId) {
-        resultBuilder.metadata(
-            MvhMetadata.builder()
-                .modelProjectConsent(consentMvDataMapper.getById(consentId))
-                .type(MvhSubmissionType.INITIAL)
-                .build());
+        metadataBuilder.modelProjectConsent(consentMvDataMapper.getById(consentId));
       }
+
+      // Reason for missing research consent
+      var reasonMissingResearchConsent =
+          kpaCatalogue.getById(kpaId).getString("grundkeinbroadconsent");
+      if (null != reasonMissingResearchConsent) {
+        try {
+          metadataBuilder.reasonResearchConsentMissing(
+              ResearchConsentReasonMissing.forValue(reasonMissingResearchConsent));
+        } catch (IOException e) {
+          logger.warn(
+              "A reason for missing research consent is set but cannot be used: '{}'",
+              reasonMissingResearchConsent);
+        }
+      }
+
+      resultBuilder.metadata(metadataBuilder.build());
     } catch (DataAccessException e) {
       logger.error("Error while getting Mtb.", e);
       throw e;
