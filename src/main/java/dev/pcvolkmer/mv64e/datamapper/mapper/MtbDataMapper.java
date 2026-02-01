@@ -227,26 +227,24 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       kpaPatient.setId(patient.getId());
       kpaPatient.setAddress(patient.getAddress());
 
-      var specimens =
-          tryAndLogWithResult(() -> diagnosisDataMapper.getById(kpaId))
-              .andTryWithResult(
-                  diagnosis -> {
-                    // DNPM Klinik/Anamnese
-                    resultBuilder.diagnoses(List.of(diagnosis));
-                    return diagnosis;
-                  })
-              .andTryWithResult(
-                  diagnosis ->
-                      molekulargenetikToSpecimenDataMapper.getAllByKpaId(
-                          kpaId,
-                          Reference.builder().id(diagnosis.getId()).type("MTBDiagnosis").build()))
-              .andTryWithResult(
-                  specimenList -> {
-                    // Tumorproben
-                    resultBuilder.specimens(specimenList);
-                    return specimenList;
-                  })
-              .okOrNull();
+      tryAndLogWithResult(() -> diagnosisDataMapper.getById(kpaId))
+          .andTryWithResult(
+              diagnosis -> {
+                // DNPM Klinik/Anamnese
+                resultBuilder.diagnoses(List.of(diagnosis));
+                return diagnosis;
+              })
+          .andTryWithResult(
+              diagnosis ->
+                  molekulargenetikToSpecimenDataMapper.getAllByKpaId(
+                      kpaId,
+                      Reference.builder().id(diagnosis.getId()).type("MTBDiagnosis").build()))
+          .andTryWithResult(
+              specimenList -> {
+                // Tumorproben
+                resultBuilder.specimens(specimenList);
+                return specimenList;
+              });
 
       var carePlans =
           therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
@@ -263,31 +261,6 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       // as not needed for MVH and
       // interpretation not
       // implemented
-
-      if (specimens != null) {
-        carePlans =
-            carePlans.peek(
-                therapieplan ->
-                    therapieplan.setMedicationRecommendations(
-                        therapieplan.getMedicationRecommendations().stream()
-                            .peek(
-                                mtbMedicationRecommendation ->
-                                    mtbMedicationRecommendation.setSupportingVariants(
-                                        mtbMedicationRecommendation.getSupportingVariants().stream()
-                                            .filter(
-                                                geneAlterationReference ->
-                                                    specimens.stream()
-                                                        .map(TumorSpecimen::getId)
-                                                        .collect(Collectors.toList())
-                                                        .contains(
-                                                            geneAlterationReference
-                                                                .getVariant()
-                                                                .getId()))
-                                            .collect(Collectors.toList())))
-                            .collect(Collectors.toList())));
-
-        msiFindings = msiFindings.filter(msi -> msi.getInterpretation() != null);
-      }
 
       resultBuilder
           .patient(kpaPatient)
