@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.5.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.4...v0.5.0) (2026-02-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove reference filter ([#124](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/124))
+
+### Features
+
+* extract reason for missing broad consent ([#119](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/119)) ([ef2b4bc](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/ef2b4bc2f79f2c9ab23f5b6a6c3e4b500c53de9e))
+* remove reference filter ([#124](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/124)) ([5103346](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/5103346ee55be2a302e1a061fdeb46e79de950b3))
+
+
+### Bug Fixes
+
+* handle blank form fields "untersucht" and "evhgncid" ([#123](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/123)) ([4203f36](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/4203f361ee55eefd7580f3507298ea79ec8beae5))
+
 ## [0.4.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.3...v0.4.4) (2026-01-28)
 
 
