@@ -116,7 +116,10 @@ public class EinzelempfehlungWirkstoffDataMapper
                       var geneAlteration = untersuchungCatalogue.getById(id);
                       var untersucht = geneAlteration.getString("untersucht");
                       var hgncId = geneAlteration.getString("evhgncid");
-                      if (null == untersucht || null == hgncId) {
+                      if (null == untersucht
+                          || untersucht.isBlank()
+                          || null == hgncId
+                          || hgncId.isBlank()) {
                         return null;
                       }
                       return GeneAlterationReference.builder()
