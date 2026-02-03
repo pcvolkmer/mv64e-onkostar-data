@@ -27,8 +27,10 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.jspecify.annotations.NullMarked;
@@ -269,14 +271,22 @@ public class MtbDataMapper implements DataMapper<Mtb> {
             carePlans.peek(
                 therapieplan ->
                     therapieplan.setMedicationRecommendations(
-                        therapieplan.getMedicationRecommendations().stream()
+                        Optional.ofNullable(therapieplan.getMedicationRecommendations())
+                            .orElse(Collections.emptyList())
+                            .stream()
+                            .filter(Objects::nonNull)
                             .peek(
                                 mtbMedicationRecommendation ->
                                     mtbMedicationRecommendation.setSupportingVariants(
-                                        mtbMedicationRecommendation.getSupportingVariants().stream()
+                                        Optional.ofNullable(
+                                                mtbMedicationRecommendation.getSupportingVariants())
+                                            .orElse(Collections.emptyList())
+                                            .stream()
+                                            .filter(Objects::nonNull)
                                             .filter(
                                                 geneAlterationReference ->
                                                     specimens.stream()
+                                                        .filter(Objects::nonNull)
                                                         .map(TumorSpecimen::getId)
                                                         .collect(Collectors.toList())
                                                         .contains(
