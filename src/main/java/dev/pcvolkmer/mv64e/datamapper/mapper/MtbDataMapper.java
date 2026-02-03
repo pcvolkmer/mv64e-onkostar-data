@@ -239,12 +239,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
                   molekulargenetikToSpecimenDataMapper.getAllByKpaId(
                       kpaId,
                       Reference.builder().id(diagnosis.getId()).type("MTBDiagnosis").build()))
-          .andTryWithResult(
-              specimenList -> {
-                // Tumorproben
-                resultBuilder.specimens(specimenList);
-                return specimenList;
-              });
+          .andTry(resultBuilder::specimens);
 
       var carePlans =
           therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
