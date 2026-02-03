@@ -280,6 +280,51 @@ class EinzelempfehlungWirkstoffDataMapperTest {
             });
   }
 
+  @Test
+  void shouldMapSupportingVariantsForBlankFormFieldsFromFallbackUsingGeneSymbol() {
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
+            Column.name("prio").value(1),
+            Column.name("st_mol_alt_variante_json")
+                .value(
+                    "[{\"id\":22641112,\"ergebnis\":\"Einfache Variante (Mutation)\",\"gen\":\"BRAF\",\"exon\":\"-\",\"pathogenitaetsklasse\":\"-\"}]"),
+            PropcatColumn.name("evidenzlevel").value("2"),
+            Column.name("evidenzlevel_publication").value("12345678\n12.2024/123"));
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(invocationOnMock.getArgument(0, Integer.class)),
+                    Column.name("untersucht").value(""),
+                    Column.name("evhgncid").value("")))
+        .when(untersuchungCatalogue)
+        .getById(anyInt());
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual).isNotNull();
+    assertThat(actual.getSupportingVariants()).hasSize(1);
+    assertThat(actual.getSupportingVariants().get(0))
+        .satisfies(
+            supportingVariant -> {
+              assertThat(supportingVariant).isNotNull();
+              assertThat(supportingVariant.getVariant())
+                  .isEqualTo(Reference.builder().id("22641112").type("Variant").build());
+              assertThat(supportingVariant.getGene())
+                  .isEqualTo(
+                      Coding.builder()
+                          // Real HGNC-ID - not faked ID for testing
+                          .code("HGNC:1097")
+                          .display("BRAF")
+                          .system("https://www.genenames.org/")
+                          .build());
+            });
+  }
+
   @FuzzNullTest(
       initMethod = "fuzzInitData",
       excludeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID})
