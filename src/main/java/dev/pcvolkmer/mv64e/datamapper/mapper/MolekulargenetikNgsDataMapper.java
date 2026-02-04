@@ -182,9 +182,13 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
                   var chromosome = subform.getString("evchromosom");
                   var hgncId = subform.getString("evhgncid");
-                  var ensemblId = subform.getString("evensemblid");
 
-                  if (null != chromosome && null != hgncId && null != ensemblId) {
+                  // Prepare Transcript ID (nullable) which might come from EnsemblID or EVNMNummer
+                  var transcriptId =
+                      TryGetTranscriptID(
+                          subform.getString("evensemblid"), subform.getString("evnmnummer"));
+
+                  if (null != chromosome && null != hgncId && null != transcriptId) {
                     try {
                       snvBuilder.chromosome(Chromosome.forValue(chromosome));
                     } catch (Exception e) {
@@ -196,11 +200,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                             .display(untersucht)
                             .system("https://www.genenames.org/")
                             .build());
-                    snvBuilder.transcriptId(
-                        TranscriptId.builder()
-                            .value(ensemblId)
-                            .system(TranscriptIdSystem.ENSEMBL_ORG)
-                            .build());
+                    snvBuilder.transcriptId(transcriptId);
+
                   } else {
                     final var geneOptional = GeneUtils.findBySymbol(untersucht);
                     if (geneOptional.isEmpty()) {
@@ -211,12 +212,15 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                         gene -> {
                           // Add hgncId and symbol from gene list if no HGNC ID is available
                           snvBuilder.gene(GeneUtils.toCoding(gene));
-                          // Add transcriptId from gene list if no EnsemblID is available
+                          // Add transcriptId from gene list if no EnsemblID or NMNummer is
+                          // available, but if transcript ID is available we still may use it.
                           snvBuilder.transcriptId(
-                              TranscriptId.builder()
-                                  .value(gene.getEnsemblId())
-                                  .system(TranscriptIdSystem.ENSEMBL_ORG)
-                                  .build());
+                              transcriptId == null
+                                  ? TranscriptId.builder()
+                                      .value(gene.getEnsemblId())
+                                      .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                      .build()
+                                  : transcriptId);
                           // Add chromosome
                           gene.getSingleChromosomeInPropertyForm()
                               .ifPresent(snvBuilder::chromosome);
@@ -468,5 +472,28 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
 
     return input;
+  }
+
+  @Nullable
+  private static TranscriptId TryGetTranscriptID(
+      @Nullable final String ensemblId, @Nullable final String evnmNummer) {
+
+    var transcriptId =
+        (ensemblId != null && !ensemblId.isEmpty())
+            ? ensemblId
+            : (evnmNummer != null && !evnmNummer.isEmpty()) ? evnmNummer : null;
+
+    var transcriptIdSystem =
+        (ensemblId != null && !ensemblId.isEmpty())
+            ? TranscriptIdSystem.ENSEMBL_ORG
+            : (evnmNummer != null && !evnmNummer.isEmpty())
+                ? TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ
+                : null;
+
+    if (transcriptId == null || transcriptIdSystem == null) {
+      return null;
+    }
+
+    return TranscriptId.builder().value(transcriptId).system(transcriptIdSystem).build();
   }
 }
