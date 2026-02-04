@@ -303,6 +303,67 @@ class MolekulargenetikNgsDataMapperTest {
             });
   }
 
+  @Test
+  void shouldContainSimpleVariantWithNmNumberAsPrecedence() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(eq(1));
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name(Column.PATIENTEN_ID).value(4711),
+                      Column.name(Column.HAUPTPROZEDUR_ID).value(1),
+                      PropcatColumn.name("ergebnis").value("P"),
+                      Column.name("untersucht").value("BRAF"),
+                      Column.name("EVStart").value(123),
+                      Column.name("EVEnde").value(125),
+                      Column.name("evaltnucleotide").value("C"),
+                      Column.name("evrefnucleotide").value("A"),
+                      // Not real data - just for testing purposes
+                      Column.name("evhgncid").value("HGNC:1234"),
+                      Column.name("evchromosom").value("chr1"),
+                      Column.name("evensemblid").value("ENSG00000123456"),
+                      Column.name("evnmnummer").value("NM_0000123456")));
+            })
+        .when(molekulargenuntersuchungCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+    assertThat(actual.getResults()).isNotNull();
+    assertThat(actual.getResults())
+        .satisfies(
+            results -> {
+              assertThat(results).isNotNull();
+              assertThat(results.getSimpleVariants())
+                  .satisfies(
+                      simpleVariants -> {
+                        assertThat(simpleVariants.get(0).getTranscriptId())
+                            .isEqualTo(
+                                TranscriptId.builder()
+                                    .value("NM_0000123456")
+                                    .system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ)
+                                    .build());
+                      });
+            });
+  }
+
   @ParameterizedTest
   @CsvSource({
     "p.F123G,p.Phe123Gly",
