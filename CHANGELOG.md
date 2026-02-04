@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.0...v0.5.1) (2026-02-04)
+
+
+### Features
+
+* NM-Nummer and corresponding RefSeq-System for transcriptId ([#125](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/125)) ([aae1243](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/aae12434404855da6c09c6d8f4adcb9e84c8e6cb))
+
+
+### Bug Fixes
+
+* topgraphy system to fit kdk Köln requirements ([#126](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/126)) ([a0987fe](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/a0987fe3cf97764cdc2c6d02588154dd7086322e))
+
 ## [0.5.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.4.4...v0.5.0) (2026-02-03)
 
 
