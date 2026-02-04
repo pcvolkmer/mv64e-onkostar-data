@@ -185,7 +185,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
                   // Prepare Transcript ID (nullable) which might come from EnsemblID or EVNMNummer
                   var transcriptId =
-                      TryGetTranscriptID(
+                      tryGetTranscriptID(
                           subform.getString("evensemblid"), subform.getString("evnmnummer"));
 
                   if (null != chromosome && null != hgncId && null != transcriptId) {
@@ -475,25 +475,19 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   }
 
   @Nullable
-  private static TranscriptId TryGetTranscriptID(
+  private static TranscriptId tryGetTranscriptID(
       @Nullable final String ensemblId, @Nullable final String evnmNummer) {
 
-    var transcriptId =
-        (ensemblId != null && !ensemblId.isEmpty())
-            ? ensemblId
-            : (evnmNummer != null && !evnmNummer.isEmpty()) ? evnmNummer : null;
+    var resultBuilder = TranscriptId.builder();
 
-    var transcriptIdSystem =
-        (ensemblId != null && !ensemblId.isEmpty())
-            ? TranscriptIdSystem.ENSEMBL_ORG
-            : (evnmNummer != null && !evnmNummer.isEmpty())
-                ? TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ
-                : null;
-
-    if (transcriptId == null || transcriptIdSystem == null) {
+    if (null != evnmNummer && !evnmNummer.isBlank()) {
+      resultBuilder.value(evnmNummer).system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ);
+    } else if (null != ensemblId && !ensemblId.isBlank()) {
+      resultBuilder.value(ensemblId).system(TranscriptIdSystem.ENSEMBL_ORG);
+    } else {
       return null;
     }
 
-    return TranscriptId.builder().value(transcriptId).system(transcriptIdSystem).build();
+    return resultBuilder.build();
   }
 }
