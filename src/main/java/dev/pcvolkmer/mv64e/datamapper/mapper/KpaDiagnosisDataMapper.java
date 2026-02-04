@@ -117,7 +117,7 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
         .topography(
             Coding.builder()
                 .code(icd03)
-                .system("http://terminology.hl7.org/CodeSystem/icd-o-3")
+                .system("urn:oid:2.16.840.1.113883.6.43.1")
                 .display(
                     propertyCatalogue
                         .getByCodeAndVersion(icd03, icd03PropcatVersion)
