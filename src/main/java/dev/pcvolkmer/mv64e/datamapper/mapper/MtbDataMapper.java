@@ -306,7 +306,8 @@ public class MtbDataMapper implements DataMapper<Mtb> {
         }
       }
 
-      if (null != consentId || null != reasonMissingResearchConsent) {
+      if (null != consentId
+          || (null != reasonMissingResearchConsent && !reasonMissingResearchConsent.isBlank())) {
         resultBuilder.metadata(metadataBuilder.build());
       }
     } catch (DataAccessException e) {

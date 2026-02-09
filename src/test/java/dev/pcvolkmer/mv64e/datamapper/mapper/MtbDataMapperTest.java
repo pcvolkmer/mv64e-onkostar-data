@@ -188,7 +188,7 @@ class MtbDataMapperTest {
     }
 
     @Test
-    void shouldNotInitializeMetadataIfNoConsentRequired() {
+    void shouldNotInitializeMetadataIfNoConsent() {
       when(kpaCatalogue.getById(anyInt()))
           .thenReturn(
               TestResultSet.withColumns(
@@ -205,6 +205,51 @@ class MtbDataMapperTest {
 
       assertThat(actual).isInstanceOf(Mtb.class);
       assertThat(actual.getMetadata()).isNull();
+    }
+
+    @Test
+    void shouldNotInitializeMetadataIfEmptyResearchConsentReason() {
+      when(kpaCatalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(1),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  Column.name("patient_id").value(42),
+                  Column.name("grundkeinbroadconsent").value(" "),
+                  PropcatColumn.name("icd10").value("C00.0"),
+                  PropcatColumn.name("icdo3lokalisation").value("8000/0")));
+
+      when(patientCatalogue.getById(anyInt()))
+          .thenReturn(TestResultSet.withColumns(Column.name(Column.ID).value(42)));
+
+      var actual = out.getById(1);
+
+      assertThat(actual).isInstanceOf(Mtb.class);
+      assertThat(actual.getMetadata()).isNull();
+    }
+
+    @Test
+    void shouldMapReasonMissingResearchConsent() {
+      when(kpaCatalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(1),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  Column.name("patient_id").value(42),
+                  PropcatColumn.name("icd10").value("C00.0"),
+                  PropcatColumn.name("icdo3lokalisation").value("8000/0"),
+                  PropcatColumn.name("grundkeinbroadconsent").value("consent-not-returned")));
+
+      when(patientCatalogue.getById(anyInt()))
+          .thenReturn(TestResultSet.withColumns(Column.name(Column.ID).value(42)));
+
+      var actual = out.getById(1);
+
+      assertThat(actual.getMetadata())
+          .satisfies(
+              mvhMetadata ->
+                  assertThat(mvhMetadata.getReasonResearchConsentMissing())
+                      .isEqualTo(ResearchConsentReasonMissing.CONSENT_NOT_RETURNED));
     }
 
     @Test
@@ -262,30 +307,6 @@ class MtbDataMapperTest {
                           assertThat(provisions).containsAll((Iterable) expectedProvisions);
                         });
               });
-    }
-
-    @Test
-    void shouldMapReasonMissingResearchConsent() {
-      when(kpaCatalogue.getById(anyInt()))
-          .thenReturn(
-              TestResultSet.withColumns(
-                  Column.name(Column.ID).value(1),
-                  Column.name(Column.PATIENTEN_ID).value(42),
-                  Column.name("patient_id").value(42),
-                  PropcatColumn.name("icd10").value("C00.0"),
-                  PropcatColumn.name("icdo3lokalisation").value("8000/0"),
-                  PropcatColumn.name("grundkeinbroadconsent").value("consent-not-returned")));
-
-      when(patientCatalogue.getById(anyInt()))
-          .thenReturn(TestResultSet.withColumns(Column.name(Column.ID).value(42)));
-
-      var actual = out.getById(1);
-
-      assertThat(actual.getMetadata())
-          .satisfies(
-              mvhMetadata ->
-                  assertThat(mvhMetadata.getReasonResearchConsentMissing())
-                      .isEqualTo(ResearchConsentReasonMissing.CONSENT_NOT_RETURNED));
     }
   }
 }
