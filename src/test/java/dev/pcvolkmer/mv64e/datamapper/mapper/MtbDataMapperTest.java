@@ -188,7 +188,7 @@ class MtbDataMapperTest {
     }
 
     @Test
-    void shouldInitializeMetadata() {
+    void shouldNotInitializeMetadataIfNoConsentRequired() {
       when(kpaCatalogue.getById(anyInt()))
           .thenReturn(
               TestResultSet.withColumns(
@@ -204,7 +204,7 @@ class MtbDataMapperTest {
       var actual = out.getById(1);
 
       assertThat(actual).isInstanceOf(Mtb.class);
-      assertThat(actual.getMetadata()).isInstanceOf(MvhMetadata.class);
+      assertThat(actual.getMetadata()).isNull();
     }
 
     @Test

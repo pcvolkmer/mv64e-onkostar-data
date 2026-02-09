@@ -283,17 +283,18 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .ok()
           .ifPresent(resultBuilder::guidelineTherapies);
 
-      var metadataBuilder = MvhMetadata.builder().type(MvhSubmissionType.INITIAL);
+      var metadataBuilder = MvhMetadata.builder().type(MvhSubmissionType.INITIAL).transferTan("");
+
+      var consentId = kpaCatalogue.getById(kpaId).getInteger("consentmv64e");
+      var reasonMissingResearchConsent =
+          kpaCatalogue.getById(kpaId).getString("grundkeinbroadconsent");
 
       // Consent - as far as present
-      var consentId = kpaCatalogue.getById(kpaId).getInteger("consentmv64e");
       if (null != consentId) {
         metadataBuilder.modelProjectConsent(consentMvDataMapper.getById(consentId));
       }
 
       // Reason for missing research consent
-      var reasonMissingResearchConsent =
-          kpaCatalogue.getById(kpaId).getString("grundkeinbroadconsent");
       if (null != reasonMissingResearchConsent) {
         try {
           metadataBuilder.reasonResearchConsentMissing(
@@ -305,7 +306,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
         }
       }
 
-      resultBuilder.metadata(metadataBuilder.build());
+      if (null != consentId || null != reasonMissingResearchConsent) {
+        resultBuilder.metadata(metadataBuilder.build());
+      }
     } catch (DataAccessException e) {
       logger.error("Error while getting Mtb.", e);
       throw e;
