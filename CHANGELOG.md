@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.1...v0.5.2) (2026-02-09)
+
+
+### Features
+
+* add empty transfer TAN to metadata ([#129](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/129)) ([758bf61](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/758bf61cdfcfa41af38a36314daf976a69468132))
+
 ## [0.5.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.0...v0.5.1) (2026-02-04)
 
 
