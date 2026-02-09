@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.2...v0.5.3) (2026-02-09)
+
+
+### Features
+
+* ignore empty research consent reason ([#131](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/131)) ([705aba6](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/705aba682d8658f57f0da0d9e563a4e24d566303))
+
+
+### Bug Fixes
+
+* use correct case in table columns ([#133](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/133)) ([b4b4e76](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/b4b4e7652fd7f516c40c051528f78c638f3001f2))
+
 ## [0.5.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.1...v0.5.2) (2026-02-09)
 
 
