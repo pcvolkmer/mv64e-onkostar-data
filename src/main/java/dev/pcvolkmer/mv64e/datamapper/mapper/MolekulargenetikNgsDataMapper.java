@@ -382,6 +382,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
       builder.sequencer(
           propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
               sequenziergeraet, sequenziergeraetPv));
+    } else {
+      builder.sequencer("Sequencer not specified.");
     }
 
     var seqKitType = osMolResultSet.getString("seqkittyp");
@@ -389,6 +391,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     if (null != seqKitType && null != seqKitTypePv) {
       builder.kitType(
           propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqKitType, seqKitTypePv));
+    } else {
+      builder.kitType("SeqKitType not specified.");
     }
 
     var seqKitManufacturer = osMolResultSet.getString("seqkithersteller");
@@ -397,6 +401,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
       builder.kitManufacturer(
           propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(
               seqKitManufacturer, seqKitManufacturerPv));
+    } else {
+      builder.kitManufacturer("SeqKitHersteller not specified.");
     }
 
     var seqPipeline = osMolResultSet.getString("seqpipeline");
@@ -404,6 +410,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     if (null != seqPipeline && null != seqPipelinePv) {
       builder.pipeline(
           propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqPipeline, seqPipelinePv));
+    } else {
+      builder.pipeline("SeqPipeline not specified.");
     }
 
     var referenceGenome = osMolResultSet.getString("referenzgenom");

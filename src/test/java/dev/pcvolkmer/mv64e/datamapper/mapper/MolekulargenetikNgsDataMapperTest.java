@@ -1,8 +1,7 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -88,6 +87,73 @@ class MolekulargenetikNgsDataMapperTest {
     var actual = this.mapper.getById(1);
 
     assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+  }
+
+  @Test
+  void shouldAlwaysContainMetadataInNgsReport() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual.getMetadata())
+        .satisfies(
+            metadata -> {
+              assertThat(metadata).hasSize(1);
+              assertThat(metadata.get(0).getKitType()).isNotNull();
+              assertThat(metadata.get(0).getKitManufacturer()).isNotNull();
+              assertThat(metadata.get(0).getSequencer()).isNotNull();
+              assertThat(metadata.get(0).getPipeline()).isNotNull();
+            });
+  }
+
+  @Test
+  void shouldUseEmptyValueOnMissingPropcatInNgsReportMetadata() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"),
+                  PropcatColumn.name("sequenziergeraet").value("FancySeq"),
+                  PropcatColumn.name("seqkittyp").value("FancySeqKitTyp"),
+                  PropcatColumn.name("seqkithersteller").value("FancySeqKitHersteller"),
+                  PropcatColumn.name("seqpipeline").value("FancySeqPipeline"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    when(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(anyString(), anyInt()))
+        .thenReturn("");
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual.getMetadata())
+        .satisfies(
+            metadata -> {
+              assertThat(metadata).hasSize(1);
+              assertThat(metadata.get(0).getKitType()).isEqualTo("");
+              assertThat(metadata.get(0).getKitManufacturer()).isEqualTo("");
+              assertThat(metadata.get(0).getSequencer()).isEqualTo("");
+              assertThat(metadata.get(0).getPipeline()).isEqualTo("");
+            });
   }
 
   @Test
