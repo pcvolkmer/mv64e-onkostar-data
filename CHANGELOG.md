@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.3...v0.5.4) (2026-02-10)
+
+
+### Bug Fixes
+
+* add default values for sequencer and kit ([#135](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/135)) ([f722dc4](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/f722dc4ca9c85418392cf2df11196f074cda27da))
+
 ## [0.5.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.2...v0.5.3) (2026-02-09)
 
 
