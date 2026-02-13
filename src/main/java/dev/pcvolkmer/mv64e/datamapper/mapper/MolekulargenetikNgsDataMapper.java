@@ -429,6 +429,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     final var mappingTable =
         List.of(
             Tuple.from("*", "*"),
+            Tuple.from("=", "="),
+            Tuple.from("fs", "fs"),
             Tuple.from("F", "Phe"),
             Tuple.from("L", "Leu"),
             Tuple.from("S", "Ser"),
@@ -452,7 +454,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     final var pattern =
         Pattern.compile(
-            "p\\.(?<ref>[*FLSYCWPHQRIMTNKVADEG])(?<pos>\\d+|del)(?<alt>[*FLSYCWPHQRIMTNKVADEG])");
+            "p\\.(?<ref>[*FLSYCWPHQRIMTNKVADEG])(?<pos>\\d+|del)(?<alt>[*=FLSYCWPHQRIMTNKVADEG]|fs)");
 
     final var matcher = pattern.matcher(input);
 

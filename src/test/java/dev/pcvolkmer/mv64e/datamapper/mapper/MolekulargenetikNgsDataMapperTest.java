@@ -573,6 +573,8 @@ class MolekulargenetikNgsDataMapperTest {
     "p.D123A,p.Asp123Ala",
     "p.E123D,p.Glu123Asp",
     "p.G123E,p.Gly123Glu",
+    "p.Y123=,p.Tyr123=",
+    "p.Y123fs,p.Tyr123fs",
     // Examples from Onkostar Notices
     "p.L858R,p.Leu858Arg",
     "p.*del*,p.*del*",
