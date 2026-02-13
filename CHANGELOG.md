@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.4...v0.5.5) (2026-02-13)
+
+
+### Bug Fixes
+
+* add frameshift and silent protein change mapping ([#137](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/137)) ([32993e8](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/32993e8d1edef1328138607711a5cba6ff0a3f3c))
+
 ## [0.5.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.3...v0.5.4) (2026-02-10)
 
 
