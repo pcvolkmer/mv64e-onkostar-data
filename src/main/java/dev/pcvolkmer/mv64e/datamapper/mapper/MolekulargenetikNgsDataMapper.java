@@ -454,31 +454,57 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     final var pattern =
         Pattern.compile(
-            "p\\.(?<ref>[*FLSYCWPHQRIMTNKVADEG])(?<pos>\\d+|del)(?<alt>[*=FLSYCWPHQRIMTNKVADEG]|fs)");
+            "^p\\.(?<refA>[*FLSYCWPHQRIMTNKVADEG])?(?<posA>\\d+)?(?<sep>_)?(?<refB>[*FLSYCWPHQRIMTNKVADEG])(?<posB>\\d+)(?<type>del|ins|delins|dup)?(?<alt>[*=FLSYCWPHQRIMTNKVADEG]+|fs)?$");
 
     final var matcher = pattern.matcher(input);
 
     if (matcher.matches()) {
-      var ref = matcher.group("ref");
-      var pos = matcher.group("pos");
+      var refA = matcher.group("refA");
+      var posA = matcher.group("posA");
+      var sep = matcher.group("sep");
+      var refB = matcher.group("refB");
+      var posB = matcher.group("posB");
+      var type = matcher.group("type");
       var alt = matcher.group("alt");
 
-      var longRef =
+      var longRefA =
           mappingTable.stream()
-              .filter(value -> value.get1().equals(ref))
+              .filter(value -> value.get1().equals(refA))
               .map(Tuple2::get2)
-              .findFirst();
-      var longAlt =
+              .findFirst()
+              .orElse("");
+      var longRefB =
           mappingTable.stream()
-              .filter(value -> value.get1().equals(alt))
+              .filter(value -> value.get1().equals(refB))
               .map(Tuple2::get2)
-              .findFirst();
-
-      if (longRef.isEmpty() || longAlt.isEmpty()) {
-        return input;
+              .findFirst()
+              .orElse("");
+      var longAlt = "";
+      if ("fs".equals(alt)) {
+        longAlt = "fs";
+      } else if (null != alt) {
+        longAlt =
+            alt.chars()
+                .mapToObj(Character::toString)
+                .map(
+                    c ->
+                        mappingTable.stream()
+                            .filter(value -> value.get1().equals(c))
+                            .map(Tuple2::get2)
+                            .findFirst()
+                            .orElse(""))
+                .collect(Collectors.joining());
       }
 
-      return String.format("p.%s%s%s", longRef.get(), pos, longAlt.get());
+      return String.format(
+          "p.%s%s%s%s%s%s%s",
+          longRefA,
+          null == posA ? "" : posA,
+          null == sep ? "" : sep,
+          longRefB,
+          null == posB ? "" : posB,
+          null == type ? "" : type,
+          longAlt);
     }
 
     return input;
