@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.5.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.4...v0.5.5) (2026-02-17)
+
+
+### Bug Fixes
+
+* add delins, ins, del, dup mapping ([#139](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/139)) ([e4d5782](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/e4d5782abf39410b8da68fbb4be7e440b7715d93))
+* add frameshift and silent protein change mapping ([#137](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/137)) ([32993e8](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/32993e8d1edef1328138607711a5cba6ff0a3f3c))
+
 ## [0.5.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.3...v0.5.4) (2026-02-10)
 
 
