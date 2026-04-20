@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.6.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.5...v0.6.0) (2026-04-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* add follow ups related to KPA form ([#144](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/144))
+* add data catalogue for follow ups ([#143](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/143))
+
+### Features
+
+* add data catalogue for follow ups ([#143](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/143)) ([b4fd571](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/b4fd57118ed7d013688a05bb9fe38cd38daf5832))
+* add follow ups related to KPA form ([#144](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/144)) ([8a67c94](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/8a67c9440f3f8e0255b993b002813ae4aea37192))
+* use ik and kvnr in CustomMetadataDataMapper ([1be2acf](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/1be2acfbfcf14af283229d126838f1221bfda539))
+
+
+### Bug Fixes
+
+* field name in example CustomMetadataDataMapper ([#141](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/141)) ([acfe3a4](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/acfe3a49e4994bd7cdf6372b323773c4f56c3532))
+* use term "ik" instead of "kvnr" ([2b5c833](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/2b5c833be15d7b8969476e07578141167a3495ae))
+
 ## [0.5.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.4...v0.5.5) (2026-02-17)
 
 
