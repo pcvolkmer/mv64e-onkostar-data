@@ -49,6 +49,6 @@ class CustomMetadataDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getFallnummer()).isEqualTo("1600012345");
-    assertThat(actual.getKvnr()).isEqualTo("105313145");
+    assertThat(actual.getIk()).isEqualTo("105313145");
   }
 }
