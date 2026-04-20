@@ -20,7 +20,6 @@
 
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
-import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.mtb.MtbEpisodeOfCare;
 import dev.pcvolkmer.mv64e.mtb.PeriodDate;
@@ -37,8 +36,7 @@ public class MtbEpisodeDataMapper implements DataMapper<MtbEpisodeOfCare> {
 
   private final KpaCatalogue kpaCatalogue;
 
-  public MtbEpisodeDataMapper(
-      final KpaCatalogue kpaCatalogue) {
+  public MtbEpisodeDataMapper(final KpaCatalogue kpaCatalogue) {
     this.kpaCatalogue = kpaCatalogue;
   }
 
