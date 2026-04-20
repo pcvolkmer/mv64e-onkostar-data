@@ -89,6 +89,8 @@ class MtbDataMapperTest {
     ConsentMvCatalogue consentMvCatalogue;
     ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue;
 
+    FollowUpCatalogue followUpCatalogue;
+
     /* very large initialization of catalogues as mock objects */
     @BeforeEach
     void setup(
@@ -113,7 +115,8 @@ class MtbDataMapperTest {
         @Mock MolekulargenMsiCatalogue molekulargenMsiCatalogue,
         @Mock VerwandteCatalogue verwandteCatalogue,
         @Mock ConsentMvCatalogue consentMvCatalogue,
-        @Mock ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue) {
+        @Mock ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue,
+        @Mock FollowUpCatalogue followUpCatalogue) {
       this.dataCatalogueFactory = dataCatalogueFactory;
       this.kpaCatalogue = kpaCatalogue;
       this.patientCatalogue = patientCatalogue;
@@ -135,6 +138,7 @@ class MtbDataMapperTest {
       this.verwandteCatalogue = verwandteCatalogue;
       this.consentMvCatalogue = consentMvCatalogue;
       this.consentMvVerlaufCatalogue = consentMvVerlaufCatalogue;
+      this.followUpCatalogue = followUpCatalogue;
 
       this.out =
           new MtbDataMapper(
@@ -180,6 +184,7 @@ class MtbDataMapperTest {
       when(dataCatalogueFactory.catalogue(ConsentMvCatalogue.class)).thenReturn(consentMvCatalogue);
       when(dataCatalogueFactory.catalogue(ConsentMvVerlaufCatalogue.class))
           .thenReturn(consentMvVerlaufCatalogue);
+      when(dataCatalogueFactory.catalogue(FollowUpCatalogue.class)).thenReturn(followUpCatalogue);
 
       when(therapieplanCatalogue.getByKpaId(anyInt())).thenReturn(List.of());
       when(tumorgradingCatalogue.getAllByParentId(anyInt())).thenReturn(List.of());
