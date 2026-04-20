@@ -219,6 +219,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
             catalogueFactory.catalogue(ConsentMvCatalogue.class),
             catalogueFactory.catalogue(ConsentMvVerlaufCatalogue.class));
 
+    var followUpDataMapper =
+        new FollowUpDataMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
+
     var resultBuilder = Mtb.builder();
 
     try {
@@ -243,6 +246,12 @@ public class MtbDataMapper implements DataMapper<Mtb> {
 
       var carePlans =
           therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
+
+      var followUps =
+          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
+              .distinct()
+              .map(followUpDataMapper::getById)
+              .collect(Collectors.toList());
 
       var msiFindings =
           molekulargenetikNgsDataMapper
@@ -273,7 +282,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
               molekulargenetikNgsDataMapper.getAllByKpaIdWithHisto(
                   kpaId, kpaHistologieDataMapper.getMolGenIdsFromHistoOfTypeSequence(kpaId)))
           // MSI Befunde
-          .msiFindings(msiFindings.collect(Collectors.toList()));
+          .msiFindings(msiFindings.collect(Collectors.toList()))
+          // FollowUps
+          .followUps(followUps);
 
       tryAndLogWithResult(() -> prozedurMapper.getByParentId(kpaId))
           .ok()

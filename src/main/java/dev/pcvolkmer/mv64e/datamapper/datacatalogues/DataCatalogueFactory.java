@@ -116,6 +116,8 @@ public class DataCatalogueFactory {
                 return ConsentMvVerlaufCatalogue.create(jdbcTemplate);
               } else if (c == KeimbahndiagnoseCatalogue.class) {
                 return KeimbahndiagnoseCatalogue.create(jdbcTemplate);
+              } else if (c == FollowUpCatalogue.class) {
+                return FollowUpCatalogue.create(jdbcTemplate);
               }
               throw new DataCatalogueCreationException(clazz);
             });
