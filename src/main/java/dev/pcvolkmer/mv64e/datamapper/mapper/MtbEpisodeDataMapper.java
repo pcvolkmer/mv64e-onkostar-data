@@ -36,12 +36,10 @@ import java.util.List;
 public class MtbEpisodeDataMapper implements DataMapper<MtbEpisodeOfCare> {
 
   private final KpaCatalogue kpaCatalogue;
-  private final PropertyCatalogue propertyCatalogue;
 
   public MtbEpisodeDataMapper(
-      final KpaCatalogue kpaCatalogue, final PropertyCatalogue propertyCatalogue) {
+      final KpaCatalogue kpaCatalogue) {
     this.kpaCatalogue = kpaCatalogue;
-    this.propertyCatalogue = propertyCatalogue;
   }
 
   /**

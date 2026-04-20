@@ -44,15 +44,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MtbEpisodeDataMapperTest {
 
   KpaCatalogue kpaCatalogue;
-  PropertyCatalogue propertyCatalogue;
 
   MtbEpisodeDataMapper dataMapper;
 
   @BeforeEach
-  void setUp(@Mock KpaCatalogue kpaCatalogue, @Mock PropertyCatalogue propertyCatalogue) {
+  void setUp(@Mock KpaCatalogue kpaCatalogue) {
     this.kpaCatalogue = kpaCatalogue;
-    this.propertyCatalogue = propertyCatalogue;
-    this.dataMapper = new MtbEpisodeDataMapper(kpaCatalogue, propertyCatalogue);
+    this.dataMapper = new MtbEpisodeDataMapper(kpaCatalogue);
   }
 
   @Test
