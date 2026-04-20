@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
@@ -130,6 +131,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     return builder.build();
   }
 
+  @NullMarked
   private Optional<TumorMorphology> getTumorMorphology(ResultSet resultSet, ResultSet osMolGen) {
     var builder =
         TumorMorphology.builder()
@@ -145,6 +147,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     return Optional.of(builder.value(tumorMorphologyCoding).build());
   }
 
+  @NullMarked
   private Optional<TumorCellContent> getTumorCellContent(ResultSet resultSet, ResultSet osMolGen) {
     var builder =
         TumorCellContent.builder()
@@ -164,7 +167,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   }
 
   @Nullable
-  private Coding getTumorMorphologyCoding(ResultSet resultSet) {
+  private Coding getTumorMorphologyCoding(@NonNull ResultSet resultSet) {
     var morphologie = resultSet.getString("morphologie");
     var morphologiePropcatVersion = resultSet.getInteger("morphologie_propcat_version");
 

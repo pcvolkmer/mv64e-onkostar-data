@@ -287,10 +287,10 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                   reportedAffectedGenes.add(untersucht);
 
                   // Weitere betroffene Gene aus Freitextfeld?
-                  if (null != subform.getString("cnvbetroffenegene")) {
+                  final var cnvbetroffenegene = subform.getString("cnvbetroffenegene");
+                  if (null != cnvbetroffenegene) {
                     reportedAffectedGenes.addAll(
-                        Arrays.stream(subform.getString("cnvbetroffenegene").split("\\s"))
-                            .collect(Collectors.toList()));
+                        Arrays.stream(cnvbetroffenegene.split("\\s")).collect(Collectors.toList()));
                   }
 
                   final var cnvBuilder =

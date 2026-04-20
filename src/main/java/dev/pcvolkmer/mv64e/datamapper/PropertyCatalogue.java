@@ -22,6 +22,7 @@ package dev.pcvolkmer.mv64e.datamapper;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import java.util.Objects;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
@@ -111,15 +112,16 @@ public class PropertyCatalogue {
     @Nullable private final String versionOid;
     @Nullable private final String versionDescription;
 
+    @NullMarked
     public Entry(String code, String shortdesc, String description) {
       this(code, shortdesc, description, null, null);
     }
 
     @NullUnmarked
     public Entry(
-        String code,
-        String shortdesc,
-        String description,
+        @NonNull String code,
+        @NonNull String shortdesc,
+        @NonNull String description,
         @Nullable String versionOid,
         @Nullable String versionDescription) {
       this.code = code;

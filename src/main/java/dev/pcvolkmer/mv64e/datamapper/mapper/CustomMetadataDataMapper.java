@@ -23,6 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.CustomMetadata;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PatientCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 
 /**
  * Mapper class to load and map custom metadata from database
@@ -44,7 +45,14 @@ public class CustomMetadataDataMapper implements DataMapper<CustomMetadata> {
   @Override
   public CustomMetadata getById(int id) {
     var kpaData = kpaCatalogue.getById(id);
-    var patientData = patientCatalogue.getById(kpaData.getInteger("patient_id"));
+
+    var patientId = kpaData.getInteger("patient_id");
+    if (null == patientId) {
+      throw new IgnorableMappingException(
+          String.format("No data found for Patient with id '%d'", id));
+    }
+
+    var patientData = patientCatalogue.getById(patientId);
 
     return new CustomMetadata(
         kpaData.getString("fallnummermv"), patientData.getString("krankenkassennummer"));
