@@ -119,7 +119,7 @@ var additional1 = customMetadataMapper.getByCaseId("16000123");
 var additional2 = customMetadataMapper.getLatestByPatientIdAndTumorId("2000123456", 1);
 ```
 
-Aktuell wird hier die Fallnummer und Krankenversicherungsnummer abgerufen.
+Aktuell wird hier die Fallnummer, Versichertennummer und Krankenversicherungsnummer abgerufen.
 
 ## Fuzz Tests
 

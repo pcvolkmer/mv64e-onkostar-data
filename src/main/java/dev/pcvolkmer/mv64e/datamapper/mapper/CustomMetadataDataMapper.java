@@ -55,7 +55,9 @@ public class CustomMetadataDataMapper implements DataMapper<CustomMetadata> {
     var patientData = patientCatalogue.getById(patientId);
 
     return new CustomMetadata(
-        kpaData.getString("fallnummermv"), patientData.getString("krankenkassennummer"));
+        kpaData.getString("fallnummermv"),
+        patientData.getString("versicherungsnummer"),
+        patientData.getString("krankenkassennummer"));
   }
 
   /**

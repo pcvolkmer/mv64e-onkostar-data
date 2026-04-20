@@ -44,11 +44,13 @@ class CustomMetadataDataMapperTest {
         .thenReturn(
             TestResultSet.withColumns(
                 Column.name(Column.ID).value(42),
+                Column.name("versicherungsnummer").value("A123456789"),
                 Column.name("krankenkassennummer").value("105313145")));
 
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getFallnummer()).isEqualTo("1600012345");
+    assertThat(actual.getKvnr()).isEqualTo("A123456789");
     assertThat(actual.getIk()).isEqualTo("105313145");
   }
 }
