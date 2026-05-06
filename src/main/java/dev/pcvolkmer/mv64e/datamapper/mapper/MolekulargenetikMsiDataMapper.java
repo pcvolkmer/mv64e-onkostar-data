@@ -23,7 +23,6 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenMsiCatalogue;
 import dev.pcvolkmer.mv64e.mtb.Msi;
-import dev.pcvolkmer.mv64e.mtb.MsiInterpretationCoding;
 import dev.pcvolkmer.mv64e.mtb.MsiMethodCoding;
 import dev.pcvolkmer.mv64e.mtb.MsiMethodCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Reference;
@@ -76,13 +75,6 @@ public class MolekulargenetikMsiDataMapper extends AbstractSubformDataMapper<Msi
         .value(getSeqProzentwert(resultSet));
 
     return builder.build();
-  }
-
-  @Nullable
-  private MsiInterpretationCoding gInterpretationCoding(final ResultSet resultSet) {
-    // ToDo. Aktuell nicht dokumentierbar für bioinformatischen MSI-Bestimmung (hier
-    // nur Wert, aber keine Interpretation möglich)
-    return null;
   }
 
   @Nullable
