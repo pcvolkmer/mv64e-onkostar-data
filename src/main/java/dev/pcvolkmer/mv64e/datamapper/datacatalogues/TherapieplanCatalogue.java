@@ -22,6 +22,7 @@ package dev.pcvolkmer.mv64e.datamapper.datacatalogues;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -65,6 +66,7 @@ public class TherapieplanCatalogue extends AbstractDataCatalogue {
         .map(ResultSet::from)
         .map(rs -> rs.getInteger("procedure_id"))
         .distinct()
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 }
