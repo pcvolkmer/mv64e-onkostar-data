@@ -167,157 +167,275 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         subforms.stream()
             // P => Einfache Variante
             .filter(subform -> "P".equals(subform.getString("ergebnis")))
-            .map(
-                subform -> {
-                  final var untersucht = subform.getString("untersucht");
-                  if (null == untersucht) {
-                    logger.warn("No gene symbol found for simple variant {}", subform);
-                    return null;
-                  }
-
-                  final var snvBuilder =
-                      Snv.builder()
-                          .id(subform.getString("id"))
-                          .patient(subform.getPatientReference());
-
-                  var chromosome = subform.getString("evchromosom");
-                  var hgncId = subform.getString("evhgncid");
-
-                  // Prepare Transcript ID (nullable) which might come from EnsemblID or EVNMNummer
-                  var transcriptId =
-                      tryGetTranscriptID(
-                          subform.getString("evensemblid"), subform.getString("evnmnummer"));
-
-                  if (null != chromosome && null != hgncId && null != transcriptId) {
-                    try {
-                      snvBuilder.chromosome(Chromosome.forValue(chromosome));
-                    } catch (Exception e) {
-                      logger.warn("No chromosome found for '{}'", chromosome);
-                    }
-                    snvBuilder.gene(
-                        Coding.builder()
-                            .code(hgncId)
-                            .display(untersucht)
-                            .system("https://www.genenames.org/")
-                            .build());
-                    snvBuilder.transcriptId(transcriptId);
-
-                  } else {
-                    final var geneOptional = GeneUtils.findBySymbol(untersucht);
-                    if (geneOptional.isEmpty()) {
-                      logger.warn("Gene symbol '{}' not found in gene catalogue", untersucht);
-                      return null;
-                    }
-                    geneOptional.ifPresent(
-                        gene -> {
-                          // Add hgncId and symbol from gene list if no HGNC ID is available
-                          snvBuilder.gene(GeneUtils.toCoding(gene));
-                          // Add transcriptId from gene list if no EnsemblID or NMNummer is
-                          // available, but if transcript ID is available we still may use it.
-                          snvBuilder.transcriptId(
-                              transcriptId == null
-                                  ? TranscriptId.builder()
-                                      .value(gene.getEnsemblId())
-                                      .system(TranscriptIdSystem.ENSEMBL_ORG)
-                                      .build()
-                                  : transcriptId);
-                          // Add chromosome
-                          gene.getSingleChromosomeInPropertyForm()
-                              .ifPresent(snvBuilder::chromosome);
-                        });
-                  }
-
-                  final var exon = subform.getString("exon");
-                  if (null != exon) {
-                    snvBuilder.exonId(exon);
-                  }
-                  final var cdnanomenklatur = subform.getString("cdnanomenklatur");
-                  if (null != cdnanomenklatur) {
-                    snvBuilder.dnaChange(cdnanomenklatur);
-                  }
-                  final var proteinebenenomenklatur = subform.getString("proteinebenenomenklatur");
-                  if (null != proteinebenenomenklatur) {
-                    snvBuilder.proteinChange(mapProteinChangeToLongFormat(proteinebenenomenklatur));
-                  }
-                  final var allelfrequenz = subform.getLong("allelfrequenz");
-                  if (null != allelfrequenz) {
-                    snvBuilder.allelicFrequency(allelfrequenz);
-                  }
-                  final var evreaddepth = subform.getLong("evreaddepth");
-                  if (null != evreaddepth) {
-                    snvBuilder.readDepth(evreaddepth);
-                  }
-                  final var evaltnucleotide = subform.getString("evaltnucleotide");
-                  if (null != evaltnucleotide) {
-                    snvBuilder.altAllele(evaltnucleotide);
-                  }
-                  final var evrefnucleotide = subform.getString("evrefnucleotide");
-                  if (null != subform.getString("evrefnucleotide")) {
-                    snvBuilder.refAllele(evrefnucleotide);
-                  }
-
-                  var posStart = subform.getDouble("EVStart");
-                  var posEnd = subform.getDouble("EVEnde");
-                  if (null != posStart) {
-                    snvBuilder.position(Position.builder().start(posStart).end(posEnd).build());
-                  }
-
-                  return snvBuilder.build();
-                })
+            .map(this::mapSnv)
             .filter(Objects::nonNull)
             .collect(Collectors.toList()));
 
     resultBuilder.copyNumberVariants(
         subforms.stream()
             .filter(subform -> "CNV".equals(subform.getString("ergebnis")))
-            .map(
-                subform -> {
-                  final var untersucht = subform.getString("untersucht");
-                  if (null == untersucht) {
-                    logger.warn("No gene symbol found for CNV {}", subform);
-                    return null;
-                  }
-                  final var geneOptional = GeneUtils.findBySymbol(untersucht);
-                  if (geneOptional.isEmpty()) {
-                    logger.warn("Gene symbol {} not found in gene catalogue", untersucht);
-                    return null;
-                  }
-
-                  final var reportedAffectedGenes = new ArrayList<String>();
-                  reportedAffectedGenes.add(untersucht);
-
-                  // Weitere betroffene Gene aus Freitextfeld?
-                  final var cnvbetroffenegene = subform.getString("cnvbetroffenegene");
-                  if (null != cnvbetroffenegene) {
-                    reportedAffectedGenes.addAll(
-                        Arrays.stream(cnvbetroffenegene.split("\\s")).collect(Collectors.toList()));
-                  }
-
-                  final var cnvBuilder =
-                      Cnv.builder()
-                          .id(subform.getString("id"))
-                          .patient(subform.getPatientReference())
-                          .reportedAffectedGenes(
-                              reportedAffectedGenes.stream()
-                                  .distinct()
-                                  .map(GeneUtils::findBySymbol)
-                                  .filter(Optional::isPresent)
-                                  .map(gene -> GeneUtils.toCoding(gene.get()))
-                                  .collect(Collectors.toList()))
-                          .totalCopyNumber(subform.getLong("cnvtotalcn"));
-
-                  if (getCnvTypeCoding(subform) != null) cnvBuilder.type(getCnvTypeCoding(subform));
-
-                  geneOptional
-                      .get()
-                      .getSingleChromosomeInPropertyForm()
-                      .ifPresent(cnvBuilder::chromosome);
-
-                  return cnvBuilder.build();
-                })
+            .map(this::mapCnv)
             .filter(Objects::nonNull)
             .collect(Collectors.toList()));
+
+    resultBuilder.dnaFusions(
+        subforms.stream()
+            .filter(subform -> "F".equals(subform.getString("ergebnis")))
+            .filter(subform -> "DNA".equals(subform.getString("fusionart")))
+            .map(this::mapDnaFusion)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList()));
+
+    resultBuilder.rnaFusions(
+        subforms.stream()
+            .filter(subform -> "F".equals(subform.getString("ergebnis")))
+            .filter(subform -> "RNA".equals(subform.getString("fusionart")))
+            .map(this::mapRnaFusion)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList()));
+
     return resultBuilder.build();
+  }
+
+  @Nullable
+  private Snv mapSnv(ResultSet subform) {
+    final var untersucht = subform.getString("untersucht");
+    if (null == untersucht) {
+      logger.warn("No gene symbol found for simple variant {}", subform);
+      return null;
+    }
+
+    final var snvBuilder =
+        Snv.builder().id(subform.getString("id")).patient(subform.getPatientReference());
+
+    var chromosome = subform.getString("evchromosom");
+    var hgncId = subform.getString("evhgncid");
+
+    // Prepare Transcript ID (nullable) which might come from EnsemblID or EVNMNummer
+    var transcriptId =
+        tryGetTranscriptID(subform.getString("evensemblid"), subform.getString("evnmnummer"));
+
+    if (null != chromosome && null != hgncId && null != transcriptId) {
+      try {
+        snvBuilder.chromosome(Chromosome.forValue(chromosome));
+      } catch (Exception e) {
+        logger.warn("No chromosome found for '{}'", chromosome);
+      }
+      snvBuilder.gene(
+          Coding.builder()
+              .code(hgncId)
+              .display(untersucht)
+              .system("https://www.genenames.org/")
+              .build());
+      snvBuilder.transcriptId(transcriptId);
+
+    } else {
+      final var geneOptional = GeneUtils.findBySymbol(untersucht);
+      if (geneOptional.isEmpty()) {
+        logger.warn("Gene symbol '{}' not found in gene catalogue", untersucht);
+        return null;
+      }
+      geneOptional.ifPresent(
+          gene -> {
+            // Add hgncId and symbol from gene list if no HGNC ID is available
+            snvBuilder.gene(GeneUtils.toCoding(gene));
+            // Add transcriptId from gene list if no EnsemblID or NMNummer is
+            // available, but if transcript ID is available we still may use it.
+            snvBuilder.transcriptId(
+                transcriptId == null
+                    ? TranscriptId.builder()
+                        .value(gene.getEnsemblId())
+                        .system(TranscriptIdSystem.ENSEMBL_ORG)
+                        .build()
+                    : transcriptId);
+            // Add chromosome
+            gene.getSingleChromosomeInPropertyForm().ifPresent(snvBuilder::chromosome);
+          });
+    }
+
+    final var exon = subform.getString("exon");
+    if (null != exon) {
+      snvBuilder.exonId(exon);
+    }
+    final var cdnanomenklatur = subform.getString("cdnanomenklatur");
+    if (null != cdnanomenklatur) {
+      snvBuilder.dnaChange(cdnanomenklatur);
+    }
+    final var proteinebenenomenklatur = subform.getString("proteinebenenomenklatur");
+    if (null != proteinebenenomenklatur) {
+      snvBuilder.proteinChange(mapProteinChangeToLongFormat(proteinebenenomenklatur));
+    }
+    final var allelfrequenz = subform.getLong("allelfrequenz");
+    if (null != allelfrequenz) {
+      snvBuilder.allelicFrequency(allelfrequenz);
+    }
+    final var evreaddepth = subform.getLong("evreaddepth");
+    if (null != evreaddepth) {
+      snvBuilder.readDepth(evreaddepth);
+    }
+    final var evaltnucleotide = subform.getString("evaltnucleotide");
+    if (null != evaltnucleotide) {
+      snvBuilder.altAllele(evaltnucleotide);
+    }
+    final var evrefnucleotide = subform.getString("evrefnucleotide");
+    if (null != subform.getString("evrefnucleotide")) {
+      snvBuilder.refAllele(evrefnucleotide);
+    }
+
+    var posStart = subform.getDouble("EVStart");
+    var posEnd = subform.getDouble("EVEnde");
+    if (null != posStart) {
+      snvBuilder.position(Position.builder().start(posStart).end(posEnd).build());
+    }
+
+    return snvBuilder.build();
+  }
+
+  @Nullable
+  private Cnv mapCnv(ResultSet subform) {
+    final var untersucht = subform.getString("untersucht");
+    if (null == untersucht) {
+      logger.warn("No gene symbol found for CNV {}", subform);
+      return null;
+    }
+    final var geneOptional = GeneUtils.findBySymbol(untersucht);
+    if (geneOptional.isEmpty()) {
+      logger.warn("Gene symbol {} not found in gene catalogue", untersucht);
+      return null;
+    }
+
+    final var reportedAffectedGenes = new ArrayList<String>();
+    reportedAffectedGenes.add(untersucht);
+
+    // Weitere betroffene Gene aus Freitextfeld?
+    final var cnvbetroffenegene = subform.getString("cnvbetroffenegene");
+    if (null != cnvbetroffenegene) {
+      reportedAffectedGenes.addAll(
+          Arrays.stream(cnvbetroffenegene.split("\\s")).collect(Collectors.toList()));
+    }
+
+    final var cnvBuilder =
+        Cnv.builder()
+            .id(subform.getString("id"))
+            .patient(subform.getPatientReference())
+            .reportedAffectedGenes(
+                reportedAffectedGenes.stream()
+                    .distinct()
+                    .map(GeneUtils::findBySymbol)
+                    .filter(Optional::isPresent)
+                    .map(gene -> GeneUtils.toCoding(gene.get()))
+                    .collect(Collectors.toList()))
+            .totalCopyNumber(subform.getLong("cnvtotalcn"));
+
+    if (getCnvTypeCoding(subform) != null) cnvBuilder.type(getCnvTypeCoding(subform));
+
+    geneOptional.get().getSingleChromosomeInPropertyForm().ifPresent(cnvBuilder::chromosome);
+
+    return cnvBuilder.build();
+  }
+
+  @Nullable
+  private DnaFusion mapDnaFusion(ResultSet subform) {
+    final var gen = subform.getString("gen");
+    if (null == gen) {
+      logger.warn("No gene symbol found for dna fusion {}", subform);
+      return null;
+    }
+
+    final var fusioniertesgen = subform.getString("fusioniertesgen");
+    if (null == fusioniertesgen) {
+      logger.warn("No fusion gene symbol found for dna fusion {}", subform);
+      return null;
+    }
+
+    final var fusionPartner5Prime = DnaFusionFusionPartner5Prime.builder();
+    final var fusiondna5chromosome = subform.getString("fusiondna5chromosome");
+    final var fusiondna5ensemblid = subform.getString("fusiondna5ensemblid");
+    final var fusiondna5hgncid = subform.getString("fusiondna5hgncid");
+
+    if (null != fusiondna5chromosome && null != fusiondna5ensemblid && null != fusiondna5hgncid) {
+      try {
+        fusionPartner5Prime.chromosome(Chromosome.forValue(fusiondna5chromosome));
+      } catch (Exception e) {
+        logger.warn("No chromosome found for '{}'", fusiondna5chromosome);
+      }
+      fusionPartner5Prime.gene(
+          Coding.builder()
+              .code(fusiondna5hgncid)
+              .display(gen)
+              .system("https://www.genenames.org/")
+              .build());
+    } else {
+      final var geneOptional = GeneUtils.findBySymbol(gen);
+      if (geneOptional.isEmpty()) {
+        logger.warn("Gene symbol '{}' not found in gene catalogue", gen);
+        return null;
+      }
+      geneOptional.ifPresent(
+          gene -> {
+            gene.getSingleChromosomeInPropertyForm().ifPresent(fusionPartner5Prime::chromosome);
+            fusionPartner5Prime.gene(GeneUtils.toCoding(gene));
+          });
+    }
+
+    final var fusiondna5position = subform.getDouble("fusiondna5position");
+    if (null != fusiondna5position) {
+      fusionPartner5Prime.position(fusiondna5position);
+    }
+
+    final var fusionPartner3Prime = DnaFusionFusionPartner3Prime.builder();
+    final var fusiondna3chromosome = subform.getString("fusiondna3chromosome");
+    final var fusiondna3ensemblid = subform.getString("fusiondna3ensemblid");
+    final var fusiondna3hgncid = subform.getString("fusiondna3hgncid");
+
+    if (null != fusiondna3chromosome && null != fusiondna3ensemblid && null != fusiondna3hgncid) {
+      try {
+        fusionPartner3Prime.chromosome(Chromosome.forValue(fusiondna3chromosome));
+      } catch (Exception e) {
+        logger.warn("No chromosome found for '{}'", fusiondna3chromosome);
+      }
+      fusionPartner3Prime.gene(
+          Coding.builder()
+              .code(fusiondna3hgncid)
+              .display(fusioniertesgen)
+              .system("https://www.genenames.org/")
+              .build());
+    } else {
+      final var geneOptional = GeneUtils.findBySymbol(fusioniertesgen);
+      if (geneOptional.isEmpty()) {
+        logger.warn("Gene symbol '{}' not found in gene catalogue", fusioniertesgen);
+        return null;
+      }
+      geneOptional.ifPresent(
+          gene -> {
+            gene.getSingleChromosomeInPropertyForm().ifPresent(fusionPartner3Prime::chromosome);
+            fusionPartner3Prime.gene(GeneUtils.toCoding(gene));
+          });
+    }
+
+    final var fusiondna3position = subform.getDouble("fusiondna3position");
+    if (null != fusiondna3position) {
+      fusionPartner3Prime.position(fusiondna3position);
+    }
+
+    final var builder =
+        DnaFusion.builder()
+            .id(subform.getString("id"))
+            .patient(subform.getPatientReference())
+            .fusionPartner5Prime(fusionPartner5Prime.build())
+            .fusionPartner3Prime(fusionPartner3Prime.build());
+
+    final var fusiondnareportednumread = subform.getLong("fusiondnareportednumread");
+    if (null != fusiondnareportednumread) {
+      builder.reportedNumReads(fusiondnareportednumread);
+    }
+
+    return builder.build();
+  }
+
+  @Nullable
+  private RnaFusion mapRnaFusion(ResultSet subform) {
+    return null;
   }
 
   @Nullable
