@@ -336,7 +336,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
   @Nullable
   private DnaFusion mapDnaFusion(ResultSet subform) {
-    final var gen = subform.getString("gen");
+    final var gen = subform.getString("untersucht");
     if (null == gen) {
       logger.warn("No gene symbol found for dna fusion {}", subform);
       return null;
@@ -347,6 +347,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
       logger.warn("No fusion gene symbol found for dna fusion {}", subform);
       return null;
     }
+
+    // DNA Partner 5'
 
     final var fusionPartner5Prime = DnaFusionFusionPartner5Prime.builder();
     final var fusiondna5chromosome = subform.getString("fusiondna5chromosome");
@@ -382,6 +384,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     if (null != fusiondna5position) {
       fusionPartner5Prime.position(fusiondna5position);
     }
+
+    // DNA Partner 3'
 
     final var fusionPartner3Prime = DnaFusionFusionPartner3Prime.builder();
     final var fusiondna3chromosome = subform.getString("fusiondna3chromosome");
@@ -435,7 +439,128 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
   @Nullable
   private RnaFusion mapRnaFusion(ResultSet subform) {
-    return null;
+    final var gen = subform.getString("untersucht");
+    if (null == gen) {
+      logger.warn("No gene symbol found for dna fusion {}", subform);
+      return null;
+    }
+
+    final var fusioniertesgen = subform.getString("fusioniertesgen");
+    if (null == fusioniertesgen) {
+      logger.warn("No fusion gene symbol found for dna fusion {}", subform);
+      return null;
+    }
+
+    // RNA Partner 5'
+
+    final var fusionPartner5Prime = RnaFusionFusionPartner5Prime.builder();
+    final var fusionrna5ensemblid = subform.getString("fusionrna5ensemblid");
+    final var fusionrna5hgncid = subform.getString("fusionrna5hgncid");
+
+    if (null != fusionrna5ensemblid && null != fusionrna5hgncid) {
+      fusionPartner5Prime.gene(
+          Coding.builder()
+              .code(fusionrna5hgncid)
+              .display(gen)
+              .system("https://www.genenames.org/")
+              .build());
+    } else {
+      final var geneOptional = GeneUtils.findBySymbol(gen);
+      if (geneOptional.isEmpty()) {
+        logger.warn("Gene symbol '{}' not found in gene catalogue", gen);
+        return null;
+      }
+      geneOptional.ifPresent(
+          gene -> {
+            fusionPartner5Prime.gene(GeneUtils.toCoding(gene));
+          });
+    }
+
+    final var fusionrna5exonid = subform.getString("fusionrna5exonid");
+    if (null != fusionrna5exonid) {
+      fusionPartner5Prime.exonId(fusionrna5exonid);
+    }
+
+    final var fusionrna5transcriptid = subform.getString("fusionrna5transcriptid");
+    if (null != fusionrna5transcriptid) {
+      fusionPartner5Prime.transcriptId(
+          TranscriptId.builder().value(fusionrna5transcriptid).build());
+    }
+
+    final var fusionrna5transposition = subform.getDouble("fusionrna5transposition");
+    if (null != fusionrna5transposition) {
+      fusionPartner5Prime.position(fusionrna5transposition);
+    }
+
+    final var fusionrna5strand = subform.getString("fusionrna5strand");
+    if (null != fusionrna5strand) {
+      fusionPartner5Prime.strand(getRnaFusionStrand(fusionrna5strand));
+    }
+
+    // RNA Partner 3'
+
+    final var fusionPartner3Prime = RnaFusionFusionPartner3Prime.builder();
+    final var fusionrna3ensemblid = subform.getString("fusionrna3ensemblid");
+    final var fusionrna3hgncid = subform.getString("fusionrna3hgncid");
+
+    if (null != fusionrna3ensemblid && null != fusionrna3hgncid) {
+      fusionPartner3Prime.gene(
+          Coding.builder()
+              .code(fusionrna3hgncid)
+              .display(fusioniertesgen)
+              .system("https://www.genenames.org/")
+              .build());
+    } else {
+      final var geneOptional = GeneUtils.findBySymbol(fusioniertesgen);
+      if (geneOptional.isEmpty()) {
+        logger.warn("Gene symbol '{}' not found in gene catalogue", fusioniertesgen);
+        return null;
+      }
+      geneOptional.ifPresent(
+          gene -> {
+            fusionPartner3Prime.gene(GeneUtils.toCoding(gene));
+          });
+    }
+
+    final var fusionrna3exonid = subform.getString("fusionrna3exonid");
+    if (null != fusionrna3exonid) {
+      fusionPartner3Prime.exonId(fusionrna3exonid);
+    }
+
+    final var fusionrna3transcriptid = subform.getString("fusionrna3transcriptid");
+    if (null != fusionrna3transcriptid) {
+      fusionPartner3Prime.transcriptId(
+          TranscriptId.builder().value(fusionrna3transcriptid).build());
+    }
+
+    final var fusionrna3transposition = subform.getDouble("fusionrna3transposition");
+    if (null != fusionrna3transposition) {
+      fusionPartner3Prime.position(fusionrna3transposition);
+    }
+
+    final var fusionrna3strand = subform.getString("fusionrna3strand");
+    if (null != fusionrna3strand) {
+      fusionPartner3Prime.strand(getRnaFusionStrand(fusionrna3strand));
+    }
+
+    final var builder =
+        RnaFusion.builder()
+            .id(subform.getString("id"))
+            .patient(subform.getPatientReference())
+            .fusionPartner5Prime(fusionPartner5Prime.build())
+            .fusionPartner3Prime(fusionPartner3Prime.build());
+
+    final var fusionrnaeffect = subform.getString("fusionrnaeffect");
+    if (null != fusionrnaeffect) {
+      builder.effect(fusionrnaeffect);
+    }
+
+    final var fusionrnareportednumread = subform.getLong("fusionrnareportednumread");
+    if (null != fusionrnareportednumread) {
+      builder.reportedNumReads(fusionrnareportednumread);
+    }
+
+    return builder.build();
   }
 
   @Nullable
@@ -643,5 +768,17 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
 
     return resultBuilder.build();
+  }
+
+  @Nullable
+  private static RnaFusionStrand getRnaFusionStrand(String value) {
+    if (value.equals("+")) {
+      return RnaFusionStrand.EMPTY;
+    } else if (value.equals("-")) {
+      return RnaFusionStrand.RNA_FUSION_STRAND;
+    } else {
+      logger.error("No RNA fusion strand found for '{}'.", value);
+      return null;
+    }
   }
 }
