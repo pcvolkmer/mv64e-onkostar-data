@@ -93,6 +93,7 @@ Um Mithilfe wird gebeten.
    * Tumorzellgehalt-Methode problematisch, wenn auch im NGS-Bericht histologisch festgestellt.
    * Angabe zu MSI-Interpretation fehlt in Formular, ist aber Pflichtangabe - Wird gefiltert.
    * Datenbanktabelle für MSI lautet tatsächlich `dk_molekluargenmsi` [sic!]
+   * Aktuell nur SV und CNV implementiert.
 3. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
 
 ## Enthaltene Liste mit Genen
