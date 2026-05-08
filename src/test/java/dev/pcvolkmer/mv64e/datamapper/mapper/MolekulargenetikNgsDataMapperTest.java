@@ -1003,7 +1003,8 @@ class MolekulargenetikNgsDataMapperTest {
         // This does not result in an exception
         Arguments.of("", ""),
         Arguments.of("http://example.com/pipeline", "http://example.com/pipeline"),
-        // This will result in an IllegalArgumentException when creating java.net.URI from string and this will fail in DNPM:DIP
+        // This will result in an IllegalArgumentException when creating java.net.URI from string
+        // and this will fail in DNPM:DIP
         Arguments.of(null, "https://pipelines.dnpm.dev/00000000-0000-0000-0000-000000000000"),
         Arguments.of("Meine Testpipeline", "https://pipelines.dnpm.dev?q=Meine+Testpipeline"),
         Arguments.of(
