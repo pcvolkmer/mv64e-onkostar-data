@@ -551,6 +551,173 @@ class MolekulargenetikNgsDataMapperTest {
             });
   }
 
+  @Test
+  void shouldContainDnaFusionWithDataAsIs() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(eq(1));
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name(Column.PATIENTEN_ID).value(4711),
+                      Column.name(Column.HAUPTPROZEDUR_ID).value(1),
+                      PropcatColumn.name("ergebnis").value("F"),
+                      PropcatColumn.name("fusionart").value("DNA"),
+                      PropcatColumn.name("gen").value("A1BG"),
+                      PropcatColumn.name("fusioniertesgen").value("ABL1"),
+                      Column.name("fusiondna5chromosome").value("chr19"),
+                      Column.name("fusiondna5position").value(501234),
+                      Column.name("fusiondna5ensemblid").value("ENSG00000121410"),
+                      Column.name("fusiondna5hgncid").value("HGNC:5"),
+                      Column.name("fusiondna5hgncsymbol").value("A1BG"),
+                      Column.name("fusiondna5hgncname").value("alpha-1-B glycoprotein"),
+                      Column.name("fusiondna3chromosome").value("chr9"),
+                      Column.name("fusiondna3position").value(301234),
+                      Column.name("fusiondna3ensemblid").value("ENSG00000097007"),
+                      Column.name("fusiondna3hgncid").value("HGNC:76"),
+                      Column.name("fusiondna3hgncsymbol").value("ABL1"),
+                      Column.name("fusiondna3hgncname")
+                          .value("ABL proto-oncogene 1, non-receptor tyrosine kinase"),
+                      Column.name("fusiondnareportednumread").value(123L)));
+            })
+        .when(molekulargenuntersuchungCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+    assertThat(actual.getResults()).isNotNull();
+    assertThat(actual.getResults())
+        .satisfies(
+            results -> {
+              assertThat(results).isNotNull();
+              assertThat(results.getDnaFusions())
+                  .satisfies(
+                      dnaFusion -> {
+                        assertThat(dnaFusion).hasSize(1);
+                        assertThat(dnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
+                        assertThat(dnaFusion.get(0).getFusionPartner5Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getChromosome())
+                                      .isEqualTo(Chromosome.CHR19);
+                                  assertThat(fusionPartner.getGene().getCode()).isEqualTo("HGNC:5");
+                                  assertThat(fusionPartner.getGene().getDisplay())
+                                      .isEqualTo("A1BG");
+                                  assertThat(fusionPartner.getGene().getSystem())
+                                      .isEqualTo("https://www.genenames.org/");
+                                  assertThat(fusionPartner.getPosition()).isEqualTo(501234);
+                                });
+                        assertThat(dnaFusion.get(0).getFusionPartner3Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getChromosome())
+                                      .isEqualTo(Chromosome.CHR9);
+                                  assertThat(fusionPartner.getGene().getCode())
+                                      .isEqualTo("HGNC:76");
+                                  assertThat(fusionPartner.getGene().getDisplay())
+                                      .isEqualTo("ABL1");
+                                  assertThat(fusionPartner.getGene().getSystem())
+                                      .isEqualTo("https://www.genenames.org/");
+                                  assertThat(fusionPartner.getPosition()).isEqualTo(301234);
+                                });
+                      });
+            });
+  }
+
+  @Test
+  void shouldContainDnaFusionWithMissingDataFromGeneList() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(eq(1));
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name(Column.PATIENTEN_ID).value(4711),
+                      Column.name(Column.HAUPTPROZEDUR_ID).value(1),
+                      PropcatColumn.name("ergebnis").value("F"),
+                      PropcatColumn.name("fusionart").value("DNA"),
+                      PropcatColumn.name("gen").value("A1BG"),
+                      PropcatColumn.name("fusioniertesgen").value("ABL1"),
+                      Column.name("fusiondna5position").value(501234),
+                      Column.name("fusiondna3position").value(301234),
+                      Column.name("fusiondnareportednumread").value(123L)));
+            })
+        .when(molekulargenuntersuchungCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+    assertThat(actual.getResults()).isNotNull();
+    assertThat(actual.getResults())
+        .satisfies(
+            results -> {
+              assertThat(results).isNotNull();
+              assertThat(results.getDnaFusions())
+                  .satisfies(
+                      dnaFusion -> {
+                        assertThat(dnaFusion).hasSize(1);
+                        assertThat(dnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
+                        assertThat(dnaFusion.get(0).getFusionPartner5Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getChromosome())
+                                      .isEqualTo(Chromosome.CHR19);
+                                  assertThat(fusionPartner.getGene().getCode()).isEqualTo("HGNC:5");
+                                  assertThat(fusionPartner.getGene().getDisplay())
+                                      .isEqualTo("A1BG");
+                                  assertThat(fusionPartner.getGene().getSystem())
+                                      .isEqualTo("https://www.genenames.org/");
+                                  assertThat(fusionPartner.getPosition()).isEqualTo(501234);
+                                });
+                        assertThat(dnaFusion.get(0).getFusionPartner3Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getChromosome())
+                                      .isEqualTo(Chromosome.CHR9);
+                                  assertThat(fusionPartner.getGene().getCode())
+                                      .isEqualTo("HGNC:76");
+                                  assertThat(fusionPartner.getGene().getDisplay())
+                                      .isEqualTo("ABL1");
+                                  assertThat(fusionPartner.getGene().getSystem())
+                                      .isEqualTo("https://www.genenames.org/");
+                                  assertThat(fusionPartner.getPosition()).isEqualTo(301234);
+                                });
+                      });
+            });
+  }
+
   @ParameterizedTest
   @CsvSource({
     "p.F123G,p.Phe123Gly",
