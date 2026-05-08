@@ -13,11 +13,14 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -993,5 +996,49 @@ class MolekulargenetikNgsDataMapperTest {
                             .isEqualTo(expectedValue);
                       });
             });
+  }
+
+  public static Stream<Arguments> providePipelineAndUri() {
+    return Stream.of(
+        // This does not result in an exception
+        Arguments.of("", ""),
+        Arguments.of("http://example.com/pipeline", "http://example.com/pipeline"),
+        // This will result in an IllegalArgumentException when creating java.net.URI from string and this will fail in DNPM:DIP
+        Arguments.of(null, "https://pipelines.dnpm.dev/00000000-0000-0000-0000-000000000000"),
+        Arguments.of("Meine Testpipeline", "https://pipelines.dnpm.dev?q=Meine+Testpipeline"),
+        Arguments.of(
+            "Meine Testpipeline / Beispiel für MV §64e",
+            "https://pipelines.dnpm.dev?q=Meine+Testpipeline+%2F+Beispiel+f%C3%BCr+MV+%C2%A764e"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("providePipelineAndUri")
+  void shouldMapPipelineToUri(String value, String pipelineUri) {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"),
+                  PropcatColumn.name("sequenziergeraet").value("FancySeq"),
+                  PropcatColumn.name("seqkittyp").value("FancySeqKitTyp"),
+                  PropcatColumn.name("seqkithersteller").value("FancySeqKitHersteller"),
+                  PropcatColumn.name("seqpipeline").value(value));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    when(propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(anyString(), anyInt()))
+        .thenReturn(value);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isNotNull();
+    assertThat(actual.getMetadata().get(0).getPipeline()).isEqualTo(pipelineUri);
   }
 }

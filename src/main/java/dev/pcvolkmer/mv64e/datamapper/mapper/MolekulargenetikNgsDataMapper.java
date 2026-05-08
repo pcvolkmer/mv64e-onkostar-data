@@ -27,6 +27,9 @@ import dev.pcvolkmer.mv64e.datamapper.genes.GeneUtils;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple2;
 import dev.pcvolkmer.mv64e.mtb.*;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -651,10 +654,16 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     var seqPipeline = osMolResultSet.getString("seqpipeline");
     var seqPipelinePv = osMolResultSet.getInteger("seqpipeline_propcat_version");
     if (null != seqPipeline && null != seqPipelinePv) {
-      builder.pipeline(
-          propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqPipeline, seqPipelinePv));
+      final var pipeline =
+          propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqPipeline, seqPipelinePv);
+      if (!pipeline.isBlank()) {
+        builder.pipeline(mapPipelineUri(pipeline).toString());
+      } else {
+        builder.pipeline(pipeline);
+      }
+
     } else {
-      builder.pipeline("SeqPipeline not specified.");
+      builder.pipeline(mapPipelineUri(null).toString());
     }
 
     var referenceGenome = osMolResultSet.getString("referenzgenom");
@@ -779,6 +788,21 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     } else {
       logger.error("No RNA fusion strand found for '{}'.", value);
       return null;
+    }
+  }
+
+  @NonNull
+  private static URI mapPipelineUri(@Nullable String value) {
+    if (null == value) {
+      return URI.create("https://pipelines.dnpm.dev/00000000-0000-0000-0000-000000000000");
+    }
+    try {
+      return URI.create(value);
+    } catch (IllegalArgumentException e) {
+      return URI.create(
+          String.format(
+              "https://pipelines.dnpm.dev?q=%s",
+              URLEncoder.encode(value.trim(), StandardCharsets.UTF_8)));
     }
   }
 }
