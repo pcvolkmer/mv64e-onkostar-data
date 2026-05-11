@@ -946,7 +946,9 @@ class MolekulargenetikNgsDataMapperTest {
     "p.V600*,p.Val600*",
     // Not mappable - keep as is
     "p.X123X,p.X123X",
-    "c.123A>C,c.123A>C"
+    // Examples from UKR
+    "p.E123Rfs*14,p.Glu123Argfs*14",
+    "p.E123Rfs*?,p.Glu123Argfs*?",
   })
   void shouldMapProteinChangeTo3LetterFormat(final String shortValue, final String expectedValue) {
     doAnswer(
