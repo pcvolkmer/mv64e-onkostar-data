@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.7.1...v0.7.2) (2026-05-11)
+
+
+### Bug Fixes
+
+* return input on first three-letter code match ([b8dd479](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/b8dd479fabaeacdb4504622952ad4f12b3c09dfb))
+
 ## [0.7.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.7.0...v0.7.1) (2026-05-11)
 
 
