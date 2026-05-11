@@ -103,7 +103,7 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
 
   /**
    * Get procedure IDs used in related KPA/Therapieplan procedures Related form references in
-   * Einzelempfehlung, Rebiopsie, Reevaluation
+   * Therapieplan, Einzelempfehlung, Rebiopsie, Reevaluation
    *
    * @param kpaId The procedure id
    * @return The procedure ids
@@ -111,18 +111,21 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
   public List<Integer> getIdsByKpaId(int kpaId) {
     return this.jdbcTemplate
         .queryForList(
-            "SELECT DISTINCT ref_molekulargenetik FROM dk_dnpm_uf_einzelempfehlung JOIN prozedur ON (prozedur.id = dk_dnpm_uf_einzelempfehlung.id) "
+            "SELECT DISTINCT ref_molekulargenetik AS ref_id FROM dk_dnpm_uf_einzelempfehlung JOIN prozedur ON (prozedur.id = dk_dnpm_uf_einzelempfehlung.id) "
                 + " WHERE ref_molekulargenetik IS NOT NULL AND hauptprozedur_id IN (SELECT id FROM dk_dnpm_therapieplan WHERE ref_dnpm_klinikanamnese = ?) "
-                + " UNION SELECT ref_molekulargenetik FROM dk_dnpm_uf_rebiopsie JOIN prozedur ON (prozedur.id = dk_dnpm_uf_rebiopsie.id) "
+                + " UNION SELECT ref_molekulargenetik AS ref_id FROM dk_dnpm_uf_rebiopsie JOIN prozedur ON (prozedur.id = dk_dnpm_uf_rebiopsie.id) "
                 + " WHERE ref_molekulargenetik IS NOT NULL AND hauptprozedur_id IN (SELECT id FROM dk_dnpm_therapieplan WHERE ref_dnpm_klinikanamnese = ?) "
-                + " UNION SELECT ref_molekulargenetik FROM dk_dnpm_uf_reevaluation JOIN prozedur ON (prozedur.id = dk_dnpm_uf_reevaluation.id) "
-                + " WHERE ref_molekulargenetik IS NOT NULL AND hauptprozedur_id IN (SELECT id FROM dk_dnpm_therapieplan WHERE ref_dnpm_klinikanamnese = ?);",
+                + " UNION SELECT ref_molekulargenetik AS ref_id FROM dk_dnpm_uf_reevaluation JOIN prozedur ON (prozedur.id = dk_dnpm_uf_reevaluation.id) "
+                + " WHERE ref_molekulargenetik IS NOT NULL AND hauptprozedur_id IN (SELECT id FROM dk_dnpm_therapieplan WHERE ref_dnpm_klinikanamnese = ?) "
+                + " UNION SELECT ref_no_empf_molgen AS ref_id FROM dk_dnpm_therapieplan JOIN prozedur ON (prozedur.id = dk_dnpm_therapieplan.id) "
+                + " WHERE ref_no_empf_molgen IS NOT NULL AND dk_dnpm_therapieplan.id IN (SELECT id FROM dk_dnpm_therapieplan WHERE ref_dnpm_klinikanamnese = ?);",
+            kpaId,
             kpaId,
             kpaId,
             kpaId)
         .stream()
         .map(ResultSet::from)
-        .map(rs -> rs.getInteger("ref_molekulargenetik"))
+        .map(rs -> rs.getInteger("ref_id"))
         .filter(Objects::nonNull)
         .distinct()
         .collect(Collectors.toList());
