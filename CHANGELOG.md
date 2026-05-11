@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.7.0...v0.7.1) (2026-05-11)
+
+
+### Features
+
+* simplified protein change mapper ([#160](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/160)) ([6e183f1](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/6e183f124b3117dd6b7fb3697a3447978273f500))
+
+
+### Bug Fixes
+
+* update dto library to v0.3.0 ([#157](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/157)) ([83119f6](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/83119f61f2d995a71c3feb148694d46e6a2f7225))
+
 ## [0.7.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.6.0...v0.7.0) (2026-05-08)
 
 
