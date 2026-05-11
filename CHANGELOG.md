@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.6.0...v0.7.0) (2026-05-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* map plain text pipeline names to URIs ([#156](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/156))
+
+### Features
+
+* export DNA fusions ([#151](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/151)) ([8a2a657](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/8a2a657fd29303104332133cc39246543aed7db2))
+* export RNA fusions ([#155](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/155)) ([7ab3ed3](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/7ab3ed33e1d6cc397ffbb0305eb72cb6e3ab02b9))
+* map plain text pipeline names to URIs ([#156](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/156)) ([18269b5](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/18269b59dc11740d531985412495b4097b1470a8))
+
 ## [0.6.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.5.5...v0.6.0) (2026-04-20)
 
 
