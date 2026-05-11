@@ -946,9 +946,12 @@ class MolekulargenetikNgsDataMapperTest {
     "p.V600*,p.Val600*",
     // Not mappable - keep as is
     "p.X123X,p.X123X",
+    // Keep existing three letter codes
+    "p.Gly123Glu,p.Gly123Glu",
+    "p.Ser123_Ile125delinsPhe,p.Ser123_Ile125delinsPhe",
     // Examples from UKR
     "p.E123Rfs*14,p.Glu123Argfs*14",
-    "p.E123Rfs*?,p.Glu123Argfs*?",
+    "p.E123Rfs*?,p.Glu123Argfs*?"
   })
   void shouldMapProteinChangeTo3LetterFormat(final String shortValue, final String expectedValue) {
     doAnswer(

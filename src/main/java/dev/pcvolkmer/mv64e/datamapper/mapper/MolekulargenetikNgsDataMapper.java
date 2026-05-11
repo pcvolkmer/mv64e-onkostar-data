@@ -706,7 +706,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
             String.format(
                 "(%s)", mappingTable.stream().map(Tuple2::get2).collect(Collectors.joining("|"))));
 
-    if (threeLetterCodes.matcher(input).matches()) {
+    if (threeLetterCodes.matcher(input).find()) {
       return input;
     }
 
