@@ -677,86 +677,41 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     return builder.build();
   }
 
-  private static String mapProteinChangeToLongFormat(final String input) {
+  private static String mapProteinChangeToLongFormat(String input) {
     final var mappingTable =
         List.of(
-            Tuple.from("*", "*"),
-            Tuple.from("=", "="),
-            Tuple.from("fs", "fs"),
-            Tuple.from("F", "Phe"),
-            Tuple.from("L", "Leu"),
-            Tuple.from("S", "Ser"),
-            Tuple.from("Y", "Tyr"),
+            Tuple.from("A", "Ala"),
             Tuple.from("C", "Cys"),
-            Tuple.from("W", "Trp"),
+            Tuple.from("G", "Gly"),
+            Tuple.from("I", "Ile"),
+            Tuple.from("L", "Leu"),
+            Tuple.from("M", "Met"),
             Tuple.from("P", "Pro"),
+            Tuple.from("S", "Ser"),
+            Tuple.from("T", "Thr"),
+            Tuple.from("V", "Val"),
+            Tuple.from("F", "Phe"),
+            Tuple.from("Y", "Tyr"),
+            Tuple.from("W", "Trp"),
             Tuple.from("H", "His"),
             Tuple.from("Q", "Gln"),
             Tuple.from("R", "Arg"),
-            Tuple.from("I", "Ile"),
-            Tuple.from("M", "Met"),
-            Tuple.from("T", "Thr"),
             Tuple.from("N", "Asn"),
             Tuple.from("K", "Lys"),
-            Tuple.from("V", "Val"),
-            Tuple.from("A", "Ala"),
             Tuple.from("D", "Asp"),
-            Tuple.from("E", "Glu"),
-            Tuple.from("G", "Gly"));
+            Tuple.from("E", "Glu"));
 
-    final var pattern =
+    var threeLetterCodes =
         Pattern.compile(
-            "^p\\.(?<refA>[*FLSYCWPHQRIMTNKVADEG])?(?<posA>\\d+)?(?<sep>_)?(?<refB>[*FLSYCWPHQRIMTNKVADEG])(?<posB>\\d+)(?<type>del|ins|delins|dup)?(?<alt>[*=FLSYCWPHQRIMTNKVADEG]+|fs)?$");
+            String.format(
+                "(%s)", mappingTable.stream().map(Tuple2::get2).collect(Collectors.joining("|"))));
 
-    final var matcher = pattern.matcher(input);
+    if (threeLetterCodes.matcher(input).find()) {
+      return input;
+    }
 
-    if (matcher.matches()) {
-      var refA = matcher.group("refA");
-      var posA = matcher.group("posA");
-      var sep = matcher.group("sep");
-      var refB = matcher.group("refB");
-      var posB = matcher.group("posB");
-      var type = matcher.group("type");
-      var alt = matcher.group("alt");
-
-      var longRefA =
-          mappingTable.stream()
-              .filter(value -> value.get1().equals(refA))
-              .map(Tuple2::get2)
-              .findFirst()
-              .orElse("");
-      var longRefB =
-          mappingTable.stream()
-              .filter(value -> value.get1().equals(refB))
-              .map(Tuple2::get2)
-              .findFirst()
-              .orElse("");
-      var longAlt = "";
-      if ("fs".equals(alt)) {
-        longAlt = "fs";
-      } else if (null != alt) {
-        longAlt =
-            alt.chars()
-                .mapToObj(Character::toString)
-                .map(
-                    c ->
-                        mappingTable.stream()
-                            .filter(value -> value.get1().equals(c))
-                            .map(Tuple2::get2)
-                            .findFirst()
-                            .orElse(""))
-                .collect(Collectors.joining());
-      }
-
-      return String.format(
-          "p.%s%s%s%s%s%s%s",
-          longRefA,
-          null == posA ? "" : posA,
-          null == sep ? "" : sep,
-          longRefB,
-          null == posB ? "" : posB,
-          null == type ? "" : type,
-          longAlt);
+    for (var tuple : mappingTable) {
+      input = input.replaceAll(tuple.get1(), tuple.get2());
     }
 
     return input;
