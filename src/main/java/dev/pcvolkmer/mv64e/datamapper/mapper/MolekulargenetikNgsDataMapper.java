@@ -782,9 +782,9 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   @Nullable
   private static RnaFusionStrand getRnaFusionStrand(String value) {
     if (value.equals("+")) {
-      return RnaFusionStrand.EMPTY;
+      return RnaFusionStrand.PLUS;
     } else if (value.equals("-")) {
-      return RnaFusionStrand.RNA_FUSION_STRAND;
+      return RnaFusionStrand.MINUS;
     } else {
       logger.error("No RNA fusion strand found for '{}'.", value);
       return null;

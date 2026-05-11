@@ -889,7 +889,8 @@ class MolekulargenetikNgsDataMapperTest {
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000121410.5");
                                   assertThat(fusionPartner.getPosition()).isEqualTo(501234);
-                                  assertThat(fusionPartner.getStrand().toValue()).isEqualTo("+");
+                                  assertThat(fusionPartner.getStrand())
+                                      .isEqualTo(RnaFusionStrand.PLUS);
                                 });
                         assertThat(rnaFusion.get(0).getFusionPartner3Prime())
                             .satisfies(
@@ -904,7 +905,8 @@ class MolekulargenetikNgsDataMapperTest {
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000097007.3");
                                   assertThat(fusionPartner.getPosition()).isEqualTo(301234);
-                                  assertThat(fusionPartner.getStrand().toValue()).isEqualTo("-");
+                                  assertThat(fusionPartner.getStrand())
+                                      .isEqualTo(RnaFusionStrand.MINUS);
                                 });
                       });
             });
