@@ -28,13 +28,12 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.Claim;
-import dev.pcvolkmer.mv64e.mtb.ClaimStageCoding;
-import dev.pcvolkmer.mv64e.mtb.ClaimStageCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.mtb.*;
+import java.time.Instant;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,15 +42,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
-class FollowUpClaimMapperTest {
+class FollowUpClaimResponseMapperTest {
 
   FollowUpCatalogue catalogue;
-  FollowUpClaimMapper dataMapper;
+  FollowUpClaimResponseMapper dataMapper;
 
   @BeforeEach
   void setUp(@Mock FollowUpCatalogue catalogue) {
     this.catalogue = catalogue;
-    this.dataMapper = new FollowUpClaimMapper(catalogue);
+    this.dataMapper = new FollowUpClaimResponseMapper(catalogue);
   }
 
   @Test
@@ -67,25 +66,32 @@ class FollowUpClaimMapperTest {
                     Column.name(Column.ID).value(11),
                     Column.name(Column.PATIENT_ID).value(42),
                     Column.name(Column.PATIENTEN_ID).value(2000000042),
-                    Column.name("linktherapieempfehlung").value(1),
-                    DateColumn.name("ausstellungsdatumantrag").value("2026-04-01"),
-                    Column.name("antragsstadium").value("initial-claim")))
+                    DateColumn.name("datum_antwortkueantrag").value("2026-04-01"),
+                    PropcatColumn.name("statuskostenuebernahme").value("rejected"),
+                    PropcatColumn.name("ablehnungkosten").value("formal-reasons")))
         .when(catalogue)
         .getById(anyInt());
 
     var actual = this.dataMapper.getById(11);
-
-    assertThat(actual).isInstanceOf(Claim.class);
+    assertThat(actual).isInstanceOf(ClaimResponse.class);
     assertThat(actual.getId()).isEqualTo("11");
+    assertThat(actual.getClaim()).isEqualTo(Reference.builder().id("11").build());
     assertThat(actual.getPatient())
         .isEqualTo(Reference.builder().id("2000000042").type("Patient").build());
-    assertThat(actual.getRecommendation()).isEqualTo(Reference.builder().id("1").build());
-    assertThat(actual.getStage())
+    assertThat(actual.getIssuedOn()).isEqualTo(Instant.parse("2026-04-01T00:00:00Z"));
+    assertThat(actual.getStatus())
         .isEqualTo(
-            ClaimStageCoding.builder()
-                .code(ClaimStageCodingCode.INITIAL_CLAIM)
-                .display("initial-claim")
-                .system("dnpm-dip/mtb/claim/stage")
+            ClaimResponseStatusCoding.builder()
+                .code(ClaimResponseStatusCodingCode.REJECTED)
+                .display("rejected")
+                .system("dnpm-dip/mtb/claim-response/status")
+                .build());
+    assertThat(actual.getStatusReason())
+        .containsExactly(
+            ClaimResponseStatusReasonCoding.builder()
+                .code(ClaimResponseStatusReasonCodingCode.FORMAL_REASONS)
+                .display("formal-reasons")
+                .system("dnpm-dip/mtb/claim-response/status-reason")
                 .build());
   }
 
@@ -104,7 +110,8 @@ class FollowUpClaimMapperTest {
         Column.name(Column.PATIENT_ID).value(42),
         Column.name(Column.PATIENTEN_ID).value(2000000042),
         Column.name("linktherapieempfehlung").value(1),
-        DateColumn.name("ausstellungsdatumantrag").value("2026-04-01"),
-        Column.name("antragsstadium").value("initial-claim"));
+        DateColumn.name("datum_antwortkueantrag").value("2026-04-01"),
+        Column.name("statuskostenuebernahme").value("rejected"),
+        Column.name("ablehnungkosten").value("formal-reasons"));
   }
 }

@@ -38,10 +38,11 @@ public class FollowUpClaimMapper implements DataMapper<Claim> {
    * @return The loaded follow-up data
    */
   @Override
-  public @Nullable Claim getById(final int id) {
+  public Claim getById(final int id) {
     final var data = catalogue.getById(id);
 
-    final var builder = Claim.builder().patient(data.getPatientReference());
+    final var builder =
+        Claim.builder().id(String.format("%d", id)).patient(data.getPatientReference());
 
     final var date = data.getDate("ausstellungsdatumantrag");
     if (null != date) {
@@ -64,7 +65,6 @@ public class FollowUpClaimMapper implements DataMapper<Claim> {
     return builder.build();
   }
 
-  @Nullable
   private ClaimStageCoding getClaimStageCoding(final String stage) {
     try {
       return ClaimStageCoding.builder()

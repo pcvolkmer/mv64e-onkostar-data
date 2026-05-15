@@ -81,9 +81,9 @@ Um Mithilfe wird gebeten.
 | MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (3)              |
 | Follow-Up Verlauf                | ✅      |                                                                                              |
 | Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (4)                      |
-| Antwort Kostenübernahme          | -      | Späterer Zeitpunkt                                                                           |
+| Antwort Kostenübernahme          | ✅      |                                                                                              |
 | Therapien                        | ⛅      | Initialer Support                                                                            |
-| Response Befunde                 | -      | Späterer Zeitpunkt                                                                           |
+| Response Befunde                 |        | Späterer Zeitpunkt                                                                           |
 
 ### Hinweise
 
