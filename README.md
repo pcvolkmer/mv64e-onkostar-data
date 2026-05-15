@@ -78,9 +78,9 @@ Um Mithilfe wird gebeten.
 | IHC-Berichte                     | -      | Aktuell nicht vorgesehen                                                                     |
 | MSI-Befunde                      | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)               |
 | NGS-Berichte                     | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)               |
-| MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante und CNV (3)                        |
+| MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (3)              |
 | Follow-Up Verlauf                | ✅      |                                                                                              |
-| Antrag Kostenübernahme           | -      | Späterer Zeitpunkt                                                                           |
+| Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (4)                      |
 | Antwort Kostenübernahme          | -      | Späterer Zeitpunkt                                                                           |
 | Therapien                        | ⛅      | Initialer Support                                                                            |
 | Response Befunde                 | -      | Späterer Zeitpunkt                                                                           |
@@ -95,6 +95,8 @@ Um Mithilfe wird gebeten.
    * Datenbanktabelle für MSI lautet tatsächlich `dk_molekluargenmsi` [sic!]
    * Aktuell sind folgende Varianten implementiert: SV, CNV, RNA- und DNA-Fusion.
 3. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
+4. Da die Angabe (technisch) optional ist und im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
+   nicht genannt ist, wird diese Angabe nicht exportiert.
 
 ## Enthaltene Liste mit Genen
 
