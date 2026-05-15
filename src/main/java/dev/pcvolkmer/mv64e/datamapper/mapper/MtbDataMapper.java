@@ -222,6 +222,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
     var followUpDataMapper =
         new FollowUpDataMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
 
+    var followUpClaimMapper =
+        new FollowUpClaimMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
+
     var resultBuilder = Mtb.builder();
 
     try {
@@ -251,6 +254,13 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
               .distinct()
               .map(followUpDataMapper::getById)
+              .collect(Collectors.toList());
+
+      var claims =
+          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
+              .distinct()
+              .map(followUpClaimMapper::getById)
+              .distinct()
               .collect(Collectors.toList());
 
       var systemicTherapies =
@@ -294,6 +304,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .msiFindings(msiFindings.collect(Collectors.toList()))
           // FollowUps
           .followUps(followUps)
+          .claims(claims)
           // Therapie-Verlaufsdokumentation
           .systemicTherapies(systemicTherapies);
 
