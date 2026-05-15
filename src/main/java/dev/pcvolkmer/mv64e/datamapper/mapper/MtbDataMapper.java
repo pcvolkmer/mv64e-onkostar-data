@@ -225,6 +225,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
     var followUpClaimMapper =
         new FollowUpClaimMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
 
+    var followUpClaimResponseMapper =
+        new FollowUpClaimResponseMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
+
     var resultBuilder = Mtb.builder();
 
     try {
@@ -260,6 +263,13 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
               .distinct()
               .map(followUpClaimMapper::getById)
+              .distinct()
+              .collect(Collectors.toList());
+
+      var claimResponses =
+          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
+              .distinct()
+              .map(followUpClaimResponseMapper::getById)
               .distinct()
               .collect(Collectors.toList());
 
@@ -302,9 +312,10 @@ public class MtbDataMapper implements DataMapper<Mtb> {
                   kpaId, kpaHistologieDataMapper.getMolGenIdsFromHistoOfTypeSequence(kpaId)))
           // MSI Befunde
           .msiFindings(msiFindings.collect(Collectors.toList()))
-          // FollowUps
+          // FollowUps mit Claims und Claim Responses
           .followUps(followUps)
           .claims(claims)
+          .claimResponses(claimResponses)
           // Therapie-Verlaufsdokumentation
           .systemicTherapies(systemicTherapies);
 
