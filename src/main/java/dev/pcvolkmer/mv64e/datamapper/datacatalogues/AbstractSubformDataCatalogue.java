@@ -68,6 +68,7 @@ public abstract class AbstractSubformDataCatalogue extends AbstractDataCatalogue
               }
               merkmale.forEach((key, value) -> resultSet.getRawData().put(key, value));
             })
+        .distinct()
         .collect(Collectors.toList());
   }
 

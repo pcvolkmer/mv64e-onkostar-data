@@ -253,6 +253,15 @@ public class MtbDataMapper implements DataMapper<Mtb> {
               .map(followUpDataMapper::getById)
               .collect(Collectors.toList());
 
+      var systemicTherapies =
+          new TherapiehistorieDataMapper(
+                  therapielinieMapper,
+                  therapieplanCatalogue,
+                  einzelempfehlungCatalogue,
+                  catalogueFactory.catalogue(FollowUpCatalogue.class),
+                  catalogueFactory.catalogue(TherapielinieCatalogue.class))
+              .getById(kpaId);
+
       var msiFindings =
           molekulargenetikNgsDataMapper
               .getAllByKpaIdWithHisto(
@@ -284,7 +293,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           // MSI Befunde
           .msiFindings(msiFindings.collect(Collectors.toList()))
           // FollowUps
-          .followUps(followUps);
+          .followUps(followUps)
+          // Therapie-Verlaufsdokumentation
+          .systemicTherapies(systemicTherapies);
 
       tryAndLogWithResult(() -> prozedurMapper.getByParentId(kpaId))
           .ok()

@@ -72,4 +72,24 @@ public class FollowUpCatalogue extends AbstractDataCatalogue {
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
+
+  /**
+   * Get procedure IDs by related DNPM Einzelempfehlung procedure id
+   *
+   * @param recommendationId The procedure id
+   * @return The procedure ids
+   */
+  public List<Integer> getByRecommendationId(int recommendationId) {
+    return this.jdbcTemplate
+        .queryForList(
+            "SELECT DISTINCT fup.id FROM dk_dnpm_followup fu "
+                + "JOIN prozedur fup ON (fu.id = fup.id AND fup.geloescht = 0) "
+                + "WHERE fu.linktherapieempfehlung = ?",
+            recommendationId)
+        .stream()
+        .map(ResultSet::from)
+        .map(rs -> rs.getInteger("id"))
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
+  }
 }

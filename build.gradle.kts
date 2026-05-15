@@ -53,6 +53,8 @@ dependencies {
     implementation("org.slf4j:slf4j-api:${versions["slf4j"]}")
     implementation("org.jspecify:jspecify:1.0.0")
 
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.6")
+
     testImplementation(platform("org.junit:junit-bom:${versions["junit"]}"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:${versions["assertj"]}")
@@ -71,7 +73,7 @@ tasks.test {
         events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
     }
     useJUnitPlatform()
-    dependsOn(tasks.spotlessCheck)
+    dependsOn(tasks.spotlessApply)
 }
 
 tasks.withType<JavaCompile> {

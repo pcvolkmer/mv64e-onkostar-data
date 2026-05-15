@@ -39,7 +39,7 @@ import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 /**
- * Mapper class to load and map diagnosis data from database table 'dk_dnpm_einzelempfehlung'
+ * Mapper class to load and map recommendation data from database table 'dk_dnpm_einzelempfehlung'
  *
  * @author Paul-Christian Volkmer
  * @since 0.1
