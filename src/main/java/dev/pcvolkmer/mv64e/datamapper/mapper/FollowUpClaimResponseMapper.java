@@ -22,7 +22,6 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
-import org.jspecify.annotations.Nullable;
 
 public class FollowUpClaimResponseMapper implements DataMapper<ClaimResponse> {
 
