@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.7.2...v0.8.0) (2026-05-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* export findings without recommendations ([#159](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/159))
+
+### Features
+
+* export claim responses from follow-up form ([#165](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/165)) ([9b11cda](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/9b11cda0fab60d61dae8ac955a99f1bf681bea8e))
+* export claims from follow-up form ([#164](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/164)) ([3b0b106](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/3b0b106a66364e22f81b28d38525e4146534ec43))
+* export findings without recommendations ([#159](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/159)) ([f7408a3](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/f7408a38bc047e21447435a87d51f872e9805d70))
+* initial support for systemic therapies ([#163](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/163)) ([c1ff5fd](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/c1ff5fdc955e7a268782b1ba95ee270f799dfc11))
+* only add municipality code if available ([#166](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/166)) ([40bcde1](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/40bcde14b03d9b0d488fdc353e4d72204c407af3))
+
 ## [0.7.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.7.1...v0.7.2) (2026-05-11)
 
 
