@@ -41,6 +41,8 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -84,6 +86,29 @@ class PatientDataMapperTest {
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isNull();
     assertThat(actual.getAddress()).isEqualTo(Address.builder().municipalityCode("06634").build());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"", "06634", "123"})
+  void shouldCreatePatientWithoutAddress(String gkz) {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value("20001234"),
+                    Column.name("geschlecht").value("M"),
+                    DateColumn.name("geburtsdatum").value("2000-01-01"),
+                    Column.name("GKZ").value(gkz)))
+        .when(patientCatalogue)
+        .getById(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isInstanceOf(Patient.class);
+    assertThat(actual.getId()).isEqualTo("20001234");
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
+    assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
+    assertThat(actual.getDateOfDeath()).isNull();
+    assertThat(actual.getAddress()).isNull();
   }
 
   @Test
