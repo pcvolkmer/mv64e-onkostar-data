@@ -22,11 +22,14 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -71,28 +74,40 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
   }
 
   /**
-   * Loads and maps a ca plan using the database id
+   * Loads and maps a care plan using the database id
    *
    * @param id The database id of the procedure data set
    * @return The loaded Patient data
    */
+  @NullMarked
   @Override
   public MtbCarePlan getById(int id) {
     var therapieplanData = therapieplanCatalogue.getById(id);
 
+    var idString = therapieplanData.getString("id");
+    var date = therapieplanData.getDate("datum");
+
+    if (null == idString || null == date) {
+      throw new IgnorableMappingException("Cannot map id or date for Therapieplan");
+    }
+
     var builder = MtbCarePlan.builder();
     builder
-        .id(therapieplanData.getString("id"))
+        .id(idString)
         .patient(therapieplanData.getPatientReference())
-        .issuedOn(therapieplanData.getDate("datum"))
-        .histologyReevaluationRequests(getHistologyReevaluationRequests(id))
-        .rebiopsyRequests(
-            getRebiopsyRequest(
-                id,
-                Reference.builder()
-                    .id(therapieplanData.getString("refdnpmklinikanamnese"))
-                    .type("MTBDiagnosis")
-                    .build()));
+        .issuedOn(date)
+        .histologyReevaluationRequests(getHistologyReevaluationRequests(id));
+
+    var refDnpmKlinikAnamnese = therapieplanData.getString("refdnpmklinikanamnese");
+    if (null != refDnpmKlinikAnamnese) {
+      builder.rebiopsyRequests(
+          getRebiopsyRequest(
+              id,
+              Reference.builder()
+                  .id(therapieplanData.getString("refdnpmklinikanamnese"))
+                  .type("MTBDiagnosis")
+                  .build()));
+    }
 
     if (therapieplanData.isTrue("mit_einzelempfehlung")) {
       builder.medicationRecommendations(einzelempfehlungWirkstoffDataMapper.getByParentId(id));
@@ -198,6 +213,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     return resultBuilder.build();
   }
 
+  @NullMarked
   private List<RebiopsyRequest> getRebiopsyRequest(int parentId, Reference diagnosisReference) {
     return this.rebiopsieCatalogue.getAllByParentId(parentId).stream()
         .map(
@@ -208,6 +224,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
                     .issuedOn(resultSet.getDate("datum"))
                     .tumorEntity(diagnosisReference)
                     .build())
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 

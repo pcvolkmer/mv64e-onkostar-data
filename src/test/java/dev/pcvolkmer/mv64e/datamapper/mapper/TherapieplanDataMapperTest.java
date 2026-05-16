@@ -21,12 +21,14 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
@@ -133,7 +135,9 @@ class TherapieplanDataMapperTest {
     doAnswer(
             invocationOnMock ->
                 TestResultSet.withColumns(
-                    Column.name(Column.ID).value(1), Column.name(Column.PATIENTEN_ID).value(42)))
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -152,6 +156,7 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03"),
                     PropcatColumn.name("target").value("KT"),
                     PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
         .when(therapieplanCatalogue)
@@ -181,6 +186,7 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03"),
                     PropcatColumn.name("target").value("KT")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
@@ -206,6 +212,7 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03"),
                     PropcatColumn.name("target").value(targetFoundCode)))
         .when(therapieplanCatalogue)
         .getById(anyInt());
@@ -225,6 +232,7 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03"),
                     PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
@@ -249,6 +257,7 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03"),
                     Column.name("humangen_beratung").value(1),
                     PropcatColumn.name("humangen_ber_grund").value("other")))
         .when(therapieplanCatalogue)
@@ -283,5 +292,36 @@ class TherapieplanDataMapperTest {
                         .system("dnpm-dip/mtb/recommendation/genetic-counseling/reason")
                         .build())
                 .build());
+  }
+
+  @Test
+  void shouldThrowIgnorableMapperExceptionOnMissingDate() {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
+        .when(therapieplanCatalogue)
+        .getById(anyInt());
+
+    assertThrows(IgnorableMappingException.class, () -> this.dataMapper.getById(1));
+  }
+
+  @Test
+  void shouldIgnoreRebiopsyRequestsOnMissingRefDnpmKlinikAnamnese() {
+    doAnswer(
+            invocationOnMock ->
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1),
+                    Column.name(Column.PATIENTEN_ID).value(42),
+                    DateColumn.name("datum").value("2026-02-03"),
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
+        .when(therapieplanCatalogue)
+        .getById(anyInt());
+
+    var actual = this.dataMapper.getById(1);
+
+    assertThat(actual.getRebiopsyRequests()).isNull();
   }
 }

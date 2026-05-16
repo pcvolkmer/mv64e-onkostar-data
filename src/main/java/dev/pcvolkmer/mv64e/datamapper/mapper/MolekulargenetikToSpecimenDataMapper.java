@@ -97,6 +97,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
    * @param diagnoseReferenz The reference object to the diagnosis
    * @return The loaded Patient data
    */
+  @NullMarked
   public List<TumorSpecimen> getAllByKpaId(int kpaId, Reference diagnoseReferenz) {
     var therapieplanIds = therapieplanCatalogue.getByKpaId(kpaId);
 
