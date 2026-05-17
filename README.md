@@ -83,7 +83,7 @@ Um Mithilfe wird gebeten.
 | Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (4)                      |
 | Antwort Kostenübernahme          | ✅      |                                                                                              |
 | Therapien                        | ⛅      | Initialer Support                                                                            |
-| Response Befunde                 |        | Späterer Zeitpunkt                                                                           |
+| Response Befunde                 | ✅      |                                                                                              |
 
 ### Hinweise
 
