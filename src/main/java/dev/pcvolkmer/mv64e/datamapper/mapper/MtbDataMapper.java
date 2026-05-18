@@ -265,14 +265,18 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       var claims =
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
               .distinct()
-              .map(followUpClaimMapper::getById)
+              .map(id -> tryAndLogWithResult(() -> followUpClaimMapper.getById(id)).okOrNull())
+              .filter(Objects::nonNull)
               .distinct()
               .collect(Collectors.toList());
 
       var claimResponses =
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
               .distinct()
-              .map(followUpClaimResponseMapper::getById)
+              .map(
+                  id ->
+                      tryAndLogWithResult(() -> followUpClaimResponseMapper.getById(id)).okOrNull())
+              .filter(Objects::nonNull)
               .distinct()
               .collect(Collectors.toList());
 

@@ -111,7 +111,7 @@ class FollowUpResponseBefundMapperTest {
   @FuzzNullTest(
       initMethod = "fuzzInitData",
       includeColumns = {"datumfollowup", "beurteilungsmethode"})
-  void shouldThrowExceptionIfMissingRequiredValues(final ResultSet resultSet) {
+  void shouldThrowIgnorableExceptionIfMissingRequiredValues(final ResultSet resultSet) {
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
     var ex =
