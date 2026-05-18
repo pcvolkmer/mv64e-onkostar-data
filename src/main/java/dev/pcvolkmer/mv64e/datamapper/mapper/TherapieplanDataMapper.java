@@ -102,11 +102,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     if (null != refDnpmKlinikAnamnese) {
       builder.rebiopsyRequests(
           getRebiopsyRequest(
-              id,
-              Reference.builder()
-                  .id(refDnpmKlinikAnamnese)
-                  .type("MTBDiagnosis")
-                  .build()));
+              id, Reference.builder().id(refDnpmKlinikAnamnese).type("MTBDiagnosis").build()));
     }
 
     if (therapieplanData.isTrue("mit_einzelempfehlung")) {
