@@ -473,10 +473,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         logger.warn("Gene symbol '{}' not found in gene catalogue", gen);
         return null;
       }
-      geneOptional.ifPresent(
-          gene -> {
-            fusionPartner5Prime.gene(GeneUtils.toCoding(gene));
-          });
+      geneOptional.ifPresent(gene -> fusionPartner5Prime.gene(GeneUtils.toCoding(gene)));
     }
 
     final var fusionrna5exonid = subform.getString("fusionrna5exonid");
@@ -519,10 +516,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         logger.warn("Gene symbol '{}' not found in gene catalogue", fusioniertesgen);
         return null;
       }
-      geneOptional.ifPresent(
-          gene -> {
-            fusionPartner3Prime.gene(GeneUtils.toCoding(gene));
-          });
+      geneOptional.ifPresent(gene -> fusionPartner3Prime.gene(GeneUtils.toCoding(gene)));
     }
 
     final var fusionrna3exonid = subform.getString("fusionrna3exonid");
