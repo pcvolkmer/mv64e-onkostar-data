@@ -26,6 +26,7 @@ import dev.pcvolkmer.mv64e.mtb.Address;
 import dev.pcvolkmer.mv64e.mtb.GenderCoding;
 import dev.pcvolkmer.mv64e.mtb.GenderCodingCode;
 import dev.pcvolkmer.mv64e.mtb.Patient;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -49,6 +50,7 @@ public class PatientDataMapper implements DataMapper<Patient> {
    * @return The loaded MtbDiagnosis file
    */
   @Override
+  @NullMarked
   public Patient getById(final int id) {
     var patientData = patientCatalogue.getById(id);
 
