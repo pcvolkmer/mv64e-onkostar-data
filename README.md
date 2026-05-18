@@ -77,10 +77,10 @@ Um Mithilfe wird gebeten.
 | Histologie-Berichte              | ✅      |                                                                                              |
 | IHC-Berichte                     | -      | Aktuell nicht vorgesehen                                                                     |
 | MSI-Befunde                      | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)               |
-| NGS-Berichte                     | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)               |
-| MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (3)              |
+| NGS-Berichte                     | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2) (3)           |
+| MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4)              |
 | Follow-Up Verlauf                | ✅      |                                                                                              |
-| Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (4) (5)                  |
+| Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (5) (6)                  |
 | Antwort Kostenübernahme          | ✅      | (5)                                                                                          |
 | Therapien                        | ⛅      | Initialer Support                                                                            |
 | Response Befunde                 | ✅      | (5)                                                                                          |
@@ -94,13 +94,19 @@ Um Mithilfe wird gebeten.
    * Angabe zu MSI-Interpretation fehlt in Formular, ist aber Pflichtangabe - Wird gefiltert.
    * Datenbanktabelle für MSI lautet tatsächlich `dk_molekluargenmsi` [sic!]
    * Aktuell sind folgende Varianten implementiert: SV, CNV, RNA- und DNA-Fusion.
-3. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
-4. Da die Angabe (technisch) optional ist und im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
-   nicht genannt ist, wird diese Angabe nicht exportiert.
+3. NGS-Berichte werden basierend auf dem Formular `OS.Molekulargenetik` dann exportiert, wenn sie
+    * im Formular DNPM Therapieplan unter "Befund (keine Einzelempfehlung)" angegeben wurden,
+    * im Formular DNPM Therapieplan in einer Einzelempfehlung referenziert sind,
+    * im Forular DNPM Klinik/Anamnese unter "Histologien" referenziert sind.
+
+   Ein mehrfacher Export je Datensatz findet dabei nicht statt, jeder NGS-Bericht ist nur einmal vorhanden.
+4. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
 5. Der Export wird dann durchgeführt, wenn:
    * Antrag Kostenübernahme: Das Datum angegeben ist
    * Antwort Kostenübernahme: Das Datum angegeben ist
    * Response Befunde: Die Beurteilungsmethode angegeben ist
+6. Da die Angabe (technisch) optional ist und im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
+   nicht genannt ist, wird diese Angabe nicht exportiert.
 
 ## Enthaltene Liste mit Genen
 
