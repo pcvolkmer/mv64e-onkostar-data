@@ -20,6 +20,7 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
 
@@ -48,9 +49,10 @@ public class FollowUpClaimResponseMapper implements DataMapper<ClaimResponse> {
             .patient(data.getPatientReference());
 
     final var date = data.getDate("datum_antwortkueantrag");
-    if (null != date) {
-      builder.issuedOn(date);
+    if (null == date) {
+      throw new IgnorableMappingException("No date found for claim response");
     }
+    builder.issuedOn(date);
 
     final var status = data.getString("statuskostenuebernahme");
     if (null != status) {

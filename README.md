@@ -80,10 +80,10 @@ Um Mithilfe wird gebeten.
 | NGS-Berichte                     | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)               |
 | MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (3)              |
 | Follow-Up Verlauf                | ✅      |                                                                                              |
-| Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (4)                      |
-| Antwort Kostenübernahme          | ✅      |                                                                                              |
+| Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (4) (5)                  |
+| Antwort Kostenübernahme          | ✅      | (5)                                                                                          |
 | Therapien                        | ⛅      | Initialer Support                                                                            |
-| Response Befunde                 | ✅      |                                                                                              |
+| Response Befunde                 | ✅      | (5)                                                                                          |
 
 ### Hinweise
 
@@ -97,6 +97,10 @@ Um Mithilfe wird gebeten.
 3. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
 4. Da die Angabe (technisch) optional ist und im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
    nicht genannt ist, wird diese Angabe nicht exportiert.
+5. Der Export wird dann durchgeführt, wenn:
+   * Antrag Kostenübernahme: Das Datum angegeben ist
+   * Antwort Kostenübernahme: Das Datum angegeben ist
+   * Response Befunde: Die Beurteilungsmethode angegeben ist
 
 ## Enthaltene Liste mit Genen
 

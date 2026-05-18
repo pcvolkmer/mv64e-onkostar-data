@@ -20,12 +20,14 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
@@ -97,11 +99,29 @@ class FollowUpClaimResponseMapperTest {
 
   @FuzzNullTest(
       initMethod = "fuzzInitData",
-      excludeColumns = {Column.PATIENTEN_ID})
+      excludeColumns = {Column.PATIENTEN_ID, "datum_antwortkueantrag"})
   void fuzzTestNullColumns(final ResultSet resultSet) {
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isNotNull();
+  }
+
+  @FuzzNullTest(
+      initMethod = "fuzzInitData",
+      includeColumns = {"datum_antwortkueantrag"})
+  void shouldThrowIgnorableExceptionIfMissingRequiredValues(final ResultSet resultSet) {
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var ex =
+        assertThrows(
+            IgnorableMappingException.class,
+            () -> {
+              this.dataMapper.getById(1);
+            });
+
+    assertThat(ex)
+        .isInstanceOf(IgnorableMappingException.class)
+        .hasMessageMatching("No date found for claim response");
   }
 
   static ResultSet fuzzInitData() {
