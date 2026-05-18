@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Paul-Christian Volkmer
  * @since 0.2
+ * @deprecated Use {@link dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog} instead.
  */
 @Deprecated(since = "0.3.1")
 public class MapperUtils {
