@@ -73,6 +73,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
       case "S":
         resultBuilder.code(MtbTherapyIntentCodingCode.S);
         break;
+      default:
+        return null;
     }
 
     return resultBuilder.build();
@@ -107,6 +109,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
       case "completed":
         resultBuilder.code(TherapyStatusCodingCode.COMPLETED);
         break;
+      default:
+        return null;
     }
 
     return resultBuilder.build();

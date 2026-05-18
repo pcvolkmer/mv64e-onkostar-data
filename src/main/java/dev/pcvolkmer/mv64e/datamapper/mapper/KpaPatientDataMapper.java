@@ -51,6 +51,7 @@ public class KpaPatientDataMapper implements DataMapper<Patient> {
    * @return The loaded Patient data
    */
   @Override
+  @NullMarked
   public Patient getById(int id) {
     var kpaData = kpaCatalogue.getById(id);
 

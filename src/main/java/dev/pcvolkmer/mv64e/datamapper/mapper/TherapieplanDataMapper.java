@@ -102,11 +102,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     if (null != refDnpmKlinikAnamnese) {
       builder.rebiopsyRequests(
           getRebiopsyRequest(
-              id,
-              Reference.builder()
-                  .id(therapieplanData.getString("refdnpmklinikanamnese"))
-                  .type("MTBDiagnosis")
-                  .build()));
+              id, Reference.builder().id(refDnpmKlinikAnamnese).type("MTBDiagnosis").build()));
     }
 
     if (therapieplanData.isTrue("mit_einzelempfehlung")) {
@@ -118,12 +114,12 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
     // Formularfeld "protokollauszug"
     var protokollauszug = therapieplanData.getString("protokollauszug");
     if (null != protokollauszug) {
-      // TODO see https://github.com/dnpm-dip/mtb-model/issues/8
       builder.notes(List.of(protokollauszug));
     }
 
     // Formularfeld "target"
     var target = therapieplanData.getString("target");
+    // Kein Target
     if ("KT".equals(target)) {
       builder.recommendationsMissingReason(getCarePlanRecommendationsMissingReasonCoding(target));
     }
