@@ -75,6 +75,7 @@ tasks.test {
 }
 
 tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
     options.errorprone {
         disableAllChecks = true
         option("NullAway:OnlyNullMarked", "true")
