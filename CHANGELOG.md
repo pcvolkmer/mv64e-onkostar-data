@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.0...v0.8.1) (2026-05-22)
+
+
+### Bug Fixes
+
+* set Java compiler source encoding to UTF-8 ([#170](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/170)) ([5dbc118](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/5dbc118c823347e49db797e45ce987d02e267a9e))
+
 ## [0.8.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.7.2...v0.8.0) (2026-05-18)
 
 
