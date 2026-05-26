@@ -335,7 +335,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .claims(claims)
           .claimResponses(claimResponses)
           // Therapie-Verlaufsdokumentation
-          .systemicTherapies(systemicTherapies)
+          .systemicTherapies(systemicTherapies.isEmpty() ? null : systemicTherapies)
           // Response Befunde
           .responses(responses);
 
