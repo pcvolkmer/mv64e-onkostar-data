@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.2...v0.8.3) (2026-05-26)
+
+
+### Features
+
+* hide all empty follow-up related lists in export ([ac33874](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/ac338743bc083cea2bcedf6ca480f6aac1de6792))
+
+
+### Bug Fixes
+
+* do not use empty history in systemic therapy ([79cad0d](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/79cad0da3335f4823c17ebf0427a0782cc23b3cd))
+
 ## [0.8.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.1...v0.8.2) (2026-05-26)
 
 
