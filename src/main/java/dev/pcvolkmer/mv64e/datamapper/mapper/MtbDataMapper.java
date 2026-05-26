@@ -331,13 +331,13 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           // MSI Befunde
           .msiFindings(msiFindings.collect(Collectors.toList()))
           // FollowUps mit Claims und Claim Responses
-          .followUps(followUps)
-          .claims(claims)
-          .claimResponses(claimResponses)
+          .followUps(followUps.isEmpty() ? null : followUps)
+          .claims(claims.isEmpty() ? null : claims)
+          .claimResponses(claimResponses.isEmpty() ? null : claimResponses)
           // Therapie-Verlaufsdokumentation
           .systemicTherapies(systemicTherapies.isEmpty() ? null : systemicTherapies)
           // Response Befunde
-          .responses(responses);
+          .responses(responses.isEmpty() ? null : responses);
 
       tryAndLogWithResult(() -> prozedurMapper.getByParentId(kpaId))
           .ok()

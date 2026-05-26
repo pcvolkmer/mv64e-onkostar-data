@@ -96,7 +96,7 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
                     mtbSystemicTherapy -> mtbSystemicTherapy.getPeriod().getStart()))
             .collect(Collectors.toList());
     if (systemicTherapies.isEmpty()) {
-        return SystemicTherapy.builder().history(null).build();
+      return SystemicTherapy.builder().history(null).build();
     }
     return SystemicTherapy.builder().history(systemicTherapies).build();
   }
