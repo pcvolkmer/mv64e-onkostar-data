@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Mapper class to load and map therapy history data from database table 'dk_dnpm_therapieplan',
@@ -76,10 +77,11 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
                     .distinct()
                     .filter(Objects::nonNull)
                     .map(this::mapSystemicTherapiesFromRecommendation))
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
-  @NullMarked
+  @Nullable
   private SystemicTherapy mapSystemicTherapiesFromRecommendation(int recommendationId) {
     var systemicTherapies =
         this.followUpCatalogue.getByRecommendationId(recommendationId).stream()
@@ -96,7 +98,7 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
                     mtbSystemicTherapy -> mtbSystemicTherapy.getPeriod().getStart()))
             .collect(Collectors.toList());
     if (systemicTherapies.isEmpty()) {
-      return SystemicTherapy.builder().history(null).build();
+      return null;
     }
     return SystemicTherapy.builder().history(systemicTherapies).build();
   }
