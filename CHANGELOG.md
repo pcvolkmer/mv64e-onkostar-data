@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.3...v0.8.4) (2026-05-26)
+
+
+### Features
+
+* ignore systemic therapies without history completely ([fa85c2d](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/fa85c2d3c58f93aef2f86ce20006f7117b4b0775))
+
 ## [0.8.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.2...v0.8.3) (2026-05-26)
 
 
