@@ -162,7 +162,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
     var prozedurMapper =
         new KpaProzedurDataMapper(
             catalogueFactory.catalogue(ProzedurCatalogue.class), propertyCatalogue);
-    var therapielinieMapper =
+    var kpaTherapielinieMapper =
         new KpaTherapielinieDataMapper(
             catalogueFactory.catalogue(TherapielinieCatalogue.class), propertyCatalogue);
     var ecogMapper = new KpaEcogDataMapper(catalogueFactory.catalogue(EcogCatalogue.class));
@@ -218,6 +218,13 @@ public class MtbDataMapper implements DataMapper<Mtb> {
         new ConsentMvDataMapper(
             catalogueFactory.catalogue(ConsentMvCatalogue.class),
             catalogueFactory.catalogue(ConsentMvVerlaufCatalogue.class));
+
+    var followUpTherapielinieMapper =
+        new FollowUpTherapielinieDataMapper(
+            catalogueFactory.catalogue(TherapielinieCatalogue.class),
+            einzelempfehlungCatalogue,
+            therapieplanCatalogue,
+            propertyCatalogue);
 
     var followUpDataMapper =
         new FollowUpDataMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
@@ -282,7 +289,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
 
       var systemicTherapies =
           new TherapiehistorieDataMapper(
-                  therapielinieMapper,
+                  followUpTherapielinieMapper,
                   therapieplanCatalogue,
                   einzelempfehlungCatalogue,
                   catalogueFactory.catalogue(FollowUpCatalogue.class),
@@ -343,7 +350,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .ok()
           .ifPresent(resultBuilder::guidelineProcedures);
 
-      tryAndLogWithResult(() -> therapielinieMapper.getByParentId(kpaId))
+      tryAndLogWithResult(() -> kpaTherapielinieMapper.getByParentId(kpaId))
           .ok()
           .ifPresent(resultBuilder::guidelineTherapies);
 

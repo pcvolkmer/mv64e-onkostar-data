@@ -41,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
 class TherapiehistorieDataMapperTest {
 
-  KpaTherapielinieDataMapper therapielinieMapper;
+  FollowUpTherapielinieDataMapper therapielinieMapper;
   TherapieplanCatalogue therapieplanCatalogue;
   EinzelempfehlungCatalogue einzelempfehlungCatalogue;
   FollowUpCatalogue followUpCatalogue;
@@ -50,7 +50,7 @@ class TherapiehistorieDataMapperTest {
 
   @BeforeEach
   void setUp(
-      @Mock KpaTherapielinieDataMapper therapielinieMapper,
+      @Mock FollowUpTherapielinieDataMapper therapielinieMapper,
       @Mock TherapieplanCatalogue therapieplanCatalogue,
       @Mock EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       @Mock FollowUpCatalogue followUpCatalogue,
