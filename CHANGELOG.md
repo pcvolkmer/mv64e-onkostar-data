@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.1...v0.8.2) (2026-05-26)
+
+
+### Bug Fixes
+
+* do not use empty systemicTherapies - use null instead ([184d268](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/184d26844cd3ba488073c8bba36877d2cbcdad2d))
+
 ## [0.8.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.0...v0.8.1) (2026-05-22)
 
 
