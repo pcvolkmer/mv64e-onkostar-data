@@ -26,12 +26,9 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.MtbSystemicTherapy;
-import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
-import java.util.Optional;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,7 +158,4 @@ public abstract class AbstractTherapielinieDataMapper
   }
 
   protected abstract Reference getDiagnosisReference(ResultSet resultSet);
-
-  @NullMarked
-  protected abstract Optional<PeriodDate> getPeriodDate(ResultSet resultSet);
 }

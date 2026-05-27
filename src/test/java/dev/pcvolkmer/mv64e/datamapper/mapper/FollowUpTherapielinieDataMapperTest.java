@@ -167,7 +167,7 @@ class FollowUpTherapielinieDataMapperTest {
   }
 
   @Test
-  void shouldGetTherapielinenWithoutStart() {
+  void shouldGetTherapielinenWithoutPeriodDate() {
     when(einzelempfehlungCatalogue.getById(eq(100)))
         .thenReturn(
             TestResultSet.withColumns(

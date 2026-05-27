@@ -21,11 +21,14 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.AbstractSubformDataCatalogue;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -43,6 +46,9 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
     super(catalogue);
     this.propertyCatalogue = propertyCatalogue;
   }
+
+  @NullMarked
+  protected abstract Optional<PeriodDate> getPeriodDate(ResultSet resultSet);
 
   @Nullable
   protected MtbTherapyIntentCoding getMtbTherapyIntentCoding(String value, Integer version) {

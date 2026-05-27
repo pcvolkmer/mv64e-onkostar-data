@@ -28,8 +28,6 @@ import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.Optional;
 import org.jspecify.annotations.NullMarked;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_therapielinie'
@@ -38,8 +36,6 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  */
 public class KpaTherapielinieDataMapper extends AbstractTherapielinieDataMapper {
-
-  private final Logger logger = LoggerFactory.getLogger(KpaTherapielinieDataMapper.class);
 
   public KpaTherapielinieDataMapper(
       final TherapielinieCatalogue catalogue, final PropertyCatalogue propertyCatalogue) {
