@@ -25,7 +25,10 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
+import java.util.Optional;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_therapielinie'
@@ -69,5 +72,18 @@ public class FollowUpTherapielinieDataMapper extends AbstractTherapielinieDataMa
     }
 
     return Reference.builder().id(kpaId).type("MTBDiagnosis").build();
+  }
+
+  @Override
+  @NullMarked
+  protected Optional<PeriodDate> getPeriodDate(ResultSet resultSet) {
+    var pdb = PeriodDate.builder();
+    final var beginn = resultSet.getDate("beginn");
+    if (null == beginn) {
+      return Optional.empty();
+    }
+    pdb.start(beginn);
+    if (resultSet.getDate("ende") != null) pdb.end(resultSet.getDate("ende"));
+    return Optional.of(pdb.build());
   }
 }

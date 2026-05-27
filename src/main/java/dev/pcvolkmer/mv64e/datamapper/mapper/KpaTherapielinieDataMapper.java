@@ -23,7 +23,13 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
+import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
+import java.util.Optional;
+import org.jspecify.annotations.NullMarked;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Mapper class to load and map prozedur data from database table 'dk_dnpm_therapielinie'
@@ -32,6 +38,8 @@ import dev.pcvolkmer.mv64e.mtb.Reference;
  * @since 0.1
  */
 public class KpaTherapielinieDataMapper extends AbstractTherapielinieDataMapper {
+
+  private final Logger logger = LoggerFactory.getLogger(KpaTherapielinieDataMapper.class);
 
   public KpaTherapielinieDataMapper(
       final TherapielinieCatalogue catalogue, final PropertyCatalogue propertyCatalogue) {
@@ -44,5 +52,18 @@ public class KpaTherapielinieDataMapper extends AbstractTherapielinieDataMapper 
         .id(resultSet.getString("hauptprozedur_id"))
         .type("MTBDiagnosis")
         .build();
+  }
+
+  @Override
+  @NullMarked
+  protected Optional<PeriodDate> getPeriodDate(ResultSet resultSet) {
+    var pdb = PeriodDate.builder();
+    final var beginn = resultSet.getDate("beginn");
+    if (null == beginn) {
+      throw new IgnorableMappingException("Cannot map 'Therapielinie': 'Beginn' is missing");
+    }
+    pdb.start(beginn);
+    if (resultSet.getDate("ende") != null) pdb.end(resultSet.getDate("ende"));
+    return Optional.of(pdb.build());
   }
 }

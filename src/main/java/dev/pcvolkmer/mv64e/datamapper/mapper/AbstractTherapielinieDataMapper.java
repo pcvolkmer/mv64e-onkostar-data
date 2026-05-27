@@ -24,11 +24,14 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
+import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.mtb.MtbSystemicTherapy;
 import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
+import java.util.Optional;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,17 +78,19 @@ public abstract class AbstractTherapielinieDataMapper
     var builder = MtbSystemicTherapy.builder();
     try {
       // Determine if the therapy line is empty.
-      // A therapy line is considered empty if both 'beginn' (start date) and
-      // 'erfassungsdatum' (recorded date) are missing.
+      // A therapy line is considered empty if 'Erfassungsdatum' (recorded date) is missing.
       // If so, log a warning and skip mapping for this record withouth breaking the
-      // whole data
-      // mapping.
-      var start = resultSet.getDate("beginn");
+      // whole data mapping.
       var erfassungsdatum = resultSet.getDate("erfassungsdatum");
-      // Do not map procedures without start and end set
-      if (null == start || null == erfassungsdatum) {
-        logger.warn(
-            "Cannot map therapyline period date as 'beginn' date and erfassungsdatum are missing");
+      if (null == erfassungsdatum) {
+        logger.warn("Cannot map 'Therapielinie': 'Erfassungsdatum' is missing");
+        return null;
+      }
+
+      try {
+        this.getPeriodDate(resultSet).ifPresent(builder::period);
+      } catch (IgnorableMappingException e) {
+        logger.warn("{}", e.getMessage());
         return null;
       }
 
@@ -112,11 +117,6 @@ public abstract class AbstractTherapielinieDataMapper
           String.class,
           (value, version) ->
               builder.statusReason(getMtbTherapyStatusReasonCoding(value, version)));
-
-      // --- Period Date with null checks ---
-      var pdb = PeriodDate.builder().start(start);
-      if (resultSet.getDate("ende") != null) pdb.end(resultSet.getDate("ende"));
-      builder.period(pdb.build());
 
       if (!resultSet.isNull("nummer")) {
         builder.therapyLine(resultSet.getLong("nummer"));
@@ -161,4 +161,7 @@ public abstract class AbstractTherapielinieDataMapper
   }
 
   protected abstract Reference getDiagnosisReference(ResultSet resultSet);
+
+  @NullMarked
+  protected abstract Optional<PeriodDate> getPeriodDate(ResultSet resultSet);
 }

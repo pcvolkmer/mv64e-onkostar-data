@@ -167,16 +167,27 @@ class FollowUpTherapielinieDataMapperTest {
   }
 
   @Test
-  void shouldNotGetTherapielinenWithoutStart() {
+  void shouldGetTherapielinenWithoutStart() {
+    when(einzelempfehlungCatalogue.getById(eq(100)))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), Column.name("hauptprozedur_id").value(80)));
+
+    when(therapieplanCatalogue.getById(eq(80)))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(80),
+                Column.name("ref_dnpm_klinikanamnese").value(60)));
+
     doAnswer(
             invocationOnMock ->
                 List.of(
                     TestResultSet.withColumns(
                         Column.name(Column.ID).value(1),
                         Column.name(Column.PATIENTEN_ID).value(42),
-                        // No beginn,
-                        DateColumn.name("ende").value("2024-06-19"),
+                        // No beginn or end
                         DateColumn.name("erfassungsdatum").value("2024-06-19"),
+                        Column.name("ref_einzelempfehlung").value(100),
                         PropcatColumn.name("intention").value("S"),
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
@@ -186,13 +197,33 @@ class FollowUpTherapielinieDataMapperTest {
         .getAllByParentId(anyInt());
 
     doAnswer(
+            invocationOnMock -> {
+              var testPropertyData =
+                  Map.of(
+                      "S",
+                      new PropertyCatalogue.Entry("S", "Sonstiges", "Sonstiges"),
+                      "stopped",
+                      new PropertyCatalogue.Entry("stopped", "Abgebrochen", "Abgebrochen"),
+                      "patient-death",
+                      new PropertyCatalogue.Entry("patient-death", "Tod", "Tod"));
+
+              var code = invocationOnMock.getArgument(0, String.class);
+              return testPropertyData.get(code);
+            })
+        .when(propertyCatalogue)
+        .getByCodeAndVersion(anyString(), anyInt());
+
+    doAnswer(
             invocationOnMock -> List.of(TestResultSet.withColumns(Column.name(Column.ID).value(1))))
         .when(catalogue)
         .getDiseases(anyInt());
 
-    var actual = dataMapper.getByParentId(1);
+    var actualList = dataMapper.getByParentId(1);
 
-    assertThat(actual).isEmpty();
+    assertThat(actualList).hasSize(1);
+    var actual = actualList.get(0);
+    assertThat(actual).isInstanceOf(MtbSystemicTherapy.class);
+    assertThat(actual.getPeriod()).isNull();
   }
 
   @Test
