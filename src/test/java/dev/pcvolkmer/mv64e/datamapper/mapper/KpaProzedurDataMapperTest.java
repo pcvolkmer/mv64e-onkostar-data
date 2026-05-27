@@ -96,7 +96,7 @@ class KpaProzedurDataMapperTest {
   }
 
   @Test
-  void shouldNotGetProceduresWithoutStart() {
+  void shouldGetProceduresWithoutPeriodDate() {
     doAnswer(
             invocationOnMock ->
                 List.of(
@@ -119,9 +119,15 @@ class KpaProzedurDataMapperTest {
         .when(catalogue)
         .getDiseases(anyInt());
 
-    var actual = dataMapper.getByParentId(1);
+    when(this.propertyCatalogue.getByCodeAndVersion(anyString(), anyInt()))
+        .thenReturn(new PropertyCatalogue.Entry("1", "Version 1", "Version 1"));
 
-    assertThat(actual).isEmpty();
+    var actualList = dataMapper.getByParentId(1);
+
+    assertThat(actualList).hasSize(1);
+    var actual = actualList.get(0);
+    assertThat(actual).isInstanceOf(OncoProcedure.class);
+    assertThat(actual.getPeriod()).isNull();
   }
 
   @Test

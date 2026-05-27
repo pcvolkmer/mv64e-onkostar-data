@@ -27,7 +27,9 @@ import dev.pcvolkmer.mv64e.mtb.OncoProcedure;
 import dev.pcvolkmer.mv64e.mtb.PeriodDate;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
+import java.util.Optional;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,16 +78,15 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
           String.format("No unique disease for procedure %s", resultSet.getId()));
     }
 
-    var start = resultSet.getDate("beginn");
     var erfassungsdatum = resultSet.getDate("erfassungsdatum");
-    // Do not map procedures without start and end set
-    if (null == start || null == erfassungsdatum) {
-      logger.warn(
-          "Cannot map procedure period date as 'beginn' date and erfassungsdatum are missing");
+    if (null == erfassungsdatum) {
+      logger.warn("Cannot map 'Therapielinie': 'Erfassungsdatum' is missing");
       return null;
     }
 
     var builder = OncoProcedure.builder();
+    this.getPeriodDate(resultSet).ifPresent(builder::period);
+
     builder
         .id(resultSet.getString("id"))
         .patient(resultSet.getPatientReference())
@@ -94,8 +95,7 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
                 .id(resultSet.getString("hauptprozedur_id"))
                 .type("MTBDiagnosis")
                 .build())
-        .recordedOn(erfassungsdatum)
-        .period(PeriodDate.builder().start(start).end(resultSet.getDate("ende")).build());
+        .recordedOn(erfassungsdatum);
 
     resultSet.ifPropertyNotNull(
         "intention",
@@ -130,5 +130,18 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
     }
 
     return builder.build();
+  }
+
+  @Override
+  @NullMarked
+  protected Optional<PeriodDate> getPeriodDate(ResultSet resultSet) {
+    var pdb = PeriodDate.builder();
+    final var beginn = resultSet.getDate("beginn");
+    if (null == beginn) {
+      return Optional.empty();
+    }
+    pdb.start(beginn);
+    if (resultSet.getDate("ende") != null) pdb.end(resultSet.getDate("ende"));
+    return Optional.of(pdb.build());
   }
 }
