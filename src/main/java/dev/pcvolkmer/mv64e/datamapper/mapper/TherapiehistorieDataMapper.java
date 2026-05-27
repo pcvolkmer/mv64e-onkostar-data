@@ -42,7 +42,7 @@ import org.jspecify.annotations.Nullable;
  */
 public class TherapiehistorieDataMapper implements DataMapper<List<SystemicTherapy>> {
 
-  private final KpaTherapielinieDataMapper therapielinieMapper;
+  private final FollowUpTherapielinieDataMapper therapielinieMapper;
 
   private final TherapieplanCatalogue therapieplanCatalogue;
 
@@ -53,7 +53,7 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
   private final TherapielinieCatalogue therapielinieCatalogue;
 
   public TherapiehistorieDataMapper(
-      KpaTherapielinieDataMapper therapielinieMapper,
+      FollowUpTherapielinieDataMapper therapielinieMapper,
       TherapieplanCatalogue therapieplanCatalogue,
       EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       FollowUpCatalogue followUpCatalogue,

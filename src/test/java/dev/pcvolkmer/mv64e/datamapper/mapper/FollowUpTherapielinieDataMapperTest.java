@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2025  Paul-Christian Volkmer
+ * Copyright (C) 2026  Paul-Christian Volkmer
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,14 +21,15 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
@@ -49,22 +50,43 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 @ExtendWith({MockitoExtension.class, FuzzNullExtension.class})
-class KpaTherapielinieDataMapperTest {
+class FollowUpTherapielinieDataMapperTest {
 
   TherapielinieCatalogue catalogue;
+  EinzelempfehlungCatalogue einzelempfehlungCatalogue;
+  TherapieplanCatalogue therapieplanCatalogue;
   PropertyCatalogue propertyCatalogue;
 
-  KpaTherapielinieDataMapper dataMapper;
+  FollowUpTherapielinieDataMapper dataMapper;
 
   @BeforeEach
-  void setUp(@Mock TherapielinieCatalogue catalogue, @Mock PropertyCatalogue propertyCatalogue) {
+  void setUp(
+      @Mock TherapielinieCatalogue catalogue,
+      @Mock EinzelempfehlungCatalogue einzelempfehlungCatalogue,
+      @Mock TherapieplanCatalogue therapieplanCatalogue,
+      @Mock PropertyCatalogue propertyCatalogue) {
     this.catalogue = catalogue;
+    this.einzelempfehlungCatalogue = einzelempfehlungCatalogue;
+    this.therapieplanCatalogue = therapieplanCatalogue;
     this.propertyCatalogue = propertyCatalogue;
-    this.dataMapper = new KpaTherapielinieDataMapper(catalogue, propertyCatalogue);
+    this.dataMapper =
+        new FollowUpTherapielinieDataMapper(
+            catalogue, einzelempfehlungCatalogue, therapieplanCatalogue, propertyCatalogue);
   }
 
   @Test
   void shouldMapResultSet() {
+    when(einzelempfehlungCatalogue.getById(eq(100)))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), Column.name("hauptprozedur_id").value(80)));
+
+    when(therapieplanCatalogue.getById(eq(80)))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(80),
+                Column.name("ref_dnpm_klinikanamnese").value(60)));
+
     doAnswer(
             invocationOnMock ->
                 List.of(
@@ -74,7 +96,7 @@ class KpaTherapielinieDataMapperTest {
                         DateColumn.name("beginn").value("2000-01-01"),
                         DateColumn.name("ende").value("2024-06-19"),
                         DateColumn.name("erfassungsdatum").value("2024-06-19"),
-                        Column.name("hauptprozedur_id").value(60),
+                        Column.name("ref_einzelempfehlung").value(100),
                         PropcatColumn.name("intention").value("S"),
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
@@ -204,7 +226,7 @@ class KpaTherapielinieDataMapperTest {
 
   @FuzzNullTest(
       initMethod = "fuzzInitData",
-      excludeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID},
+      excludeColumns = {Column.PATIENTEN_ID, Column.HAUPTPROZEDUR_ID, "ref_einzelempfehlung"},
       maxNullColumns = 2)
   @MockitoSettings(strictness = Strictness.LENIENT)
   void fuzzTestNullColumns(final ResultSet resultSet) {
@@ -212,6 +234,17 @@ class KpaTherapielinieDataMapperTest {
 
     when(catalogue.getDiseases(anyInt()))
         .thenReturn(List.of(TestResultSet.withColumns(Column.name(Column.ID).value(1))));
+
+    when(einzelempfehlungCatalogue.getById(eq(100)))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1), Column.name("hauptprozedur_id").value(80)));
+
+    when(therapieplanCatalogue.getById(eq(80)))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(80),
+                Column.name("ref_dnpm_klinikanamnese").value(60)));
 
     doAnswer(
             invocationOnMock -> {
@@ -241,6 +274,7 @@ class KpaTherapielinieDataMapperTest {
         DateColumn.name("beginn").value("2000-01-01"),
         DateColumn.name("ende").value("2024-06-19"),
         DateColumn.name("erfassungsdatum").value("2024-06-19"),
+        Column.name("ref_einzelempfehlung").value(100),
         PropcatColumn.name("intention").value("S"),
         PropcatColumn.name("status").value("stopped"),
         PropcatColumn.name("statusgrund").value("patient-death"),
