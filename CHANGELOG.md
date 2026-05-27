@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.7](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.6...v0.8.7) (2026-05-27)
+
+
+### Features
+
+* use systemic therapies without filtering ([967d534](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/967d5341c8557cbd51fcb320fd810548ecf7fe52))
+
 ## [0.8.6](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.5...v0.8.6) (2026-05-27)
 
 
