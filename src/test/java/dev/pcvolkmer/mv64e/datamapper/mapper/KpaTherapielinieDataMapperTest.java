@@ -152,8 +152,7 @@ class KpaTherapielinieDataMapperTest {
                     TestResultSet.withColumns(
                         Column.name(Column.ID).value(1),
                         Column.name(Column.PATIENTEN_ID).value(42),
-                        // No beginn,
-                        DateColumn.name("ende").value("2024-06-19"),
+                        // No beginn/end
                         DateColumn.name("erfassungsdatum").value("2024-06-19"),
                         PropcatColumn.name("intention").value("S"),
                         PropcatColumn.name("status").value("stopped"),
