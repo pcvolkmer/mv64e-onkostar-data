@@ -89,10 +89,6 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
             .flatMap(therapies -> therapies.stream().map(ResultSet::getId).filter(Objects::nonNull))
             .map(this.therapielinieMapper::getById)
             .filter(Objects::nonNull)
-            .filter(
-                mtbSystemicTherapy ->
-                    null != mtbSystemicTherapy.getPeriod()
-                        && null != mtbSystemicTherapy.getPeriod().getStart())
             .sorted(
                 Comparator.comparing(
                     mtbSystemicTherapy -> mtbSystemicTherapy.getPeriod().getStart()))
