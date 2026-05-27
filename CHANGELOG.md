@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.6](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.5...v0.8.6) (2026-05-27)
+
+
+### Features
+
+* allow follow-up therapies without start date ([#178](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/178)) ([a138443](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/a13844379cba2326a3c8c8faae15ea831e77ce32))
+* allow onco procedures without start date ([#180](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/180)) ([c6416d4](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/c6416d46a4ef0bbf395d66a9b887747b9879356d))
+
 ## [0.8.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.4...v0.8.5) (2026-05-27)
 
 
