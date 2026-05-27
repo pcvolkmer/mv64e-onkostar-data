@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.5](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.4...v0.8.5) (2026-05-27)
+
+
+### Bug Fixes
+
+* mapping of diagnosis within follow-up therapielinie ([#176](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/176)) ([ad5e60c](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/ad5e60cf21539e7aa320b0dfcefdeb80145db7f6))
+
 ## [0.8.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.3...v0.8.4) (2026-05-26)
 
 
