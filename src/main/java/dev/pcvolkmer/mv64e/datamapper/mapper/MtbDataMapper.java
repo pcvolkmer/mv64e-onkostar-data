@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -165,7 +166,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
     var kpaTherapielinieMapper =
         new KpaTherapielinieDataMapper(
             catalogueFactory.catalogue(TherapielinieCatalogue.class), propertyCatalogue);
-    var ecogMapper = new KpaEcogDataMapper(catalogueFactory.catalogue(EcogCatalogue.class));
+    var kpaEcogMapper = new KpaEcogDataMapper(catalogueFactory.catalogue(EcogCatalogue.class));
 
     var einzelempfehlungCatalogue = catalogueFactory.catalogue(EinzelempfehlungCatalogue.class);
     var therapieplanCatalogue = catalogueFactory.catalogue(TherapieplanCatalogue.class);
@@ -237,6 +238,9 @@ public class MtbDataMapper implements DataMapper<Mtb> {
 
     var followUpResponseBefundMapper =
         new FollowUpResponseBefundMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
+
+    var followUpEcogMapper =
+        new FollowUpEcogDataMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
 
     var resultBuilder = Mtb.builder();
 
@@ -320,10 +324,20 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       // interpretation not
       // implemented
 
+      var performanceStatus =
+          Stream.concat(
+                  kpaEcogMapper.getByParentId(kpaId).stream(),
+                  catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
+                      .distinct()
+                      .map(followUpEcogMapper::getById))
+              .filter(Objects::nonNull)
+              .distinct()
+              .collect(Collectors.toList());
+
       resultBuilder
           .patient(kpaPatient)
           .episodesOfCare(List.of(mtbEpisodeDataMapper.getById(kpaId)))
-          .performanceStatus(ecogMapper.getByParentId(kpaId))
+          .performanceStatus(performanceStatus)
           .familyMemberHistories(verwandteDataMapper.getByParentId(kpaId))
           // Vorbefunde
           .priorDiagnosticReports(kpaVorbefundeDataMapper.getByParentId(kpaId))

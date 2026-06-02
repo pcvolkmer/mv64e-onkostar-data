@@ -22,11 +22,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EcogCatalogue;
-import dev.pcvolkmer.mv64e.mtb.EcogCoding;
-import dev.pcvolkmer.mv64e.mtb.EcogCodingCode;
 import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +36,8 @@ import org.jspecify.annotations.Nullable;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStatus> {
+public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStatus>
+    implements EcogMapper {
 
   public KpaEcogDataMapper(final EcogCatalogue catalogue) {
     super(catalogue);
@@ -85,27 +82,5 @@ public class KpaEcogDataMapper extends AbstractSubformDataMapper<PerformanceStat
         .value(getEcogCoding(ecog));
 
     return builder.build();
-  }
-
-  @Nullable
-  private EcogCoding getEcogCoding(@Nullable final String value) {
-    if (null == value
-        || !Arrays.stream(EcogCodingCode.values())
-            .map(EcogCodingCode::toValue)
-            .collect(Collectors.toSet())
-            .contains(value)) {
-      return null;
-    }
-
-    var resultBuilder = EcogCoding.builder().system("ECOG-Performance-Status");
-
-    try {
-      resultBuilder.code(EcogCodingCode.forValue(value));
-      resultBuilder.display(String.format("ECOG %s", value));
-    } catch (IOException e) {
-      throw new IllegalStateException("No valid code found");
-    }
-
-    return resultBuilder.build();
   }
 }
