@@ -32,9 +32,9 @@ import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.Address;
-import dev.pcvolkmer.mv64e.mtb.GenderCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Patient;
+import dev.pcvolkmer.mv64e.model.GenderCoding;
+import dev.pcvolkmer.mv64e.model.Patient;
+import dev.pcvolkmer.mv64e.model.PatientAddress;
 import java.time.Instant;
 import java.util.Date;
 import javax.sql.DataSource;
@@ -82,10 +82,11 @@ class PatientDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("20001234");
-    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCoding.CodeEnum.MALE);
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isNull();
-    assertThat(actual.getAddress()).isEqualTo(Address.builder().municipalityCode("06634").build());
+    assertThat(actual.getAddress())
+        .isEqualTo(PatientAddress.builder().municipalityCode("06634").build());
   }
 
   @ParameterizedTest
@@ -105,7 +106,7 @@ class PatientDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("20001234");
-    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCoding.CodeEnum.MALE);
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isNull();
     assertThat(actual.getAddress()).isNull();
@@ -128,10 +129,11 @@ class PatientDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("20001234");
-    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCoding.CodeEnum.MALE);
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isEqualTo(Date.from(Instant.parse("2024-06-19T00:00:00Z")));
-    assertThat(actual.getAddress()).isEqualTo(Address.builder().municipalityCode("06634").build());
+    assertThat(actual.getAddress())
+        .isEqualTo(PatientAddress.builder().municipalityCode("06634").build());
   }
 
   @FuzzNullTest(

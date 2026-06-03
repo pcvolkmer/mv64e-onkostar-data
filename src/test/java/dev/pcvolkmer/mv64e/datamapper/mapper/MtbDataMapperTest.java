@@ -31,7 +31,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -145,7 +145,9 @@ class MtbDataMapperTest {
 
       this.out =
           new MtbDataMapper(
-              dataCatalogueFactory, propertyCatalogue, TumorCellContentMethodCodingCode.HISTOLOGIC);
+              dataCatalogueFactory,
+              propertyCatalogue,
+              TumorCellContentMethodCoding.CodeEnum.HISTOLOGIC);
 
       try (MockedStatic<DataCatalogueFactory> mock = mockStatic(DataCatalogueFactory.class)) {
         mock.when(DataCatalogueFactory::instance).thenReturn(dataCatalogueFactory);
@@ -213,7 +215,7 @@ class MtbDataMapperTest {
 
       var actual = out.getById(1);
 
-      assertThat(actual).isInstanceOf(Mtb.class);
+      assertThat(actual).isInstanceOf(PatientRecord.class);
       assertThat(actual.getMetadata()).isNull();
     }
 
@@ -234,7 +236,7 @@ class MtbDataMapperTest {
 
       var actual = out.getById(1);
 
-      assertThat(actual).isInstanceOf(Mtb.class);
+      assertThat(actual).isInstanceOf(PatientRecord.class);
       assertThat(actual.getMetadata()).isNull();
     }
 
@@ -259,7 +261,7 @@ class MtbDataMapperTest {
           .satisfies(
               mvhMetadata ->
                   assertThat(mvhMetadata.getReasonResearchConsentMissing())
-                      .isEqualTo(ResearchConsentReasonMissing.CONSENT_NOT_RETURNED));
+                      .isEqualTo(BroadConsentReasonMissing.CONSENT_NOT_RETURNED));
     }
 
     @Test
@@ -292,7 +294,7 @@ class MtbDataMapperTest {
           .satisfies(
               mvhMetadata -> {
                 assertThat(mvhMetadata.getModelProjectConsent())
-                    .isInstanceOf(ModelProjectConsent.class);
+                    .isInstanceOf(MvhMetadataModelProjectConsent.class);
 
                 assertThat(mvhMetadata.getModelProjectConsent().getProvisions())
                     .satisfies(
@@ -301,17 +303,17 @@ class MtbDataMapperTest {
 
                           final var expectedProvisions =
                               List.of(
-                                  Provision.builder()
+                                  MvhMetadataModelProjectConsentProvisionsInner.builder()
                                       .purpose(ModelProjectConsentPurpose.SEQUENCING)
-                                      .type(ConsentProvision.PERMIT)
+                                      .type(ConsentProvisionType.PERMIT)
                                       .build(),
-                                  Provision.builder()
+                                  MvhMetadataModelProjectConsentProvisionsInner.builder()
                                       .purpose(ModelProjectConsentPurpose.CASE_IDENTIFICATION)
-                                      .type(ConsentProvision.DENY)
+                                      .type(ConsentProvisionType.DENY)
                                       .build(),
-                                  Provision.builder()
+                                  MvhMetadataModelProjectConsentProvisionsInner.builder()
                                       .purpose(ModelProjectConsentPurpose.REIDENTIFICATION)
-                                      .type(ConsentProvision.DENY)
+                                      .type(ConsentProvisionType.DENY)
                                       .build());
 
                           assertThat(provisions).containsAll((Iterable) expectedProvisions);

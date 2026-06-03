@@ -21,8 +21,11 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.util.List;
+import dev.pcvolkmer.mv64e.model.ClaimResponse;
+import dev.pcvolkmer.mv64e.model.ClaimResponseStatusCoding;
+import dev.pcvolkmer.mv64e.model.ClaimResponseStatusReasonCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
+import java.util.Set;
 
 public class FollowUpClaimResponseMapper implements DataMapper<ClaimResponse> {
 
@@ -70,32 +73,32 @@ public class FollowUpClaimResponseMapper implements DataMapper<ClaimResponse> {
   private ClaimResponseStatusCoding getClaimResponseStatusCoding(final String stage) {
     try {
       return ClaimResponseStatusCoding.builder()
-          .code(ClaimResponseStatusCodingCode.forValue(stage))
+          .code(ClaimResponseStatusCoding.CodeEnum.fromValue(stage))
           .display(stage)
           .system("dnpm-dip/mtb/claim-response/status")
           .build();
     } catch (Exception e) {
       return ClaimResponseStatusCoding.builder()
-          .code(ClaimResponseStatusCodingCode.UNKNOWN)
+          .code(ClaimResponseStatusCoding.CodeEnum.UNKNOWN)
           .display(stage)
           .system("dnpm-dip/mtb/claim-response/stage")
           .build();
     }
   }
 
-  private List<ClaimResponseStatusReasonCoding> getClaimResponseStatusReasonCoding(
+  private Set<ClaimResponseStatusReasonCoding> getClaimResponseStatusReasonCoding(
       final String stage) {
     try {
-      return List.of(
+      return Set.of(
           ClaimResponseStatusReasonCoding.builder()
-              .code(ClaimResponseStatusReasonCodingCode.forValue(stage))
+              .code(ClaimResponseStatusReasonCoding.CodeEnum.fromValue(stage))
               .display(stage)
               .system("dnpm-dip/mtb/claim-response/status-reason")
               .build());
     } catch (Exception e) {
-      return List.of(
+      return Set.of(
           ClaimResponseStatusReasonCoding.builder()
-              .code(ClaimResponseStatusReasonCodingCode.UNKNOWN)
+              .code(ClaimResponseStatusReasonCoding.CodeEnum.UNKNOWN)
               .display(stage)
               .system("dnpm-dip/mtb/claim-response/stage-reason")
               .build());

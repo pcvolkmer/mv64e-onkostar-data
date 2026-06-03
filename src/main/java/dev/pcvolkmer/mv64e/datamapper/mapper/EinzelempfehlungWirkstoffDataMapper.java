@@ -27,8 +27,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenuntersuchungCat
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -94,7 +93,7 @@ public class EinzelempfehlungWirkstoffDataMapper
               .map(
                   value ->
                       getMtbMedicationRecommendationCategoryCoding(value, artDerTherapiePropcat))
-              .collect(Collectors.toList()));
+              .collect(Collectors.toSet()));
     }
 
     final var empfehlungsart = resultSet.getString("empfehlungsart");
@@ -174,8 +173,8 @@ public class EinzelempfehlungWirkstoffDataMapper
   @Nullable
   private MtbMedicationRecommendationCategoryCoding getMtbMedicationRecommendationCategoryCoding(
       @NonNull String code, @NonNull Integer version) {
-    if (!Arrays.stream(MtbMedicationRecommendationCategoryCodingCode.values())
-        .map(MtbMedicationRecommendationCategoryCodingCode::toValue)
+    if (!Arrays.stream(MtbMedicationRecommendationCategoryCoding.CodeEnum.values())
+        .map(MtbMedicationRecommendationCategoryCoding.CodeEnum::toString)
         .collect(Collectors.toSet())
         .contains(code)) {
       return null;
@@ -187,9 +186,9 @@ public class EinzelempfehlungWirkstoffDataMapper
 
     try {
       resultBuilder
-          .code(MtbMedicationRecommendationCategoryCodingCode.forValue(code))
+          .code(MtbMedicationRecommendationCategoryCoding.CodeEnum.fromValue(code))
           .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc());
-    } catch (IOException e) {
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -199,8 +198,8 @@ public class EinzelempfehlungWirkstoffDataMapper
   @Nullable
   private MtbMedicationRecommendationUseTypeCoding getMtbMedicationRecommendationUseTypeCoding(
       @NonNull String code, @NonNull Integer version) {
-    if (!Arrays.stream(MtbMedicationRecommendationUseTypeCodingCode.values())
-        .map(MtbMedicationRecommendationUseTypeCodingCode::toValue)
+    if (!Arrays.stream(MtbMedicationRecommendationUseTypeCoding.CodeEnum.values())
+        .map(MtbMedicationRecommendationUseTypeCoding.CodeEnum::toString)
         .collect(Collectors.toSet())
         .contains(code)) {
       return null;
@@ -212,9 +211,9 @@ public class EinzelempfehlungWirkstoffDataMapper
 
     try {
       resultBuilder
-          .code(MtbMedicationRecommendationUseTypeCodingCode.forValue(code))
+          .code(MtbMedicationRecommendationUseTypeCoding.CodeEnum.fromValue(code))
           .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc());
-    } catch (IOException e) {
+    } catch (IllegalArgumentException e) {
       return null;
     }
 

@@ -25,8 +25,8 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
-import dev.pcvolkmer.mv64e.mtb.PeriodDate;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.PeriodDate;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.Optional;
 import org.jspecify.annotations.NullMarked;
 

@@ -25,11 +25,9 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.VorbefundeCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCoding;
-import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCodingCode;
-import dev.pcvolkmer.mv64e.mtb.PriorDiagnosticReport;
-import dev.pcvolkmer.mv64e.mtb.Reference;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.MolecularDiagnosticReport;
+import dev.pcvolkmer.mv64e.model.MolecularDiagnosticReportTypeCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +43,7 @@ import org.jspecify.annotations.Nullable;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiagnosticReport> {
+public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<MolecularDiagnosticReport> {
 
   private final MolekulargenetikCatalogue molekulargenetikCatalogue;
   private final PropertyCatalogue propertyCatalogue;
@@ -67,14 +65,14 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
    */
   @Nullable
   @Override
-  public PriorDiagnosticReport getById(final int id) {
+  public MolecularDiagnosticReport getById(final int id) {
     var data = catalogue.getById(id);
     return this.map(data);
   }
 
   @NullMarked
   @Override
-  public List<PriorDiagnosticReport> getByParentId(final int parentId) {
+  public List<MolecularDiagnosticReport> getByParentId(final int parentId) {
     try {
       return catalogue.getAllByParentId(parentId).stream()
           .map(this::map)
@@ -88,8 +86,8 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
 
   @Nullable
   @Override
-  protected PriorDiagnosticReport map(final ResultSet resultSet) {
-    var builder = PriorDiagnosticReport.builder();
+  protected MolecularDiagnosticReport map(final ResultSet resultSet) {
+    var builder = MolecularDiagnosticReport.builder();
     var einsendenummer = resultSet.getString("befundnummer");
     if (einsendenummer == null || einsendenummer.equalsIgnoreCase("unbekannt")) return null;
 
@@ -114,21 +112,21 @@ public class KpaVorbefundeDataMapper extends AbstractSubformDataMapper<PriorDiag
   }
 
   @Nullable
-  private MolecularDiagnosticReportCoding getMolecularDiagnosticReportCoding(
+  private MolecularDiagnosticReportTypeCoding getMolecularDiagnosticReportCoding(
       @NonNull String value, @NonNull Integer version) {
-    if (!Arrays.stream(MolecularDiagnosticReportCodingCode.values())
-        .map(MolecularDiagnosticReportCodingCode::toValue)
+    if (!Arrays.stream(MolecularDiagnosticReportTypeCoding.CodeEnum.values())
+        .map(MolecularDiagnosticReportTypeCoding.CodeEnum::toString)
         .collect(Collectors.toSet())
         .contains(value)) {
       return null;
     }
 
     var resultBuilder =
-        MolecularDiagnosticReportCoding.builder()
+        MolecularDiagnosticReportTypeCoding.builder()
             .display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
     try {
-      resultBuilder.code(MolecularDiagnosticReportCodingCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(MolecularDiagnosticReportTypeCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       return null;
     }
 

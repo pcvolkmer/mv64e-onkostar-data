@@ -20,7 +20,7 @@
 
 package dev.pcvolkmer.mv64e.datamapper.genes;
 
-import dev.pcvolkmer.mv64e.mtb.Coding;
+import dev.pcvolkmer.mv64e.model.Coding;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;

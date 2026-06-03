@@ -34,7 +34,10 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.ClaimResponse;
+import dev.pcvolkmer.mv64e.model.ClaimResponseStatusCoding;
+import dev.pcvolkmer.mv64e.model.ClaimResponseStatusReasonCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.time.Instant;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,14 +87,14 @@ class FollowUpClaimResponseMapperTest {
     assertThat(actual.getStatus())
         .isEqualTo(
             ClaimResponseStatusCoding.builder()
-                .code(ClaimResponseStatusCodingCode.REJECTED)
+                .code(ClaimResponseStatusCoding.CodeEnum.REJECTED)
                 .display("rejected")
                 .system("dnpm-dip/mtb/claim-response/status")
                 .build());
     assertThat(actual.getStatusReason())
         .containsExactly(
             ClaimResponseStatusReasonCoding.builder()
-                .code(ClaimResponseStatusReasonCodingCode.FORMAL_REASONS)
+                .code(ClaimResponseStatusReasonCoding.CodeEnum.FORMAL_REASONS)
                 .display("formal-reasons")
                 .system("dnpm-dip/mtb/claim-response/status-reason")
                 .build());

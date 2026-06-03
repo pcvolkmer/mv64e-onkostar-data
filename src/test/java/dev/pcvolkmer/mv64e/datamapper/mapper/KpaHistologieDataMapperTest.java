@@ -37,7 +37,11 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.HistologyReport;
+import dev.pcvolkmer.mv64e.model.Reference;
+import dev.pcvolkmer.mv64e.model.TumorCellContent;
+import dev.pcvolkmer.mv64e.model.TumorCellContentMethodCoding;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -133,9 +137,9 @@ class KpaHistologieDataMapperTest {
                             .specimen(Reference.builder().id("100").type("Specimen").build())
                             .method(
                                 TumorCellContentMethodCoding.builder()
-                                    .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
+                                    .code(TumorCellContentMethodCoding.CodeEnum.HISTOLOGIC)
                                     .build())
-                            .value(0.8)
+                            .value(BigDecimal.valueOf(0.8))
                             .build());
                 assertThat(histologyReport.getResults().getTumorMorphology())
                     .satisfies(

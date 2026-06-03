@@ -28,11 +28,11 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorgradingCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -156,8 +156,8 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
   @Nullable
   private MtbDiagnosisGuidelineTreatmentStatusCoding getMtbDiagnosisGuidelineTreatmentStatusCoding(
       @NonNull final String code, @NonNull final Integer version) {
-    if (!Arrays.stream(MtbDiagnosisGuidelineTreatmentStatusCodingCode.values())
-        .map(MtbDiagnosisGuidelineTreatmentStatusCodingCode::toValue)
+    if (!Arrays.stream(MtbDiagnosisGuidelineTreatmentStatusCoding.CodeEnum.values())
+        .map(MtbDiagnosisGuidelineTreatmentStatusCoding.CodeEnum::toString)
         .collect(Collectors.toSet())
         .contains(code)) {
       return null;
@@ -168,8 +168,8 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
             .display(propertyCatalogue.getByCodeAndVersion(code, version).getShortdesc())
             .system("dnpm-dip/mtb/diagnosis/guideline-treatment-status");
     try {
-      resultBuilder.code(MtbDiagnosisGuidelineTreatmentStatusCodingCode.forValue(code));
-    } catch (IOException e) {
+      resultBuilder.code(MtbDiagnosisGuidelineTreatmentStatusCoding.CodeEnum.fromValue(code));
+    } catch (IllegalArgumentException e) {
       throw new IllegalStateException("No valid code found");
     }
 
@@ -177,7 +177,7 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
   }
 
   @Nullable
-  private Grading getGrading(final int id) {
+  private MtbDiagnosisGrading getGrading(final int id) {
     var all =
         tumorgradingCatalogue.getAllByParentId(id).stream()
             .map(
@@ -233,11 +233,11 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
       return null;
     }
 
-    return Grading.builder().history(all).build();
+    return MtbDiagnosisGrading.builder().history(all).build();
   }
 
   @Nullable
-  private Staging getStaging(final int id) {
+  private MtbDiagnosisStaging getStaging(final int id) {
     var subMapper = new KpaTumorausbreitungDataMapper(tumorausbreitungCatalogue);
 
     var all =
@@ -248,11 +248,11 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
       return null;
     }
 
-    return Staging.builder().history(all).build();
+    return MtbDiagnosisStaging.builder().history(all).build();
   }
 
   @NullMarked
-  private List<Coding> getGermlineCodes(final int id) {
+  private Set<Coding> getGermlineCodes(final int id) {
     return keimbahndiagnoseCatalogue.getAllByParentId(id).stream()
         .map(
             it -> {
@@ -277,31 +277,31 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                   .build();
             })
         .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
   }
 
   @Nullable
-  private Type getType(@NonNull final ResultSet resultSet) {
-    var diagnosisCoding = MtbDiagnosisCoding.builder();
+  private MtbDiagnosisType getType(@NonNull final ResultSet resultSet) {
+    var diagnosisCoding = MtbDiagnosisTypeCoding.builder();
     var code = resultSet.getString("diagnosetyp");
     if (code == null
-        || !Arrays.stream(ValueCode.values())
-            .map(ValueCode::toValue)
+        || !Arrays.stream(MtbDiagnosisTypeCoding.CodeEnum.values())
+            .map(MtbDiagnosisTypeCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(code)) {
       return null;
     }
 
     try {
-      diagnosisCoding.code(ValueCode.forValue(code));
-    } catch (IOException e) {
+      diagnosisCoding.code(MtbDiagnosisTypeCoding.CodeEnum.fromValue(code));
+    } catch (IllegalArgumentException e) {
       throw new IllegalStateException("No valid code found");
     }
 
-    return Type.builder()
+    return MtbDiagnosisType.builder()
         .history(
             List.of(
-                History.builder()
+                MtbDiagnosisTypeHistoryInner.builder()
                     .date(resultSet.getDate("datumerstdiagnose"))
                     .value(diagnosisCoding.build())
                     .build()))

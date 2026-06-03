@@ -25,7 +25,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
-import dev.pcvolkmer.mv64e.mtb.SystemicTherapy;
+import dev.pcvolkmer.mv64e.model.PatientRecordSystemicTherapiesInner;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -39,7 +39,8 @@ import org.jspecify.annotations.Nullable;
  * @author Paul-Christian Volkmer
  * @since 0.8
  */
-public class TherapiehistorieDataMapper implements DataMapper<List<SystemicTherapy>> {
+public class TherapiehistorieDataMapper
+    implements DataMapper<List<PatientRecordSystemicTherapiesInner>> {
 
   private final FollowUpTherapielinieDataMapper therapielinieMapper;
 
@@ -66,7 +67,7 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
 
   @NullMarked
   @Override
-  public List<SystemicTherapy> getById(int id) {
+  public List<PatientRecordSystemicTherapiesInner> getById(int id) {
     return therapieplanCatalogue.getByKpaId(id).stream()
         .flatMap(
             carePlanId ->
@@ -81,7 +82,8 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
   }
 
   @Nullable
-  private SystemicTherapy mapSystemicTherapiesFromRecommendation(int recommendationId) {
+  private PatientRecordSystemicTherapiesInner mapSystemicTherapiesFromRecommendation(
+      int recommendationId) {
     var systemicTherapies =
         this.followUpCatalogue.getByRecommendationId(recommendationId).stream()
             .map(therapielinieCatalogue::getAllByParentId)
@@ -92,6 +94,6 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
     if (systemicTherapies.isEmpty()) {
       return null;
     }
-    return SystemicTherapy.builder().history(systemicTherapies).build();
+    return PatientRecordSystemicTherapiesInner.builder().history(systemicTherapies).build();
   }
 }
