@@ -267,25 +267,26 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       var carePlans =
           therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
 
-      final var followUpIds = catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId)
-          .stream()
-          .distinct()
-          .collect(Collectors.toList());
+      final var followUpIds =
+          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
+              .distinct()
+              .collect(Collectors.toList());
 
-      var followUps = followUpIds.stream()
+      var followUps =
+          followUpIds.stream()
               .map(followUpDataMapper::getById)
               .filter(Objects::nonNull)
               .collect(Collectors.toList());
 
       var claims =
-              followUpIds.stream()
+          followUpIds.stream()
               .map(id -> tryAndLogWithResult(() -> followUpClaimMapper.getById(id)).okOrNull())
               .filter(Objects::nonNull)
               .distinct()
               .collect(Collectors.toList());
 
       var claimResponses =
-              followUpIds.stream()
+          followUpIds.stream()
               .map(
                   id ->
                       tryAndLogWithResult(() -> followUpClaimResponseMapper.getById(id)).okOrNull())
@@ -312,14 +313,14 @@ public class MtbDataMapper implements DataMapper<Mtb> {
               .distinct()
               .collect(Collectors.toList());
 
+      final var somaticNgsReports =
+          molekulargenetikNgsDataMapper.getAllByKpaIdWithHisto(
+              kpaId, kpaHistologieDataMapper.getMolGenIdsFromHistoOfTypeSequence(kpaId));
+
       var msiFindings =
-          molekulargenetikNgsDataMapper
-              .getAllByKpaIdWithHisto(
-                  kpaId, kpaHistologieDataMapper.getMolGenIdsFromHistoOfTypeSequence(kpaId))
-              .stream()
+          somaticNgsReports.stream()
               .map(ngs -> Integer.parseInt(ngs.getId()))
               .flatMap(ngsId -> molekulargenetikMsiDataMapper.getByParentId(ngsId).stream())
-              .filter(Objects::nonNull)
               .filter(msi -> msi.getInterpretation() != null); // always filter incomplete MSI
       // as not needed for MVH and
       // interpretation not
@@ -328,8 +329,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       var performanceStatus =
           Stream.concat(
                   kpaEcogMapper.getByParentId(kpaId).stream(),
-                  followUpIds.stream()
-                      .map(followUpEcogMapper::getById))
+                  followUpIds.stream().map(followUpEcogMapper::getById))
               .filter(Objects::nonNull)
               .distinct()
               .collect(Collectors.toList());
@@ -346,9 +346,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           // DNPM Therapieplan
           .carePlans(carePlans.collect(Collectors.toList()))
           // NGS Berichte
-          .ngsReports(
-              molekulargenetikNgsDataMapper.getAllByKpaIdWithHisto(
-                  kpaId, kpaHistologieDataMapper.getMolGenIdsFromHistoOfTypeSequence(kpaId)))
+          .ngsReports(somaticNgsReports)
           // MSI Befunde
           .msiFindings(msiFindings.collect(Collectors.toList()))
           // FollowUps mit Claims und Claim Responses
