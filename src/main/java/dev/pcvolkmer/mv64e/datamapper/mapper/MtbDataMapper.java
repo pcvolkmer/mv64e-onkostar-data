@@ -267,24 +267,25 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       var carePlans =
           therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
 
-      var followUps =
-          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
-              .distinct()
+      final var followUpIds = catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId)
+          .stream()
+          .distinct()
+          .collect(Collectors.toList());
+
+      var followUps = followUpIds.stream()
               .map(followUpDataMapper::getById)
               .filter(Objects::nonNull)
               .collect(Collectors.toList());
 
       var claims =
-          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
-              .distinct()
+              followUpIds.stream()
               .map(id -> tryAndLogWithResult(() -> followUpClaimMapper.getById(id)).okOrNull())
               .filter(Objects::nonNull)
               .distinct()
               .collect(Collectors.toList());
 
       var claimResponses =
-          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
-              .distinct()
+              followUpIds.stream()
               .map(
                   id ->
                       tryAndLogWithResult(() -> followUpClaimResponseMapper.getById(id)).okOrNull())
@@ -302,8 +303,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
               .getById(kpaId);
 
       var responses =
-          catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
-              .distinct()
+          followUpIds.stream()
               .map(
                   id ->
                       tryAndLogWithResult(() -> followUpResponseBefundMapper.getById(id))
@@ -328,8 +328,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       var performanceStatus =
           Stream.concat(
                   kpaEcogMapper.getByParentId(kpaId).stream(),
-                  catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
-                      .distinct()
+                  followUpIds.stream()
                       .map(followUpEcogMapper::getById))
               .filter(Objects::nonNull)
               .distinct()
