@@ -21,8 +21,10 @@
 package dev.pcvolkmer.mv64e.datamapper.datacatalogues;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataCatalogueCreationException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -36,14 +38,45 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @NullMarked
 public class DataCatalogueFactory {
 
-  private final JdbcTemplate jdbcTemplate;
-  private final Map<Class<? extends DataCatalogue>, DataCatalogue> catalogues = new HashMap<>();
+  private static final Map<
+          Class<? extends DataCatalogue>, Function<JdbcTemplate, ? extends DataCatalogue>>
+      FACTORIES =
+          Map.ofEntries(
+              Map.entry(EcogCatalogue.class, EcogCatalogue::create),
+              Map.entry(HistologieCatalogue.class, HistologieCatalogue::create),
+              Map.entry(KpaCatalogue.class, KpaCatalogue::create),
+              Map.entry(PatientCatalogue.class, PatientCatalogue::create),
+              Map.entry(ProzedurCatalogue.class, ProzedurCatalogue::create),
+              Map.entry(TherapielinieCatalogue.class, TherapielinieCatalogue::create),
+              Map.entry(TumorausbreitungCatalogue.class, TumorausbreitungCatalogue::create),
+              Map.entry(TumorgradingCatalogue.class, TumorgradingCatalogue::create),
+              Map.entry(VerwandteCatalogue.class, VerwandteCatalogue::create),
+              Map.entry(VorbefundeCatalogue.class, VorbefundeCatalogue::create),
+              Map.entry(TherapieplanCatalogue.class, TherapieplanCatalogue::create),
+              Map.entry(EinzelempfehlungCatalogue.class, EinzelempfehlungCatalogue::create),
+              Map.entry(MolekulargenetikCatalogue.class, MolekulargenetikCatalogue::create),
+              Map.entry(
+                  MolekulargenuntersuchungCatalogue.class,
+                  MolekulargenuntersuchungCatalogue::create),
+              Map.entry(MolekulargenMsiCatalogue.class, MolekulargenMsiCatalogue::create),
+              Map.entry(MolekularImmunhistoCatalogue.class, MolekularImmunhistoCatalogue::create),
+              Map.entry(MolekularPcrCatalogue.class, MolekularPcrCatalogue::create),
+              Map.entry(RebiopsieCatalogue.class, RebiopsieCatalogue::create),
+              Map.entry(ReevaluationCatalogue.class, ReevaluationCatalogue::create),
+              Map.entry(ConsentMvCatalogue.class, ConsentMvCatalogue::create),
+              Map.entry(ConsentMvVerlaufCatalogue.class, ConsentMvVerlaufCatalogue::create),
+              Map.entry(KeimbahndiagnoseCatalogue.class, KeimbahndiagnoseCatalogue::create),
+              Map.entry(FollowUpCatalogue.class, FollowUpCatalogue::create));
 
-  private DataCatalogueFactory(JdbcTemplate jdbcTemplate) {
-    this.jdbcTemplate = jdbcTemplate;
-  }
+  private final JdbcTemplate jdbcTemplate;
+  private final Map<Class<? extends DataCatalogue>, DataCatalogue> catalogues =
+      new ConcurrentHashMap<>();
 
   @Nullable private static DataCatalogueFactory obj;
+
+  private DataCatalogueFactory(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = Objects.requireNonNull(jdbcTemplate);
+  }
 
   public static synchronized DataCatalogueFactory initialize(final JdbcTemplate jdbcTemplate) {
     if (null == obj) {
@@ -60,76 +93,33 @@ public class DataCatalogueFactory {
   }
 
   /**
-   * Get Catalogue of required type
+   * Get Catalogue of the required type
    *
-   * @param clazz The catalogues class
+   * @param clazz The catalogue class
    * @param <T> The catalogue type
    * @return The catalogue if it exists
    */
   @SuppressWarnings("unchecked")
-  public synchronized <T extends DataCatalogue> T catalogue(Class<T> clazz) {
+  public <T extends DataCatalogue> T catalogue(Class<T> clazz) {
     return (T)
         catalogues.computeIfAbsent(
             clazz,
             c -> {
-              if (c == EcogCatalogue.class) {
-                return EcogCatalogue.create(jdbcTemplate);
-              } else if (c == HistologieCatalogue.class) {
-                return HistologieCatalogue.create(jdbcTemplate);
-              } else if (c == KpaCatalogue.class) {
-                return KpaCatalogue.create(jdbcTemplate);
-              } else if (c == PatientCatalogue.class) {
-                return PatientCatalogue.create(jdbcTemplate);
-              } else if (c == ProzedurCatalogue.class) {
-                return ProzedurCatalogue.create(jdbcTemplate);
-              } else if (c == TherapielinieCatalogue.class) {
-                return TherapielinieCatalogue.create(jdbcTemplate);
-              } else if (c == TumorausbreitungCatalogue.class) {
-                return TumorausbreitungCatalogue.create(jdbcTemplate);
-              } else if (c == TumorgradingCatalogue.class) {
-                return TumorgradingCatalogue.create(jdbcTemplate);
-              } else if (c == VerwandteCatalogue.class) {
-                return VerwandteCatalogue.create(jdbcTemplate);
-              } else if (c == VorbefundeCatalogue.class) {
-                return VorbefundeCatalogue.create(jdbcTemplate);
-              } else if (c == TherapieplanCatalogue.class) {
-                return TherapieplanCatalogue.create(jdbcTemplate);
-              } else if (c == EinzelempfehlungCatalogue.class) {
-                return EinzelempfehlungCatalogue.create(jdbcTemplate);
-              } else if (c == MolekulargenetikCatalogue.class) {
-                return MolekulargenetikCatalogue.create(jdbcTemplate);
-              } else if (c == MolekulargenuntersuchungCatalogue.class) {
-                return MolekulargenuntersuchungCatalogue.create(jdbcTemplate);
-              } else if (c == MolekulargenMsiCatalogue.class) {
-                return MolekulargenMsiCatalogue.create(jdbcTemplate);
-              } else if (c == MolekularImmunhistoCatalogue.class) {
-                return MolekularImmunhistoCatalogue.create(jdbcTemplate);
-              } else if (c == MolekularPcrCatalogue.class) {
-                return MolekularPcrCatalogue.create(jdbcTemplate);
-              } else if (c == RebiopsieCatalogue.class) {
-                return RebiopsieCatalogue.create(jdbcTemplate);
-              } else if (c == ReevaluationCatalogue.class) {
-                return ReevaluationCatalogue.create(jdbcTemplate);
-              } else if (c == ConsentMvCatalogue.class) {
-                return ConsentMvCatalogue.create(jdbcTemplate);
-              } else if (c == ConsentMvVerlaufCatalogue.class) {
-                return ConsentMvVerlaufCatalogue.create(jdbcTemplate);
-              } else if (c == KeimbahndiagnoseCatalogue.class) {
-                return KeimbahndiagnoseCatalogue.create(jdbcTemplate);
-              } else if (c == FollowUpCatalogue.class) {
-                return FollowUpCatalogue.create(jdbcTemplate);
+              var factory = FACTORIES.get(c);
+              if (factory == null) {
+                throw new DataCatalogueCreationException(c);
               }
-              throw new DataCatalogueCreationException(clazz);
+              return factory.apply(jdbcTemplate);
             });
   }
 
   /**
-   * Checks if a catalogue of this type is available
+   * Checks if a catalogue of this type is supported by the factory.
    *
-   * @param clazz The catalogues class
-   * @return true if it is available
+   * @param clazz The catalogue class
+   * @return true if the factory knows how to create this catalogue type
    */
-  public synchronized boolean hasCatalogue(Class<? extends DataCatalogue> clazz) {
-    return catalogues.containsKey(clazz);
+  public boolean hasCatalogue(Class<? extends DataCatalogue> clazz) {
+    return FACTORIES.containsKey(clazz);
   }
 }
