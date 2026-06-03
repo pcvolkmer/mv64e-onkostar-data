@@ -22,9 +22,9 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import dev.pcvolkmer.mv64e.mtb.Coding;
-import dev.pcvolkmer.mv64e.mtb.GeneAlterationReference;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.Coding;
+import dev.pcvolkmer.mv64e.model.GeneAlterationReference;
+import dev.pcvolkmer.mv64e.model.Reference;
 import org.junit.jupiter.api.Test;
 
 class JsonToMolAltVarianteMapperTest {

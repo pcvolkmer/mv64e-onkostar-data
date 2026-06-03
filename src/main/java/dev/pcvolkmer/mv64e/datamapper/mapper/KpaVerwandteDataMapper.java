@@ -23,9 +23,8 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.VerwandteCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistory;
-import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCoding;
-import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCodingCode;
+import dev.pcvolkmer.mv64e.model.FamilyMemberHistory;
+import dev.pcvolkmer.mv64e.model.FamilyMemberHistoryRelationshipTypeCoding;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
@@ -76,8 +75,8 @@ public class KpaVerwandteDataMapper extends AbstractSubformDataMapper<FamilyMemb
   private FamilyMemberHistoryRelationshipTypeCoding getFamilyMemberHistoryRelationshipTypeCoding(
       final @Nullable String value) {
     if (value == null
-        || !Arrays.stream(FamilyMemberHistoryRelationshipTypeCodingCode.values())
-            .map(FamilyMemberHistoryRelationshipTypeCodingCode::toValue)
+        || !Arrays.stream(FamilyMemberHistoryRelationshipTypeCoding.CodeEnum.values())
+            .map(FamilyMemberHistoryRelationshipTypeCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -90,12 +89,12 @@ public class KpaVerwandteDataMapper extends AbstractSubformDataMapper<FamilyMemb
     switch (value) {
       case "FAMMEMB":
         resultBuilder
-            .code(FamilyMemberHistoryRelationshipTypeCodingCode.FAMMEMB)
+            .code(FamilyMemberHistoryRelationshipTypeCoding.CodeEnum.FAMMEMB)
             .display("Verwandter ersten Grades");
         break;
       case "EXT":
         resultBuilder
-            .code(FamilyMemberHistoryRelationshipTypeCodingCode.EXT)
+            .code(FamilyMemberHistoryRelationshipTypeCoding.CodeEnum.EXT)
             .display("Verwandter weiteren Grades");
         break;
       default:

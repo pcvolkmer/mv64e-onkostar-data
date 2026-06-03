@@ -19,10 +19,8 @@
 
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
-import dev.pcvolkmer.mv64e.mtb.EcogCoding;
-import dev.pcvolkmer.mv64e.mtb.EcogCodingCode;
-import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.EcogCoding;
+import dev.pcvolkmer.mv64e.model.PerformanceStatus;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.Nullable;
@@ -46,8 +44,8 @@ public interface EcogMapper {
   @Nullable
   default EcogCoding getEcogCoding(@Nullable final String value) {
     if (null == value
-        || !Arrays.stream(EcogCodingCode.values())
-            .map(EcogCodingCode::toValue)
+        || !Arrays.stream(EcogCoding.CodeEnum.values())
+            .map(EcogCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -56,9 +54,9 @@ public interface EcogMapper {
     var resultBuilder = EcogCoding.builder().system("ECOG-Performance-Status");
 
     try {
-      resultBuilder.code(EcogCodingCode.forValue(value));
+      resultBuilder.code(EcogCoding.CodeEnum.fromValue(value));
       resultBuilder.display(String.format("ECOG %s", value));
-    } catch (IOException e) {
+    } catch (IllegalArgumentException e) {
       throw new IllegalStateException("No valid code found");
     }
 

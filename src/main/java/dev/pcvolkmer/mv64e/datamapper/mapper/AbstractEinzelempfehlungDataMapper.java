@@ -24,8 +24,10 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.*;
+import dev.pcvolkmer.mv64e.model.LevelOfEvidence;
+import dev.pcvolkmer.mv64e.model.PublicationReference;
+import dev.pcvolkmer.mv64e.model.RecommendationPriorityCoding;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
@@ -81,8 +83,8 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   @Nullable
   protected RecommendationPriorityCoding getRecommendationPriorityCoding(
       @NonNull String code, int version) {
-    if (!Arrays.stream(RecommendationPriorityCodingCode.values())
-        .map(RecommendationPriorityCodingCode::toValue)
+    if (!Arrays.stream(RecommendationPriorityCoding.CodeEnum.values())
+        .map(RecommendationPriorityCoding.CodeEnum::toString)
         .collect(Collectors.toSet())
         .contains(code)) {
       return null;
@@ -92,8 +94,8 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
         RecommendationPriorityCoding.builder().system("dnpm-dip/recommendation/priority");
 
     try {
-      resultBuilder.code(RecommendationPriorityCodingCode.forValue(code)).display(code);
-    } catch (IOException e) {
+      resultBuilder.code(RecommendationPriorityCoding.CodeEnum.valueOf(code)).display(code);
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -115,64 +117,64 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
       case "1":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M1A)
-                .display(LevelOfEvidenceGradingCodingCode.M1A.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_A)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M1_A.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "2":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M1B)
-                .display(LevelOfEvidenceGradingCodingCode.M1B.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_B)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M1_B.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "3":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M1C)
-                .display(LevelOfEvidenceGradingCodingCode.M1C.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_C)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M1_C.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "4":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M2A)
-                .display(LevelOfEvidenceGradingCodingCode.M2A.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M2_A)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M2_A.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "5":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M2B)
-                .display(LevelOfEvidenceGradingCodingCode.M2B.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M2_B)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M2_B.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "6":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M2C)
-                .display(LevelOfEvidenceGradingCodingCode.M2C.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M2_C)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M2_C.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "7":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M3)
-                .display(LevelOfEvidenceGradingCodingCode.M3.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M3)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M3.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
       case "8":
         resultBuilder.grading(
             LevelOfEvidenceGradingCoding.builder()
-                .code(LevelOfEvidenceGradingCodingCode.M4)
-                .display(LevelOfEvidenceGradingCodingCode.M4.toValue())
+                .code(LevelOfEvidenceGradingCoding.CodeEnum.M4)
+                .display(LevelOfEvidenceGradingCoding.CodeEnum.M4.toString())
                 .system(GRADING_SYSTEM)
                 .build());
         break;
@@ -181,36 +183,36 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
         return null;
     }
 
-    var evidenzlevelZusatz = new ArrayList<LevelOfEvidenceAddendumCoding>();
+    var evidenzlevelZusatz = new HashSet<LevelOfEvidenceAddendumCoding>();
     if (resultSet.isTrue("evidenzlevel_zusatz_is")) {
       evidenzlevelZusatz.add(
           LevelOfEvidenceAddendumCoding.builder()
-              .code(LevelOfEvidenceAddendumCodingCode.IS)
-              .display(LevelOfEvidenceAddendumCodingCode.IS.toValue())
+              .code(LevelOfEvidenceAddendumCoding.CodeEnum.IS)
+              .display(LevelOfEvidenceAddendumCoding.CodeEnum.IS.toString())
               .system(ADDENDUM_SYSTEM)
               .build());
     }
     if (resultSet.isTrue("evidenzlevel_zusatz_iv")) {
       evidenzlevelZusatz.add(
           LevelOfEvidenceAddendumCoding.builder()
-              .code(LevelOfEvidenceAddendumCodingCode.IV)
-              .display(LevelOfEvidenceAddendumCodingCode.IV.toValue())
+              .code(LevelOfEvidenceAddendumCoding.CodeEnum.IV)
+              .display(LevelOfEvidenceAddendumCoding.CodeEnum.IV.toString())
               .system(ADDENDUM_SYSTEM)
               .build());
     }
     if (resultSet.isTrue("evidenzlevel_zusatz_z")) {
       evidenzlevelZusatz.add(
           LevelOfEvidenceAddendumCoding.builder()
-              .code(LevelOfEvidenceAddendumCodingCode.Z)
-              .display(LevelOfEvidenceAddendumCodingCode.Z.toValue())
+              .code(LevelOfEvidenceAddendumCoding.CodeEnum.Z)
+              .display(LevelOfEvidenceAddendumCoding.CodeEnum.Z.toString())
               .system(ADDENDUM_SYSTEM)
               .build());
     }
     if (resultSet.isTrue("evidenzlevel_zusatz_r")) {
       evidenzlevelZusatz.add(
           LevelOfEvidenceAddendumCoding.builder()
-              .code(LevelOfEvidenceAddendumCodingCode.R)
-              .display(LevelOfEvidenceAddendumCodingCode.R.toValue())
+              .code(LevelOfEvidenceAddendumCoding.CodeEnum.R)
+              .display(LevelOfEvidenceAddendumCoding.CodeEnum.R.toString())
               .system(ADDENDUM_SYSTEM)
               .build());
     }
@@ -235,14 +237,14 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
               if (line.matches("^\\d+$")) {
                 return PublicationReference.builder()
                     .id(line)
-                    .system(PublicationSystem.PUBMED_NCBI_NLM_NIH_GOV)
+                    .system(PublicationReference.SystemEnum.HTTPS_PUBMED_NCBI_NLM_NIH_GOV)
                     .type("Publication")
                     .build();
               }
               if (line.matches("^\\d{2}\\.\\d{4}/\\d+(\\.\\d+)?$")) {
                 return PublicationReference.builder()
                     .id(line)
-                    .system(PublicationSystem.DOI_ORG)
+                    .system(PublicationReference.SystemEnum.HTTPS_WWW_DOI_ORG)
                     .type("Publication")
                     .build();
               }
@@ -269,17 +271,17 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     }
     switch (value) {
       case 1:
-        resultBuilder.code(RecommendationPriorityCodingCode.CODE_1);
+        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._1);
         break;
       case 2:
-        resultBuilder.code(RecommendationPriorityCodingCode.CODE_2);
+        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._2);
         break;
       case 3:
-        resultBuilder.code(RecommendationPriorityCodingCode.CODE_3);
+        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._3);
         break;
       case 4:
       default:
-        resultBuilder.code(RecommendationPriorityCodingCode.CODE_4);
+        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._4);
     }
 
     return resultBuilder.build();

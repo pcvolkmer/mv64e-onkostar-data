@@ -22,7 +22,7 @@ package dev.pcvolkmer.mv64e.datamapper.genes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import dev.pcvolkmer.mv64e.mtb.Chromosome;
+import dev.pcvolkmer.mv64e.model.Chromosome;
 import org.junit.jupiter.api.Test;
 
 class GeneUtilsTest {

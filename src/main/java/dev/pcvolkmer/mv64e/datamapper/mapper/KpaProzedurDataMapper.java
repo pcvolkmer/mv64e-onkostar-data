@@ -23,9 +23,9 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ProzedurCatalogue;
-import dev.pcvolkmer.mv64e.mtb.OncoProcedure;
-import dev.pcvolkmer.mv64e.mtb.PeriodDate;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.OncoProcedure;
+import dev.pcvolkmer.mv64e.model.PeriodDate;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.List;
 import java.util.Optional;
 import org.jspecify.annotations.NonNull;
@@ -117,7 +117,7 @@ public class KpaProzedurDataMapper extends AbstractKpaTherapieverlaufDataMapper<
         String.class,
         (value, version) -> builder.code(getOncoProcedureCoding(value, version)));
 
-    resultSet.ifValueNotNull("therapielinie", Long.class, builder::therapyLine);
+    resultSet.ifValueNotNull("therapielinie", Integer.class, builder::therapyLine);
 
     resultSet.ifValueNotNull(
         "ref_einzelempfehlung",

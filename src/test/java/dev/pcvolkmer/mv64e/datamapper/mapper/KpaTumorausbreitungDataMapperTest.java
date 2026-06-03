@@ -33,9 +33,8 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.TumorStaging;
-import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCoding;
-import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCodingCode;
+import dev.pcvolkmer.mv64e.model.TumorStaging;
+import dev.pcvolkmer.mv64e.model.TumorStagingMethodCoding;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -89,7 +88,7 @@ class KpaTumorausbreitungDataMapperTest {
     assertThat(actual.getMethod())
         .isEqualTo(
             TumorStagingMethodCoding.builder()
-                .code(TumorStagingMethodCodingCode.PATHOLOGIC)
+                .code(TumorStagingMethodCoding.CodeEnum.PATHOLOGIC)
                 .system("dnpm-dip/mtb/tumor-staging/method")
                 .build());
     assertThat(actual.getOtherClassifications()).hasSize(1);
@@ -128,7 +127,7 @@ class KpaTumorausbreitungDataMapperTest {
     assertThat(actual.getMethod())
         .isEqualTo(
             TumorStagingMethodCoding.builder()
-                .code(TumorStagingMethodCodingCode.PATHOLOGIC)
+                .code(TumorStagingMethodCoding.CodeEnum.PATHOLOGIC)
                 .system("dnpm-dip/mtb/tumor-staging/method")
                 .build());
     // No T value available in DNPM:DIP for code "4e"
