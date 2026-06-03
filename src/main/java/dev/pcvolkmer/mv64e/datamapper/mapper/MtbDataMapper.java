@@ -271,6 +271,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
               .distinct()
               .map(followUpDataMapper::getById)
+              .filter(Objects::nonNull)
               .collect(Collectors.toList());
 
       var claims =
