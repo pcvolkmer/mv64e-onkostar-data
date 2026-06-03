@@ -264,9 +264,6 @@ public class MtbDataMapper implements DataMapper<Mtb> {
                       Reference.builder().id(diagnosis.getId()).type("MTBDiagnosis").build()))
           .andTry(resultBuilder::specimens);
 
-      var carePlans =
-          therapieplanCatalogue.getByKpaId(kpaId).stream().map(therapieplanDataMapper::getById);
-
       final var followUpIds =
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()
               .distinct()
@@ -344,7 +341,10 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           // Histologie-Berichte
           .histologyReports(kpaHistologieDataMapper.getByParentId(kpaId))
           // DNPM Therapieplan
-          .carePlans(carePlans.collect(Collectors.toList()))
+          .carePlans(
+              therapieplanCatalogue.getByKpaId(kpaId).stream()
+                  .map(therapieplanDataMapper::getById)
+                  .collect(Collectors.toList()))
           // NGS Berichte
           .ngsReports(somaticNgsReports)
           // MSI Befunde
