@@ -22,7 +22,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EcogCatalogue;
-import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
+import dev.pcvolkmer.mv64e.model.PerformanceStatus;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;

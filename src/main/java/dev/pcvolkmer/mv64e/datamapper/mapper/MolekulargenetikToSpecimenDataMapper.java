@@ -23,7 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,7 +81,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
         .id(data.getString("id"))
         .patient(data.getPatientReference())
         .type(
-            getTumorSpecimenCoding(
+            getTumorSpecimenTypeCoding(
                 data.getString("materialfixierung"), data.getString("probenmaterial")))
         .collection(getCollection(data))
     // diagnosis is added in getAllByKpaId()
@@ -177,33 +177,34 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
 
   // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
   @Nullable
-  private TumorSpecimenCoding getTumorSpecimenCoding(
+  private TumorSpecimenTypeCoding getTumorSpecimenTypeCoding(
       @Nullable String value, @Nullable String probenMaterial) {
 
     // If value not set and it's blood, always take
-    // TumorSpecimenCodingCode.FRESH_TISSUE
+    // TumorSpecimenTypeCoding.CodeEnum.FRESH_TISSUE
     boolean isBlood = "B".equalsIgnoreCase(probenMaterial != null ? probenMaterial.trim() : null);
 
     if (value == null && !isBlood) {
       return null;
     }
 
-    var resultBuilder = TumorSpecimenCoding.builder().system("dnpm-dip/mtb/tumor-specimen/type");
+    var resultBuilder =
+        TumorSpecimenTypeCoding.builder().system("dnpm-dip/mtb/tumor-specimen/type");
 
     if (value == null) {
-      resultBuilder.code(TumorSpecimenCodingCode.FRESH_TISSUE).display("Frischgewebe");
+      resultBuilder.code(TumorSpecimenTypeCoding.CodeEnum.FRESH_TISSUE).display("Frischgewebe");
       return resultBuilder.build();
     }
 
     switch (value) {
       case "2":
-        resultBuilder.code(TumorSpecimenCodingCode.CRYO_FROZEN).display("Cryo-frozen");
+        resultBuilder.code(TumorSpecimenTypeCoding.CodeEnum.CRYO_FROZEN).display("Cryo-frozen");
         break;
       case "3":
-        resultBuilder.code(TumorSpecimenCodingCode.FFPE).display("FFPE");
+        resultBuilder.code(TumorSpecimenTypeCoding.CodeEnum.FFPE).display("FFPE");
         break;
       default:
-        resultBuilder.code(TumorSpecimenCodingCode.UNKNOWN).display("Unbekannt");
+        resultBuilder.code(TumorSpecimenTypeCoding.CodeEnum.UNKNOWN).display("Unbekannt");
         break;
     }
 
@@ -211,7 +212,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
   }
 
   @Nullable
-  private Collection getCollection(@NonNull ResultSet data) {
+  private TumorSpecimenCollection getCollection(@NonNull ResultSet data) {
     final var entnahmemethode = data.getString("entnahmemethode");
     final var probenmaterial = data.getString("probenmaterial");
 
@@ -225,22 +226,28 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
 
     switch (entnahmemethode) {
       case "B":
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.BIOPSY).display("Biopsie");
+        methodBuilder.code(TumorSpecimenCollectionMethodCoding.CodeEnum.BIOPSY).display("Biopsie");
         break;
       case "R":
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.RESECTION).display("Resektat");
+        methodBuilder
+            .code(TumorSpecimenCollectionMethodCoding.CodeEnum.RESECTION)
+            .display("Resektat");
         break;
       case "LB":
         methodBuilder
-            .code(TumorSpecimenCollectionMethodCodingCode.LIQUID_BIOPSY)
+            .code(TumorSpecimenCollectionMethodCoding.CodeEnum.LIQUID_BIOPSY)
             .display("Liquid Biopsy");
         break;
       case "Z":
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.CYTOLOGY).display("Zytologie");
+        methodBuilder
+            .code(TumorSpecimenCollectionMethodCoding.CodeEnum.CYTOLOGY)
+            .display("Zytologie");
         break;
       case "U":
       default:
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.UNKNOWN).display("Unbekannt");
+        methodBuilder
+            .code(TumorSpecimenCollectionMethodCoding.CodeEnum.UNKNOWN)
+            .display("Unbekannt");
         break;
     }
 
@@ -252,7 +259,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
     switch (probenmaterial) {
       case "T":
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.PRIMARY_TUMOR)
             .display("Primärtumor");
         break;
       case "LK":
@@ -260,18 +267,18 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
       case "ITM":
       case "SM":
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.METASTASIS)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.METASTASIS)
             .display("Metastase");
         break;
       default:
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.UNKNOWN)
             .display("Unbekannt");
         break;
     }
 
     final var collectionBuilder =
-        Collection.builder()
+        TumorSpecimenCollection.builder()
             .method(methodBuilder.build())
             .localization(localizationBuilder.build());
 

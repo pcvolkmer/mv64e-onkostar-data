@@ -33,7 +33,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -169,13 +169,13 @@ class TherapieplanDataMapperTest {
     assertThat(actual.getRecommendationsMissingReason())
         .isEqualTo(
             MtbCarePlanRecommendationsMissingReasonCoding.builder()
-                .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET)
+                .code(MtbCarePlanRecommendationsMissingReasonCoding.CodeEnum.NO_TARGET)
                 .build());
 
     assertThat(actual.getNoSequencingPerformedReason())
         .isEqualTo(
             CarePlanNoSequencingPerformedReasonCoding.builder()
-                .code(NoSequencingPerformedReasonCode.NON_GENETIC_CAUSE)
+                .code(CarePlanNoSequencingPerformedReasonCoding.CodeEnum.NON_GENETIC_CAUSE)
                 .build());
   }
 
@@ -198,7 +198,7 @@ class TherapieplanDataMapperTest {
     assertThat(actual.getRecommendationsMissingReason())
         .isEqualTo(
             MtbCarePlanRecommendationsMissingReasonCoding.builder()
-                .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET)
+                .code(MtbCarePlanRecommendationsMissingReasonCoding.CodeEnum.NO_TARGET)
                 .build());
 
     assertThat(actual.getNoSequencingPerformedReason()).isNull();
@@ -246,7 +246,7 @@ class TherapieplanDataMapperTest {
     assertThat(actual.getNoSequencingPerformedReason())
         .isEqualTo(
             CarePlanNoSequencingPerformedReasonCoding.builder()
-                .code(NoSequencingPerformedReasonCode.NON_GENETIC_CAUSE)
+                .code(CarePlanNoSequencingPerformedReasonCoding.CodeEnum.NON_GENETIC_CAUSE)
                 .build());
   }
 
@@ -287,7 +287,7 @@ class TherapieplanDataMapperTest {
                 .patient(Reference.builder().id("42").type("Patient").build())
                 .reason(
                     GeneticCounselingRecommendationReasonCoding.builder()
-                        .code(GeneticCounselingRecommendationReasonCodingCode.OTHER)
+                        .code(GeneticCounselingRecommendationReasonCoding.CodeEnum.OTHER)
                         .display("Andere")
                         .system("dnpm-dip/mtb/recommendation/genetic-counseling/reason")
                         .build())

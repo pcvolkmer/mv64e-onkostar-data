@@ -22,10 +22,9 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PatientCatalogue;
-import dev.pcvolkmer.mv64e.mtb.Address;
-import dev.pcvolkmer.mv64e.mtb.GenderCoding;
-import dev.pcvolkmer.mv64e.mtb.GenderCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Patient;
+import dev.pcvolkmer.mv64e.model.GenderCoding;
+import dev.pcvolkmer.mv64e.model.Patient;
+import dev.pcvolkmer.mv64e.model.PatientAddress;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -63,7 +62,8 @@ public class PatientDataMapper implements DataMapper<Patient> {
 
     var municipalityCode = getMunicipalityCode(patientData);
     if (null != municipalityCode) {
-      builder.address(Address.builder().municipalityCode(getMunicipalityCode(patientData)).build());
+      builder.address(
+          PatientAddress.builder().municipalityCode(getMunicipalityCode(patientData)).build());
     }
 
     return builder.build();
@@ -71,22 +71,25 @@ public class PatientDataMapper implements DataMapper<Patient> {
 
   private GenderCoding getGenderCoding(final ResultSet data) {
     var genderCodingBuilder =
-        GenderCoding.builder().code(GenderCodingCode.UNKNOWN).display("Unbekannt").system("Gender");
+        GenderCoding.builder()
+            .code(GenderCoding.CodeEnum.UNKNOWN)
+            .display("Unbekannt")
+            .system("Gender");
 
     String geschlecht = data.getString("geschlecht");
     if (null != geschlecht) {
       switch (geschlecht) {
         case "M":
-          genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.MALE).display("Männlich");
           break;
         case "F":
-          genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.FEMALE).display("Weiblich");
           break;
         case "X":
-          genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.OTHER).display("Divers");
           break;
         default:
-          genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.UNKNOWN).display("Unbekannt");
       }
     }
     return genderCodingBuilder.build();

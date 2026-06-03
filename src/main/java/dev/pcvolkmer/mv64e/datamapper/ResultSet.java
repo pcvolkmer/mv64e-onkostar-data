@@ -21,7 +21,7 @@
 package dev.pcvolkmer.mv64e.datamapper;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;

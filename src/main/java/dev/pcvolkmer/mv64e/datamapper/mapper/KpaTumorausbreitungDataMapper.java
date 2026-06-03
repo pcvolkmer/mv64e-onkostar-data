@@ -22,8 +22,10 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TumorausbreitungCatalogue;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.Coding;
+import dev.pcvolkmer.mv64e.model.TumorStaging;
+import dev.pcvolkmer.mv64e.model.TumorStagingMethodCoding;
+import dev.pcvolkmer.mv64e.model.TumorStagingTnmClassification;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,8 +75,8 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
   @Nullable
   private TumorStagingMethodCoding getTumorStagingMethodCoding(final String value) {
     if (value == null
-        || !Arrays.stream(TumorStagingMethodCodingCode.values())
-            .map(TumorStagingMethodCodingCode::toValue)
+        || !Arrays.stream(TumorStagingMethodCoding.CodeEnum.values())
+            .map(TumorStagingMethodCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -83,8 +85,8 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
     var resultBuilder =
         TumorStagingMethodCoding.builder().system("dnpm-dip/mtb/tumor-staging/method");
     try {
-      resultBuilder.code(TumorStagingMethodCodingCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(TumorStagingMethodCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       throw new IllegalStateException("No valid code found");
     }
 
@@ -92,8 +94,8 @@ public class KpaTumorausbreitungDataMapper extends AbstractSubformDataMapper<Tum
   }
 
   @Nullable
-  private TnmClassification getTnmClassification(final ResultSet resultSet) {
-    var tnpmClassificationBuilder = TnmClassification.builder();
+  private TumorStagingTnmClassification getTnmClassification(final ResultSet resultSet) {
+    var tnpmClassificationBuilder = TumorStagingTnmClassification.builder();
 
     var hasContent = false;
 

@@ -11,7 +11,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenuntersuchungCat
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ class MolekulargenetikNgsDataMapperTest {
             molekulargenetikCatalogue,
             molekulargenuntersuchungCatalogue,
             propertyCatalogue,
-            TumorCellContentMethodCodingCode.HISTOLOGIC);
+            TumorCellContentMethodCoding.CodeEnum.HISTOLOGIC);
   }
 
   @Test
@@ -152,10 +152,10 @@ class MolekulargenetikNgsDataMapperTest {
         .satisfies(
             metadata -> {
               assertThat(metadata).hasSize(1);
-              assertThat(metadata.get(0).getKitType()).isEqualTo("");
-              assertThat(metadata.get(0).getKitManufacturer()).isEqualTo("");
-              assertThat(metadata.get(0).getSequencer()).isEqualTo("");
-              assertThat(metadata.get(0).getPipeline()).isEqualTo("");
+              assertThat(metadata.get(0).getKitType()).isEmpty();
+              assertThat(metadata.get(0).getKitManufacturer()).isEmpty();
+              assertThat(metadata.get(0).getSequencer()).isEmpty();
+              assertThat(metadata.get(0).getPipeline()).hasToString("");
             });
   }
 
@@ -221,13 +221,13 @@ class MolekulargenetikNgsDataMapperTest {
                             .isEqualTo(
                                 TranscriptId.builder()
                                     .value("ENSG00000123456")
-                                    .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                    .system(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG)
                                     .build());
                         assertThat(simpleVariants.get(0).getPosition())
                             .satisfies(
                                 position -> {
-                                  assertThat(position.getStart()).isEqualTo(123);
-                                  assertThat(position.getEnd()).isEqualTo(125);
+                                  assertThat(position.getStart()).isEqualByComparingTo("123");
+                                  assertThat(position.getEnd()).isEqualByComparingTo("125");
                                 });
                         assertThat(simpleVariants.get(0).getRefAllele()).isEqualTo("A");
                         assertThat(simpleVariants.get(0).getAltAllele()).isEqualTo("C");
@@ -295,13 +295,13 @@ class MolekulargenetikNgsDataMapperTest {
                             .isEqualTo(
                                 TranscriptId.builder()
                                     .value("ENSG00000157764")
-                                    .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                    .system(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG)
                                     .build());
                         assertThat(simpleVariants.get(0).getPosition())
                             .satisfies(
                                 position -> {
-                                  assertThat(position.getStart()).isEqualTo(123);
-                                  assertThat(position.getEnd()).isEqualTo(125);
+                                  assertThat(position.getStart()).isEqualByComparingTo("123");
+                                  assertThat(position.getEnd()).isEqualByComparingTo("125");
                                 });
                         assertThat(simpleVariants.get(0).getRefAllele()).isEqualTo("A");
                         assertThat(simpleVariants.get(0).getAltAllele()).isEqualTo("C");
@@ -363,7 +363,7 @@ class MolekulargenetikNgsDataMapperTest {
                         assertThat(simpleVariants.get(0).getPosition())
                             .satisfies(
                                 position -> {
-                                  assertThat(position.getStart()).isEqualTo(123);
+                                  assertThat(position.getStart()).isEqualByComparingTo("123");
                                   assertThat(position.getEnd()).isNull();
                                 });
                         assertThat(simpleVariants.get(0).getRefAllele()).isEqualTo("A");
@@ -426,7 +426,8 @@ class MolekulargenetikNgsDataMapperTest {
                             .isEqualTo(
                                 TranscriptId.builder()
                                     .value("NM_0000123456")
-                                    .system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ)
+                                    .system(
+                                        TranscriptId.SystemEnum.HTTPS_WWW_NCBI_NLM_NIH_GOV_REFSEQ)
                                     .build());
                       });
             });
@@ -487,7 +488,8 @@ class MolekulargenetikNgsDataMapperTest {
                             .isEqualTo(
                                 TranscriptId.builder()
                                     .value("NM_0000123456")
-                                    .system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ)
+                                    .system(
+                                        TranscriptId.SystemEnum.HTTPS_WWW_NCBI_NLM_NIH_GOV_REFSEQ)
                                     .build());
                       });
             });
@@ -548,7 +550,7 @@ class MolekulargenetikNgsDataMapperTest {
                             .isEqualTo(
                                 TranscriptId.builder()
                                     .value("ENSG00000123456")
-                                    .system(TranscriptIdSystem.ENSEMBL_ORG)
+                                    .system(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG)
                                     .build());
                       });
             });
@@ -594,7 +596,7 @@ class MolekulargenetikNgsDataMapperTest {
                       Column.name("fusiondna3hgncsymbol").value("ABL1"),
                       Column.name("fusiondna3hgncname")
                           .value("ABL proto-oncogene 1, non-receptor tyrosine kinase"),
-                      Column.name("fusiondnareportednumread").value(123L)));
+                      Column.name("fusiondnareportednumread").value(123)));
             })
         .when(molekulargenuntersuchungCatalogue)
         .getAllByParentId(anyInt());
@@ -614,7 +616,7 @@ class MolekulargenetikNgsDataMapperTest {
                       dnaFusion -> {
                         assertThat(dnaFusion).hasSize(1);
                         assertThat(dnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
-                        assertThat(dnaFusion.get(0).getFusionPartner5Prime())
+                        assertThat(dnaFusion.get(0).getFusionPartner5prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getChromosome())
@@ -624,9 +626,10 @@ class MolekulargenetikNgsDataMapperTest {
                                       .isEqualTo("A1BG");
                                   assertThat(fusionPartner.getGene().getSystem())
                                       .isEqualTo("https://www.genenames.org/");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(501234);
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("501234");
                                 });
-                        assertThat(dnaFusion.get(0).getFusionPartner3Prime())
+                        assertThat(dnaFusion.get(0).getFusionPartner3prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getChromosome())
@@ -637,7 +640,8 @@ class MolekulargenetikNgsDataMapperTest {
                                       .isEqualTo("ABL1");
                                   assertThat(fusionPartner.getGene().getSystem())
                                       .isEqualTo("https://www.genenames.org/");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(301234);
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("301234");
                                 });
                       });
             });
@@ -672,7 +676,7 @@ class MolekulargenetikNgsDataMapperTest {
                       PropcatColumn.name("fusioniertesgen").value("ABL1"),
                       Column.name("fusiondna5position").value(501234),
                       Column.name("fusiondna3position").value(301234),
-                      Column.name("fusiondnareportednumread").value(123L)));
+                      Column.name("fusiondnareportednumread").value(123)));
             })
         .when(molekulargenuntersuchungCatalogue)
         .getAllByParentId(anyInt());
@@ -692,7 +696,7 @@ class MolekulargenetikNgsDataMapperTest {
                       dnaFusion -> {
                         assertThat(dnaFusion).hasSize(1);
                         assertThat(dnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
-                        assertThat(dnaFusion.get(0).getFusionPartner5Prime())
+                        assertThat(dnaFusion.get(0).getFusionPartner5prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getChromosome())
@@ -702,9 +706,10 @@ class MolekulargenetikNgsDataMapperTest {
                                       .isEqualTo("A1BG");
                                   assertThat(fusionPartner.getGene().getSystem())
                                       .isEqualTo("https://www.genenames.org/");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(501234);
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("501234");
                                 });
-                        assertThat(dnaFusion.get(0).getFusionPartner3Prime())
+                        assertThat(dnaFusion.get(0).getFusionPartner3prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getChromosome())
@@ -715,7 +720,8 @@ class MolekulargenetikNgsDataMapperTest {
                                       .isEqualTo("ABL1");
                                   assertThat(fusionPartner.getGene().getSystem())
                                       .isEqualTo("https://www.genenames.org/");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(301234);
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("301234");
                                 });
                       });
             });
@@ -766,7 +772,7 @@ class MolekulargenetikNgsDataMapperTest {
                       Column.name("fusionrna3transposition").value(301234),
                       Column.name("fusionrna3strand").value("-"),
                       Column.name("fusionrnaeffect").value("The test effect"),
-                      Column.name("fusionrnareportednumread").value(123L)));
+                      Column.name("fusionrnareportednumread").value(123)));
             })
         .when(molekulargenuntersuchungCatalogue)
         .getAllByParentId(anyInt());
@@ -787,7 +793,7 @@ class MolekulargenetikNgsDataMapperTest {
                         assertThat(rnaFusion).hasSize(1);
                         assertThat(rnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
                         assertThat(rnaFusion.get(0).getEffect()).isEqualTo("The test effect");
-                        assertThat(rnaFusion.get(0).getFusionPartner5Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner5prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getGene().getCode()).isEqualTo("HGNC:5");
@@ -798,10 +804,12 @@ class MolekulargenetikNgsDataMapperTest {
                                   assertThat(fusionPartner.getExonId()).isEqualTo("ex5");
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000121410.5");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(501234);
-                                  assertThat(fusionPartner.getStrand().toValue()).isEqualTo("+");
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("501234");
+                                  assertThat(fusionPartner.getStrand())
+                                      .isEqualTo(RnaFusionStrand.PLUS);
                                 });
-                        assertThat(rnaFusion.get(0).getFusionPartner3Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner3prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getGene().getCode())
@@ -813,8 +821,10 @@ class MolekulargenetikNgsDataMapperTest {
                                   assertThat(fusionPartner.getExonId()).isEqualTo("ex3");
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000097007.3");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(301234);
-                                  assertThat(fusionPartner.getStrand().toValue()).isEqualTo("-");
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("301234");
+                                  assertThat(fusionPartner.getStrand())
+                                      .isEqualTo(RnaFusionStrand.MINUS);
                                 });
                       });
             });
@@ -856,7 +866,7 @@ class MolekulargenetikNgsDataMapperTest {
                       Column.name("fusionrna3transposition").value(301234),
                       Column.name("fusionrna3strand").value("-"),
                       Column.name("fusionrnaeffect").value("The test effect"),
-                      Column.name("fusionrnareportednumread").value(123L)));
+                      Column.name("fusionrnareportednumread").value(123)));
             })
         .when(molekulargenuntersuchungCatalogue)
         .getAllByParentId(anyInt());
@@ -877,7 +887,7 @@ class MolekulargenetikNgsDataMapperTest {
                         assertThat(rnaFusion).hasSize(1);
                         assertThat(rnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
                         assertThat(rnaFusion.get(0).getEffect()).isEqualTo("The test effect");
-                        assertThat(rnaFusion.get(0).getFusionPartner5Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner5prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getGene().getCode()).isEqualTo("HGNC:5");
@@ -888,11 +898,12 @@ class MolekulargenetikNgsDataMapperTest {
                                   assertThat(fusionPartner.getExonId()).isEqualTo("ex5");
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000121410.5");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(501234);
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("501234");
                                   assertThat(fusionPartner.getStrand())
                                       .isEqualTo(RnaFusionStrand.PLUS);
                                 });
-                        assertThat(rnaFusion.get(0).getFusionPartner3Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner3prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getGene().getCode())
@@ -904,7 +915,8 @@ class MolekulargenetikNgsDataMapperTest {
                                   assertThat(fusionPartner.getExonId()).isEqualTo("ex3");
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000097007.3");
-                                  assertThat(fusionPartner.getPosition()).isEqualTo(301234);
+                                  assertThat(fusionPartner.getPosition())
+                                      .isEqualByComparingTo("301234");
                                   assertThat(fusionPartner.getStrand())
                                       .isEqualTo(RnaFusionStrand.MINUS);
                                 });
@@ -1047,6 +1059,6 @@ class MolekulargenetikNgsDataMapperTest {
     var actual = this.mapper.getById(1);
 
     assertThat(actual).isNotNull();
-    assertThat(actual.getMetadata().get(0).getPipeline()).isEqualTo(pipelineUri);
+    assertThat(actual.getMetadata().get(0).getPipeline()).hasToString(pipelineUri);
   }
 }

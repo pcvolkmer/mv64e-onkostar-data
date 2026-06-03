@@ -24,9 +24,9 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.AtcUnregisteredMedicationCoding;
-import dev.pcvolkmer.mv64e.mtb.RequestedMedicationSystem;
+import dev.pcvolkmer.mv64e.model.AtcUnregisteredMedicationCoding;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,9 +41,9 @@ public class JsonToMedicationMapper {
     // intentionally left empty
   }
 
-  public static List<AtcUnregisteredMedicationCoding> map(String wirkstoffejson) {
+  public static Set<AtcUnregisteredMedicationCoding> map(String wirkstoffejson) {
     if (wirkstoffejson == null) {
-      return List.of();
+      return Set.of();
     }
     try {
       return new ObjectMapper()
@@ -57,12 +57,13 @@ public class JsonToMedicationMapper {
                               "ATC".equals(wirkstoff.system)
                                       && null != wirkstoff.version
                                       && !wirkstoff.version.isBlank()
-                                  ? RequestedMedicationSystem.FHIR_DE_CODE_SYSTEM_BFARM_ATC
-                                  : RequestedMedicationSystem.UNDEFINED)
+                                  ? AtcUnregisteredMedicationCoding.SystemEnum
+                                      .HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC
+                                  : AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
                           .version(wirkstoff.version)
                           .display(wirkstoff.name)
                           .build())
-              .collect(Collectors.toList());
+              .collect(Collectors.toSet());
     } catch (Exception e) {
       throw new DataAccessException(String.format("Cannot map medication for %s", wirkstoffejson));
     }

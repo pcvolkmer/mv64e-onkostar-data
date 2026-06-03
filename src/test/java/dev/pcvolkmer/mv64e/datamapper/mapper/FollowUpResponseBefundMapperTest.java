@@ -34,7 +34,10 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.RecistCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
+import dev.pcvolkmer.mv64e.model.Response;
+import dev.pcvolkmer.mv64e.model.ResponseMethodCoding;
 import java.time.Instant;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,14 +89,14 @@ class FollowUpResponseBefundMapperTest {
     assertThat(actual.getMethod())
         .isEqualTo(
             ResponseMethodCoding.builder()
-                .code(ResponseMethodCodingCode.RECIST)
+                .code(ResponseMethodCoding.CodeEnum.RECIST)
                 .display("RECIST")
                 .system("dnpm-dip/mtb/response/method")
                 .build());
     assertThat(actual.getValue())
         .isEqualTo(
             RecistCoding.builder()
-                .code(RecistCodingCode.CR)
+                .code(RecistCoding.CodeEnum.CR)
                 .display("CR")
                 .system("RECIST")
                 .build());

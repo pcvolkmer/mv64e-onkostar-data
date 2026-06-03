@@ -13,7 +13,7 @@ group = "dev.pcvolkmer.mv64e"
 version = "0.8.9" // x-release-please-version
 
 var versions = mapOf(
-    "mtb-dto" to "0.3.0",
+    "mtb-model" to "0.4.0",
     "commons-csv" to "1.10.0",
     "slf4j" to "2.0.17",
     "junit" to "5.14.1",
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    api("dev.pcvolkmer.mv64e:mtb-dto:${versions["mtb-dto"]}")
+    api("dev.pcvolkmer.mv64e:mtb-model:${versions["mtb-model"]}")
     api("com.fasterxml.jackson.core:jackson-databind:[2.12.2, )")
     implementation("org.springframework:spring-jdbc") {
         version {
