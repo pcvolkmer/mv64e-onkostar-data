@@ -24,7 +24,7 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
+import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
 import dev.pcvolkmer.mv64e.mtb.MtbSystemicTherapy;
 import dev.pcvolkmer.mv64e.mtb.Reference;
 import java.util.List;
@@ -76,7 +76,7 @@ public abstract class AbstractTherapielinieDataMapper
     try {
       // Determine if the therapy line is empty.
       // A therapy line is considered empty if 'Erfassungsdatum' (recorded date) is missing.
-      // If so, log a warning and skip mapping for this record withouth breaking the
+      // If so, log a warning and skip mapping for this record without breaking the
       // whole data mapping.
       var erfassungsdatum = resultSet.getDate("erfassungsdatum");
       if (null == erfassungsdatum) {
@@ -84,10 +84,11 @@ public abstract class AbstractTherapielinieDataMapper
         return null;
       }
 
-      try {
-        this.getPeriodDate(resultSet).ifPresent(builder::period);
-      } catch (IgnorableMappingException e) {
-        logger.warn("{}", e.getMessage());
+      final var result =
+          TryAndLog.tryAndLogWithResult(() -> this.getPeriodDate(resultSet))
+              .andTry(value -> value.ifPresent(builder::period));
+
+      if (result.isError()) {
         return null;
       }
 

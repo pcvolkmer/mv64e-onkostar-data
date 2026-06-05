@@ -35,4 +35,13 @@ public interface Catchable {
   default boolean isClean() {
     return null == getException();
   }
+
+  /**
+   * Check if any un-catch-ed exception is pending.
+   *
+   * @return Returns true if an exception is pending.
+   */
+  default boolean isError() {
+    return !isClean();
+  }
 }
