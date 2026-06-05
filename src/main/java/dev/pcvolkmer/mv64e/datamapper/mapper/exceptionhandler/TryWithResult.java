@@ -149,6 +149,17 @@ public class TryWithResult<O> extends AbstractLoggable implements Catchable {
   }
 
   /**
+   * Consume the result if present.
+   *
+   * @param consumer The consumer to be executed
+   */
+  public void ifOk(Consumer<O> consumer) {
+    if (null != value) {
+      consumer.accept(value);
+    }
+  }
+
+  /**
    * Get the exception if any.
    *
    * @return The exception if any
