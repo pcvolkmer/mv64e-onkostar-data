@@ -144,6 +144,35 @@ class TryAndLogTest {
   }
 
   @Test
+  void testShouldRunIfOkAfterException() {
+    var values = new ArrayList<Integer>();
+
+    tryAndLogWithResult(() -> 42, this.logger).andTryWithResult(value -> value).ifOk(values::add);
+
+    assertThat(values).hasSize(1).containsExactly(42);
+  }
+
+  @Test
+  void testShouldNotRunIfOkAfterException() {
+    var values = new ArrayList<Integer>();
+
+    tryAndLogWithResult(() -> 1, this.logger)
+        .andTryWithResult(
+            value -> {
+              throw new IgnorableMappingException("Test");
+              // Should not be thrown beyond this
+            })
+        .andTryWithResult(value -> fail("Should not be called"))
+        .ifOk(
+            value -> {
+              values.add(1);
+              fail("Should not be called");
+            });
+
+    assertThat(values).isEmpty();
+  }
+
+  @Test
   void testShouldTryWithoutException() {
     var values = new ArrayList<Integer>();
 
