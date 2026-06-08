@@ -32,7 +32,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -192,21 +192,21 @@ class PathologiebefundToSpecimenDataMapperTest {
             "B",
             TumorSpecimenCollectionMethodCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/method")
-                .code(TumorSpecimenCollectionMethodCodingCode.BIOPSY)
+                .code(TumorSpecimenCollectionMethodCoding.CodeEnum.BIOPSY)
                 .display("Biopsie")
                 .build()),
         Arguments.of(
             "R",
             TumorSpecimenCollectionMethodCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/method")
-                .code(TumorSpecimenCollectionMethodCodingCode.RESECTION)
+                .code(TumorSpecimenCollectionMethodCoding.CodeEnum.RESECTION)
                 .display("Resektat")
                 .build()),
         Arguments.of(
             "U",
             TumorSpecimenCollectionMethodCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/method")
-                .code(TumorSpecimenCollectionMethodCodingCode.UNKNOWN)
+                .code(TumorSpecimenCollectionMethodCoding.CodeEnum.UNKNOWN)
                 .display("Unbekannt")
                 .build()));
   }
@@ -286,49 +286,49 @@ class PathologiebefundToSpecimenDataMapperTest {
             "P",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.PRIMARY_TUMOR)
                 .display("Primärtumor")
                 .build()),
         Arguments.of(
             "R",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.UNKNOWN)
                 .display("Unbekannt")
                 .build()),
         Arguments.of(
             "M",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.METASTASIS)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.METASTASIS)
                 .display("Metastase")
                 .build()),
         Arguments.of(
             "B",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.UNKNOWN)
                 .display("Unbekannt")
                 .build()),
         Arguments.of(
             "L",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.REGIONAL_LYMPH_NODES)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.REGIONAL_LYMPH_NODES)
                 .display("Lymphknoten")
                 .build()),
         Arguments.of(
             "U",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.UNKNOWN)
                 .display("Unbekannt")
                 .build()),
         Arguments.of(
             "S",
             TumorSpecimenCollectionLocalizationCoding.builder()
                 .system("dnpm-dip/mtb/tumor-specimen/collection/localization")
-                .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+                .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.UNKNOWN)
                 .display("Unbekannt")
                 .build()));
   }

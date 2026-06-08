@@ -13,7 +13,7 @@ group = "dev.pcvolkmer.mv64e"
 version = "0.9.2" // x-release-please-version
 
 var versions = mapOf(
-    "mtb-model" to "0.4.0",
+    "mtb-model" to "0.4.3",
     "commons-csv" to "1.10.0",
     "slf4j" to "2.0.17",
     "junit" to "5.14.1",
@@ -52,6 +52,8 @@ dependencies {
     implementation("org.apache.commons:commons-csv:${versions["commons-csv"]}")
     implementation("org.slf4j:slf4j-api:${versions["slf4j"]}")
     implementation("org.jspecify:jspecify:1.0.0")
+
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.6")
 
     testImplementation(platform("org.junit:junit-bom:${versions["junit"]}"))
     testImplementation("org.junit.jupiter:junit-jupiter")
