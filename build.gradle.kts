@@ -13,7 +13,7 @@ group = "dev.pcvolkmer.mv64e"
 version = "0.8.9" // x-release-please-version
 
 var versions = mapOf(
-    "mtb-model" to "0.4.0",
+    "mtb-model" to "0.4.3",
     "commons-csv" to "1.10.0",
     "slf4j" to "2.0.17",
     "junit" to "5.14.1",

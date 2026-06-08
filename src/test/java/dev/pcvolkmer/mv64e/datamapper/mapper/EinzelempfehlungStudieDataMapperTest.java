@@ -1,6 +1,6 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
-import static dev.pcvolkmer.mv64e.mtb.StudySystem.NCT;
+import static dev.pcvolkmer.mv64e.model.StudyReference.SystemEnum.NCT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -20,6 +20,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.model.LevelOfEvidenceGradingCoding;
 import dev.pcvolkmer.mv64e.model.PublicationReference;
 import dev.pcvolkmer.mv64e.model.RecommendationPriorityCoding;
+import dev.pcvolkmer.mv64e.model.StudyReference;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
