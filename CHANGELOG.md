@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.8.8](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.7...v0.8.8) (2026-06-05)
+
+
+### Features
+
+* add method to simply consume a successful try ([#185](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/185)) ([2b4ff66](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/2b4ff669f3d5660833b2cfedec28a4a7803b2959))
+* export ECOG status from FollowUp form ([#183](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/183)) ([cd53638](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/cd53638885104e5efc32c8f2b6d01ee996c1f52b))
+
 ## [0.8.7](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.6...v0.8.7) (2026-05-27)
 
 
