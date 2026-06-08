@@ -62,33 +62,7 @@ public class JsonToStudyMapper {
                           .build())
               .collect(Collectors.toList());
     } catch (Exception e) {
-      throw new DataAccessException(String.format("Cannot map medication for %s", studyJson));
-    }
-  }
-
-  @Nullable
-  private static StudySystem getStudySystem(@Nullable String code) {
-    if (code == null) return null;
-
-    // possible values from DNPM Datamodel
-    switch (code) {
-      case "NCT":
-        return StudySystem.NCT;
-      case "EudraCT": // Additional value from Onkostar Property Catalogue
-      case "Eudra-CT":
-        return StudySystem.EUDRA_CT;
-      case "DRKS":
-        return StudySystem.DRKS;
-      case "EUDAMED":
-        return StudySystem.EUDAMED;
-
-      // Or try to map from Enum values
-      default:
-        try {
-          return StudySystem.valueOf(code);
-        } catch (IllegalArgumentException e) {
-          return null;
-        }
+      throw new IgnorableMappingException(String.format("Cannot map study for %s", studyJson));
     }
   }
 

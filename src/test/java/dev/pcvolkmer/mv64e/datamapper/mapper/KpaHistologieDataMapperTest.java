@@ -37,6 +37,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
+import dev.pcvolkmer.mv64e.model.Coding;
 import dev.pcvolkmer.mv64e.model.HistologyReport;
 import dev.pcvolkmer.mv64e.model.Reference;
 import dev.pcvolkmer.mv64e.model.TumorCellContent;

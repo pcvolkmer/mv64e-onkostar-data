@@ -192,7 +192,8 @@ class EinzelempfehlungWirkstoffDataMapperTest {
     var actual = this.mapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
-    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCoding.CodeEnum._4);
+    assertThat(actual.getPriority().getCode())
+        .isEqualTo(MtbRecommendationPriorityCoding.CodeEnum._4);
   }
 
   @Test

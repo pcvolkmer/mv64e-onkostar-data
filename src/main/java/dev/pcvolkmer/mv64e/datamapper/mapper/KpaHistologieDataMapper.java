@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PathologiebefundCatalogue;
 import dev.pcvolkmer.mv64e.model.*;
 import java.math.BigDecimal;
 import java.util.List;
@@ -175,10 +176,10 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   }
 
   @NullMarked
-  private Optional<TumorMorphology> getTumorMorphologyFromOsPathoPefund(
+  private Optional<HistologyReportResultsTumorMorphology> getTumorMorphologyFromOsPathoPefund(
       ResultSet resultSet, ResultSet pathoBefund) {
     var builder =
-        TumorMorphology.builder()
+        HistologyReportResultsTumorMorphology.builder()
             .id(resultSet.getId().toString())
             .patient(resultSet.getPatientReference())
             .specimen(

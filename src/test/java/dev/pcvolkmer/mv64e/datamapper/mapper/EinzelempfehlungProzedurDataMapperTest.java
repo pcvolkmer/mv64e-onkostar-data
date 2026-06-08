@@ -17,8 +17,8 @@ import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.model.LevelOfEvidenceGradingCoding;
+import dev.pcvolkmer.mv64e.model.MtbRecommendationPriorityCoding;
 import dev.pcvolkmer.mv64e.model.PublicationReference;
-import dev.pcvolkmer.mv64e.model.RecommendationPriorityCoding;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -187,7 +187,8 @@ class EinzelempfehlungProzedurDataMapperTest {
     var actual = this.mapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
-    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCoding.CodeEnum._4);
+    assertThat(actual.getPriority().getCode())
+        .isEqualTo(MtbRecommendationPriorityCoding.CodeEnum._4);
   }
 
   @FuzzNullTest(

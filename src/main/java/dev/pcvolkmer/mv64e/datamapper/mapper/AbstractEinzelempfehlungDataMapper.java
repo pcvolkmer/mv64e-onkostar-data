@@ -26,8 +26,8 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
 import dev.pcvolkmer.mv64e.model.*;
 import dev.pcvolkmer.mv64e.model.LevelOfEvidence;
+import dev.pcvolkmer.mv64e.model.MtbRecommendationPriorityCoding;
 import dev.pcvolkmer.mv64e.model.PublicationReference;
-import dev.pcvolkmer.mv64e.model.RecommendationPriorityCoding;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NonNull;
@@ -71,7 +71,7 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   }
 
   @Nullable
-  protected RecommendationPriorityCoding getRecommendationPriority(ResultSet resultSet) {
+  protected MtbRecommendationPriorityCoding getRecommendationPriority(ResultSet resultSet) {
     var prio = resultSet.getInteger("prio");
     if (null == prio) {
       throw new IgnorableMappingException(
@@ -81,20 +81,20 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
   }
 
   @Nullable
-  protected RecommendationPriorityCoding getRecommendationPriorityCoding(
+  protected MtbRecommendationPriorityCoding getRecommendationPriorityCoding(
       @NonNull String code, int version) {
-    if (!Arrays.stream(RecommendationPriorityCoding.CodeEnum.values())
-        .map(RecommendationPriorityCoding.CodeEnum::toString)
+    if (!Arrays.stream(MtbRecommendationPriorityCoding.CodeEnum.values())
+        .map(MtbRecommendationPriorityCoding.CodeEnum::toString)
         .collect(Collectors.toSet())
         .contains(code)) {
       return null;
     }
 
     var resultBuilder =
-        RecommendationPriorityCoding.builder().system("dnpm-dip/recommendation/priority");
+        MtbRecommendationPriorityCoding.builder().system("dnpm-dip/recommendation/priority");
 
     try {
-      resultBuilder.code(RecommendationPriorityCoding.CodeEnum.valueOf(code)).display(code);
+      resultBuilder.code(MtbRecommendationPriorityCoding.CodeEnum.valueOf(code)).display(code);
     } catch (IllegalArgumentException e) {
       return null;
     }
@@ -261,9 +261,9 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
    * @return The mapped RecommendationPriorityCoding
    */
   @Nullable
-  protected RecommendationPriorityCoding getRecommendationPriorityCoding(Integer value) {
+  protected MtbRecommendationPriorityCoding getRecommendationPriorityCoding(Integer value) {
     var resultBuilder =
-        RecommendationPriorityCoding.builder()
+        MtbRecommendationPriorityCoding.builder()
             .system("dnpm-dip/recommendation/priority")
             .display(String.format("%d", value));
     if (null == value) {
@@ -271,17 +271,17 @@ public abstract class AbstractEinzelempfehlungDataMapper<T> extends AbstractSubf
     }
     switch (value) {
       case 1:
-        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._1);
+        resultBuilder.code(MtbRecommendationPriorityCoding.CodeEnum._1);
         break;
       case 2:
-        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._2);
+        resultBuilder.code(MtbRecommendationPriorityCoding.CodeEnum._2);
         break;
       case 3:
-        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._3);
+        resultBuilder.code(MtbRecommendationPriorityCoding.CodeEnum._3);
         break;
       case 4:
       default:
-        resultBuilder.code(RecommendationPriorityCoding.CodeEnum._4);
+        resultBuilder.code(MtbRecommendationPriorityCoding.CodeEnum._4);
     }
 
     return resultBuilder.build();

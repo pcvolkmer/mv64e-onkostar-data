@@ -291,7 +291,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     var posEnd = subform.getDouble("EVEnde");
     if (null != posStart) {
       snvBuilder.position(
-          CnvEndRange.builder()
+          CnvStartRange.builder()
               .start(BigDecimal.valueOf(posStart))
               .end(posEnd == null ? null : BigDecimal.valueOf(posEnd))
               .build());
@@ -736,13 +736,13 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
       return Optional.of(
           TranscriptId.builder()
               .value(transcriptIdString)
-              .system(TranscriptIdSystem.ENSEMBL_ORG)
+              .system(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG)
               .build());
     } else if (null != transcriptIdString && transcriptIdString.startsWith("NM")) {
       return Optional.of(
           TranscriptId.builder()
               .value(transcriptIdString)
-              .system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ)
+              .system(TranscriptId.SystemEnum.HTTPS_WWW_NCBI_NLM_NIH_GOV_REFSEQ)
               .build());
     }
     return Optional.empty();

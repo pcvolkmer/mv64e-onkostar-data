@@ -990,22 +990,22 @@ class MolekulargenetikNgsDataMapperTest {
                         assertThat(rnaFusion).hasSize(1);
                         assertThat(rnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
                         assertThat(rnaFusion.get(0).getEffect()).isEqualTo("The test effect");
-                        assertThat(rnaFusion.get(0).getFusionPartner5Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner5prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000121410.5");
                                   assertThat(fusionPartner.getTranscriptId().getSystem())
-                                      .isEqualTo(TranscriptIdSystem.ENSEMBL_ORG);
+                                      .isEqualTo(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG);
                                   ;
                                 });
-                        assertThat(rnaFusion.get(0).getFusionPartner3Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner3prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("ENST00000097007.3");
                                   assertThat(fusionPartner.getTranscriptId().getSystem())
-                                      .isEqualTo(TranscriptIdSystem.ENSEMBL_ORG);
+                                      .isEqualTo(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG);
                                 });
                       });
             });
@@ -1077,22 +1077,26 @@ class MolekulargenetikNgsDataMapperTest {
                         assertThat(rnaFusion).hasSize(1);
                         assertThat(rnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
                         assertThat(rnaFusion.get(0).getEffect()).isEqualTo("The test effect");
-                        assertThat(rnaFusion.get(0).getFusionPartner5Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner5prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("NM_001234");
                                   assertThat(fusionPartner.getTranscriptId().getSystem())
-                                      .isEqualTo(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ);
+                                      .isEqualTo(
+                                          TranscriptId.SystemEnum
+                                              .HTTPS_WWW_NCBI_NLM_NIH_GOV_REFSEQ);
                                   ;
                                 });
-                        assertThat(rnaFusion.get(0).getFusionPartner3Prime())
+                        assertThat(rnaFusion.get(0).getFusionPartner3prime())
                             .satisfies(
                                 fusionPartner -> {
                                   assertThat(fusionPartner.getTranscriptId().getValue())
                                       .isEqualTo("NM_004321");
                                   assertThat(fusionPartner.getTranscriptId().getSystem())
-                                      .isEqualTo(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ);
+                                      .isEqualTo(
+                                          TranscriptId.SystemEnum
+                                              .HTTPS_WWW_NCBI_NLM_NIH_GOV_REFSEQ);
                                 });
                       });
             });

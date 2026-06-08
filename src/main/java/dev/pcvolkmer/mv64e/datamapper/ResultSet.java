@@ -139,6 +139,8 @@ public class ResultSet {
 
     if (raw == null) {
       return null;
+    } else if (raw instanceof Long) {
+      return (((Long) raw).intValue());
     } else if (raw instanceof Integer) {
       return ((Integer) raw);
     }
