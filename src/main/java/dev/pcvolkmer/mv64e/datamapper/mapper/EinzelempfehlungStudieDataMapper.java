@@ -67,8 +67,11 @@ public class EinzelempfehlungStudieDataMapper
             .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
             .issuedOn(this.getCarePlanDate(carePlan))
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
-            .levelOfEvidence(getLevelOfEvidence(resultSet))
-            .study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json")));
+            .levelOfEvidence(getLevelOfEvidence(resultSet));
+
+    TryAndLog.tryAndLogWithResult(
+        () -> resultBuilder.study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json"))),
+        log);
 
     TryAndLog.tryAndLogWithResult(() -> getRecommendationPriority(resultSet), log)
         .ok()
