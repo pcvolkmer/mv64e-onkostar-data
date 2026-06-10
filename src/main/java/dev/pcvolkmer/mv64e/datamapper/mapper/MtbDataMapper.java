@@ -378,7 +378,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       }
 
       // Reason for missing research consent
-      if (null != reasonMissingResearchConsent) {
+      if (null != reasonMissingResearchConsent && !reasonMissingResearchConsent.isBlank()) {
         try {
           metadataBuilder.reasonResearchConsentMissing(
               ResearchConsentReasonMissing.forValue(reasonMissingResearchConsent));
