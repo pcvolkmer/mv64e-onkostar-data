@@ -26,7 +26,6 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.mtb.SystemicTherapy;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -89,9 +88,6 @@ public class TherapiehistorieDataMapper implements DataMapper<List<SystemicThera
             .flatMap(therapies -> therapies.stream().map(ResultSet::getId).filter(Objects::nonNull))
             .map(this.therapielinieMapper::getById)
             .filter(Objects::nonNull)
-            .sorted(
-                Comparator.comparing(
-                    mtbSystemicTherapy -> mtbSystemicTherapy.getPeriod().getStart()))
             .collect(Collectors.toList());
     if (systemicTherapies.isEmpty()) {
       return null;
