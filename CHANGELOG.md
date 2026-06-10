@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.8.9](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.8...v0.8.9) (2026-06-10)
+
+
+### Features
+
+* do not sort follow up history ([#189](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/189)) ([afc7858](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/afc7858eddcb082d54b0ca658b802c9d2a265a0d))
+* export study from form fields ([#188](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/188)) ([9d929ec](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/9d929ecbff259ff75ba106ede86d7c6f252a12c5))
+* ignore empty study JSON in EinzelempfehlungStudieDataMapper ([#186](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/186)) ([4b21e7f](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/4b21e7f6f78b3983fc6dbefaf437527588169894))
+
 ## [0.8.8](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.7...v0.8.8) (2026-06-05)
 
 
