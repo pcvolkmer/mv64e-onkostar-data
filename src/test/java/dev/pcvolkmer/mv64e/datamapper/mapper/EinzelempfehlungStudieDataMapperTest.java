@@ -1,5 +1,6 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
+import static dev.pcvolkmer.mv64e.mtb.StudySystem.NCT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -199,6 +200,67 @@ class EinzelempfehlungStudieDataMapperTest {
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
     assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCodingCode.CODE_4);
+  }
+
+  @Test
+  void shouldMapStudyFromForm() {
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
+            Column.name("prio").value(1),
+            Column.name("studiensystem").value("NCT"),
+            Column.name("studie_nct").value("NCT12345678"),
+            Column.name("studie").value("TestInhibitor"));
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual)
+        .isNotNull()
+        .satisfies(
+            recommendation ->
+                assertThat(recommendation.getStudy())
+                    .containsExactly(
+                        StudyReference.builder()
+                            .system(NCT)
+                            .id("NCT12345678")
+                            .display("TestInhibitor")
+                            .type("Study")
+                            .build()));
+  }
+
+  @Test
+  void shouldMapStudyFromJson() {
+    var json =
+        "[\n"
+            + "    {\"studie\":\"TestInhibitor\",\"system\":\"NCT\",\"id\":\"NCT12345678\",\"nct\":\"NCT12345678\",\"ort\":\"Teststadt\",\"internextern\":\"e\"}\n"
+            + "]";
+
+    var resultSet =
+        TestResultSet.withColumns(
+            Column.name(Column.ID).value(1),
+            Column.name(Column.HAUPTPROZEDUR_ID).value(100),
+            Column.name(Column.PATIENTEN_ID).value(42),
+            Column.name("prio").value(1),
+            Column.name("studien_alle_json").value(json));
+
+    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+    var actual = this.mapper.getById(1);
+    assertThat(actual)
+        .isNotNull()
+        .satisfies(
+            recommendation ->
+                assertThat(recommendation.getStudy())
+                    .containsExactly(
+                        StudyReference.builder()
+                            .system(NCT)
+                            .id("NCT12345678")
+                            .display("TestInhibitor")
+                            .type("Study")
+                            .build()));
   }
 
   @FuzzNullTest(

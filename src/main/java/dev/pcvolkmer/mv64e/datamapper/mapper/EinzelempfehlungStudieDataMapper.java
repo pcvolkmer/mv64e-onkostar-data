@@ -27,10 +27,13 @@ import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
 import dev.pcvolkmer.mv64e.mtb.MtbStudyEnrollmentRecommendation;
 import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.mtb.StudyReference;
+import dev.pcvolkmer.mv64e.mtb.StudySystem;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -69,9 +72,25 @@ public class EinzelempfehlungStudieDataMapper
             .medication(JsonToMedicationMapper.map(resultSet.getString("wirkstoffe_json")))
             .levelOfEvidence(getLevelOfEvidence(resultSet));
 
-    TryAndLog.tryAndLogWithResult(
-        () -> resultBuilder.study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json"))),
-        log);
+    var studiensystem = resultSet.getString("studiensystem");
+    var studiennummer = resultSet.getString("studie_nct");
+    if (null != studiensystem && null != studiennummer && !studiennummer.isBlank()) {
+      // Use from form
+      var study =
+          StudyReference.builder()
+              .id(studiennummer)
+              .system(getStudySystem(studiensystem))
+              .type("Study")
+              .display(resultSet.getString("studie"))
+              .build();
+      resultBuilder.study(List.of(study));
+    } else {
+      // Extract from JSON
+      TryAndLog.tryAndLogWithResult(
+          () ->
+              resultBuilder.study(JsonToStudyMapper.map(resultSet.getString("studien_alle_json"))),
+          log);
+    }
 
     TryAndLog.tryAndLogWithResult(() -> getRecommendationPriority(resultSet), log)
         .ok()
@@ -101,5 +120,31 @@ public class EinzelempfehlungStudieDataMapper
         .filter(Objects::nonNull)
         .distinct()
         .collect(Collectors.toList());
+  }
+
+  @Nullable
+  public static StudySystem getStudySystem(@Nullable String code) {
+    if (code == null) return null;
+
+    // possible values from DNPM Datamodel
+    switch (code) {
+      case "NCT":
+        return StudySystem.NCT;
+      case "EudraCT": // Additional value from Onkostar Property Catalogue
+      case "Eudra-CT":
+        return StudySystem.EUDRA_CT;
+      case "DRKS":
+        return StudySystem.DRKS;
+      case "EUDAMED":
+        return StudySystem.EUDAMED;
+
+      // Or try to map from Enum values
+      default:
+        try {
+          return StudySystem.valueOf(code);
+        } catch (IllegalArgumentException e) {
+          return null;
+        }
+    }
   }
 }
