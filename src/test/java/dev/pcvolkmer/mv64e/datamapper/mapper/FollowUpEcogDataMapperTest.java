@@ -85,11 +85,25 @@ class FollowUpEcogDataMapperTest {
   @FuzzNullTest(
       initMethod = "fuzzInitData",
       includeColumns = {"ecog", "datum"})
-  void shouldReturnNullIfEcogOrDateIsNull(final ResultSet resultSet) {
+  void shouldReturnNullResultIfEcogOrDateIsNull(final ResultSet resultSet) {
     when(catalogue.getById(anyInt())).thenReturn(resultSet);
 
     var actual = this.dataMapper.getById(1);
-    assertThat(actual).isInstanceOf(PerformanceStatus.class);
+    assertThat(actual).isNull();
+  }
+
+  @Test
+  void shouldReturnNullResultIfEcogIsBlank() {
+    when(catalogue.getById(anyInt()))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1),
+                Column.name(Column.PATIENTEN_ID).value(42),
+                DateColumn.name("datum").value("2000-01-01"),
+                Column.name("ecog").value("")));
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual).isNull();
   }
 
   @FuzzNullTest(
