@@ -49,20 +49,19 @@ public class FollowUpEcogDataMapper implements DataMapper<PerformanceStatus>, Ec
   public PerformanceStatus getById(final int id) {
     final var data = catalogue.getById(id);
 
-    final var builder =
-        PerformanceStatus.builder().id(String.format("%d", id)).patient(data.getPatientReference());
-
+    final var patientReference = data.getPatientReference();
     final var date = data.getDate("datumfollowup");
-    if (null != date) {
-      builder.effectiveDate(date);
-    }
-
     final var ecog = data.getString("ecog");
-    // Null value will fail in DNPM:DIP
-    if (null != ecog) {
-      builder.value(getEcogCoding(ecog));
+
+    if (null == date || null == ecog || ecog.isBlank()) {
+      return null;
     }
 
-    return builder.build();
+    return PerformanceStatus.builder()
+        .id(String.format("%d", id))
+        .patient(patientReference)
+        .effectiveDate(date)
+        .value(getEcogCoding(ecog))
+        .build();
   }
 }
