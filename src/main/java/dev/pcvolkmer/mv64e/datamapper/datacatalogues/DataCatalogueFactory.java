@@ -66,7 +66,8 @@ public class DataCatalogueFactory {
               Map.entry(ConsentMvCatalogue.class, ConsentMvCatalogue::create),
               Map.entry(ConsentMvVerlaufCatalogue.class, ConsentMvVerlaufCatalogue::create),
               Map.entry(KeimbahndiagnoseCatalogue.class, KeimbahndiagnoseCatalogue::create),
-              Map.entry(FollowUpCatalogue.class, FollowUpCatalogue::create));
+              Map.entry(FollowUpCatalogue.class, FollowUpCatalogue::create),
+              Map.entry(PathologiebefundCatalogue.class, PathologiebefundCatalogue::create));
 
   private final JdbcTemplate jdbcTemplate;
   private final Map<Class<? extends DataCatalogue>, DataCatalogue> catalogues =

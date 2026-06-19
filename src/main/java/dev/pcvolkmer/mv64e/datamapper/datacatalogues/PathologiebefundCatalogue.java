@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2025  Paul-Christian Volkmer
+ * Copyright (C) 2026  Paul-Christian Volkmer
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,38 +20,28 @@
 
 package dev.pcvolkmer.mv64e.datamapper.datacatalogues;
 
-import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Common interface for all data catalogues
+ * Load raw result sets from database table 'dk_pathologie'
  *
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-@NullMarked
-public interface DataCatalogue {
+public class PathologiebefundCatalogue extends AbstractDataCatalogue {
 
-  /**
-   * Get a result set by database id
-   *
-   * @param id The database id (primary key)
-   * @return The result set
-   */
-  ResultSet getById(int id);
+  private PathologiebefundCatalogue(JdbcTemplate jdbcTemplate) {
+    super(jdbcTemplate);
+  }
 
-  /**
-   * Checks if a procedure is available and unique by id
-   *
-   * @param id The database id (primary key)
-   * @return true if available, false otherwise
-   */
-  default boolean isAvailable(int id) {
-    try {
-      this.getById(id);
-    } catch (Exception e) {
-      return false;
-    }
-    return true;
+  @Override
+  protected String getTableName() {
+    return "dk_pathologie";
+  }
+
+  @NullMarked
+  public static PathologiebefundCatalogue create(JdbcTemplate jdbcTemplate) {
+    return new PathologiebefundCatalogue(jdbcTemplate);
   }
 }
