@@ -20,7 +20,7 @@
 
 package dev.pcvolkmer.mv64e.datamapper.genes;
 
-import dev.pcvolkmer.mv64e.mtb.Chromosome;
+import dev.pcvolkmer.mv64e.model.Chromosome;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -114,10 +114,11 @@ public class Gene {
                 var pattern = Pattern.compile("^(\\d+|X|Y)");
                 var matcher = pattern.matcher(value);
                 if (matcher.find()) {
-                  return Chromosome.forValue(String.format("chr%s", matcher.group(0)));
+                  return Chromosome.fromValue(String.format("chr%s", matcher.group(0)));
                 }
               } catch (Exception e) {
                 // Nop
+                return null;
               }
               return null;
             })

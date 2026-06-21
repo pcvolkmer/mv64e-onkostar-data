@@ -24,8 +24,8 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.PeriodDate;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.PeriodDate;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.Optional;
 import org.jspecify.annotations.NullMarked;
 

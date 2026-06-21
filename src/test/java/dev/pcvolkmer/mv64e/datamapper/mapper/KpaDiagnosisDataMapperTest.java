@@ -40,9 +40,10 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
-import dev.pcvolkmer.mv64e.mtb.MtbDiagnosisGuidelineTreatmentStatusCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.MtbDiagnosis;
+import dev.pcvolkmer.mv64e.model.MtbDiagnosisGuidelineTreatmentStatusCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
+import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,10 +132,11 @@ class KpaDiagnosisDataMapperTest {
     assertThat(actual.getTopography().getCode()).isEqualTo("C72.0");
 
     assertThat(actual.getGermlineCodes()).hasSize(1);
-    assertThat(actual.getGermlineCodes().get(0).getCode()).isEqualTo("C00.0");
+    var germlineCodes = new ArrayList<>(actual.getGermlineCodes());
+    assertThat(germlineCodes.get(0).getCode()).isEqualTo("C00.0");
 
     assertThat(actual.getGuidelineTreatmentStatus().getCode())
-        .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCodingCode.EXHAUSTED);
+        .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCoding.CodeEnum.EXHAUSTED);
   }
 
   @FuzzNullTest(

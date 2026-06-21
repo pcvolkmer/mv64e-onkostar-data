@@ -25,8 +25,8 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
-import dev.pcvolkmer.mv64e.mtb.MtbSystemicTherapy;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.MtbSystemicTherapy;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.List;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
@@ -117,7 +117,7 @@ public abstract class AbstractTherapielinieDataMapper
               builder.statusReason(getMtbTherapyStatusReasonCoding(value, version)));
 
       if (!resultSet.isNull("nummer")) {
-        builder.therapyLine(resultSet.getLong("nummer"));
+        builder.therapyLine(resultSet.getInteger("nummer"));
       }
 
       if (!resultSet.isNull("ref_einzelempfehlung")) {

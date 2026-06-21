@@ -23,10 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ConsentMvCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.ConsentMvVerlaufCatalogue;
-import dev.pcvolkmer.mv64e.mtb.ConsentProvision;
-import dev.pcvolkmer.mv64e.mtb.ModelProjectConsent;
-import dev.pcvolkmer.mv64e.mtb.ModelProjectConsentPurpose;
-import dev.pcvolkmer.mv64e.mtb.Provision;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.jspecify.annotations.NullMarked;
@@ -38,7 +35,7 @@ import org.jspecify.annotations.Nullable;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
+public class ConsentMvDataMapper implements DataMapper<MvhMetadataModelProjectConsent> {
 
   private final ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue;
 
@@ -57,9 +54,9 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
    */
   @Nullable
   @Override
-  public ModelProjectConsent getById(int id) {
+  public MvhMetadataModelProjectConsent getById(int id) {
     try {
-      var builder = ModelProjectConsent.builder();
+      var builder = MvhMetadataModelProjectConsent.builder();
       builder.version(getLatestVersion(id)).provisions(getProvisions(id));
       return builder.build();
     } catch (Exception e) {
@@ -89,8 +86,8 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
   }
 
   @NullMarked
-  private List<Provision> getProvisions(final int id) {
-    var result = new ArrayList<Provision>();
+  private List<MvhMetadataModelProjectConsentProvisionsInner> getProvisions(final int id) {
+    var result = new ArrayList<MvhMetadataModelProjectConsentProvisionsInner>();
 
     var all =
         consentMvVerlaufCatalogue.getAllByParentId(id).stream()
@@ -112,13 +109,15 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
         .ifPresent(
             rs ->
                 result.add(
-                    Provision.builder()
+                    MvhMetadataModelProjectConsentProvisionsInner.builder()
                         .date(rs.getDate("date"))
                         .purpose(ModelProjectConsentPurpose.SEQUENCING)
                         .type(
-                            ConsentProvision.PERMIT.toValue().equals(rs.getString("sequencing"))
-                                ? ConsentProvision.PERMIT
-                                : ConsentProvision.DENY)
+                            ConsentProvisionType.PERMIT
+                                    .toString()
+                                    .equals(rs.getString("sequencing"))
+                                ? ConsentProvisionType.PERMIT
+                                : ConsentProvisionType.DENY)
                         .build()));
 
     all.stream()
@@ -131,15 +130,15 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
         .ifPresent(
             rs ->
                 result.add(
-                    Provision.builder()
+                    MvhMetadataModelProjectConsentProvisionsInner.builder()
                         .date(rs.getDate("date"))
                         .purpose(ModelProjectConsentPurpose.CASE_IDENTIFICATION)
                         .type(
-                            ConsentProvision.PERMIT
-                                    .toValue()
+                            ConsentProvisionType.PERMIT
+                                    .toString()
                                     .equals(rs.getString("caseidentification"))
-                                ? ConsentProvision.PERMIT
-                                : ConsentProvision.DENY)
+                                ? ConsentProvisionType.PERMIT
+                                : ConsentProvisionType.DENY)
                         .build()));
 
     all.stream()
@@ -152,15 +151,15 @@ public class ConsentMvDataMapper implements DataMapper<ModelProjectConsent> {
         .ifPresent(
             rs ->
                 result.add(
-                    Provision.builder()
+                    MvhMetadataModelProjectConsentProvisionsInner.builder()
                         .date(rs.getDate("date"))
                         .purpose(ModelProjectConsentPurpose.REIDENTIFICATION)
                         .type(
-                            ConsentProvision.PERMIT
-                                    .toValue()
+                            ConsentProvisionType.PERMIT
+                                    .toString()
                                     .equals(rs.getString("reidentification"))
-                                ? ConsentProvision.PERMIT
-                                : ConsentProvision.DENY)
+                                ? ConsentProvisionType.PERMIT
+                                : ConsentProvisionType.DENY)
                         .build()));
 
     return result;

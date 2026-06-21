@@ -18,7 +18,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -100,7 +100,7 @@ class EinzelempfehlungWirkstoffDataMapperTest {
                         assertThat(grading)
                             .isEqualTo(
                                 LevelOfEvidenceGradingCoding.builder()
-                                    .code(LevelOfEvidenceGradingCodingCode.M1B)
+                                    .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_B)
                                     .display("m1B")
                                     .system("dnpm-dip/mtb/level-of-evidence/grading")
                                     .build());
@@ -113,12 +113,14 @@ class EinzelempfehlungWirkstoffDataMapperTest {
                             List.of(
                                 PublicationReference.builder()
                                     .id("12345678")
-                                    .system(PublicationSystem.PUBMED_NCBI_NLM_NIH_GOV)
+                                    .system(
+                                        PublicationReference.SystemEnum
+                                            .HTTPS_PUBMED_NCBI_NLM_NIH_GOV)
                                     .type("Publication")
                                     .build(),
                                 PublicationReference.builder()
                                     .id("12.2024/123")
-                                    .system(PublicationSystem.DOI_ORG)
+                                    .system(PublicationReference.SystemEnum.HTTPS_WWW_DOI_ORG)
                                     .type("Publication")
                                     .build());
                         assertThat(publicationReferences)
@@ -151,7 +153,7 @@ class EinzelempfehlungWirkstoffDataMapperTest {
                         assertThat(grading)
                             .isEqualTo(
                                 LevelOfEvidenceGradingCoding.builder()
-                                    .code(LevelOfEvidenceGradingCodingCode.M1B)
+                                    .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_B)
                                     .display("m1B")
                                     .system("dnpm-dip/mtb/level-of-evidence/grading")
                                     .build());
@@ -190,7 +192,7 @@ class EinzelempfehlungWirkstoffDataMapperTest {
     var actual = this.mapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
-    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCodingCode.CODE_4);
+    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCoding.CodeEnum._4);
   }
 
   @Test

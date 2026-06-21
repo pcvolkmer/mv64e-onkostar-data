@@ -23,8 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.AbstractSubformDataCatalogue;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,8 +53,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
   protected MtbTherapyIntentCoding getMtbTherapyIntentCoding(String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(MtbTherapyIntentCodingCode.values())
-            .map(MtbTherapyIntentCodingCode::toValue)
+        || !Arrays.stream(MtbTherapyIntentCoding.CodeEnum.values())
+            .map(MtbTherapyIntentCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -68,16 +67,16 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
 
     switch (value) {
       case "X":
-        resultBuilder.code(MtbTherapyIntentCodingCode.X);
+        resultBuilder.code(MtbTherapyIntentCoding.CodeEnum.X);
         break;
       case "K":
-        resultBuilder.code(MtbTherapyIntentCodingCode.K);
+        resultBuilder.code(MtbTherapyIntentCoding.CodeEnum.K);
         break;
       case "P":
-        resultBuilder.code(MtbTherapyIntentCodingCode.P);
+        resultBuilder.code(MtbTherapyIntentCoding.CodeEnum.P);
         break;
       case "S":
-        resultBuilder.code(MtbTherapyIntentCodingCode.S);
+        resultBuilder.code(MtbTherapyIntentCoding.CodeEnum.S);
         break;
       default:
         return null;
@@ -90,8 +89,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
   protected TherapyStatusCoding getTherapyStatusCoding(String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(TherapyStatusCodingCode.values())
-            .map(TherapyStatusCodingCode::toValue)
+        || !Arrays.stream(TherapyStatusCoding.CodeEnum.values())
+            .map(TherapyStatusCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -104,16 +103,16 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
 
     switch (value) {
       case "not-done":
-        resultBuilder.code(TherapyStatusCodingCode.NOT_DONE);
+        resultBuilder.code(TherapyStatusCoding.CodeEnum.NOT_DONE);
         break;
       case "on-going":
-        resultBuilder.code(TherapyStatusCodingCode.ON_GOING);
+        resultBuilder.code(TherapyStatusCoding.CodeEnum.ON_GOING);
         break;
       case "stopped":
-        resultBuilder.code(TherapyStatusCodingCode.STOPPED);
+        resultBuilder.code(TherapyStatusCoding.CodeEnum.STOPPED);
         break;
       case "completed":
-        resultBuilder.code(TherapyStatusCodingCode.COMPLETED);
+        resultBuilder.code(TherapyStatusCoding.CodeEnum.COMPLETED);
         break;
       default:
         return null;
@@ -127,8 +126,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
       String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(MtbTherapyStatusReasonCodingCode.values())
-            .map(MtbTherapyStatusReasonCodingCode::toValue)
+        || !Arrays.stream(MtbTherapyStatusReasonCoding.CodeEnum.values())
+            .map(MtbTherapyStatusReasonCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -140,8 +139,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
             .display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
 
     try {
-      resultBuilder.code(MtbTherapyStatusReasonCodingCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(MtbTherapyStatusReasonCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -153,8 +152,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
       getMtbSystemicTherapyRecommendationFulfillmentStatusCoding(String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(MtbSystemicTherapyRecommendationFulfillmentStatusCodingCode.values())
-            .map(MtbSystemicTherapyRecommendationFulfillmentStatusCodingCode::toValue)
+        || !Arrays.stream(MtbSystemicTherapyRecommendationFulfillmentStatusCoding.CodeEnum.values())
+            .map(MtbSystemicTherapyRecommendationFulfillmentStatusCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -166,8 +165,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
             .display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
     try {
       resultBuilder.code(
-          MtbSystemicTherapyRecommendationFulfillmentStatusCodingCode.forValue(value));
-    } catch (IOException e) {
+          MtbSystemicTherapyRecommendationFulfillmentStatusCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -179,8 +178,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
       String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(MtbSystemicTherapyCategoryCodingCode.values())
-            .map(MtbSystemicTherapyCategoryCodingCode::toValue)
+        || !Arrays.stream(MtbSystemicTherapyCategoryCoding.CodeEnum.values())
+            .map(MtbSystemicTherapyCategoryCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -191,8 +190,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
             .system("dnpm-dip/therapy/category")
             .display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
     try {
-      resultBuilder.code(MtbSystemicTherapyCategoryCodingCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(MtbSystemicTherapyCategoryCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -204,8 +203,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
       String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(MtbSystemicTherapyDosageDensityCodingCode.values())
-            .map(MtbSystemicTherapyDosageDensityCodingCode::toValue)
+        || !Arrays.stream(MtbSystemicTherapyDosageDensityCoding.CodeEnum.values())
+            .map(MtbSystemicTherapyDosageDensityCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -216,8 +215,8 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
             .system("dnpm-dip/therapy/status-density")
             .display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
     try {
-      resultBuilder.code(MtbSystemicTherapyDosageDensityCodingCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(MtbSystemicTherapyDosageDensityCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -225,24 +224,24 @@ public abstract class AbstractKpaTherapieverlaufDataMapper<T> extends AbstractSu
   }
 
   @Nullable
-  protected OncoProcedureCoding getOncoProcedureCoding(String value, Integer version) {
+  protected OncoProcedureTypeCoding getOncoProcedureCoding(String value, Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(OncoProcedureCodingCode.values())
-            .map(OncoProcedureCodingCode::toValue)
+        || !Arrays.stream(OncoProcedureTypeCoding.CodeEnum.values())
+            .map(OncoProcedureTypeCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
     }
 
     var resultBuilder =
-        OncoProcedureCoding.builder()
+        OncoProcedureTypeCoding.builder()
             .system("dnpm-dip/therapy/type")
             .display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
 
     try {
-      resultBuilder.code(OncoProcedureCodingCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(OncoProcedureTypeCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       throw new IllegalStateException("No valid code found");
     }
 
