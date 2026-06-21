@@ -134,6 +134,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
             molgenIdsFromTherapyPlan.stream(),
             molgenIdsFromHisto != null ? molgenIdsFromHisto.stream() : Stream.empty())
         .distinct()
+        .filter(this.catalogue::isOfTypeSeqencing)
         .map(this::getById)
         .filter(Objects::nonNull)
         .distinct()

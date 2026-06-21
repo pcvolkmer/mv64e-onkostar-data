@@ -106,7 +106,7 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   @Override
   protected HistologyReport map(final ResultSet resultSet) {
     var histoId = resultSet.getInteger("histologie");
-    if (null == histoId) {
+    if (null == histoId || !molekulargenetikCatalogue.isAvailable(histoId)) {
       return null;
     }
 

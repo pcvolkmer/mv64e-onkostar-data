@@ -162,6 +162,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
         histologieCatalogue.getAllByParentId(kpaId).stream()
             .map(rs -> rs.getInteger("histologie"))
             .filter(Objects::nonNull)
+            .filter(molekulargenetikCatalogue::isAvailable)
             .map(molekulargenetikCatalogue::getById)
             .map(ResultSet::getId)
             .filter(Objects::nonNull)
@@ -170,6 +171,7 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
     return osMolGen.stream()
         .filter(Objects::nonNull)
         .distinct()
+        .filter(molekulargenetikCatalogue::isAvailable)
         .map(this::getById)
         .peek(it -> it.setDiagnosis(diagnoseReferenz))
         .collect(Collectors.toList());

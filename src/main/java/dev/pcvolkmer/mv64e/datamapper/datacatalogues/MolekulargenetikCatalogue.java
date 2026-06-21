@@ -179,6 +179,10 @@ public class MolekulargenetikCatalogue extends AbstractDataCatalogue {
   }
 
   public boolean isOfTypeSeqencing(int id) {
+    if (!isAvailable(id)) {
+      return false;
+    }
+
     var analyseMethodenMerkmalliste = getById(id).getMerkmalList("AnalyseMethoden");
     return analyseMethodenMerkmalliste != null && analyseMethodenMerkmalliste.contains("S");
   }

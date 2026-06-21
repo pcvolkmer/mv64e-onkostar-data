@@ -66,9 +66,7 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
     builder
         .id(data.getString("id"))
         .patient(data.getPatientReference())
-        .type(
-            getTumorSpecimenCoding(
-                data.getString("materialfixierung"), data.getString("probenmaterial")))
+        .type(getTumorSpecimenCoding())
         .collection(getCollection(data))
     // diagnosis is added in getAllByKpaId()
     ;
@@ -100,45 +98,20 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
         .collect(Collectors.toList());
   }
 
-  // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
+  // TODO: Keine Angabe in Formular OS.Pathologiebefund möglich - best effort: Unknown
   @Nullable
-  private TumorSpecimenCoding getTumorSpecimenCoding(
-      @Nullable String value, @Nullable String probenMaterial) {
-
-    // If value not set and it's blood, always take
-    // TumorSpecimenCodingCode.FRESH_TISSUE
-    boolean isBlood = "B".equalsIgnoreCase(probenMaterial != null ? probenMaterial.trim() : null);
-
-    if (value == null && !isBlood) {
-      return null;
-    }
-
-    var resultBuilder = TumorSpecimenCoding.builder().system("dnpm-dip/mtb/tumor-specimen/type");
-
-    if (value == null) {
-      resultBuilder.code(TumorSpecimenCodingCode.FRESH_TISSUE).display("Frischgewebe");
-      return resultBuilder.build();
-    }
-
-    switch (value) {
-      case "2":
-        resultBuilder.code(TumorSpecimenCodingCode.CRYO_FROZEN).display("Cryo-frozen");
-        break;
-      case "3":
-        resultBuilder.code(TumorSpecimenCodingCode.FFPE).display("FFPE");
-        break;
-      default:
-        resultBuilder.code(TumorSpecimenCodingCode.UNKNOWN).display("Unbekannt");
-        break;
-    }
-
-    return resultBuilder.build();
+  private TumorSpecimenCoding getTumorSpecimenCoding() {
+    return TumorSpecimenCoding.builder()
+        .system("dnpm-dip/mtb/tumor-specimen/type")
+        .code(TumorSpecimenCodingCode.UNKNOWN)
+        .display("Unbekannt")
+        .build();
   }
 
   @Nullable
   private Collection getCollection(@NonNull ResultSet data) {
-    final var entnahmemethode = data.getString("entnahmemethode");
-    final var probenmaterial = data.getString("probenmaterial");
+    final var entnahmemethode = data.getString("Praeparat");
+    final var probenmaterial = data.getString("EntnahmestellederBiopsie");
 
     if (null == entnahmemethode || null == probenmaterial) {
       return null;
@@ -155,38 +128,32 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
       case "R":
         methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.RESECTION).display("Resektat");
         break;
-      case "LB":
-        methodBuilder
-            .code(TumorSpecimenCollectionMethodCodingCode.LIQUID_BIOPSY)
-            .display("Liquid Biopsy");
-        break;
-      case "Z":
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.CYTOLOGY).display("Zytologie");
-        break;
       case "U":
       default:
         methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.UNKNOWN).display("Unbekannt");
         break;
     }
 
-    // TODO: Kein genaues Mapping mit Formular OS.Molekulargenetik möglich - best effort
+    // TODO: Kein genaues Mapping mit Formular OS.Pathologiebefund möglich - best effort
     var localizationBuilder =
         TumorSpecimenCollectionLocalizationCoding.builder()
             .system("dnpm-dip/mtb/tumor-specimen/collection/localization");
 
     switch (probenmaterial) {
-      case "T":
+      case "P":
         localizationBuilder
             .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
             .display("Primärtumor");
         break;
-      case "LK":
       case "M":
-      case "ITM":
-      case "SM":
         localizationBuilder
             .code(TumorSpecimenCollectionLocalizationCodingCode.METASTASIS)
             .display("Metastase");
+        break;
+      case "L":
+        localizationBuilder
+            .code(TumorSpecimenCollectionLocalizationCodingCode.REGIONAL_LYMPH_NODES)
+            .display("Lymphknoten");
         break;
       default:
         localizationBuilder
@@ -200,8 +167,8 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
             .method(methodBuilder.build())
             .localization(localizationBuilder.build());
 
-    if (!data.isNull("entnahmedatum")) {
-      collectionBuilder.date(data.getDate("entnahmedatum"));
+    if (!data.isNull("HistologieDatum")) {
+      collectionBuilder.date(data.getDate("HistologieDatum"));
     }
 
     return collectionBuilder.build();

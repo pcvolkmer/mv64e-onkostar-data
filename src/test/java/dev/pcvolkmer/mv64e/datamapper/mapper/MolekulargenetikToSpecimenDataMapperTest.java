@@ -130,6 +130,7 @@ class MolekulargenetikToSpecimenDataMapperTest {
         .getAllByParentId(anyInt());
 
     // Mock OS.Molekulargenetik
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
@@ -224,6 +225,7 @@ class MolekulargenetikToSpecimenDataMapperTest {
         .getAllByParentId(anyInt());
 
     // Mock OS.Molekulargenetik
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
@@ -264,6 +266,7 @@ class MolekulargenetikToSpecimenDataMapperTest {
         .getAllByParentId(anyInt());
 
     // Mock OS.Molekulargenetik
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
@@ -353,6 +356,7 @@ class MolekulargenetikToSpecimenDataMapperTest {
         .getAllByParentId(anyInt());
 
     // Mock OS.Molekulargenetik
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
@@ -434,6 +438,7 @@ class MolekulargenetikToSpecimenDataMapperTest {
         .getAllByParentId(anyInt());
 
     // Mock OS.Molekulargenetik
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);
@@ -471,6 +476,7 @@ class MolekulargenetikToSpecimenDataMapperTest {
         .getAllByParentId(anyInt());
 
     // Mock OS.Molekulargenetik
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
     doAnswer(
             invocationOnMock -> {
               var id = invocationOnMock.getArgument(0, Integer.class);

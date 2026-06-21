@@ -27,6 +27,7 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -193,6 +194,11 @@ public class MtbDataMapper implements DataMapper<Mtb> {
             catalogueFactory.catalogue(VorbefundeCatalogue.class),
             catalogueFactory.catalogue(HistologieCatalogue.class));
 
+    var pathologiebefundCatalogue = catalogueFactory.catalogue(PathologiebefundCatalogue.class);
+    var pathologiebefundToSpecimenDataMapper =
+        new PathologiebefundToSpecimenDataMapper(
+            pathologiebefundCatalogue, catalogueFactory.catalogue(HistologieCatalogue.class));
+
     var molekulargenetikNgsDataMapper =
         new MolekulargenetikNgsDataMapper(
             molekulargenetikCatalogue,
@@ -250,6 +256,8 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       kpaPatient.setId(patient.getId());
       kpaPatient.setAddress(patient.getAddress());
 
+      var specimens = new ArrayList<TumorSpecimen>();
+
       tryAndLogWithResult(() -> diagnosisDataMapper.getById(kpaId))
           .andTryWithResult(
               diagnosis -> {
@@ -262,7 +270,23 @@ public class MtbDataMapper implements DataMapper<Mtb> {
                   molekulargenetikToSpecimenDataMapper.getAllByKpaId(
                       kpaId,
                       Reference.builder().id(diagnosis.getId()).type("MTBDiagnosis").build()))
-          .andTry(resultBuilder::specimens);
+          .andTry(specimens::addAll);
+
+      tryAndLogWithResult(() -> diagnosisDataMapper.getById(kpaId))
+          .andTryWithResult(
+              diagnosis -> {
+                // DNPM Klinik/Anamnese
+                resultBuilder.diagnoses(List.of(diagnosis));
+                return diagnosis;
+              })
+          .andTryWithResult(
+              diagnosis ->
+                  pathologiebefundToSpecimenDataMapper.getAllByKpaId(
+                      kpaId,
+                      Reference.builder().id(diagnosis.getId()).type("MTBDiagnosis").build()))
+          .andTry(specimens::addAll);
+
+      resultBuilder.specimens(specimens);
 
       final var followUpIds =
           catalogueFactory.catalogue(FollowUpCatalogue.class).getByKpaId(kpaId).stream()

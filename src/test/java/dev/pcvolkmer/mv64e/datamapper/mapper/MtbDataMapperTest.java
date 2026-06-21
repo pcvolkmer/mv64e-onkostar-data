@@ -85,6 +85,7 @@ class MtbDataMapperTest {
     MolekulargenetikCatalogue molekulargenetikCatalogue;
     MolekulargenuntersuchungCatalogue molekulargenuntersuchungCatalogue;
     MolekulargenMsiCatalogue molekulargenMsiCatalogue;
+    PathologiebefundCatalogue pathologiebefundCatalogue;
     VerwandteCatalogue verwandteCatalogue;
     ConsentMvCatalogue consentMvCatalogue;
     ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue;
@@ -113,6 +114,7 @@ class MtbDataMapperTest {
         @Mock MolekulargenetikCatalogue molekulargenetikCatalogue,
         @Mock MolekulargenuntersuchungCatalogue molekulargenuntersuchungCatalogue,
         @Mock MolekulargenMsiCatalogue molekulargenMsiCatalogue,
+        @Mock PathologiebefundCatalogue pathologiebefundCatalogue,
         @Mock VerwandteCatalogue verwandteCatalogue,
         @Mock ConsentMvCatalogue consentMvCatalogue,
         @Mock ConsentMvVerlaufCatalogue consentMvVerlaufCatalogue,
@@ -135,6 +137,7 @@ class MtbDataMapperTest {
       this.molekulargenetikCatalogue = molekulargenetikCatalogue;
       this.molekulargenuntersuchungCatalogue = molekulargenuntersuchungCatalogue;
       this.molekulargenMsiCatalogue = molekulargenMsiCatalogue;
+      this.pathologiebefundCatalogue = pathologiebefundCatalogue;
       this.verwandteCatalogue = verwandteCatalogue;
       this.consentMvCatalogue = consentMvCatalogue;
       this.consentMvVerlaufCatalogue = consentMvVerlaufCatalogue;
@@ -180,6 +183,8 @@ class MtbDataMapperTest {
           .thenReturn(molekulargenuntersuchungCatalogue);
       when(dataCatalogueFactory.catalogue(MolekulargenMsiCatalogue.class))
           .thenReturn(molekulargenMsiCatalogue);
+      when(dataCatalogueFactory.catalogue(PathologiebefundCatalogue.class))
+          .thenReturn(pathologiebefundCatalogue);
       when(dataCatalogueFactory.catalogue(VerwandteCatalogue.class)).thenReturn(verwandteCatalogue);
       when(dataCatalogueFactory.catalogue(ConsentMvCatalogue.class)).thenReturn(consentMvCatalogue);
       when(dataCatalogueFactory.catalogue(ConsentMvVerlaufCatalogue.class))
