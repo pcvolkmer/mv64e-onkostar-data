@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.9.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.9...v0.9.0) (2026-06-22)
+
+
+### Features
+
+* add PathologiebefundCatalogue ([#193](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/193)) ([df9dcba](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/df9dcbac517446c4c5803d0e988e9484eb13ed9b))
+* add PathologiebefundToSpecimenDataMapper ([#194](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/194)) ([e5e6389](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/e5e6389dcb41165805d19c980ad997e38231bc73))
+* ignore blank reasonMissingResearchConsent ([#190](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/190)) ([47fa639](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/47fa639ad938b1bc5dc4f6c522a0afbf4c1054f0))
+* ignore items with blank ecog in FollowUps ([#192](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/192)) ([ee1393f](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/ee1393f2a76c95bac8b594af33cf11e20bf6dfc4))
+* map TumorHistology from Pathologiebefund ([#195](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/195)) ([6d49813](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/6d49813b8d943f0879ab9f076d2f087edb7dd410))
+
+
+### Miscellaneous Chores
+
+* release 0.9.0 ([5c0f2de](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/5c0f2de64f1351b6d46774f64e1089c201aa4adf))
+
 ## [0.8.9](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.8...v0.8.9) (2026-06-10)
 
 
