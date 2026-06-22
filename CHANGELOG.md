@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.0...v0.9.1) (2026-06-22)
+
+
+### Features
+
+* map specimens from care-plan without recommendations ([#196](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/196)) ([48c9c7e](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/48c9c7e5a9ac70e804ed0f32964222084211623a))
+
 ## [0.9.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.8.9...v0.9.0) (2026-06-22)
 
 
