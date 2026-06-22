@@ -22,20 +22,28 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PathologiebefundCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
+import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
 import dev.pcvolkmer.mv64e.mtb.*;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -47,126 +55,246 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 class KpaHistologieDataMapperTest {
 
-  HistologieCatalogue catalogue;
-  MolekulargenetikCatalogue molekulargenetikCatalogue;
-  PropertyCatalogue propertyCatalogue;
+  @Nested
+  class UsingOsMolekulargenetik {
 
-  KpaHistologieDataMapper dataMapper;
+    HistologieCatalogue catalogue;
+    MolekulargenetikCatalogue molekulargenetikCatalogue;
+    PropertyCatalogue propertyCatalogue;
 
-  @BeforeEach
-  void setUp(
-      @Mock HistologieCatalogue catalogue,
-      @Mock MolekulargenetikCatalogue molekulargenetikCatalogue,
-      @Mock PropertyCatalogue propertyCatalogue) {
-    this.catalogue = catalogue;
-    this.molekulargenetikCatalogue = molekulargenetikCatalogue;
-    this.propertyCatalogue = propertyCatalogue;
-    this.dataMapper =
-        new KpaHistologieDataMapper(catalogue, molekulargenetikCatalogue, propertyCatalogue);
+    KpaHistologieDataMapper dataMapper;
 
-    when(this.catalogue.getAllByParentId(anyInt()))
-        .thenReturn(
-            List.of(
-                TestResultSet.withColumns(
-                    Column.name(Column.ID).value(1),
-                    Column.name(Column.PATIENTEN_ID).value(42),
-                    Column.name("histologie").value(100),
-                    DateColumn.name("erstellungsdatum").value("2000-01-01"),
-                    Column.name("tumorzellgehalt").value(80))));
+    @BeforeEach
+    void setUp(
+        @Mock HistologieCatalogue catalogue,
+        @Mock MolekulargenetikCatalogue molekulargenetikCatalogue,
+        @Mock PathologiebefundCatalogue pathologiebefundCatalogue,
+        @Mock PropertyCatalogue propertyCatalogue) {
+      this.catalogue = catalogue;
+      this.molekulargenetikCatalogue = molekulargenetikCatalogue;
+      this.propertyCatalogue = propertyCatalogue;
+      this.dataMapper =
+          new KpaHistologieDataMapper(
+              catalogue, molekulargenetikCatalogue, pathologiebefundCatalogue, propertyCatalogue);
 
-    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
+      when(this.catalogue.getAllByParentId(anyInt()))
+          .thenReturn(
+              List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(1),
+                      Column.name(Column.PATIENTEN_ID).value(42),
+                      Column.name("histologie").value(100),
+                      DateColumn.name("erstellungsdatum").value("2000-01-01"),
+                      Column.name("tumorzellgehalt").value(80))));
 
-    when(this.molekulargenetikCatalogue.getById(anyInt()))
-        .thenReturn(
-            TestResultSet.withColumns(
-                Column.name(Column.ID).value(100),
-                Column.name(Column.PATIENTEN_ID).value(42),
-                Column.name("histologie").value(100),
-                DateColumn.name("datum").value("2000-01-01")));
+      when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
+
+      when(this.molekulargenetikCatalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(100),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  Column.name("histologie").value(100),
+                  DateColumn.name("datum").value("2000-01-01")));
+    }
+
+    @Test
+    void shouldMapResultSet() {
+      var actualList = this.dataMapper.getByParentId(1);
+      assertThat(actualList).hasSize(1);
+
+      var actual = actualList.get(0);
+      assertThat(actual)
+          .isInstanceOf(HistologyReport.class)
+          .satisfies(
+              histologyReport -> {
+                assertThat(histologyReport.getPatient().getId()).isEqualTo("42");
+                assertThat(histologyReport.getIssuedOn())
+                    .isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
+                assertThat(histologyReport.getResults().getTumorCellContent())
+                    .isEqualTo(
+                        TumorCellContent.builder()
+                            .id("1")
+                            .patient(Reference.builder().id("42").type("Patient").build())
+                            .specimen(Reference.builder().id("100").type("Specimen").build())
+                            .method(
+                                TumorCellContentMethodCoding.builder()
+                                    .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
+                                    .build())
+                            .value(0.8)
+                            .build());
+              });
+    }
+
+    // See https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783/ - Line 130
+    @Test
+    void shouldMapResultSetWithoutTumorCellContent() {
+      when(this.catalogue.getAllByParentId(anyInt()))
+          .thenReturn(
+              List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(1),
+                      Column.name(Column.PATIENTEN_ID).value(42),
+                      Column.name("histologie").value(100),
+                      DateColumn.name("erstellungsdatum").value("2000-01-01"))));
+
+      when(this.molekulargenetikCatalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(100),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  Column.name("histologie").value(100),
+                  DateColumn.name("datum").value("2000-01-01")));
+
+      var actualList = this.dataMapper.getByParentId(1);
+      assertThat(actualList).hasSize(1);
+
+      var actual = actualList.get(0);
+      assertThat(actual)
+          .isInstanceOf(HistologyReport.class)
+          .satisfies(
+              histologyReport -> {
+                assertThat(histologyReport.getPatient().getId()).isEqualTo("42");
+                assertThat(histologyReport.getResults().getTumorCellContent()).isNull();
+              });
+    }
+
+    @Test
+    void shouldReturnNullIfColumnHistologieMissing() {
+      when(catalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(1),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  DateColumn.name("erstellungsdatum").value("2000-01-01"),
+                  Column.name("tumorzellgehalt").value(80)));
+
+      var actual = this.dataMapper.getById(1);
+      assertThat(actual).isNull();
+    }
+
+    // Note: If column "erstellungsdatum" missing, this should fail in DNPM:DIP
+    @FuzzNullTest(
+        initMethod =
+            "dev.pcvolkmer.mv64e.datamapper.mapper.KpaHistologieDataMapperTest#fuzzInitData",
+        includeColumns = {"tumorzellgehalt", "erstellungsdatum"})
+    void fuzzTestNullColumns(final ResultSet resultSet) {
+      when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+      var actual = this.dataMapper.getById(1);
+      assertThat(actual).isInstanceOf(HistologyReport.class);
+    }
   }
 
-  @Test
-  void shouldMapResultSet() {
-    var actualList = this.dataMapper.getByParentId(1);
-    assertThat(actualList).hasSize(1);
+  @Nested
+  class UsingOsPathologiebefund {
 
-    var actual = actualList.get(0);
-    assertThat(actual)
-        .isInstanceOf(HistologyReport.class)
-        .satisfies(
-            histologyReport -> {
-              assertThat(histologyReport.getPatient().getId()).isEqualTo("42");
-              assertThat(histologyReport.getResults().getTumorCellContent())
-                  .isEqualTo(
-                      TumorCellContent.builder()
-                          .id("1")
-                          .patient(Reference.builder().id("42").type("Patient").build())
-                          .specimen(Reference.builder().id("100").type("Specimen").build())
-                          .method(
-                              TumorCellContentMethodCoding.builder()
-                                  .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
-                                  .build())
-                          .value(0.8)
-                          .build());
-            });
-  }
+    HistologieCatalogue catalogue;
+    PathologiebefundCatalogue pathologiebefundCatalogue;
+    PropertyCatalogue propertyCatalogue;
 
-  // See https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783/ - Line 130
-  @Test
-  void shouldMapResultSetWithoutTumorCellContent() {
-    when(this.catalogue.getAllByParentId(anyInt()))
-        .thenReturn(
-            List.of(
-                TestResultSet.withColumns(
-                    Column.name(Column.ID).value(1),
-                    Column.name(Column.PATIENTEN_ID).value(42),
-                    Column.name("histologie").value(100),
-                    DateColumn.name("erstellungsdatum").value("2000-01-01"))));
+    KpaHistologieDataMapper dataMapper;
 
-    when(this.molekulargenetikCatalogue.getById(anyInt()))
-        .thenReturn(
-            TestResultSet.withColumns(
-                Column.name(Column.ID).value(100),
-                Column.name(Column.PATIENTEN_ID).value(42),
-                Column.name("histologie").value(100),
-                DateColumn.name("datum").value("2000-01-01")));
+    @BeforeEach
+    void setUp(
+        @Mock HistologieCatalogue catalogue,
+        @Mock MolekulargenetikCatalogue molekulargenetikCatalogue,
+        @Mock PathologiebefundCatalogue pathologiebefundCatalogue,
+        @Mock PropertyCatalogue propertyCatalogue) {
+      this.catalogue = catalogue;
+      this.pathologiebefundCatalogue = pathologiebefundCatalogue;
+      this.propertyCatalogue = propertyCatalogue;
+      this.dataMapper =
+          new KpaHistologieDataMapper(
+              catalogue, molekulargenetikCatalogue, pathologiebefundCatalogue, propertyCatalogue);
 
-    var actualList = this.dataMapper.getByParentId(1);
-    assertThat(actualList).hasSize(1);
+      when(this.catalogue.getAllByParentId(anyInt()))
+          .thenReturn(
+              List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(1),
+                      Column.name(Column.PATIENTEN_ID).value(42),
+                      Column.name("histologie").value(100),
+                      DateColumn.name("erstellungsdatum").value("2000-01-01"))));
 
-    var actual = actualList.get(0);
-    assertThat(actual)
-        .isInstanceOf(HistologyReport.class)
-        .satisfies(
-            histologyReport -> {
-              assertThat(histologyReport.getPatient().getId()).isEqualTo("42");
-              assertThat(histologyReport.getResults().getTumorCellContent()).isNull();
-            });
-  }
+      when(this.pathologiebefundCatalogue.isAvailable(anyInt())).thenReturn(true);
 
-  @Test
-  void shouldReturnNullIfColumnHistologieMissing() {
-    when(catalogue.getById(anyInt()))
-        .thenReturn(
-            TestResultSet.withColumns(
-                Column.name(Column.ID).value(1),
-                Column.name(Column.PATIENTEN_ID).value(42),
-                DateColumn.name("erstellungsdatum").value("2000-01-01"),
-                Column.name("tumorzellgehalt").value(80)));
+      when(this.pathologiebefundCatalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(100),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  Column.name("histologie").value(100),
+                  DateColumn.name("histologiedatum").value("2000-01-01"),
+                  PropcatColumn.name("icdo3histologie").value("8000/0")));
 
-    var actual = this.dataMapper.getById(1);
-    assertThat(actual).isNull();
-  }
+      doAnswer(
+              invocationOnMock -> {
+                var testPropertyData =
+                    Map.of(
+                        "8000/0",
+                        new PropertyCatalogue.Entry("8000/0", "Benigne Neoplasie o.n.A.", ""));
 
-  // Note: If column "erstellungsdatum" missing, this should fail in DNPM:DIP
-  @FuzzNullTest(
-      initMethod = "fuzzInitData",
-      includeColumns = {"tumorzellgehalt", "erstellungsdatum"})
-  void fuzzTestNullColumns(final ResultSet resultSet) {
-    when(catalogue.getById(anyInt())).thenReturn(resultSet);
+                var code = invocationOnMock.getArgument(0, String.class);
+                return testPropertyData.get(code);
+              })
+          .when(propertyCatalogue)
+          .getByCodeAndVersion(anyString(), anyInt());
+    }
 
-    var actual = this.dataMapper.getById(1);
-    assertThat(actual).isInstanceOf(HistologyReport.class);
+    @Test
+    void shouldMapResultSet() {
+      var actualList = this.dataMapper.getByParentId(1);
+      assertThat(actualList).hasSize(1);
+
+      var actual = actualList.get(0);
+      assertThat(actual)
+          .isInstanceOf(HistologyReport.class)
+          .satisfies(
+              histologyReport -> {
+                assertThat(histologyReport.getPatient().getId()).isEqualTo("42");
+                assertThat(histologyReport.getIssuedOn())
+                    .isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
+                assertThat(histologyReport.getResults().getTumorMorphology())
+                    .satisfies(
+                        tumorMorphology -> {
+                          assertThat(tumorMorphology.getValue())
+                              .isEqualTo(
+                                  Coding.builder()
+                                      .code("8000/0")
+                                      .display("Benigne Neoplasie o.n.A.")
+                                      .system("urn:oid:2.16.840.1.113883.6.43.1")
+                                      .build());
+                          assertThat(tumorMorphology.getPatient().getId()).isEqualTo("42");
+                          assertThat(tumorMorphology.getSpecimen().getId()).isEqualTo("100");
+                        });
+              });
+    }
+
+    @Test
+    void shouldReturnNullIfColumnHistologieMissing() {
+      when(catalogue.getById(anyInt()))
+          .thenReturn(
+              TestResultSet.withColumns(
+                  Column.name(Column.ID).value(1),
+                  Column.name(Column.PATIENTEN_ID).value(42),
+                  DateColumn.name("erstellungsdatum").value("2000-01-01")));
+
+      var actual = this.dataMapper.getById(1);
+      assertThat(actual).isNull();
+    }
+
+    // Note: If column "erstellungsdatum" missing, this should fail in DNPM:DIP
+    @FuzzNullTest(
+        initMethod =
+            "dev.pcvolkmer.mv64e.datamapper.mapper.KpaHistologieDataMapperTest#fuzzInitData",
+        includeColumns = {"tumorzellgehalt", "erstellungsdatum"})
+    void fuzzTestNullColumns(final ResultSet resultSet) {
+      when(catalogue.getById(anyInt())).thenReturn(resultSet);
+
+      var actual = this.dataMapper.getById(1);
+      assertThat(actual).isInstanceOf(HistologyReport.class);
+    }
   }
 
   static ResultSet fuzzInitData() {

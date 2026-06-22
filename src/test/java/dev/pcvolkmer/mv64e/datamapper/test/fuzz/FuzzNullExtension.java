@@ -23,6 +23,8 @@ package dev.pcvolkmer.mv64e.datamapper.test.fuzz;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple2;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -68,7 +70,7 @@ public class FuzzNullExtension implements TestTemplateInvocationContextProvider 
     method.setAccessible(true);
     var fuzzyTest = method.getAnnotation(FuzzNullTest.class);
     try {
-      var sourceMethod = context.getRequiredTestClass().getDeclaredMethod(fuzzyTest.initMethod());
+      var sourceMethod = findSourceMethod(context.getRequiredTestClass(), fuzzyTest.initMethod());
       sourceMethod.setAccessible(true);
       var source = sourceMethod.invoke(null);
       if (source instanceof ResultSet) {
@@ -94,6 +96,23 @@ public class FuzzNullExtension implements TestTemplateInvocationContextProvider 
 
     throw new PreconditionViolationException(
         "You must configure a valid static initMethod that returns at least one ResultSet for @FuzzyNullTest");
+  }
+
+  private Method findSourceMethod(Class<?> clazz, String methodName)
+      throws ClassNotFoundException, NoSuchMethodException {
+    if (methodName.contains("#")) {
+      final var parts = methodName.split("#");
+      if (parts.length == 2) {
+        clazz = clazz.getClassLoader().loadClass(parts[0]);
+        methodName = parts[1];
+      }
+    }
+
+    final var method = clazz.getDeclaredMethod(methodName);
+    if (Modifier.isStatic(method.getModifiers())) {
+      return method;
+    }
+    throw new NoSuchMethodException(String.format("Method %s is not static", methodName));
   }
 
   private static Set<Set<String>> selections(Set<String> columns, int maxColumns) {

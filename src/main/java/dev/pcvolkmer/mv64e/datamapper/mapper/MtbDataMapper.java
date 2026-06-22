@@ -219,6 +219,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
         new KpaHistologieDataMapper(
             catalogueFactory.catalogue(HistologieCatalogue.class),
             molekulargenetikCatalogue,
+            pathologiebefundCatalogue,
             propertyCatalogue);
 
     var consentMvDataMapper =
