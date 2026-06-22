@@ -88,11 +88,11 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
     return histologieCatalogue.getAllByParentId(kpaId).stream()
         .map(rs -> rs.getInteger("histologie"))
         .filter(Objects::nonNull)
+        .filter(pathologiebefundCatalogue::isAvailable)
         .map(pathologiebefundCatalogue::getById)
         .map(ResultSet::getId)
         .filter(Objects::nonNull)
         .distinct()
-        .filter(pathologiebefundCatalogue::isAvailable)
         .map(this::getById)
         .peek(it -> it.setDiagnosis(diagnoseReferenz))
         .collect(Collectors.toList());

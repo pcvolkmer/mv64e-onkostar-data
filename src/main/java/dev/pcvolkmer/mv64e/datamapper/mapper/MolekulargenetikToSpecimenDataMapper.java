@@ -139,6 +139,16 @@ public class MolekulargenetikToSpecimenDataMapper implements DataMapper<TumorSpe
             .filter(Objects::nonNull)
             .collect(Collectors.toSet()));
 
+    // Addition: Sequencing without target
+    osMolGen.addAll(
+        therapieplanIds.stream()
+            .filter(therapieplanCatalogue::isAvailable)
+            .map(therapieplanCatalogue::getById)
+            .filter(therapieplan -> !therapieplan.isNull("ref_no_empf_molgen"))
+            .map(therapieplan -> therapieplan.getInteger("ref_no_empf_molgen"))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet()));
+
     // Vorbefunde anhand Einsendenummer
     osMolGen.addAll(
         vorbefundeCatalogue.getAllByParentId(kpaId).stream()
