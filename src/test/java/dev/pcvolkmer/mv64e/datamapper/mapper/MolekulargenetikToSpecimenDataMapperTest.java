@@ -45,6 +45,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 class MolekulargenetikToSpecimenDataMapperTest {
@@ -600,5 +602,50 @@ class MolekulargenetikToSpecimenDataMapperTest {
                 .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
                 .display("Unbekannt")
                 .build()));
+  }
+
+  @Test
+  @MockitoSettings(strictness = Strictness.LENIENT)
+  void shouldIgnoreNonRelatedHistologies() {
+    // Mock DNPM UF Histologie
+    doAnswer(
+            invocation ->
+                List.of(
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1), Column.name("histologie").value(41)),
+                    TestResultSet.withColumns(
+                        Column.name(Column.ID).value(1), Column.name("histologie").value(42))))
+        .when(histologieCatalogue)
+        .getAllByParentId(anyInt());
+
+    // Mock OS.Molekulargenetik - only "42" is available
+    doAnswer(invocationOnMock -> invocationOnMock.getArgument(0, Integer.class) == 42)
+        .when(molekulargenetikCatalogue)
+        .isAvailable(anyInt());
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              if (id == 42) {
+                return TestResultSet.withColumns(
+                    Column.name(Column.ID).value(id),
+                    Column.name(Column.PATIENTEN_ID).value(4711),
+                    PropcatColumn.name("entnahmemethode").value("B"),
+                    DateColumn.name("entnahmedatum").value("2025-06-28"),
+                    PropcatColumn.name("probenmaterial").value("T"));
+              }
+              throw new DataAccessException("Unexpected test id: " + id);
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(anyInt());
+
+    var actual = this.mapper.getAllByKpaId(1, Reference.builder().build());
+
+    assertThat(actual).hasSize(1);
+
+    assertThat(actual.get(0).getId()).isEqualTo("42");
+
+    assertThat(actual.get(0).getPatient())
+        .isEqualTo(Reference.builder().id("4711").type("Patient").build());
   }
 }
