@@ -74,6 +74,8 @@ class KpaHistologieDataMapperTest {
                     DateColumn.name("erstellungsdatum").value("2000-01-01"),
                     Column.name("tumorzellgehalt").value(80))));
 
+    when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
+
     when(this.molekulargenetikCatalogue.getById(anyInt()))
         .thenReturn(
             TestResultSet.withColumns(
