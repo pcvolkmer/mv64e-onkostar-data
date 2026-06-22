@@ -24,6 +24,7 @@ import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
+import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PathologiebefundCatalogue;
 import dev.pcvolkmer.mv64e.mtb.*;
 import java.util.List;
 import java.util.Objects;
@@ -45,14 +46,19 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
 
   private static final Logger logger = LoggerFactory.getLogger(KpaHistologieDataMapper.class);
   private final MolekulargenetikCatalogue molekulargenetikCatalogue;
+
+  private final PathologiebefundCatalogue pathologiebefundCatalogue;
+
   private final PropertyCatalogue propertyCatalogue;
 
   public KpaHistologieDataMapper(
       final HistologieCatalogue catalogue,
       final MolekulargenetikCatalogue molekulargenetikCatalogue,
+      final PathologiebefundCatalogue pathologiebefundCatalogue,
       final PropertyCatalogue propertyCatalogue) {
     super(catalogue);
     this.molekulargenetikCatalogue = molekulargenetikCatalogue;
+    this.pathologiebefundCatalogue = pathologiebefundCatalogue;
     this.propertyCatalogue = propertyCatalogue;
   }
 
@@ -106,40 +112,86 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   @Override
   protected HistologyReport map(final ResultSet resultSet) {
     var histoId = resultSet.getInteger("histologie");
-    if (null == histoId || !molekulargenetikCatalogue.isAvailable(histoId)) {
+    if (null == histoId) {
       return null;
     }
 
     var builder = HistologyReport.builder();
-    var osMolGen = molekulargenetikCatalogue.getById(histoId);
+    if (molekulargenetikCatalogue.isAvailable(histoId)) {
+      var osMolGen = molekulargenetikCatalogue.getById(histoId);
+      var histologieReportResultBuilder = HistologyReportResults.builder();
+      getTumorMorphologyFromOsMolGen(resultSet, osMolGen)
+          .ifPresent(histologieReportResultBuilder::tumorMorphology);
+      getTumorCellContent(resultSet, osMolGen)
+          .ifPresent(histologieReportResultBuilder::tumorCellContent);
+      builder
+          .id(resultSet.getId().toString())
+          .patient(resultSet.getPatientReference())
+          .issuedOn(resultSet.getDate("erstellungsdatum"))
+          .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
+          .results(histologieReportResultBuilder.build());
 
-    var histologieReportResultBuilder = HistologyReportResults.builder();
+      return builder.build();
+    } else if (pathologiebefundCatalogue.isAvailable(histoId)) {
+      var pathoBefund = pathologiebefundCatalogue.getById(histoId);
+      var histologieReportResultBuilder = HistologyReportResults.builder();
+      getTumorMorphologyFromOsPathoPefund(resultSet, pathoBefund)
+          .ifPresent(histologieReportResultBuilder::tumorMorphology);
+      builder
+          .id(resultSet.getId().toString())
+          .patient(resultSet.getPatientReference())
+          .issuedOn(resultSet.getDate("erstellungsdatum"))
+          .specimen(Reference.builder().id(pathoBefund.getId().toString()).type("Specimen").build())
+          .results(histologieReportResultBuilder.build());
 
-    getTumorMorphology(resultSet, osMolGen)
-        .ifPresent(histologieReportResultBuilder::tumorMorphology);
+      return builder.build();
+    }
 
-    getTumorCellContent(resultSet, osMolGen)
-        .ifPresent(histologieReportResultBuilder::tumorCellContent);
-
-    builder
-        .id(resultSet.getId().toString())
-        .patient(resultSet.getPatientReference())
-        .issuedOn(resultSet.getDate("erstellungsdatum"))
-        .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
-        .results(histologieReportResultBuilder.build());
-
-    return builder.build();
+    return null;
   }
 
   @NullMarked
-  private Optional<TumorMorphology> getTumorMorphology(ResultSet resultSet, ResultSet osMolGen) {
+  private Optional<TumorMorphology> getTumorMorphologyFromOsMolGen(
+      ResultSet resultSet, ResultSet osMolGen) {
     var builder =
         TumorMorphology.builder()
             .id(resultSet.getId().toString())
             .patient(resultSet.getPatientReference())
             .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build());
 
-    var tumorMorphologyCoding = getTumorMorphologyCoding(resultSet);
+    var morphologie = osMolGen.getString("morphologie");
+    var morphologiePropcatVersion = osMolGen.getInteger("morphologie_propcat_version");
+
+    if (null == morphologie || null == morphologiePropcatVersion) {
+      return Optional.empty();
+    }
+
+    var tumorMorphologyCoding = getTumorMorphologyCoding(morphologie, morphologiePropcatVersion);
+    if (null == tumorMorphologyCoding) {
+      return Optional.empty();
+    }
+
+    return Optional.of(builder.value(tumorMorphologyCoding).build());
+  }
+
+  @NullMarked
+  private Optional<TumorMorphology> getTumorMorphologyFromOsPathoPefund(
+      ResultSet resultSet, ResultSet pathoBefund) {
+    var builder =
+        TumorMorphology.builder()
+            .id(resultSet.getId().toString())
+            .patient(resultSet.getPatientReference())
+            .specimen(
+                Reference.builder().id(pathoBefund.getId().toString()).type("Specimen").build());
+
+    var morphologie = pathoBefund.getString("icdo3histologie");
+    var morphologiePropcatVersion = pathoBefund.getInteger("icdo3histologie_propcat_version");
+
+    if (null == morphologie || null == morphologiePropcatVersion) {
+      return Optional.empty();
+    }
+
+    var tumorMorphologyCoding = getTumorMorphologyCoding(morphologie, morphologiePropcatVersion);
     if (null == tumorMorphologyCoding) {
       return Optional.empty();
     }
@@ -167,14 +219,8 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   }
 
   @Nullable
-  private Coding getTumorMorphologyCoding(@NonNull ResultSet resultSet) {
-    var morphologie = resultSet.getString("morphologie");
-    var morphologiePropcatVersion = resultSet.getInteger("morphologie_propcat_version");
-
-    if (null == morphologie || null == morphologiePropcatVersion) {
-      return null;
-    }
-
+  private Coding getTumorMorphologyCoding(
+      @NonNull String morphologie, int morphologiePropcatVersion) {
     var propertyCatalogueEntry =
         propertyCatalogue.getByCodeAndVersion(morphologie, morphologiePropcatVersion);
 

@@ -74,7 +74,7 @@ Um Mithilfe wird gebeten.
 | ECOG-Verlauf                     | ✅      |                                                                                                    |
 | Tumor-Proben                     | ⛅      | Best effort: Formular OS.Molekulargenetik/OS.Pathologiebefund erfüllt nicht alle Anforderungen (1) |
 | vorherige Molekular-Diagnostik   | ✅      |                                                                                                    |
-| Histologie-Berichte              | ✅      |                                                                                                    |
+| Histologie-Berichte              | ✅      | Aus OS.Molekulargenetik und OS.Pathologiebefund, soweit möglich (1)                                |
 | IHC-Berichte                     | -      | Aktuell nicht vorgesehen                                                                           |
 | MSI-Befunde                      | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)                     |
 | NGS-Berichte                     | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2) (3)                 |
