@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.1...v0.9.2) (2026-06-23)
+
+
+### Bug Fixes
+
+* use tumor-morphology from DNPM UF Histologie ([#199](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/199)) ([76312ce](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/76312cee2a0c0c7af2b273a2f817a9c97cab0775))
+
 ## [0.9.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.0...v0.9.1) (2026-06-22)
 
 
