@@ -159,8 +159,8 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
             .patient(resultSet.getPatientReference())
             .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build());
 
-    var morphologie = osMolGen.getString("morphologie");
-    var morphologiePropcatVersion = osMolGen.getInteger("morphologie_propcat_version");
+    var morphologie = resultSet.getString("morphologie");
+    var morphologiePropcatVersion = resultSet.getInteger("morphologie_propcat_version");
 
     if (null == morphologie || null == morphologiePropcatVersion) {
       return Optional.empty();
