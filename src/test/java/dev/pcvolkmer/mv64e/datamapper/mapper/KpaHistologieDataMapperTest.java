@@ -85,6 +85,7 @@ class KpaHistologieDataMapperTest {
                       Column.name(Column.PATIENTEN_ID).value(42),
                       Column.name("histologie").value(100),
                       DateColumn.name("erstellungsdatum").value("2000-01-01"),
+                      PropcatColumn.name("morphologie").value("8000/0"),
                       Column.name("tumorzellgehalt").value(80))));
 
       when(this.molekulargenetikCatalogue.isAvailable(anyInt())).thenReturn(true);
@@ -96,6 +97,19 @@ class KpaHistologieDataMapperTest {
                   Column.name(Column.PATIENTEN_ID).value(42),
                   Column.name("histologie").value(100),
                   DateColumn.name("datum").value("2000-01-01")));
+
+      doAnswer(
+              invocationOnMock -> {
+                var testPropertyData =
+                    Map.of(
+                        "8000/0",
+                        new PropertyCatalogue.Entry("8000/0", "Benigne Neoplasie o.n.A.", ""));
+
+                var code = invocationOnMock.getArgument(0, String.class);
+                return testPropertyData.get(code);
+              })
+          .when(propertyCatalogue)
+          .getByCodeAndVersion(anyString(), anyInt());
     }
 
     @Test
@@ -123,6 +137,19 @@ class KpaHistologieDataMapperTest {
                                     .build())
                             .value(0.8)
                             .build());
+                assertThat(histologyReport.getResults().getTumorMorphology())
+                    .satisfies(
+                        tumorMorphology -> {
+                          assertThat(tumorMorphology.getValue())
+                              .isEqualTo(
+                                  Coding.builder()
+                                      .code("8000/0")
+                                      .display("Benigne Neoplasie o.n.A.")
+                                      .system("urn:oid:2.16.840.1.113883.6.43.1")
+                                      .build());
+                          assertThat(tumorMorphology.getPatient().getId()).isEqualTo("42");
+                          assertThat(tumorMorphology.getSpecimen().getId()).isEqualTo("100");
+                        });
               });
     }
 
