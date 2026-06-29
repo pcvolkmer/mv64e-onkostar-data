@@ -26,16 +26,8 @@ import org.hl7.fhir.r4.model.*;
 
 public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
 
-  public void addToBundle(Bundle bundle, MtbDiagnosis diagnose) {
-    bundle
-        .addEntry()
-        .setResource(map(diagnose))
-        .getRequest()
-        .setMethod(Bundle.HTTPVerb.PUT)
-        .setUrl(getRequestUrl(diagnose));
-  }
-
-  public Resource map(MtbDiagnosis diagnose) {
+  @Override
+  public Condition map(MtbDiagnosis diagnose) {
     var condition = new Condition();
     condition.addIdentifier().setSystem(this.getSystem()).setValue(diagnose.getId());
 
@@ -61,6 +53,12 @@ public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
       final var dateTimeType = new DateTimeType(diagnose.getRecordedOn());
       dateTimeType.setPrecision(TemporalPrecisionEnum.DAY);
       condition.setRecordedDateElement(dateTimeType);
+
+      condition.setExtension(
+          List.of(
+              new Extension()
+                  .setUrl("http://hl7.org/fhir/StructureDefinition/condition-assertedDate")
+                  .setValue(dateTimeType)));
     }
 
     return condition;
@@ -69,5 +67,10 @@ public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
   @Override
   protected String getPatientId(MtbDiagnosis item) {
     return item.getPatient().getId();
+  }
+
+  @Override
+  protected String getId(MtbDiagnosis item) {
+    return item.getId();
   }
 }

@@ -20,15 +20,15 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import dev.pcvolkmer.mv64e.mtb.Mtb;
-import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
 
-public abstract class DnpmToFhirMapper<T> {
+public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<S, D> {
 
-  protected abstract String getPatientId(T item);
+  protected abstract String getPatientId(S item);
 
-  protected Reference getPatientReference(T item) {
+  protected Reference getPatientReference(S item) {
     return new Reference()
         .setReference(
             String.format(
@@ -36,17 +36,33 @@ public abstract class DnpmToFhirMapper<T> {
                 this.getPatientId(item)));
   }
 
-  protected abstract String getRequestUrl(MtbDiagnosis diagnose);
+  protected void addToBundle(Bundle bundle, S item) {
+    bundle
+        .addEntry()
+        .setResource(map(item))
+        .getRequest()
+        .setMethod(Bundle.HTTPVerb.PUT)
+        .setUrl(getRequestUrl(item));
+  }
+
+  protected abstract String getId(S item);
+
+  protected abstract String getRequestUrl(S item);
 
   protected abstract String getSystem();
 
-  public static Bundle map(Mtb mtb) {
+  public static Bundle mapToBundle(Mtb mtb) {
     final var bundle = new Bundle();
 
     bundle.setType(Bundle.BundleType.TRANSACTION);
 
     final var diagnoseMapper = new DiagnoseMapper();
     mtb.getDiagnoses().forEach(item -> diagnoseMapper.addToBundle(bundle, item));
+
+    final var einfacheVarianteMapper = new EinfacheVarianteMapper();
+    mtb.getNgsReports().stream()
+        .flatMap(item -> item.getResults().getSimpleVariants().stream())
+        .forEach(item -> einfacheVarianteMapper.addToBundle(bundle, item));
 
     return bundle;
   }
