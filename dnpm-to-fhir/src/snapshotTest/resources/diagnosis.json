@@ -1,0 +1,103 @@
+{
+  "diagnoses": [
+    {
+      "id": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2",
+      "patient": {
+        "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+        "type": "Patient"
+      },
+      "recordedOn": "2003-09-26",
+      "type": {
+        "history": [
+          {
+            "value": {
+              "code": "main",
+              "display": "Hauptdiagnose",
+              "system": "dnpm-dip/mtb/diagnosis/type"
+            },
+            "date": "2003-09-26"
+          }
+        ]
+      },
+      "code": {
+        "code": "C53.8",
+        "display": "Bösartige Neubildung: Cervix uteri, mehrere Teilbereiche überlappend",
+        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+        "version": "2025"
+      },
+      "topography": {
+        "code": "C53.8",
+        "display": "Cervix uteri, mehrere Teilbereiche überlappend",
+        "system": "urn:oid:2.16.840.1.113883.6.43.1",
+        "version": "Zweite Revision"
+      },
+      "grading": {
+        "history": [
+          {
+            "date": "2003-09-26",
+            "codes": [
+              {
+                "code": "2",
+                "display": "2 = mäßig differenziert",
+                "system": "https://www.basisdatensatz.de/feld/161/grading"
+              },
+              {
+                "code": "4",
+                "display": "Glioblastoma",
+                "system": "dnpm-dip/mtb/who-grading-cns-tumors",
+                "version": "2021"
+              }
+            ]
+          }
+        ]
+      },
+      "staging": {
+        "history": [
+          {
+            "date": "2003-09-26",
+            "method": {
+              "code": "clinical",
+              "display": "Klinisch",
+              "system": "dnpm-dip/mtb/tumor-staging/method"
+            },
+            "tnmClassification": {
+              "tumor": {
+                "code": "T0",
+                "system": "UICC"
+              },
+              "nodes": {
+                "code": "N0",
+                "system": "UICC"
+              },
+              "metastasis": {
+                "code": "M1",
+                "system": "UICC"
+              }
+            },
+            "otherClassifications": [
+              {
+                "code": "metastasized",
+                "display": "Metastasiert",
+                "system": "dnpm-dip/mtb/diagnosis/kds-tumor-spread"
+              }
+            ]
+          }
+        ]
+      },
+      "guidelineTreatmentStatus": {
+        "code": "non-exhausted",
+        "display": "Leitlinien nicht ausgeschöpft",
+        "system": "dnpm-dip/mtb/diagnosis/guideline-treatment-status"
+      },
+      "histology": [
+        {
+          "id": "549143c4-aacb-42aa-914f-5ddf8adf1046",
+          "type": "HistologyReport"
+        }
+      ],
+      "notes": [
+        "Notes on the tumor diagnosis..."
+      ]
+    }
+  ]
+}
