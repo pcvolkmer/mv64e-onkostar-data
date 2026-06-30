@@ -67,7 +67,7 @@
     },
     "valueCodeableConcept": {
       "coding": [ {
-        "system": "https://www.hgvs.org",
+        "system": "https://varnomen.hgvs.org",
         "code": "c.546G>C"
       } ]
     }
@@ -81,7 +81,7 @@
     },
     "valueCodeableConcept": {
       "coding": [ {
-        "system": "https://www.hgvs.org",
+        "system": "https://varnomen.hgvs.org",
         "code": "p.Trp24=/Cys"
       } ]
     }

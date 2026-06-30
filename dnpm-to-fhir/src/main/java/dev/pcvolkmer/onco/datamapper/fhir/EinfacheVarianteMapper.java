@@ -114,7 +114,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                     .addCoding(
                         new Coding()
                             .setCode(sourceItem.getDnaChange())
-                            .setSystem("https://www.hgvs.org"))));
+                            .setSystem("https://varnomen.hgvs.org"))));
 
     // Protein Change
     result.addComponent(
@@ -131,7 +131,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                     .addCoding(
                         new Coding()
                             .setCode(sourceItem.getProteinChange())
-                            .setSystem("https://www.hgvs.org"))));
+                            .setSystem("https://varnomen.hgvs.org"))));
 
     // Allelfrequenz
     result.addComponent(

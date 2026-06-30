@@ -103,7 +103,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.546G>C"
           } ]
         }
@@ -117,7 +117,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.Trp24=/Cys"
           } ]
         }
@@ -210,7 +210,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.54T>G"
           } ]
         }
@@ -224,7 +224,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.Val7del"
           } ]
         }
@@ -317,7 +317,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.468A>C"
           } ]
         }
@@ -331,7 +331,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.(Gly56Ala^Ser^Cys)"
           } ]
         }
@@ -424,7 +424,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.430C>T"
           } ]
         }
@@ -438,7 +438,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.His4_Gln5insAla"
           } ]
         }
@@ -531,7 +531,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.263T>G"
           } ]
         }
@@ -545,7 +545,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.Arg78_Gly79insX[23]"
           } ]
         }
@@ -638,7 +638,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.63G>A"
           } ]
         }
@@ -652,7 +652,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.(Gly56Ala^Ser^Cys)"
           } ]
         }
@@ -745,7 +745,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.172A>G"
           } ]
         }
@@ -759,7 +759,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.Arg78_Gly79insX[23]"
           } ]
         }
@@ -852,7 +852,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.330C>A"
           } ]
         }
@@ -866,7 +866,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.Cys28delinsTrpVal"
           } ]
         }
@@ -959,7 +959,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "c.586C>A"
           } ]
         }
@@ -973,7 +973,7 @@
         },
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "https://www.hgvs.org",
+            "system": "https://varnomen.hgvs.org",
             "code": "p.Lys2_Gly3insGlnSerLys"
           } ]
         }
