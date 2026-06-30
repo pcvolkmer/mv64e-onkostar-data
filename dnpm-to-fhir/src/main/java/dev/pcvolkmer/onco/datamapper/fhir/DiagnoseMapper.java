@@ -35,7 +35,7 @@ public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
         new Meta()
             .setSource("#dnpm")
             .addProfile(
-                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnose-primaertumor|2026.0.1"));
+                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnose-primaertumor"));
 
     condition.setCode(
         new CodeableConcept()

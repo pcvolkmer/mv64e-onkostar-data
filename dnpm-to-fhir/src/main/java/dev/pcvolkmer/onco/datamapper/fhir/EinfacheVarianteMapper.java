@@ -42,7 +42,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
         new Meta()
             .setSource("#dnpm")
             .addProfile(
-                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0"));
+                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante"));
 
     result.setStatus(Observation.ObservationStatus.FINAL);
 

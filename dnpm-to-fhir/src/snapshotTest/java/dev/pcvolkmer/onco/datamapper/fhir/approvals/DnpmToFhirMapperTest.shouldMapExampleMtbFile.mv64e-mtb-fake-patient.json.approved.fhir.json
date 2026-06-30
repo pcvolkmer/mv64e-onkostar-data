@@ -6,7 +6,7 @@
       "resourceType": "Condition",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnose-primaertumor|2026.0.1" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnose-primaertumor" ]
       },
       "extension": [ {
         "url": "http://hl7.org/fhir/StructureDefinition/condition-assertedDate",
@@ -38,7 +38,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -206,7 +206,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -374,7 +374,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -542,7 +542,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -710,7 +710,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -878,7 +878,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -1046,7 +1046,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -1214,7 +1214,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -1382,7 +1382,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -1550,7 +1550,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -1842,7 +1842,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -2029,7 +2029,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -2291,7 +2291,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -2583,7 +2583,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -2920,7 +2920,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -3197,7 +3197,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -3384,7 +3384,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
@@ -3601,7 +3601,7 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0" ]
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant" ]
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",

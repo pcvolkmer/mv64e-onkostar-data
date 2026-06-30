@@ -42,7 +42,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
         new Meta()
             .setSource("#dnpm")
             .addProfile(
-                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant|2026.0.0"));
+                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-copy-number-variant"));
 
     result.setStatus(Observation.ObservationStatus.FINAL);
 
