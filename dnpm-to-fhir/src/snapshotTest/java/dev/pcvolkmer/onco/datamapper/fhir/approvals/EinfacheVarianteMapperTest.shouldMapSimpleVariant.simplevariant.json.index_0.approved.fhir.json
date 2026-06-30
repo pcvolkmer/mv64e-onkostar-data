@@ -1,0 +1,102 @@
+{
+  "resourceType": "Observation",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0" ]
+  },
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+    "value": "5f6a055f-9cea-4b87-882f-76e308aa208a"
+  } ],
+  "category": [ {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "laboratory",
+      "display": "Laboratory"
+    } ]
+  }, {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+      "code": "GE"
+    } ]
+  } ],
+  "code": {
+    "coding": [ {
+      "system": "http://loinc.org",
+      "code": "69548-6",
+      "display": "Genetic variant assessment"
+    } ]
+  },
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+  },
+  "method": {
+    "coding": [ {
+      "system": "http://loinc.org",
+      "code": "LA26398",
+      "display": "Sequencing"
+    } ]
+  },
+  "component": [ {
+    "code": {
+      "coding": [ {
+        "system": "http://www.genenames.org/geneId",
+        "code": "HGNC:9967",
+        "display": "RET"
+      } ]
+    }
+  }, {
+    "code": {
+      "coding": [ {
+        "system": "81254-5",
+        "code": "http://loinc.org"
+      } ]
+    },
+    "valueRange": {
+      "low": {
+        "value": 546.0
+      }
+    }
+  }, {
+    "code": {
+      "coding": [ {
+        "system": "http://loinc.org",
+        "code": "48004-6",
+        "display": "DNA change (c.HGVS)"
+      } ]
+    },
+    "valueCodeableConcept": {
+      "coding": [ {
+        "system": "https://www.hgvs.org",
+        "code": "c.546G>C"
+      } ]
+    }
+  }, {
+    "code": {
+      "coding": [ {
+        "system": "http://loinc.org",
+        "code": "48005-3",
+        "display": "Amino acid change (pHGVS)"
+      } ]
+    },
+    "valueCodeableConcept": {
+      "coding": [ {
+        "system": "https://www.hgvs.org",
+        "code": "p.Trp24=/Cys"
+      } ]
+    }
+  }, {
+    "code": {
+      "coding": [ {
+        "system": "http://loinc.org",
+        "code": "81258-6",
+        "display": "Sample variant allelic frequency [NFr]"
+      } ]
+    },
+    "valueQuantity": {
+      "value": 0.8810488765827432,
+      "system": "http://unitsofmeasure.org",
+      "code": "%"
+    }
+  } ]
+}

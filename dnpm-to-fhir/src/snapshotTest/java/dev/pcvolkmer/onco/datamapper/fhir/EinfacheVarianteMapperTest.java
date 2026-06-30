@@ -19,22 +19,29 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import static dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest.verify;
-
 import dev.pcvolkmer.mv64e.mtb.Converter;
 import java.io.IOException;
 import java.util.Objects;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Collectors;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-class DnpmToFhirMapperTest {
+class EinfacheVarianteMapperTest extends DnpmToFhirTest {
 
-  @Test
-  void shouldMapExampleMtbFile() throws IOException {
+  @ParameterizedTest
+  @ValueSource(strings = {"simplevariant.json"})
+  void shouldMapSimpleVariant(String filename) throws IOException {
     var inputStream =
-        Objects.requireNonNull(
-            this.getClass().getClassLoader().getResourceAsStream("mv64e-mtb-fake-patient.json"));
+        Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
-    var fhir = DnpmToFhirMapper.mapToBundle(mtb);
-    verify(fhir, "mv64e-mtb-fake-patient.json");
+
+    final var mapper = new EinfacheVarianteMapper();
+
+    var fhir =
+        mtb.getNgsReports().get(0).getResults().getSimpleVariants().stream()
+            .map(mapper::map)
+            .collect(Collectors.toList());
+
+    verifyAll(fhir, filename);
   }
 }

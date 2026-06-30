@@ -19,13 +19,13 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
+import org.hl7.fhir.r4.model.Condition;
 
-public abstract class ConditionMapper<T> extends DnpmToFhirMapper<T> {
+public abstract class ConditionMapper<S> extends DnpmToFhirMapper<S, Condition> {
 
   @Override
-  protected String getRequestUrl(MtbDiagnosis diagnose) {
-    return String.format("Condition?identifier=%s|%s", this.getSystem(), diagnose.getId());
+  protected String getRequestUrl(S item) {
+    return String.format("Condition?identifier=%s|%s", this.getSystem(), this.getId(item));
   }
 
   @Override

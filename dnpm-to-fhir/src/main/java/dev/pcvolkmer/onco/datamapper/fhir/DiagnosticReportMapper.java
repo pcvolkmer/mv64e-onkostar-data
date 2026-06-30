@@ -19,22 +19,17 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import static dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest.verify;
+import org.hl7.fhir.r4.model.DiagnosticReport;
 
-import dev.pcvolkmer.mv64e.mtb.Converter;
-import java.io.IOException;
-import java.util.Objects;
-import org.junit.jupiter.api.Test;
+public abstract class DiagnosticReportMapper<S> extends DnpmToFhirMapper<S, DiagnosticReport> {
 
-class DnpmToFhirMapperTest {
+  @Override
+  protected String getRequestUrl(S item) {
+    return String.format("DiagnosticReport?identifier=%s|%s", this.getSystem(), this.getId(item));
+  }
 
-  @Test
-  void shouldMapExampleMtbFile() throws IOException {
-    var inputStream =
-        Objects.requireNonNull(
-            this.getClass().getClassLoader().getResourceAsStream("mv64e-mtb-fake-patient.json"));
-    var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
-    var fhir = DnpmToFhirMapper.mapToBundle(mtb);
-    verify(fhir, "mv64e-mtb-fake-patient.json");
+  @Override
+  protected String getSystem() {
+    return "https://fhir.diz.uni-marburg.de/sid/diagnostic-report-id";
   }
 }
