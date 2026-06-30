@@ -1,0 +1,59 @@
+{
+  "ngsReports": [
+    {
+      "results": {
+        "simpleVariants": [
+          {
+            "id": "5f6a055f-9cea-4b87-882f-76e308aa208a",
+            "patient": {
+              "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+              "type": "Patient"
+            },
+            "externalIds": [
+              {
+                "value": "2297e37d-c601-4fb1-919d-ddd06748d767",
+                "system": "https://www.ncbi.nlm.nih.gov/snp"
+              },
+              {
+                "value": "f5d2d3c6-ae3b-44af-8826-9284ef9c601c",
+                "system": "https://cancer.sanger.ac.uk/cosmic"
+              }
+            ],
+            "chromosome": "chr20",
+            "gene": {
+              "code": "HGNC:9967",
+              "display": "RET",
+              "system": "https://www.genenames.org/"
+            },
+            "localization": [
+              {
+                "code": "splicing-region",
+                "display": "splicing region",
+                "system": "dnpm-dip/variant/localization"
+              }
+            ],
+            "transcriptId": {
+              "value": "ac0ced21-308b-42a1-8df8-137075496dfb",
+              "system": "https://www.ncbi.nlm.nih.gov/refseq"
+            },
+            "exonId": "4",
+            "position": {
+              "start": 546
+            },
+            "altAllele": "C",
+            "refAllele": "G",
+            "dnaChange": "c.546G>C",
+            "proteinChange": "p.Trp24=/Cys",
+            "readDepth": 19,
+            "allelicFrequency": 0.8810488765827432,
+            "interpretation": {
+              "code": "2",
+              "display": "Likely benign",
+              "system": "https://www.ncbi.nlm.nih.gov/clinvar"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
