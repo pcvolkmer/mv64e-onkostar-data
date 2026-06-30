@@ -44,6 +44,8 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
             .addProfile(
                 "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante|2026.0.0"));
 
+    result.setStatus(Observation.ObservationStatus.FINAL);
+
     result
         .addCategory()
         .addCoding()
@@ -69,9 +71,35 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
         new CodeableConcept()
             .addCoding(
                 new Coding()
-                    .setCode("LA26398")
+                    .setCode("LA26398-0")
                     .setSystem("http://loinc.org")
                     .setDisplay("Sequencing")));
+
+    // Interpretation
+    result.addInterpretation(
+        new CodeableConcept()
+            .addCoding(
+                new Coding()
+                    .setCode(sourceItem.getInterpretation().getCode().toValue())
+                    .setSystem("https://www.ncbi.nlm.nih.gov/clinvar")
+                    .setDisplay(sourceItem.getInterpretation().getDisplay())));
+
+    // Chromosom
+    result.addComponent(
+        new Observation.ObservationComponentComponent()
+            .setCode(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
+                            .setCode("48001-2")
+                            .setSystem("http://loinc.org")
+                            .setDisplay("Cytogenetic (chromosome) location")))
+            .setValue(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
+                            .setCode(sourceItem.getChromosome().toValue())
+                            .setSystem("http://terminology.hl7.org/CodeSystem/chromosome-human"))));
 
     // Gene
     result.addComponent(
@@ -80,8 +108,15 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
+                            .setCode("48018-6")
+                            .setSystem("http://loinc.org")
+                            .setDisplay("Gene studied [ID]")))
+            .setValue(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
                             .setCode(sourceItem.getGene().getCode())
-                            .setSystem("http://www.genenames.org/geneId")
+                            .setSystem("https://www.genenames.org/")
                             .setDisplay(sourceItem.getGene().getDisplay()))));
 
     // Position
@@ -96,8 +131,36 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
         new Observation.ObservationComponentComponent()
             .setCode(
                 new CodeableConcept()
-                    .addCoding(new Coding().setCode("http://loinc.org").setSystem("81254-5")))
+                    .addCoding(
+                        new Coding()
+                            .setCode("http://loinc.org")
+                            .setSystem("81254-5")
+                            .setDisplay("Variant exact start-end")))
             .setValue(positionRange));
+
+    // RefAllele
+    result.addComponent(
+        new Observation.ObservationComponentComponent()
+            .setCode(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
+                            .setCode("69547-8")
+                            .setSystem("http://loinc.org")
+                            .setDisplay("Genomic ref allele [ID]")))
+            .setValue(new StringType(sourceItem.getRefAllele())));
+
+    // AltAllele
+    result.addComponent(
+        new Observation.ObservationComponentComponent()
+            .setCode(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
+                            .setCode("69551-0")
+                            .setSystem("http://loinc.org")
+                            .setDisplay("Genomic alt allele [ID]")))
+            .setValue(new StringType(sourceItem.getAltAllele())));
 
     // cDNA Change
     result.addComponent(
@@ -114,7 +177,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                     .addCoding(
                         new Coding()
                             .setCode(sourceItem.getDnaChange())
-                            .setSystem("https://varnomen.hgvs.org"))));
+                            .setSystem("http://varnomen.hgvs.org"))));
 
     // Protein Change
     result.addComponent(
@@ -131,7 +194,23 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                     .addCoding(
                         new Coding()
                             .setCode(sourceItem.getProteinChange())
-                            .setSystem("https://varnomen.hgvs.org"))));
+                            .setSystem("http://varnomen.hgvs.org"))));
+
+    // ReadDepth
+    result.addComponent(
+        new Observation.ObservationComponentComponent()
+            .setCode(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
+                            .setCode("82121-5")
+                            .setSystem("http://loinc.org")
+                            .setDisplay("Allelic read depth")))
+            .setValue(
+                new Quantity()
+                    .setValue(sourceItem.getReadDepth())
+                    .setCode("1")
+                    .setSystem("http://unitsofmeasure.org")));
 
     // Allelfrequenz
     result.addComponent(

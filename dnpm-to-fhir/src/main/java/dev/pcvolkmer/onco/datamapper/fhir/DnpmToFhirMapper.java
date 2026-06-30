@@ -64,6 +64,11 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
         .flatMap(item -> item.getResults().getSimpleVariants().stream())
         .forEach(item -> einfacheVarianteMapper.addToBundle(bundle, item));
 
+    final var cnvMapper = new CnvMapper();
+    mtb.getNgsReports().stream()
+        .flatMap(item -> item.getResults().getCopyNumberVariants().stream())
+        .forEach(item -> cnvMapper.addToBundle(bundle, item));
+
     return bundle;
   }
 }

@@ -4,17 +4,21 @@ Diese Beispielanwendung ermöglicht den Export aus der Onkostar-Datenbank.
 
 ## Anwendung
 
-Die Jar-Datei enthält alle Abhängigkeiten und lässt sich mit folgendem Befehl ausführen: 
+Die Jar-Datei enthält alle Abhängigkeiten und lässt sich mit folgendem Befehl ausführen:
 
 ```
 java -jar <dateiname>.jar [OPTIONS] 
 ```
 
-Folgende Optionen sind möglich: 
+Folgende Optionen sind möglich:
 
 ```
 Options                           Description                 
 --filename <arg>                  Datei                        
 ```
 
-
+| FHIR-Profil                               | Status | 
+|-------------------------------------------|--------|
+| Behandlungsepisode - Diagnose Primärtumor | ⛅      |
+| NGS Bericht - Einfache Variante           | ⛅      |
+| NGS Bericht - Copy Number Variant         | ⛅      |
