@@ -133,6 +133,22 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                             .setCode(sourceItem.getProteinChange())
                             .setSystem("https://www.hgvs.org"))));
 
+    // Allelfrequenz
+    result.addComponent(
+        new Observation.ObservationComponentComponent()
+            .setCode(
+                new CodeableConcept()
+                    .addCoding(
+                        new Coding()
+                            .setCode("81258-6")
+                            .setSystem("http://loinc.org")
+                            .setDisplay("Sample variant allelic frequency [NFr]")))
+            .setValue(
+                new Quantity()
+                    .setValue(sourceItem.getAllelicFrequency())
+                    .setCode("%")
+                    .setSystem("http://unitsofmeasure.org")));
+
     result.setSubject(this.getPatientReference(sourceItem));
 
     return result;

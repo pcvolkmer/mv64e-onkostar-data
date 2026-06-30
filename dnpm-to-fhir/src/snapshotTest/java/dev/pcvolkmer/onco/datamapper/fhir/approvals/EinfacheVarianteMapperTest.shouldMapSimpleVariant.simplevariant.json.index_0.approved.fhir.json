@@ -85,5 +85,18 @@
         "code": "p.Trp24=/Cys"
       } ]
     }
+  }, {
+    "code": {
+      "coding": [ {
+        "system": "http://loinc.org",
+        "code": "81258-6",
+        "display": "Sample variant allelic frequency [NFr]"
+      } ]
+    },
+    "valueQuantity": {
+      "value": 0.8810488765827432,
+      "system": "http://unitsofmeasure.org",
+      "code": "%"
+    }
   } ]
 }

@@ -121,6 +121,19 @@
             "code": "p.Trp24=/Cys"
           } ]
         }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.8810488765827432,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
       } ]
     },
     "request": {
@@ -214,6 +227,19 @@
             "system": "https://www.hgvs.org",
             "code": "p.Val7del"
           } ]
+        }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.9767328312144244,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
         }
       } ]
     },
@@ -309,6 +335,19 @@
             "code": "p.(Gly56Ala^Ser^Cys)"
           } ]
         }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.38591233256068536,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
       } ]
     },
     "request": {
@@ -402,6 +441,19 @@
             "system": "https://www.hgvs.org",
             "code": "p.His4_Gln5insAla"
           } ]
+        }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.47772720624725784,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
         }
       } ]
     },
@@ -497,6 +549,19 @@
             "code": "p.Arg78_Gly79insX[23]"
           } ]
         }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.48781489302223435,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
       } ]
     },
     "request": {
@@ -590,6 +655,19 @@
             "system": "https://www.hgvs.org",
             "code": "p.(Gly56Ala^Ser^Cys)"
           } ]
+        }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.025168278058424587,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
         }
       } ]
     },
@@ -685,6 +763,19 @@
             "code": "p.Arg78_Gly79insX[23]"
           } ]
         }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.361966974732963,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
       } ]
     },
     "request": {
@@ -779,6 +870,19 @@
             "code": "p.Cys28delinsTrpVal"
           } ]
         }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.05283945287901526,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
+        }
       } ]
     },
     "request": {
@@ -872,6 +976,19 @@
             "system": "https://www.hgvs.org",
             "code": "p.Lys2_Gly3insGlnSerLys"
           } ]
+        }
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "81258-6",
+            "display": "Sample variant allelic frequency [NFr]"
+          } ]
+        },
+        "valueQuantity": {
+          "value": 0.29164668725298104,
+          "system": "http://unitsofmeasure.org",
+          "code": "%"
         }
       } ]
     },
