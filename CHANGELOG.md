@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.2...v0.9.3) (2026-07-01)
+
+
+### Features
+
+* add CNV mapping ([#204](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/204)) ([84c2e60](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/84c2e601771052a02b52a6a0f53271b888c59dbe))
+* example for simpla variants mapping ([#203](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/203)) ([382f4ec](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/382f4ec5095fe7dd08070c92f76620c6d8665fa5))
+* example mapping for DNPM to FHIR ([#201](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/201)) ([00fd106](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/00fd10659aaad4dfeb377826ed112942b87b5d07))
+
+
+### Bug Fixes
+
+* use other system for HGVS coding ([8b67e51](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/8b67e51a8cd0b6cf3a4d5405954039e47cffc3ba))
+
 ## [0.9.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.1...v0.9.2) (2026-06-23)
 
 
