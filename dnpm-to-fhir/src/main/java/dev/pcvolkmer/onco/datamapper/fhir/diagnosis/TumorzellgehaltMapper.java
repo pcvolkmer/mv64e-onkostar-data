@@ -1,0 +1,83 @@
+/*
+ * This file is part of mv64e-onkostar-data
+ *
+ * Copyright (C) 2026 the original author or authors.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
+
+import dev.pcvolkmer.mv64e.mtb.HistologyReport;
+import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
+import org.hl7.fhir.r4.model.*;
+
+public class TumorzellgehaltMapper extends ObservationMapper<HistologyReport> {
+  @Override
+  protected String getPatientId(HistologyReport item) {
+    return item.getPatient().getId();
+  }
+
+  @Override
+  protected String getId(HistologyReport item) {
+    return String.format("%s_tumorcellcount", item.getId());
+  }
+
+  @Override
+  public Observation map(HistologyReport sourceItem) {
+    var result = new Observation();
+    result.addIdentifier().setSystem(this.getSystem()).setValue(this.getId(sourceItem));
+
+    result.setMeta(
+        new Meta()
+            .setSource("#dnpm")
+            .addProfile(
+                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-tumorzellgehalt"));
+
+    result.setStatus(Observation.ObservationStatus.FINAL);
+
+    result.setCode(
+        new CodeableConcept()
+            .addCoding(
+                new Coding()
+                    .setSystem("http://loinc.org")
+                    .setCode("93356-4")
+                    .setDisplay(
+                        "Cells with cytogenetic abnormality [#] in Blood or Tissue by Molecular genetics method")));
+
+    result.setMethod(
+        new CodeableConcept()
+            .addCoding(
+                new Coding()
+                    .setCode(
+                        sourceItem
+                            .getResults()
+                            .getTumorCellContent()
+                            .getMethod()
+                            .getCode()
+                            .toValue())
+                    .setSystem(
+                        "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-bestimmungsmethode-tumorzellgehalt")));
+
+    result.setValue(
+        new Quantity()
+            .setValue(sourceItem.getResults().getTumorCellContent().getValue())
+            .setCode("%")
+            .setSystem("http://unitsofmeasure.org"));
+
+    result.setSubject(this.getPatientReference(sourceItem));
+
+    return result;
+  }
+}

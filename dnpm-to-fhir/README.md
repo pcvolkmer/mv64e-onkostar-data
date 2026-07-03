@@ -12,7 +12,7 @@ java -jar <dateiname>.jar --filename <file>
 
 ## Umsetzung
 
-### MII-MTB – Bereich Behandlungsepisode
+### MII-MTB – Bereich: Behandlungsepisode
 
 | FHIR-Profil                         | Status           | 
 |-------------------------------------|------------------|
@@ -20,7 +20,7 @@ java -jar <dateiname>.jar --filename <file>
 | Diagnose - Tumorausbreitung         | ⛅ (1)            |
 | Diagnose - WHO-Grad ZNS             | ⛅ (2)            |
 | Diagnose - Oncotree                 | Nicht vorgesehen |
-| Probe - Tumorzellgehalt             | -                |
+| Probe - Tumorzellgehalt             | ⛅                |
 | Therapieplan - CarePlan             | -                |
 | Therapieplan - Therapieempfehlung   | -                |
 | Therapieplan - Studieneinschluss    | -                |
@@ -29,22 +29,43 @@ java -jar <dateiname>.jar --filename <file>
 1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
 2. Eingefügt nur, wenn DNPM-System `dnpm-dip/mtb/who-grading-cns-tumors` gegeben.
 
-### MII-MTB – Bereich NGS-Bericht
+### MII-MTB – Bereich: NGS-Bericht
 
-| FHIR-Profil                       | Status | 
-|-----------------------------------|--------|
-| NGS Bericht - Einfache Variante   | ⛅      |
-| NGS Bericht - Copy Number Variant | ⛅      |
+| FHIR-Profil                      | Status           | 
+|----------------------------------|------------------|
+| Variante - Einfache Variante     | ⛅                |
+| Variante - Copy Number Variant   | ⛅                |
+| Variante - DNA-Fusion            | -                |
+| Variante - RNA-Fusion            | -                |
+| Gen. Implikation - genetisch     | -                |
+| Gen. Implikation - therapeutisch | -                |
+| Mol Biomarker - Observation      | -                |
+| Mol Biomarker - TMB              | -                |
+| Mol Biomarker - MSI              | -                |
+| Mol Biomarker - HRD-Score        | -                |
+| Mol Biomarker - BRCAness         | -                |
+| Mol Biomarker - Observation      | -                |
+| RNA-Seq                          | Nicht vorgesehen |
 
-### MII-MTB – Bereich Molekular-Pathologie-Befund
+### MII-MTB – Bereich: Molekular-Pathologie-Befund
 
-*Nicht umgesetzt*
+| FHIR-Profil                    | Status | 
+|--------------------------------|--------|
+| DiagnosticReport               | -      |
+| Immunhistochemie - Observation | -      |
+| P-Immunhistochemie             | -      |
+| Immunhistochemie MMR MSI       | -      |
+| Immunhistochemie PDL1          | -      |
 
-### MII-MTB – Bereich FollowUp
+### MII-MTB – Bereich: FollowUp
 
-*Nicht umgesetzt*
+| FHIR-Profil            | Status | 
+|------------------------|--------|
+| Clinical Impression    | -      |
+| Systemische Therapie   | -      |
+| Antrag Kostenübernahme | -      |
 
-### MII-Onco - Bereich Allgemeiner Leistungszustand
+### MII-Onco - Bereich: Allgemeiner Leistungszustand
 
 | FHIR-Profil                       | Status | 
 |-----------------------------------|--------|
