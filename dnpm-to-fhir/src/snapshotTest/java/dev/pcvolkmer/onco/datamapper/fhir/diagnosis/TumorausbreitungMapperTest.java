@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.pcvolkmer.onco.datamapper.fhir;
+package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
 
 import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;

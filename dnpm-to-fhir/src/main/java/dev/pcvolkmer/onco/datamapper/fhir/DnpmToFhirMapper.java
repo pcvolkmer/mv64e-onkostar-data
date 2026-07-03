@@ -20,6 +20,10 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import dev.pcvolkmer.mv64e.mtb.Mtb;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.DiagnoseMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.ngs.CnvMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.ngs.EinfacheVarianteMapper;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;

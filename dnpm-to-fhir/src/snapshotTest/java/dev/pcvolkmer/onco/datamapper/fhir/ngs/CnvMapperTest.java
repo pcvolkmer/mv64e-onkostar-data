@@ -17,49 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.pcvolkmer.onco.datamapper.fhir;
+package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
 import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.hl7.fhir.r4.model.Bundle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class WhoGradZnsMapperTest extends DnpmToFhirTest {
+class CnvMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
-  @ValueSource(strings = {"tumorgrading.json"})
-  void shouldMapDiagnose(String filename) throws IOException {
+  @ValueSource(strings = {"cnv.json"})
+  void shouldMapCnv(String filename) throws IOException {
     var inputStream =
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
 
-    final var mapper = new WhoGradZnsMapper();
+    final var mapper = new CnvMapper();
 
     var fhir =
-        mtb.getDiagnoses().stream()
-            .map(mapper::mapToMany)
-            .flatMap(Collection::stream)
+        mtb.getNgsReports().get(0).getResults().getCopyNumberVariants().stream()
+            .map(mapper::map)
             .collect(Collectors.toList());
 
     verifyAll(fhir, filename);
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {"tumorgrading.json"})
-  void shouldAddTumorausbreitungToBundle(String filename) throws IOException {
-    var inputStream =
-        Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
-    var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
-
-    final var mapper = new WhoGradZnsMapper();
-
-    var fhir = new Bundle();
-    mtb.getDiagnoses().forEach(dia -> mapper.addManyToBundle(fhir, dia));
-
-    verify(fhir, filename);
   }
 }

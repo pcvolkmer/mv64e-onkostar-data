@@ -17,27 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.pcvolkmer.onco.datamapper.fhir;
+package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
 import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class DiagnoseMapperTest extends DnpmToFhirTest {
+class EinfacheVarianteMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
-  @ValueSource(strings = {"diagnosis.json"})
-  void shouldMapDiagnose(String filename) throws IOException {
+  @ValueSource(strings = {"simplevariant.json"})
+  void shouldMapSimpleVariant(String filename) throws IOException {
     var inputStream =
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
 
-    final var diagnoseMapper = new DiagnoseMapper();
+    final var mapper = new EinfacheVarianteMapper();
 
-    var fhir = mtb.getDiagnoses().stream().map(diagnoseMapper::map).collect(Collectors.toList());
+    var fhir =
+        mtb.getNgsReports().get(0).getResults().getSimpleVariants().stream()
+            .map(mapper::map)
+            .collect(Collectors.toList());
 
     verifyAll(fhir, filename);
   }

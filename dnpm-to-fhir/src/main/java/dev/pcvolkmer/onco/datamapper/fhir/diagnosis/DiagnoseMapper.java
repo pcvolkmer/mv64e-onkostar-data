@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.pcvolkmer.onco.datamapper.fhir;
+package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
+import dev.pcvolkmer.onco.datamapper.fhir.ConditionMapper;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;
 

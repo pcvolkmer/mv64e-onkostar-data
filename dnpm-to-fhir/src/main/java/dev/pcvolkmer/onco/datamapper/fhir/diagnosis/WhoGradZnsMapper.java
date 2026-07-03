@@ -17,50 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.pcvolkmer.onco.datamapper.fhir;
+package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
-import dev.pcvolkmer.mv64e.mtb.TumorStaging;
+import dev.pcvolkmer.mv64e.mtb.TumorGrading;
+import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
 
-public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
+public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
     implements ManyMapper<MtbDiagnosis, Observation> {
   @Override
-  protected String getPatientId(TumorStaging item) {
+  protected String getPatientId(TumorGrading item) {
     throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
-  protected String getId(TumorStaging item) {
+  protected String getId(TumorGrading item) {
     throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
-  public Observation map(TumorStaging sourceItem) {
+  public Observation map(TumorGrading sourceItem) {
     var result = new Observation();
 
     result.setMeta(
         new Meta()
             .setSource("#dnpm")
             .addProfile(
-                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-tumorausbreitung"));
+                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-who-grad-tumor-zns"));
 
     result.setStatus(Observation.ObservationStatus.FINAL);
-
-    result.setCategory(
-        List.of(
-            new CodeableConcept()
-                .setCoding(
-                    List.of(
-                        new Coding()
-                            .setSystem("http://snomed.info/sct")
-                            // Hier Erstdiagnose!
-                            .setCode("473302008")
-                            .setDisplay("Aware of diagnosis")))));
 
     result.setCode(
         new CodeableConcept()
@@ -68,37 +60,43 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
                 List.of(
                     new Coding()
                         .setSystem("http://snomed.info/sct")
-                        .setCode("371508000")
-                        .setDisplay("Tumor Stage"))));
+                        .setCode("396921005")
+                        .setDisplay("WHO grade finding for central nervous system tumor"))));
 
     final var dateTimeType = new DateTimeType(sourceItem.getDate());
     dateTimeType.setPrecision(TemporalPrecisionEnum.DAY);
     result.setEffective(dateTimeType);
 
+    final var mappedValue = mapValue(sourceItem);
+
+    if (null == mappedValue) {
+      return null;
+    }
+
     result.setValue(
         new CodeableConcept()
-            .addCoding(
-                new Coding().setSystem("http://snomed.info/sct").setCode(mapValue(sourceItem))));
-
+            .addCoding(new Coding().setSystem("http://snomed.info/sct").setCode(mappedValue)));
     return result;
   }
 
-  private String mapValue(TumorStaging sourceItem) {
-    for (var coding : sourceItem.getOtherClassifications()) {
-      switch (coding.getCode()) {
-        case "tumor-free":
-          return "58899004";
-        case "local":
-          return "255127006";
-        case "metastasized":
-          return "128462008";
-        default:
-          // Unknown
-          return "261665006";
+  private String mapValue(TumorGrading sourceItem) {
+    for (var coding : sourceItem.getCodes()) {
+      if ("dnpm-dip/mtb/who-grading-cns-tumors".equals(coding.getSystem())) {
+        switch (coding.getCode()) {
+          case "1":
+            return "396922003";
+          case "2":
+            return "396923008";
+          case "3":
+            return "396924002";
+          case "4":
+            // Unknown
+            return "396925001";
+        }
       }
     }
     // Unknown
-    return "261665006";
+    return null;
   }
 
   @Override
@@ -116,7 +114,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
             idx -> {
               final var requestUrl =
                   String.format(
-                      "Observation?identifier=%s|%s_tumorstaging-%d",
+                      "Observation?identifier=%s|%s_znsgrading-%d",
                       this.getSystem(), sourceItem.getId(), idx);
 
               final var newItem = newItems.get(idx);
@@ -125,7 +123,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
                   List.of(
                       new Identifier()
                           .setSystem(this.getSystem())
-                          .setValue(String.format("%s_tumorstaging-%d", sourceItem.getId(), idx))));
+                          .setValue(sourceItem.getId() + "_znsgrading-" + idx)));
 
               bundle
                   .addEntry()
@@ -138,8 +136,9 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
 
   @Override
   public List<Observation> mapToMany(MtbDiagnosis sourceItem) {
-    return sourceItem.getStaging().getHistory().stream()
+    return sourceItem.getGrading().getHistory().stream()
         .map(this::map)
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 }

@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.pcvolkmer.onco.datamapper.fhir;
+package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
 import dev.pcvolkmer.mv64e.mtb.Cnv;
+import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
 public class CnvMapper extends ObservationMapper<Cnv> {
