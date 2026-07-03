@@ -1,0 +1,33 @@
+{
+  "resourceType": "Observation",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-tumorzellgehalt" ]
+  },
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+    "value": "549143c4-aacb-42aa-914f-5ddf8adf1046_tumorcellcount"
+  } ],
+  "status": "final",
+  "code": {
+    "coding": [ {
+      "system": "http://loinc.org",
+      "code": "93356-4",
+      "display": "Cells with cytogenetic abnormality [#] in Blood or Tissue by Molecular genetics method"
+    } ]
+  },
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+  },
+  "valueQuantity": {
+    "value": 0.9068795360732212,
+    "system": "http://unitsofmeasure.org",
+    "code": "%"
+  },
+  "method": {
+    "coding": [ {
+      "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-bestimmungsmethode-tumorzellgehalt",
+      "code": "histologic"
+    } ]
+  }
+}

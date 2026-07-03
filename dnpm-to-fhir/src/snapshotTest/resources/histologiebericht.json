@@ -1,0 +1,53 @@
+{
+  "histologyReports": [
+    {
+      "id": "549143c4-aacb-42aa-914f-5ddf8adf1046",
+      "patient": {
+        "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+        "type": "Patient"
+      },
+      "specimen": {
+        "id": "84aa1d75-0ba6-4266-b8e1-7a1337e44a3a",
+        "type": "TumorSpecimen"
+      },
+      "issuedOn": "2025-12-10",
+      "results": {
+        "tumorMorphology": {
+          "id": "b3845b08-6c6b-41df-8b74-0d795c4351f0",
+          "patient": {
+            "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+            "type": "Patient"
+          },
+          "specimen": {
+            "id": "84aa1d75-0ba6-4266-b8e1-7a1337e44a3a",
+            "type": "TumorSpecimen"
+          },
+          "value": {
+            "code": "9181/3",
+            "display": "Chondroblastisches Osteosarkom [C40.-] [C41.-]",
+            "system": "urn:oid:2.16.840.1.113883.6.43.1",
+            "version": "Zweite Revision"
+          },
+          "note": "Notes..."
+        },
+        "tumorCellContent": {
+          "id": "268b9f18-2e62-46b6-a40b-fda09478b209",
+          "patient": {
+            "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+            "type": "Patient"
+          },
+          "specimen": {
+            "id": "84aa1d75-0ba6-4266-b8e1-7a1337e44a3a",
+            "type": "TumorSpecimen"
+          },
+          "method": {
+            "code": "histologic",
+            "display": "Histologisch",
+            "system": "dnpm-dip/mtb/tumor-cell-content/method"
+          },
+          "value": 0.9068795360732212
+        }
+      }
+    }
+  ]
+}

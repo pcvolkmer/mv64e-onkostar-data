@@ -22,6 +22,7 @@ package dev.pcvolkmer.onco.datamapper.fhir;
 import dev.pcvolkmer.mv64e.mtb.Mtb;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.DiagnoseMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorzellgehaltMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.CnvMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.EinfacheVarianteMapper;
 import org.hl7.fhir.r4.model.Bundle;
@@ -64,6 +65,9 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
     final var tumorausbreitungMapper = new TumorausbreitungMapper();
     mtb.getDiagnoses().forEach(item -> tumorausbreitungMapper.addManyToBundle(bundle, item));
+
+    final var tumorzellgehaltMapper = new TumorzellgehaltMapper();
+    mtb.getHistologyReports().forEach(item -> tumorzellgehaltMapper.addToBundle(bundle, item));
 
     final var ecogMapper = new EcogMapper();
     mtb.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
