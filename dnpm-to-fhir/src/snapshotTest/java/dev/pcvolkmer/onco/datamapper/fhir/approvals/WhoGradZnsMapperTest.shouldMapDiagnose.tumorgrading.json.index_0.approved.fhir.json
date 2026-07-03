@@ -1,0 +1,22 @@
+{
+  "resourceType": "Observation",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-who-grad-tumor-zns" ]
+  },
+  "status": "final",
+  "code": {
+    "coding": [ {
+      "system": "http://snomed.info/sct",
+      "code": "396921005",
+      "display": "WHO grade finding for central nervous system tumor"
+    } ]
+  },
+  "effectiveDateTime": "2003-09-26",
+  "valueCodeableConcept": {
+    "coding": [ {
+      "system": "http://snomed.info/sct",
+      "code": "396925001"
+    } ]
+  }
+}

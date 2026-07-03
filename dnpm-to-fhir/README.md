@@ -18,7 +18,7 @@ java -jar <dateiname>.jar --filename <file>
 |-------------------------------------|------------------|
 | Diagnose - Diagnose Primärtumor     | ⛅                |
 | Diagnose - Tumorausbreitung         | ⛅ (1)            |
-| Diagnose - WHO-Grad ZNS             | -                |
+| Diagnose - WHO-Grad ZNS             | ⛅ (2)            |
 | Diagnose - Oncotree                 | Nicht vorgesehen |
 | Probe - Tumorzellgehalt             | -                |
 | Therapieplan - CarePlan             | -                |
@@ -27,6 +27,7 @@ java -jar <dateiname>.jar --filename <file>
 | Therapieplan - Weitere Empfehlungen | -                |
 
 1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
+2. Eingefügt nur, wenn DNPM-System `dnpm-dip/mtb/who-grading-cns-tumors` gegeben.
 
 ### MII-MTB – Bereich NGS-Bericht
 

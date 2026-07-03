@@ -1,0 +1,31 @@
+{
+  "diagnoses": [
+    {
+      "id": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2",
+      "patient": {
+        "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+        "type": "Patient"
+      },
+      "grading": {
+        "history": [
+          {
+            "date": "2003-09-26",
+            "codes": [
+              {
+                "code": "2",
+                "display": "2 = mäßig differenziert",
+                "system": "https://www.basisdatensatz.de/feld/161/grading"
+              },
+              {
+                "code": "4",
+                "display": "Glioblastoma",
+                "system": "dnpm-dip/mtb/who-grading-cns-tumors",
+                "version": "2021"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
