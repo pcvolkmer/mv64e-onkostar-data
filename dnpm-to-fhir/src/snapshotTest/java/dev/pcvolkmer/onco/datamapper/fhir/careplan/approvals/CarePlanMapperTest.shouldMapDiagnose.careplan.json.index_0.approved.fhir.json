@@ -1,0 +1,26 @@
+{
+  "resourceType": "CarePlan",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieplan" ]
+  },
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/careplan-id",
+    "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172"
+  } ],
+  "status": "active",
+  "intent": "plan",
+  "category": [ {
+    "coding": [ {
+      "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/CodeSystem/mii-cs-onko-therapieplanung-typ",
+      "code": "praeth"
+    } ]
+  } ],
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+  },
+  "created": "2025-11-26",
+  "addresses": [ {
+    "reference": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2"
+  } ]
+}
