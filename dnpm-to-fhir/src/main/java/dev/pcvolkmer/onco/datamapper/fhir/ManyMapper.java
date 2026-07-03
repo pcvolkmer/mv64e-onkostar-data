@@ -19,17 +19,11 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import org.hl7.fhir.r4.model.Condition;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Resource;
 
-public abstract class ConditionMapper<S> extends DnpmToFhirMapper<S, Condition> {
+public interface ManyMapper<S, D extends Resource> {
+  void addManyToBundle(Bundle bundle, S item);
 
-  @Override
-  protected String getRequestUrl(S item) {
-    return String.format("Condition?identifier=%s|%s", this.getSystem(), this.getId(item));
-  }
-
-  @Override
-  public String getSystem() {
-    return "https://fhir.diz.uni-marburg.de/sid/condition-id";
-  }
+  Iterable<D> mapToMany(S sourceItem);
 }

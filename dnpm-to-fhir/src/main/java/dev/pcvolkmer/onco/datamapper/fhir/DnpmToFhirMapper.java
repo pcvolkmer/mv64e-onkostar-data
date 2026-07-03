@@ -36,7 +36,8 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
                 this.getPatientId(item)));
   }
 
-  protected void addToBundle(Bundle bundle, S item) {
+  @Override
+  public void addToBundle(Bundle bundle, S item) {
     bundle
         .addEntry()
         .setResource(map(item))
@@ -49,8 +50,6 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
   protected abstract String getRequestUrl(S item);
 
-  protected abstract String getSystem();
-
   public static Bundle mapToBundle(Mtb mtb) {
     final var bundle = new Bundle();
 
@@ -58,6 +57,9 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
     final var diagnoseMapper = new DiagnoseMapper();
     mtb.getDiagnoses().forEach(item -> diagnoseMapper.addToBundle(bundle, item));
+
+    final var tumorausbreitungMapper = new TumorausbreitungMapper();
+    mtb.getDiagnoses().forEach(item -> tumorausbreitungMapper.addManyToBundle(bundle, item));
 
     final var ecogMapper = new EcogMapper();
     mtb.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
