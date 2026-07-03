@@ -21,13 +21,14 @@ java -jar <dateiname>.jar --filename <file>
 | Diagnose - WHO-Grad ZNS             | ⛅ (2)            |
 | Diagnose - Oncotree                 | Nicht vorgesehen |
 | Probe - Tumorzellgehalt             | ⛅                |
-| Therapieplan - CarePlan             | -                |
+| Therapieplan - CarePlan             | ☔ (3)            |
 | Therapieplan - Therapieempfehlung   | -                |
 | Therapieplan - Studieneinschluss    | -                |
 | Therapieplan - Weitere Empfehlungen | -                |
 
 1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
 2. Eingefügt nur, wenn DNPM-System `dnpm-dip/mtb/who-grading-cns-tumors` gegeben.
+3. Aktuell noch ohne Einzelempfehlungen
 
 ### MII-MTB – Bereich: NGS-Bericht
 
