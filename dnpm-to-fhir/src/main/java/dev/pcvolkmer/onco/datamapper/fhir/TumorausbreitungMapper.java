@@ -58,6 +58,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
                     List.of(
                         new Coding()
                             .setSystem("http://snomed.info/sct")
+                            // Hier Erstdiagnose!
                             .setCode("473302008")
                             .setDisplay("Aware of diagnosis")))));
 
@@ -115,7 +116,8 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
             idx -> {
               final var requestUrl =
                   String.format(
-                      "Observation?identifier=%s|%s-%d", this.getSystem(), sourceItem.getId(), idx);
+                      "Observation?identifier=%s|%s_tumorstaging-%d",
+                      this.getSystem(), sourceItem.getId(), idx);
 
               final var newItem = newItems.get(idx);
               newItem.setSubject(patientReference);
@@ -123,7 +125,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
                   List.of(
                       new Identifier()
                           .setSystem(this.getSystem())
-                          .setValue(sourceItem.getId() + "_" + idx)));
+                          .setValue(String.format("%s_tumorstaging-%d", sourceItem.getId(), idx))));
 
               bundle
                   .addEntry()

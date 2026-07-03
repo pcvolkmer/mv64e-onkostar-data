@@ -9,7 +9,7 @@
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
-        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_0"
+        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tumorstaging-0"
       } ],
       "status": "final",
       "category": [ {
@@ -39,7 +39,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2-0"
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tumorstaging-0"
     }
   } ]
 }
