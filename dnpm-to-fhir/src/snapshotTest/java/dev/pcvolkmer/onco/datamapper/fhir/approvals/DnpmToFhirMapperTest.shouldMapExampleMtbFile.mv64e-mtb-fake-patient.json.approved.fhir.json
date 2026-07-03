@@ -38,6 +38,43 @@
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-pr-onko-allgemeiner-leistungszustand-ecog" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "11f61599-ac83-4135-82ae-671dc956bfb0"
+      } ],
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://snomed.info/sct",
+          "code": "423740007"
+        }, {
+          "system": "http://loinc.org",
+          "code": "89262-0"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "effectiveDateTime": "2025-12-10",
+      "valueCodeableConcept": {
+        "coding": [ {
+          "system": "ECOG-Performance-Status",
+          "code": "2",
+          "display": "ECOG 2"
+        } ]
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|11f61599-ac83-4135-82ae-671dc956bfb0"
+    }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "#dnpm",
         "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-einfache-variante" ]
       },
       "identifier": [ {

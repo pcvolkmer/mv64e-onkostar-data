@@ -1,0 +1,17 @@
+{
+  "performanceStatus": [
+    {
+      "id": "11f61599-ac83-4135-82ae-671dc956bfb0",
+      "patient": {
+        "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+        "type": "Patient"
+      },
+      "effectiveDate": "2025-12-10",
+      "value": {
+        "code": "2",
+        "display": "ECOG 2",
+        "system": "ECOG-Performance-Status"
+      }
+    }
+  ]
+}

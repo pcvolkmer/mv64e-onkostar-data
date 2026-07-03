@@ -59,6 +59,9 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     final var diagnoseMapper = new DiagnoseMapper();
     mtb.getDiagnoses().forEach(item -> diagnoseMapper.addToBundle(bundle, item));
 
+    final var ecogMapper = new EcogMapper();
+    mtb.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
+
     final var einfacheVarianteMapper = new EinfacheVarianteMapper();
     mtb.getNgsReports().stream()
         .flatMap(item -> item.getResults().getSimpleVariants().stream())
