@@ -19,10 +19,14 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Resource;
 
-@FunctionalInterface
 public interface Mapper<S, D extends Resource> {
 
+  void addToBundle(Bundle bundle, S item);
+
   D map(S sourceItem);
+
+  String getSystem();
 }

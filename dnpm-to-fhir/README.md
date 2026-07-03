@@ -14,17 +14,19 @@ java -jar <dateiname>.jar --filename <file>
 
 ### MII-MTB – Bereich Behandlungsepisode
 
-| FHIR-Profil                              | Status           | 
-|------------------------------------------|------------------|
-| Diagnose - Diagnose Primärtumor          | ⛅                |
-| Diagnose - Tumorausbreitung: Observation | -                |
-| Diagnose - WHO-Grad ZNS                  | -                |
-| Diagnose - Oncotree                      | Nicht vorgesehen |
-| Probe - Tumorzellgehalt                  | -                |
-| Therapieplan - CarePlan                  | -                |
-| Therapieplan - Therapieempfehlung        | -                |
-| Therapieplan - Studieneinschluss         | -                |
-| Therapieplan - Weitere Empfehlungen      | -                |
+| FHIR-Profil                         | Status           | 
+|-------------------------------------|------------------|
+| Diagnose - Diagnose Primärtumor     | ⛅                |
+| Diagnose - Tumorausbreitung         | ⛅ (1)            |
+| Diagnose - WHO-Grad ZNS             | -                |
+| Diagnose - Oncotree                 | Nicht vorgesehen |
+| Probe - Tumorzellgehalt             | -                |
+| Therapieplan - CarePlan             | -                |
+| Therapieplan - Therapieempfehlung   | -                |
+| Therapieplan - Studieneinschluss    | -                |
+| Therapieplan - Weitere Empfehlungen | -                |
+
+1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
 
 ### MII-MTB – Bereich NGS-Bericht
 
