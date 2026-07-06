@@ -1,0 +1,35 @@
+{
+  "resourceType": "MedicationRequest",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieempfehlung" ]
+  },
+  "extension": [ {
+    "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
+    "valueCodeableConcept": {
+      "coding": [ {
+        "system": "dnpm-dip/mtb/level-of-evidence/grading",
+        "code": "m1C",
+        "display": "m1C"
+      }, {
+        "system": "dnpm-dip/mtb/level-of-evidence/addendum",
+        "code": "iv",
+        "display": "iv"
+      } ]
+    }
+  } ],
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/medication-request-id",
+    "value": "c0687be9-6c5e-44f0-b083-688f2f4e9e07"
+  } ],
+  "status": "active",
+  "intent": "proposal",
+  "medicationCodeableConcept": {
+    "coding": [ {
+      "system": "http://fhir.de/CodeSystem/bfarm/atc",
+      "code": "L01FX09",
+      "display": "Mogamulizumab"
+    } ]
+  },
+  "authoredOn": "2025-12-10"
+}

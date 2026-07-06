@@ -22,13 +22,13 @@ java -jar <dateiname>.jar --filename <file>
 | Diagnose - Oncotree                 | Nicht vorgesehen |
 | Probe - Tumorzellgehalt             | ⛅                |
 | Therapieplan - CarePlan             | ☔ (3)            |
-| Therapieplan - Therapieempfehlung   | -                |
+| Therapieplan - Therapieempfehlung   | ⛅                |
 | Therapieplan - Studieneinschluss    | -                |
 | Therapieplan - Weitere Empfehlungen | -                |
 
 1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
 2. Eingefügt nur, wenn DNPM-System `dnpm-dip/mtb/who-grading-cns-tumors` gegeben.
-3. Aktuell noch ohne Einzelempfehlungen
+3. Aktuell nur mit Wirkstoffempfehlungen
 
 ### MII-MTB – Bereich: NGS-Bericht
 
