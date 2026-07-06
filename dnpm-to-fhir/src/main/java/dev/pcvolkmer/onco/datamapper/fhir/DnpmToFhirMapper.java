@@ -20,6 +20,8 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import dev.pcvolkmer.mv64e.mtb.Mtb;
+import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieempfehlungMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieplanMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.DiagnoseMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorzellgehaltMapper;
@@ -62,6 +64,12 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
     final var diagnoseMapper = new DiagnoseMapper();
     mtb.getDiagnoses().forEach(item -> diagnoseMapper.addToBundle(bundle, item));
+
+    final var therapieplanMapper = new TherapieplanMapper();
+    mtb.getCarePlans().forEach(item -> therapieplanMapper.addToBundle(bundle, item));
+
+    final var therapieempfehlungMapper = new TherapieempfehlungMapper();
+    mtb.getCarePlans().forEach(item -> therapieempfehlungMapper.addManyToBundle(bundle, item));
 
     final var tumorausbreitungMapper = new TumorausbreitungMapper();
     mtb.getDiagnoses().forEach(item -> tumorausbreitungMapper.addManyToBundle(bundle, item));

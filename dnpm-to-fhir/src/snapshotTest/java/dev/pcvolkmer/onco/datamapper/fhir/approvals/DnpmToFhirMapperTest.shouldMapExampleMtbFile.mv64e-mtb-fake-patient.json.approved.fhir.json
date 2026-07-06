@@ -35,6 +35,163 @@
     }
   }, {
     "resource": {
+      "resourceType": "CarePlan",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieplan" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/careplan-id",
+        "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172"
+      } ],
+      "status": "active",
+      "intent": "plan",
+      "category": [ {
+        "coding": [ {
+          "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/CodeSystem/mii-cs-onko-therapieplanung-typ",
+          "code": "praeth"
+        } ]
+      } ],
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "created": "2025-11-26",
+      "addresses": [ {
+        "reference": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2"
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_careplan"
+    }
+  }, {
+    "resource": {
+      "resourceType": "CarePlan",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieplan" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/careplan-id",
+        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a"
+      } ],
+      "status": "active",
+      "intent": "plan",
+      "category": [ {
+        "coding": [ {
+          "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/CodeSystem/mii-cs-onko-therapieplanung-typ",
+          "code": "praeth"
+        } ]
+      } ],
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "created": "2025-12-10",
+      "addresses": [ {
+        "reference": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2"
+      } ],
+      "activity": [ {
+        "reference": {
+          "reference": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-0"
+        }
+      }, {
+        "reference": {
+          "reference": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-1"
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_careplan"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationRequest",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieempfehlung" ]
+      },
+      "extension": [ {
+        "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "dnpm-dip/mtb/level-of-evidence/grading",
+            "code": "m2C",
+            "display": "m2C"
+          }, {
+            "system": "dnpm-dip/mtb/level-of-evidence/addendum",
+            "code": "iv",
+            "display": "iv"
+          } ]
+        }
+      } ],
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/medication-request-id",
+        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-0"
+      } ],
+      "status": "active",
+      "intent": "proposal",
+      "medicationCodeableConcept": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "L01XX73",
+          "display": "Sotorasib"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "authoredOn": "2025-12-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-0"
+    }
+  }, {
+    "resource": {
+      "resourceType": "MedicationRequest",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieempfehlung" ]
+      },
+      "extension": [ {
+        "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "dnpm-dip/mtb/level-of-evidence/grading",
+            "code": "m1C",
+            "display": "m1C"
+          }, {
+            "system": "dnpm-dip/mtb/level-of-evidence/addendum",
+            "code": "iv",
+            "display": "iv"
+          } ]
+        }
+      } ],
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/medication-request-id",
+        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-1"
+      } ],
+      "status": "active",
+      "intent": "proposal",
+      "medicationCodeableConcept": {
+        "coding": [ {
+          "system": "http://fhir.de/CodeSystem/bfarm/atc",
+          "code": "L01FX09",
+          "display": "Mogamulizumab"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "authoredOn": "2025-12-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-1"
+    }
+  }, {
+    "resource": {
       "resourceType": "Observation",
       "meta": {
         "source": "#dnpm",

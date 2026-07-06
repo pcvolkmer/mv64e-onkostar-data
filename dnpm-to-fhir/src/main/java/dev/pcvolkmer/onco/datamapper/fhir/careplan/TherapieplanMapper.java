@@ -23,6 +23,7 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.mtb.MtbCarePlan;
 import dev.pcvolkmer.onco.datamapper.fhir.CarePlanMapper;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
 
 public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
@@ -78,6 +79,20 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
                     reasonId)));
 
     // TODO Add planned activities
+    if (null != sourceItem.getMedicationRecommendations()) {
+      IntStream.range(0, sourceItem.getMedicationRecommendations().size())
+          .forEach(
+              idx -> {
+                final var reference =
+                    new Reference()
+                        .setReference(
+                            String.format(
+                                "MedicationRequest?identifier=%s|%s_medicationrequest-%d",
+                                this.getSystem(), sourceItem.getId(), idx));
+                result.addActivity(
+                    new CarePlan.CarePlanActivityComponent().setReference(reference));
+              });
+    }
 
     return result;
   }
