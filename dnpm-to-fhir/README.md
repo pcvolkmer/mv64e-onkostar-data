@@ -79,27 +79,31 @@ java -jar <dateiname>.jar --filename <file>
 
 ### MII-Onco - Bereich: TNM-Klassifikation
 
-| FHIR-Profil                     | Status           | MII Förderkriterien |
-|---------------------------------|------------------|---------------------|
-| TNM-Klassifikation: Observation | -                |                     |
-| TNM-Kategorie-T: Observation    | -                | Verpflichtend       |
-| TNM-Kategorie-N: Observation    | -                | Verpflichtend       |
-| TNM-Kategorie-M: Observation    | -                | Verpflichtend       |
-| Extension: TNM-Prefix(c/p)      | -                |                     |
-| TNM-Symbol-a: Observation       | Nicht vorgesehen |                     |
-| TNM-Symbol-m: Observation       | Nicht vorgesehen |                     |
-| TNM-Kategorie-L: Observation    | Nicht vorgesehen |                     |
-| TNM-Kategorie-Pn: Observation   | Nicht vorgesehen |                     |
-| TNM-Symbol-r: Observation       | Nicht vorgesehen |                     |
-| TNM-Kategorie-S: Observation    | Nicht vorgesehen |                     |
-| TNM-Kategorie-V: Observation    | Nicht vorgesehen |                     |
-| TNM-Symbol-y: Observation       | Nicht vorgesehen |                     |
+| FHIR-Profil                     | Status               | MII Förderkriterien |
+|---------------------------------|----------------------|---------------------|
+| TNM-Klassifikation: Observation | -                    |                     |
+| TNM-Kategorie-T: Observation    | -                    | Verpflichtend       |
+| TNM-Kategorie-N: Observation    | -                    | Verpflichtend       |
+| TNM-Kategorie-M: Observation    | -                    | Verpflichtend       |
+| Extension: TNM-Prefix(c/p)      | -                    |                     |
+| TNM-Symbol-a: Observation       | Nicht vorgesehen (1) |                     |
+| TNM-Symbol-m: Observation       | Nicht vorgesehen (1) |                     |
+| TNM-Kategorie-L: Observation    | Nicht vorgesehen (1) |                     |
+| TNM-Kategorie-Pn: Observation   | Nicht vorgesehen (1) |                     |
+| TNM-Symbol-r: Observation       | Nicht vorgesehen (1) |                     |
+| TNM-Kategorie-S: Observation    | Nicht vorgesehen (1) |                     |
+| TNM-Kategorie-V: Observation    | Nicht vorgesehen (1) |                     |
+| TNM-Symbol-y: Observation       | Nicht vorgesehen (1) |                     |
+
+1. DNPM-Datenmodell enthält nicht alle erforderlichen Angaben
 
 ### MII-Onco - Bereich: Fernmetastasen
 
-| FHIR-Profil                 | Status | MII Förderkriterien |
-|-----------------------------|--------|---------------------|
-| Fernmetastasen: Observation | -      | Verpflichtend       |
+| FHIR-Profil                 | Status               | MII Förderkriterien |
+|-----------------------------|----------------------|---------------------|
+| Fernmetastasen: Observation | Nicht vorgesehen (1) | Verpflichtend       |
+
+1. DNPM-Datenmodell enthält nicht alle erforderlichen Angaben
 
 ### MII-Onco - Bereich: Allgemeiner Leistungszustand
 
