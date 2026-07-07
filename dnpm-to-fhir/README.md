@@ -41,9 +41,8 @@ java -jar <dateiname>.jar --filename <file>
 | Variante - RNA-Fusion            | -                | Verpflichtend       |
 | Gen. Implikation - genetisch     | -                |                     |
 | Gen. Implikation - therapeutisch | -                |                     |
-| Mol Biomarker - Observation      | -                | Verpflichtend       |
 | Mol Biomarker - TMB              | ⛅                | Verpflichtend       |
-| Mol Biomarker - MSI              | -                | Verpflichtend       |
+| Mol Biomarker - MSI              | ⛅                | Verpflichtend       |
 | Mol Biomarker - HRD-Score        | ☔ (1)            | Verpflichtend       |
 | Mol Biomarker - BRCAness         | ⛅                | Verpflichtend       |
 | RNA-Seq                          | Nicht vorgesehen | Verpflichtend       |

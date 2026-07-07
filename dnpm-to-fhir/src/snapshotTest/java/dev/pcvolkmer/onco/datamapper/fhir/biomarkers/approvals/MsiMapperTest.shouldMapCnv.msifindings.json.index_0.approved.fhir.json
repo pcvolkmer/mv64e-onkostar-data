@@ -1,0 +1,34 @@
+{
+  "resourceType": "Observation",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-mikrosatelliteninstabilitaet" ]
+  },
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+    "value": "ba82a81a-dc93-4667-ba29-080a27279406_msi"
+  } ],
+  "status": "final",
+  "code": {
+    "coding": [ {
+      "system": "http://loinc.org",
+      "code": "81695-9",
+      "display": "Microsatellite instability [Interpretation] in Cancer specimen Qualitative"
+    } ]
+  },
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+  },
+  "valueQuantity": {
+    "value": 0.14136417072841295,
+    "system": "http://unitsofmeasure.org",
+    "code": "%"
+  },
+  "interpretation": [ {
+    "coding": [ {
+      "system": "dnpm-dip/mtb/msi/interpretation",
+      "code": "mmr-proficient",
+      "display": "MMR Proficient"
+    } ]
+  } ]
+}
