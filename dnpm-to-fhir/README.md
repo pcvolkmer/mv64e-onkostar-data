@@ -33,21 +33,20 @@ java -jar <dateiname>.jar --filename <file>
 
 ### MII-MTB – Bereich: NGS-Bericht
 
-| FHIR-Profil                      | Status           | 
-|----------------------------------|------------------|
-| Variante - Einfache Variante     | ⛅                |
-| Variante - Copy Number Variant   | ⛅                |
-| Variante - DNA-Fusion            | -                |
-| Variante - RNA-Fusion            | -                |
-| Gen. Implikation - genetisch     | -                |
-| Gen. Implikation - therapeutisch | -                |
-| Mol Biomarker - Observation      | -                |
-| Mol Biomarker - TMB              | -                |
-| Mol Biomarker - MSI              | -                |
-| Mol Biomarker - HRD-Score        | -                |
-| Mol Biomarker - BRCAness         | -                |
-| Mol Biomarker - Observation      | -                |
-| RNA-Seq                          | Nicht vorgesehen |
+| FHIR-Profil                      | Status           | MII Förderkriterien |
+|----------------------------------|------------------|---------------------|
+| Variante - Einfache Variante     | ⛅                | Verpflichtend       |
+| Variante - Copy Number Variant   | ⛅                | Verpflichtend       |
+| Variante - DNA-Fusion            | -                | Verpflichtend       |
+| Variante - RNA-Fusion            | -                | Verpflichtend       |
+| Gen. Implikation - genetisch     | -                |                     |
+| Gen. Implikation - therapeutisch | -                |                     |
+| Mol Biomarker - Observation      | -                | Verpflichtend       |
+| Mol Biomarker - TMB              | -                | Verpflichtend       |
+| Mol Biomarker - MSI              | -                | Verpflichtend       |
+| Mol Biomarker - HRD-Score        | -                | Verpflichtend       |
+| Mol Biomarker - BRCAness         | -                | Verpflichtend       |
+| RNA-Seq                          | Nicht vorgesehen | Verpflichtend       |
 
 ### MII-MTB – Bereich: Molekular-Pathologie-Befund
 
