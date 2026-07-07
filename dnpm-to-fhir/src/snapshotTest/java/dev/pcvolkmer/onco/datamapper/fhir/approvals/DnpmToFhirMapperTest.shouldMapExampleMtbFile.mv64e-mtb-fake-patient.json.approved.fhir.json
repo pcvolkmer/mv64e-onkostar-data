@@ -92,17 +92,93 @@
       } ],
       "activity": [ {
         "reference": {
-          "reference": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-0"
+          "reference": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|d1e90355-b1ba-46e1-a900-e439b63caea0_medicationrequest"
         }
       }, {
         "reference": {
-          "reference": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-1"
+          "reference": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|c0687be9-6c5e-44f0-b083-688f2f4e9e07_medicationrequest"
+        }
+      }, {
+        "reference": {
+          "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
         }
       } ]
     },
     "request": {
       "method": "PUT",
       "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_careplan"
+    }
+  }, {
+    "resource": {
+      "resourceType": "ServiceRequest",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-humangenetische-beratung-auftrag" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
+        "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
+      } ],
+      "status": "active",
+      "intent": "proposal",
+      "code": {
+        "coding": [ {
+          "system": "http://snomed.info/sct",
+          "code": "788339009",
+          "display": "Genetic consultation (procedure)"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "authoredOn": "2025-11-26",
+      "reasonCode": [ {
+        "coding": [ {
+          "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
+          "code": "other",
+          "display": "Andere"
+        } ]
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
+    }
+  }, {
+    "resource": {
+      "resourceType": "ServiceRequest",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-humangenetische-beratung-auftrag" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
+        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+      } ],
+      "status": "active",
+      "intent": "proposal",
+      "code": {
+        "coding": [ {
+          "system": "http://snomed.info/sct",
+          "code": "788339009",
+          "display": "Genetic consultation (procedure)"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "authoredOn": "2025-12-10",
+      "reasonCode": [ {
+        "coding": [ {
+          "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
+          "code": "other",
+          "display": "Andere"
+        } ]
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
     }
   }, {
     "resource": {
@@ -127,7 +203,7 @@
       } ],
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/medication-request-id",
-        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-0"
+        "value": "d1e90355-b1ba-46e1-a900-e439b63caea0_medicationrequest"
       } ],
       "status": "active",
       "intent": "proposal",
@@ -145,7 +221,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-0"
+      "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|d1e90355-b1ba-46e1-a900-e439b63caea0_medicationrequest"
     }
   }, {
     "resource": {
@@ -170,7 +246,7 @@
       } ],
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/medication-request-id",
-        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-1"
+        "value": "c0687be9-6c5e-44f0-b083-688f2f4e9e07_medicationrequest"
       } ],
       "status": "active",
       "intent": "proposal",
@@ -188,7 +264,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_medicationrequest-1"
+      "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|c0687be9-6c5e-44f0-b083-688f2f4e9e07_medicationrequest"
     }
   }, {
     "resource": {

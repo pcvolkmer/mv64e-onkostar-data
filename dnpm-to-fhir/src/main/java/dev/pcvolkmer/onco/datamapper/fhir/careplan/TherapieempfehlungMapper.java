@@ -20,33 +20,26 @@
 package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.MtbCarePlan;
 import dev.pcvolkmer.mv64e.mtb.MtbMedicationRecommendation;
-import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.MedicationRequestMapper;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
 
-public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicationRecommendation>
-    implements ManyMapper<MtbCarePlan, MedicationRequest> {
+public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicationRecommendation> {
 
   @Override
   protected String getPatientId(MtbMedicationRecommendation item) {
-    throw new UnsupportedOperationException("Not implemented");
+    return item.getPatient().getId();
   }
 
   @Override
   protected String getId(MtbMedicationRecommendation item) {
-    throw new UnsupportedOperationException("Not implemented");
+    return String.format("%s_medicationrequest", item.getId());
   }
 
   @Override
   public MedicationRequest map(MtbMedicationRecommendation sourceItem) {
     var result = new MedicationRequest();
-    result.addIdentifier().setSystem(this.getSystem()).setValue(sourceItem.getId());
+    result.addIdentifier().setSystem(this.getSystem()).setValue(this.getId(sourceItem));
 
     result.setMeta(
         new Meta()
@@ -112,53 +105,8 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
 
     result.setMedication(medication);
 
+    result.setSubject(this.getPatientReference(sourceItem));
+
     return result;
-  }
-
-  @Override
-  public void addManyToBundle(Bundle bundle, MtbCarePlan sourceItem) {
-    final var patientReference =
-        new Reference()
-            .setReference(
-                String.format(
-                    "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|%s",
-                    sourceItem.getPatient().getId()));
-
-    final var newItems = this.mapToMany(sourceItem);
-
-    IntStream.range(0, newItems.size())
-        .forEach(
-            idx -> {
-              final var requestUrl =
-                  String.format(
-                      "MedicationRequest?identifier=%s|%s_medicationrequest-%d",
-                      this.getSystem(), sourceItem.getId(), idx);
-
-              final var newItem = newItems.get(idx);
-              newItem.setSubject(patientReference);
-              newItem.setIdentifier(
-                  List.of(
-                      new Identifier()
-                          .setSystem(this.getSystem())
-                          .setValue(
-                              String.format("%s_medicationrequest-%d", sourceItem.getId(), idx))));
-
-              bundle
-                  .addEntry()
-                  .setResource(newItem)
-                  .getRequest()
-                  .setMethod(Bundle.HTTPVerb.PUT)
-                  .setUrl(requestUrl);
-            });
-  }
-
-  @Override
-  public List<MedicationRequest> mapToMany(MtbCarePlan sourceItem) {
-    if (sourceItem.getMedicationRecommendations() == null) {
-      return Collections.emptyList();
-    }
-    return sourceItem.getMedicationRecommendations().stream()
-        .map(this::map)
-        .collect(Collectors.toList());
   }
 }

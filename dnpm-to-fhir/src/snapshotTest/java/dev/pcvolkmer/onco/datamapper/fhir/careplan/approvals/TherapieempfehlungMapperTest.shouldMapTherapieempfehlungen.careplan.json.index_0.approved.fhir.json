@@ -20,7 +20,7 @@
   } ],
   "identifier": [ {
     "system": "https://fhir.diz.uni-marburg.de/sid/medication-request-id",
-    "value": "d1e90355-b1ba-46e1-a900-e439b63caea0"
+    "value": "d1e90355-b1ba-46e1-a900-e439b63caea0_medicationrequest"
   } ],
   "status": "active",
   "intent": "proposal",
@@ -30,6 +30,9 @@
       "code": "L01XX73",
       "display": "Sotorasib"
     } ]
+  },
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
   },
   "authoredOn": "2025-12-10"
 }

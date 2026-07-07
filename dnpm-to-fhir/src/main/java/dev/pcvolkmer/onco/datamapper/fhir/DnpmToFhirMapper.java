@@ -20,6 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import dev.pcvolkmer.mv64e.mtb.Mtb;
+import dev.pcvolkmer.onco.datamapper.fhir.careplan.HumangenetischeBeratungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieempfehlungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieplanMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.DiagnoseMapper;
@@ -41,6 +42,10 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
             String.format(
                 "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|%s",
                 this.getPatientId(item)));
+  }
+
+  public Reference getReference(S item) {
+    return new Reference().setReference(this.getRequestUrl(item));
   }
 
   @Override
@@ -68,8 +73,14 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     final var therapieplanMapper = new TherapieplanMapper();
     mtb.getCarePlans().forEach(item -> therapieplanMapper.addToBundle(bundle, item));
 
+    final var humangenetischeBeratungMapper = new HumangenetischeBeratungMapper();
+    mtb.getCarePlans().forEach(item -> humangenetischeBeratungMapper.addToBundle(bundle, item));
+
     final var therapieempfehlungMapper = new TherapieempfehlungMapper();
-    mtb.getCarePlans().forEach(item -> therapieempfehlungMapper.addManyToBundle(bundle, item));
+    mtb.getCarePlans().stream()
+        .filter(item -> item.getMedicationRecommendations() != null)
+        .flatMap(item -> item.getMedicationRecommendations().stream())
+        .forEach(item -> therapieempfehlungMapper.addToBundle(bundle, item));
 
     final var tumorausbreitungMapper = new TumorausbreitungMapper();
     mtb.getDiagnoses().forEach(item -> tumorausbreitungMapper.addManyToBundle(bundle, item));
@@ -87,6 +98,7 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
     final var cnvMapper = new CnvMapper();
     mtb.getNgsReports().stream()
+        .filter(item -> item.getResults().getCopyNumberVariants() != null)
         .flatMap(item -> item.getResults().getCopyNumberVariants().stream())
         .forEach(item -> cnvMapper.addToBundle(bundle, item));
 

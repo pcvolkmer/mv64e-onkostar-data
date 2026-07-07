@@ -23,7 +23,6 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.mtb.MtbCarePlan;
 import dev.pcvolkmer.onco.datamapper.fhir.CarePlanMapper;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
 
 public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
@@ -80,18 +79,20 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
 
     // TODO Add planned activities
     if (null != sourceItem.getMedicationRecommendations()) {
-      IntStream.range(0, sourceItem.getMedicationRecommendations().size())
+      sourceItem
+          .getMedicationRecommendations()
           .forEach(
-              idx -> {
-                final var reference =
-                    new Reference()
-                        .setReference(
-                            String.format(
-                                "MedicationRequest?identifier=%s|%s_medicationrequest-%d",
-                                this.getSystem(), sourceItem.getId(), idx));
+              item -> {
                 result.addActivity(
-                    new CarePlan.CarePlanActivityComponent().setReference(reference));
+                    new CarePlan.CarePlanActivityComponent()
+                        .setReference(new TherapieempfehlungMapper().getReference(item)));
               });
+    }
+
+    if (null != sourceItem.getGeneticCounselingRecommendation()) {
+      result.addActivity(
+          new CarePlan.CarePlanActivityComponent()
+              .setReference(new HumangenetischeBeratungMapper().getReference(sourceItem)));
     }
 
     return result;
