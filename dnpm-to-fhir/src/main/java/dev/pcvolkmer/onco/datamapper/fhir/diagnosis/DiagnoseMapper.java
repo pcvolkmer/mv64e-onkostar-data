@@ -28,6 +28,16 @@ import org.hl7.fhir.r4.model.*;
 public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
 
   @Override
+  protected String getPatientId(MtbDiagnosis item) {
+    return item.getPatient().getId();
+  }
+
+  @Override
+  protected String getId(MtbDiagnosis item) {
+    return item.getId();
+  }
+
+  @Override
   public Condition map(MtbDiagnosis diagnose) {
     var condition = new Condition();
     condition.addIdentifier().setSystem(this.getSystem()).setValue(diagnose.getId());
@@ -63,15 +73,5 @@ public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
     }
 
     return condition;
-  }
-
-  @Override
-  protected String getPatientId(MtbDiagnosis item) {
-    return item.getPatient().getId();
-  }
-
-  @Override
-  protected String getId(MtbDiagnosis item) {
-    return item.getId();
   }
 }

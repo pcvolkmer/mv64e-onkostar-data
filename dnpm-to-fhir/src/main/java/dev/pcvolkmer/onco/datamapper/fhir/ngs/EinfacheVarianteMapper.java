@@ -31,13 +31,13 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
 
   @Override
   protected String getId(Snv item) {
-    return item.getId();
+    return String.format("%s_ngssv", item.getId());
   }
 
   @Override
   public Observation map(Snv sourceItem) {
     var result = new Observation();
-    result.addIdentifier().setSystem(this.getSystem()).setValue(sourceItem.getId());
+    result.addIdentifier().setSystem(this.getSystem()).setValue(this.getId(sourceItem));
 
     result.setMeta(
         new Meta()

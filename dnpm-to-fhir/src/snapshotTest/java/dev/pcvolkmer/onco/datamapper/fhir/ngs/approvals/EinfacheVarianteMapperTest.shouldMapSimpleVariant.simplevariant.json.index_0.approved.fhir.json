@@ -6,7 +6,7 @@
   },
   "identifier": [ {
     "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
-    "value": "5f6a055f-9cea-4b87-882f-76e308aa208a"
+    "value": "5f6a055f-9cea-4b87-882f-76e308aa208a_ngssv"
   } ],
   "status": "final",
   "category": [ {

@@ -31,13 +31,13 @@ public class CnvMapper extends ObservationMapper<Cnv> {
 
   @Override
   protected String getId(Cnv item) {
-    return item.getId();
+    return String.format("%s_ngscnv", item.getId());
   }
 
   @Override
   public Observation map(Cnv sourceItem) {
     var result = new Observation();
-    result.addIdentifier().setSystem(this.getSystem()).setValue(sourceItem.getId());
+    result.addIdentifier().setSystem(this.getSystem()).setValue(this.getId(sourceItem));
 
     result.setMeta(
         new Meta()

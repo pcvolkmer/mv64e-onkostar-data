@@ -82,11 +82,10 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
       sourceItem
           .getMedicationRecommendations()
           .forEach(
-              item -> {
-                result.addActivity(
-                    new CarePlan.CarePlanActivityComponent()
-                        .setReference(new TherapieempfehlungMapper().getReference(item)));
-              });
+              item ->
+                  result.addActivity(
+                      new CarePlan.CarePlanActivityComponent()
+                          .setReference(new TherapieempfehlungMapper().getReference(item))));
     }
 
     if (null != sourceItem.getGeneticCounselingRecommendation()) {
@@ -99,11 +98,10 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
       sourceItem
           .getStudyEnrollmentRecommendations()
           .forEach(
-              item -> {
-                result.addActivity(
-                    new CarePlan.CarePlanActivityComponent()
-                        .setReference(new StudieneinschlussMapper().getReference(item)));
-              });
+              item ->
+                  result.addActivity(
+                      new CarePlan.CarePlanActivityComponent()
+                          .setReference(new StudieneinschlussMapper().getReference(item))));
     }
 
     return result;

@@ -94,13 +94,12 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
       sourceItem
           .getMedication()
           .forEach(
-              medCoding -> {
-                medication.addCoding(
-                    new Coding()
-                        .setSystem(medCoding.getSystem().toValue())
-                        .setCode(medCoding.getCode())
-                        .setDisplay(medCoding.getDisplay()));
-              });
+              medCoding ->
+                  medication.addCoding(
+                      new Coding()
+                          .setSystem(medCoding.getSystem().toValue())
+                          .setCode(medCoding.getCode())
+                          .setDisplay(medCoding.getDisplay())));
     }
 
     result.setMedication(medication);
