@@ -24,7 +24,8 @@ import dev.pcvolkmer.onco.datamapper.fhir.careplan.HumangenetischeBeratungMapper
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.StudieneinschlussMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieempfehlungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieplanMapper;
-import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.DiagnoseMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.MtbDiagnoseMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.OncoDiagnoseMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorzellgehaltMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.CnvMapper;
@@ -68,8 +69,11 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
     bundle.setType(Bundle.BundleType.TRANSACTION);
 
-    final var diagnoseMapper = new DiagnoseMapper();
-    mtb.getDiagnoses().forEach(item -> diagnoseMapper.addToBundle(bundle, item));
+    final var mtbDiagnoseMapper = new MtbDiagnoseMapper();
+    mtb.getDiagnoses().forEach(item -> mtbDiagnoseMapper.addToBundle(bundle, item));
+
+    final var oncoDiagnoseMapper = new OncoDiagnoseMapper();
+    mtb.getDiagnoses().forEach(item -> oncoDiagnoseMapper.addToBundle(bundle, item));
 
     final var therapieplanMapper = new TherapieplanMapper();
     mtb.getCarePlans().forEach(item -> therapieplanMapper.addToBundle(bundle, item));

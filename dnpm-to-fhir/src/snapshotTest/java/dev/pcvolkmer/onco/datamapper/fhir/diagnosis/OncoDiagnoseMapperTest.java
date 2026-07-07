@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class DiagnoseMapperTest extends DnpmToFhirTest {
+class OncoDiagnoseMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"diagnosis.json"})
@@ -36,7 +36,7 @@ class DiagnoseMapperTest extends DnpmToFhirTest {
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
 
-    final var diagnoseMapper = new DiagnoseMapper();
+    final var diagnoseMapper = new OncoDiagnoseMapper();
 
     var fhir = mtb.getDiagnoses().stream().map(diagnoseMapper::map).collect(Collectors.toList());
 
