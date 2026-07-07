@@ -25,7 +25,7 @@ import dev.pcvolkmer.onco.datamapper.fhir.ConditionMapper;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;
 
-public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
+public class MtbDiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
 
   @Override
   protected String getPatientId(MtbDiagnosis item) {
@@ -34,7 +34,7 @@ public class DiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
 
   @Override
   protected String getId(MtbDiagnosis item) {
-    return item.getId();
+    return String.format("%s_mtbdiagnose", item.getId());
   }
 
   @Override

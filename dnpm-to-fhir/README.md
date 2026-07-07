@@ -70,10 +70,12 @@ java -jar <dateiname>.jar --filename <file>
 
 | FHIR-Profil                          | Status | MII Förderkriterien |
 |--------------------------------------|--------|---------------------|
-| Diagnose: Condition                  | -      | Verpflichtend       |
+| Diagnose: Condition                  | ⛅ (1)  | Verpflichtend       |
 | Frühere Tumorerkrankungen: Condition | -      |                     |
 | Extension: ICD-O-3 Morphologie       | -      |                     |
 | Erstdiagnose Evidenz: List           | -      |                     |
+
+1. Aktuell ohne Morphologie. Verfikationsstatus ist im § MV 64e immer gesichert.
 
 ### MII-Onco - Bereich: TNM-Klassifikation
 
@@ -99,7 +101,7 @@ java -jar <dateiname>.jar --filename <file>
 |-----------------------------|--------|---------------------|
 | Fernmetastasen: Observation | -      | Verpflichtend       |
 
-### MII-Onco - Bereich:  Allgemeiner Leistungszustand
+### MII-Onco - Bereich: Allgemeiner Leistungszustand
 
 | FHIR-Profil                       | Status |
 |-----------------------------------|--------|
