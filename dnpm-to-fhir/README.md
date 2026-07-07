@@ -23,12 +23,12 @@ java -jar <dateiname>.jar --filename <file>
 | Probe - Tumorzellgehalt             | ⛅                |
 | Therapieplan - CarePlan             | ☔ (3)            |
 | Therapieplan - Therapieempfehlung   | ⛅                |
-| Therapieplan - Studieneinschluss    | -                |
+| Therapieplan - Studieneinschluss    | ⛅                |
 | Therapieplan - Weitere Empfehlungen | ☔ (4)            |
 
 1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
 2. Eingefügt nur, wenn DNPM-System `dnpm-dip/mtb/who-grading-cns-tumors` gegeben.
-3. Aktuell nur mit Wirkstoffempfehlungen und humangenetischen Beratungen
+3. Aktuell nur mit Wirkstoffempfehlungen, Studieneinschlussempfehlungen und humangenetischen Beratungen
 4. Aktuell nur humangenetische Beratung
 
 ### MII-MTB – Bereich: NGS-Bericht

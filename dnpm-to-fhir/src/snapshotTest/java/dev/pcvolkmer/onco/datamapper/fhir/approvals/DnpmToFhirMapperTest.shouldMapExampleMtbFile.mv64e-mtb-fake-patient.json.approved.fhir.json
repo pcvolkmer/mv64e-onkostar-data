@@ -102,6 +102,10 @@
         "reference": {
           "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
         }
+      }, {
+        "reference": {
+          "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|ab153511-2582-4a12-83c1-399cbf3ba9bf_studieneinschluss"
+        }
       } ]
     },
     "request": {
@@ -265,6 +269,28 @@
     "request": {
       "method": "PUT",
       "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|c0687be9-6c5e-44f0-b083-688f2f4e9e07_medicationrequest"
+    }
+  }, {
+    "resource": {
+      "resourceType": "ServiceRequest",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-studieneinschluss-anfrage" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
+        "value": "ab153511-2582-4a12-83c1-399cbf3ba9bf_studieneinschluss"
+      } ],
+      "status": "active",
+      "intent": "proposal",
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "authoredOn": "2025-12-10"
+    },
+    "request": {
+      "method": "PUT",
+      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|ab153511-2582-4a12-83c1-399cbf3ba9bf_studieneinschluss"
     }
   }, {
     "resource": {

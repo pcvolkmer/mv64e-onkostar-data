@@ -35,5 +35,9 @@
     "reference": {
       "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
     }
+  }, {
+    "reference": {
+      "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|ab153511-2582-4a12-83c1-399cbf3ba9bf_studieneinschluss"
+    }
   } ]
 }
