@@ -20,6 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import dev.pcvolkmer.mv64e.mtb.Mtb;
+import dev.pcvolkmer.onco.datamapper.fhir.biomarker.HrdScoreMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.HumangenetischeBeratungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.StudieneinschlussMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieempfehlungMapper;
@@ -112,6 +113,12 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
         .filter(item -> item.getResults().getCopyNumberVariants() != null)
         .flatMap(item -> item.getResults().getCopyNumberVariants().stream())
         .forEach(item -> cnvMapper.addToBundle(bundle, item));
+
+    final var hrdScoreMapper = new HrdScoreMapper();
+    mtb.getNgsReports().stream()
+        .filter(item -> item.getResults().getHrdScore() != null)
+        .map(item -> item.getResults().getHrdScore())
+        .forEach(item -> hrdScoreMapper.addToBundle(bundle, item));
 
     return bundle;
   }
