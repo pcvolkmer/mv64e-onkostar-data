@@ -1,0 +1,31 @@
+{
+  "resourceType": "ServiceRequest",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-humangenetische-beratung-auftrag" ]
+  },
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
+    "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
+  } ],
+  "status": "active",
+  "intent": "proposal",
+  "code": {
+    "coding": [ {
+      "system": "http://snomed.info/sct",
+      "code": "788339009",
+      "display": "Genetic consultation (procedure)"
+    } ]
+  },
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+  },
+  "authoredOn": "2025-11-26",
+  "reasonCode": [ {
+    "coding": [ {
+      "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
+      "code": "other",
+      "display": "Andere"
+    } ]
+  } ]
+}

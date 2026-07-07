@@ -27,23 +27,18 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class TherapieempfehlungMapperTest extends DnpmToFhirTest {
+class HumandgenetischeBeratungMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"careplan.json"})
-  void shouldMapTherapieempfehlungen(String filename) throws IOException {
+  void shouldMapDiagnose(String filename) throws IOException {
     var inputStream =
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
 
-    final var mapper = new TherapieempfehlungMapper();
+    final var mapper = new HumangenetischeBeratungMapper();
 
-    var fhir =
-        mtb.getCarePlans().stream()
-            .filter(item -> item.getMedicationRecommendations() != null)
-            .flatMap(item -> item.getMedicationRecommendations().stream())
-            .map(mapper::map)
-            .collect(Collectors.toList());
+    var fhir = mtb.getCarePlans().stream().map(mapper::map).collect(Collectors.toList());
 
     verifyAll(fhir, filename);
   }
