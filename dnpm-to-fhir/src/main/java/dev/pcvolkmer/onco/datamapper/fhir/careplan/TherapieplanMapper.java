@@ -95,6 +95,17 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
               .setReference(new HumangenetischeBeratungMapper().getReference(sourceItem)));
     }
 
+    if (null != sourceItem.getStudyEnrollmentRecommendations()) {
+      sourceItem
+          .getStudyEnrollmentRecommendations()
+          .forEach(
+              item -> {
+                result.addActivity(
+                    new CarePlan.CarePlanActivityComponent()
+                        .setReference(new StudieneinschlussMapper().getReference(item)));
+              });
+    }
+
     return result;
   }
 }
