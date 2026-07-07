@@ -44,9 +44,12 @@ java -jar <dateiname>.jar --filename <file>
 | Mol Biomarker - Observation      | -                | Verpflichtend       |
 | Mol Biomarker - TMB              | -                | Verpflichtend       |
 | Mol Biomarker - MSI              | -                | Verpflichtend       |
-| Mol Biomarker - HRD-Score        | -                | Verpflichtend       |
+| Mol Biomarker - HRD-Score        | ☔ (1)            | Verpflichtend       |
 | Mol Biomarker - BRCAness         | -                | Verpflichtend       |
 | RNA-Seq                          | Nicht vorgesehen | Verpflichtend       |
+
+1. Profil verlangt Werte als IntegerType, die jedoch immer ein Double sind. 
+   Modellierung vermutlich nicht korrekt. Umgesetzt ohne optionale Werte.
 
 ### MII-MTB – Bereich: Molekular-Pathologie-Befund
 
