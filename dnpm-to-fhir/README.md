@@ -66,8 +66,41 @@ java -jar <dateiname>.jar --filename <file>
 | Systemische Therapie   | -      |
 | Antrag Kostenübernahme | -      |
 
-### MII-Onco - Bereich: Allgemeiner Leistungszustand
+### MII-Onco - Bereich: Diagnosen
 
-| FHIR-Profil                       | Status | 
+| FHIR-Profil                          | Status | MII Förderkriterien |
+|--------------------------------------|--------|---------------------|
+| Diagnose: Condition                  | -      | Verpflichtend       |
+| Frühere Tumorerkrankungen: Condition | -      |                     |
+| Extension: ICD-O-3 Morphologie       | -      |                     |
+| Erstdiagnose Evidenz: List           | -      |                     |
+
+### MII-Onco - Bereich: TNM-Klassifikation
+
+| FHIR-Profil                     | Status           | MII Förderkriterien |
+|---------------------------------|------------------|---------------------|
+| TNM-Klassifikation: Observation | -                |                     |
+| TNM-Kategorie-T: Observation    | -                | Verpflichtend       |
+| TNM-Kategorie-N: Observation    | -                | Verpflichtend       |
+| TNM-Kategorie-M: Observation    | -                | Verpflichtend       |
+| Extension: TNM-Prefix(c/p)      | -                |                     |
+| TNM-Symbol-a: Observation       | Nicht vorgesehen |                     |
+| TNM-Symbol-m: Observation       | Nicht vorgesehen |                     |
+| TNM-Kategorie-L: Observation    | Nicht vorgesehen |                     |
+| TNM-Kategorie-Pn: Observation   | Nicht vorgesehen |                     |
+| TNM-Symbol-r: Observation       | Nicht vorgesehen |                     |
+| TNM-Kategorie-S: Observation    | Nicht vorgesehen |                     |
+| TNM-Kategorie-V: Observation    | Nicht vorgesehen |                     |
+| TNM-Symbol-y: Observation       | Nicht vorgesehen |                     |
+
+### MII-Onco - Bereich: Fernmetastasen
+
+| FHIR-Profil                 | Status | MII Förderkriterien |
+|-----------------------------|--------|---------------------|
+| Fernmetastasen: Observation | -      | Verpflichtend       |
+
+### MII-Onco - Bereich:  Allgemeiner Leistungszustand
+
+| FHIR-Profil                       | Status |
 |-----------------------------------|--------|
 | Allgemeiner Leistungszustand ECOG | ⛅      |
