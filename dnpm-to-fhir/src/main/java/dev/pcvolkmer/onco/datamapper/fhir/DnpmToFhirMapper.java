@@ -76,79 +76,98 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
     bundle.setType(Bundle.BundleType.TRANSACTION);
 
-    final var mtbDiagnoseMapper = new MtbDiagnoseMapper();
-    mtb.getDiagnoses().forEach(item -> mtbDiagnoseMapper.addToBundle(bundle, item));
+    final var diagnoses = mtb.getDiagnoses();
+    if (null != diagnoses) {
+      final var mtbDiagnoseMapper = new MtbDiagnoseMapper();
+      diagnoses.forEach(item -> mtbDiagnoseMapper.addToBundle(bundle, item));
 
-    final var oncoDiagnoseMapper = new OncoDiagnoseMapper();
-    mtb.getDiagnoses().forEach(item -> oncoDiagnoseMapper.addToBundle(bundle, item));
+      final var oncoDiagnoseMapper = new OncoDiagnoseMapper();
+      diagnoses.forEach(item -> oncoDiagnoseMapper.addToBundle(bundle, item));
 
-    final var therapieplanMapper = new TherapieplanMapper();
-    mtb.getCarePlans().forEach(item -> therapieplanMapper.addToBundle(bundle, item));
+      final var tumorausbreitungMapper = new TumorausbreitungMapper();
+      diagnoses.forEach(item -> tumorausbreitungMapper.addManyToBundle(bundle, item));
 
-    final var humangenetischeBeratungMapper = new HumangenetischeBeratungMapper();
-    mtb.getCarePlans().forEach(item -> humangenetischeBeratungMapper.addToBundle(bundle, item));
+      final var tnmtMapper = new TnmTMapper();
+      diagnoses.forEach(item -> tnmtMapper.addManyToBundle(bundle, item));
 
-    final var therapieempfehlungMapper = new TherapieempfehlungMapper();
-    mtb.getCarePlans().stream()
-        .filter(item -> item.getMedicationRecommendations() != null)
-        .flatMap(item -> item.getMedicationRecommendations().stream())
-        .forEach(item -> therapieempfehlungMapper.addToBundle(bundle, item));
+      final var tnmnMapper = new TnmNMapper();
+      diagnoses.forEach(item -> tnmnMapper.addManyToBundle(bundle, item));
 
-    final var studieneinschlussMapper = new StudieneinschlussMapper();
-    mtb.getCarePlans().stream()
-        .filter(item -> item.getStudyEnrollmentRecommendations() != null)
-        .flatMap(item -> item.getStudyEnrollmentRecommendations().stream())
-        .forEach(item -> studieneinschlussMapper.addToBundle(bundle, item));
+      final var tnmmMapper = new TnmMMapper();
+      diagnoses.forEach(item -> tnmmMapper.addManyToBundle(bundle, item));
+    }
 
-    final var tumorausbreitungMapper = new TumorausbreitungMapper();
-    mtb.getDiagnoses().forEach(item -> tumorausbreitungMapper.addManyToBundle(bundle, item));
+    final var carePlans = mtb.getCarePlans();
+    if (null != carePlans) {
+      final var therapieplanMapper = new TherapieplanMapper();
+      carePlans.forEach(item -> therapieplanMapper.addToBundle(bundle, item));
 
-    final var tumorzellgehaltMapper = new TumorzellgehaltMapper();
-    mtb.getHistologyReports().forEach(item -> tumorzellgehaltMapper.addToBundle(bundle, item));
+      final var humangenetischeBeratungMapper = new HumangenetischeBeratungMapper();
+      carePlans.forEach(item -> humangenetischeBeratungMapper.addToBundle(bundle, item));
 
-    final var ecogMapper = new EcogMapper();
-    mtb.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
+      final var therapieempfehlungMapper = new TherapieempfehlungMapper();
+      carePlans.stream()
+          .filter(item -> item.getMedicationRecommendations() != null)
+          .flatMap(item -> item.getMedicationRecommendations().stream())
+          .forEach(item -> therapieempfehlungMapper.addToBundle(bundle, item));
 
-    final var einfacheVarianteMapper = new EinfacheVarianteMapper();
-    mtb.getNgsReports().stream()
-        .flatMap(item -> item.getResults().getSimpleVariants().stream())
-        .forEach(item -> einfacheVarianteMapper.addToBundle(bundle, item));
+      final var studieneinschlussMapper = new StudieneinschlussMapper();
+      carePlans.stream()
+          .filter(item -> item.getStudyEnrollmentRecommendations() != null)
+          .flatMap(item -> item.getStudyEnrollmentRecommendations().stream())
+          .forEach(item -> studieneinschlussMapper.addToBundle(bundle, item));
+    }
 
-    final var cnvMapper = new CnvMapper();
-    mtb.getNgsReports().stream()
-        .filter(item -> item.getResults().getCopyNumberVariants() != null)
-        .flatMap(item -> item.getResults().getCopyNumberVariants().stream())
-        .forEach(item -> cnvMapper.addToBundle(bundle, item));
+    final var histologieReports = mtb.getHistologyReports();
+    if (null != histologieReports) {
+      final var tumorzellgehaltMapper = new TumorzellgehaltMapper();
+      histologieReports.forEach(item -> tumorzellgehaltMapper.addToBundle(bundle, item));
+    }
 
-    final var hrdScoreMapper = new HrdScoreMapper();
-    mtb.getNgsReports().stream()
-        .filter(item -> item.getResults().getHrdScore() != null)
-        .map(item -> item.getResults().getHrdScore())
-        .forEach(item -> hrdScoreMapper.addToBundle(bundle, item));
+    final var performanceStatus = mtb.getPerformanceStatus();
+    if (null != performanceStatus) {
+      final var ecogMapper = new EcogMapper();
+      mtb.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
+    }
 
-    final var msiMapper = new MsiMapper();
-    mtb.getMsiFindings().forEach(item -> msiMapper.addToBundle(bundle, item));
+    final var ngsReports = mtb.getNgsReports();
+    if (null != ngsReports) {
 
-    final var brcanessMapper = new BrcanessMapper();
-    mtb.getNgsReports().stream()
-        .filter(item -> item.getResults().getBrcaness() != null)
-        .map(item -> item.getResults().getBrcaness())
-        .forEach(item -> brcanessMapper.addToBundle(bundle, item));
+      final var einfacheVarianteMapper = new EinfacheVarianteMapper();
+      ngsReports.stream()
+          .flatMap(item -> item.getResults().getSimpleVariants().stream())
+          .forEach(item -> einfacheVarianteMapper.addToBundle(bundle, item));
 
-    final var tmbMapper = new TmbMapper();
-    mtb.getNgsReports().stream()
-        .filter(item -> item.getResults().getTmb() != null)
-        .map(item -> item.getResults().getTmb())
-        .forEach(item -> tmbMapper.addToBundle(bundle, item));
+      final var cnvMapper = new CnvMapper();
+      ngsReports.stream()
+          .filter(item -> item.getResults().getCopyNumberVariants() != null)
+          .flatMap(item -> item.getResults().getCopyNumberVariants().stream())
+          .forEach(item -> cnvMapper.addToBundle(bundle, item));
 
-    final var tnmtMapper = new TnmTMapper();
-    mtb.getDiagnoses().forEach(item -> tnmtMapper.addManyToBundle(bundle, item));
+      final var hrdScoreMapper = new HrdScoreMapper();
+      ngsReports.stream()
+          .filter(item -> item.getResults().getHrdScore() != null)
+          .map(item -> item.getResults().getHrdScore())
+          .forEach(item -> hrdScoreMapper.addToBundle(bundle, item));
 
-    final var tnmnMapper = new TnmNMapper();
-    mtb.getDiagnoses().forEach(item -> tnmnMapper.addManyToBundle(bundle, item));
+      final var brcanessMapper = new BrcanessMapper();
+      ngsReports.stream()
+          .filter(item -> item.getResults().getBrcaness() != null)
+          .map(item -> item.getResults().getBrcaness())
+          .forEach(item -> brcanessMapper.addToBundle(bundle, item));
 
-    final var tnmmMapper = new TnmMMapper();
-    mtb.getDiagnoses().forEach(item -> tnmmMapper.addManyToBundle(bundle, item));
+      final var tmbMapper = new TmbMapper();
+      ngsReports.stream()
+          .filter(item -> item.getResults().getTmb() != null)
+          .map(item -> item.getResults().getTmb())
+          .forEach(item -> tmbMapper.addToBundle(bundle, item));
+    }
+
+    final var msiFindings = mtb.getMsiFindings();
+    if (null != msiFindings) {
+      final var msiMapper = new MsiMapper();
+      mtb.getMsiFindings().forEach(item -> msiMapper.addToBundle(bundle, item));
+    }
 
     return bundle;
   }

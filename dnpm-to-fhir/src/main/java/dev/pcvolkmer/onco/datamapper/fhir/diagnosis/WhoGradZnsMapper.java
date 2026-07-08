@@ -136,9 +136,13 @@ public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
 
   @Override
   public List<Observation> mapToMany(MtbDiagnosis sourceItem) {
-    return sourceItem.getGrading().getHistory().stream()
-        .map(this::map)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+    final var grading = sourceItem.getGrading();
+    if (null != grading && null != grading.getHistory()) {
+      return grading.getHistory().stream()
+          .filter(Objects::nonNull)
+          .map(this::map)
+          .collect(Collectors.toList());
+    }
+    return List.of();
   }
 }

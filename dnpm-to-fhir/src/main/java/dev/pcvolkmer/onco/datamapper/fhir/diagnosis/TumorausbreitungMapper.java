@@ -25,6 +25,7 @@ import dev.pcvolkmer.mv64e.mtb.TumorStaging;
 import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
@@ -140,8 +141,13 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
 
   @Override
   public List<Observation> mapToMany(MtbDiagnosis sourceItem) {
-    return sourceItem.getStaging().getHistory().stream()
-        .map(this::map)
-        .collect(Collectors.toList());
+    final var staging = sourceItem.getStaging();
+    if (null != staging && null != staging.getHistory()) {
+      return staging.getHistory().stream()
+          .filter(Objects::nonNull)
+          .map(this::map)
+          .collect(Collectors.toList());
+    }
+    return List.of();
   }
 }
