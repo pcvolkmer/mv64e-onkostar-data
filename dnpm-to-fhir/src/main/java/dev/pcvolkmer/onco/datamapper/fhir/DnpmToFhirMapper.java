@@ -34,6 +34,9 @@ import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorzellgehaltMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.CnvMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.EinfacheVarianteMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmMMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmNMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmTMapper;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
@@ -137,6 +140,15 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
         .filter(item -> item.getResults().getTmb() != null)
         .map(item -> item.getResults().getTmb())
         .forEach(item -> tmbMapper.addToBundle(bundle, item));
+
+    final var tnmtMapper = new TnmTMapper();
+    mtb.getDiagnoses().forEach(item -> tnmtMapper.addManyToBundle(bundle, item));
+
+    final var tnmnMapper = new TnmNMapper();
+    mtb.getDiagnoses().forEach(item -> tnmnMapper.addManyToBundle(bundle, item));
+
+    final var tnmmMapper = new TnmMMapper();
+    mtb.getDiagnoses().forEach(item -> tnmmMapper.addManyToBundle(bundle, item));
 
     return bundle;
   }

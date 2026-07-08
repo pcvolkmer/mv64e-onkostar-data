@@ -83,21 +83,21 @@ java -jar <dateiname>.jar --filename <file>
 
 | FHIR-Profil                     | Status               | MII Förderkriterien |
 |---------------------------------|----------------------|---------------------|
-| TNM-Klassifikation: Observation | -                    |                     |
-| TNM-Kategorie-T: Observation    | -                    | Verpflichtend       |
-| TNM-Kategorie-N: Observation    | -                    | Verpflichtend       |
-| TNM-Kategorie-M: Observation    | -                    | Verpflichtend       |
-| Extension: TNM-Prefix(c/p)      | -                    |                     |
-| TNM-Symbol-a: Observation       | Nicht vorgesehen (1) |                     |
-| TNM-Symbol-m: Observation       | Nicht vorgesehen (1) |                     |
-| TNM-Kategorie-L: Observation    | Nicht vorgesehen (1) |                     |
-| TNM-Kategorie-Pn: Observation   | Nicht vorgesehen (1) |                     |
-| TNM-Symbol-r: Observation       | Nicht vorgesehen (1) |                     |
-| TNM-Kategorie-S: Observation    | Nicht vorgesehen (1) |                     |
-| TNM-Kategorie-V: Observation    | Nicht vorgesehen (1) |                     |
-| TNM-Symbol-y: Observation       | Nicht vorgesehen (1) |                     |
+| TNM-Kategorie-T: Observation    | ⛅                    | Verpflichtend       |
+| TNM-Kategorie-N: Observation    | ⛅                    | Verpflichtend       |
+| TNM-Kategorie-M: Observation    | ⛅                    | Verpflichtend       |
+| Extension: TNM-Prefix(c/p)      | ⛅ (1)                |                     |
+| TNM-Symbol-a: Observation       | Nicht vorgesehen (2) |                     |
+| TNM-Symbol-m: Observation       | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-L: Observation    | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-Pn: Observation   | Nicht vorgesehen (2) |                     |
+| TNM-Symbol-r: Observation       | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-S: Observation    | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-V: Observation    | Nicht vorgesehen (2) |                     |
+| TNM-Symbol-y: Observation       | Nicht vorgesehen (2) |                     |
 
-1. DNPM-Datenmodell enthält nicht alle erforderlichen Angaben
+1. Jeweils in T, N und M enthalten
+2. DNPM-Datenmodell enthält nicht alle erforderlichen Angaben
 
 ### MII-Onco - Bereich: Fernmetastasen
 
