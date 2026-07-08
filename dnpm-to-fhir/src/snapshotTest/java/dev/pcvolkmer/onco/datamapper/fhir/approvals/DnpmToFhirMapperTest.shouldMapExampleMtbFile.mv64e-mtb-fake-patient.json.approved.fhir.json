@@ -4310,5 +4310,52 @@
       "method": "PUT",
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|fd16fc89-b492-49cd-9ed4-39f9a597c87a_hrdscore"
     }
+  }, {
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "#dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-mutationslast" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "a931f089-9ef1-4693-a706-a99bfa50c4dd_tmb"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "94076-7",
+          "display": "Mutations/Megabase [# Ratio] in Tumor"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "valueQuantity": {
+        "value": 472438.0,
+        "unit": "Mutations per megabase",
+        "system": "http://unitsofmeasure.org",
+        "code": "1/1000000{Base}"
+      },
+      "interpretation": [ {
+        "coding": [ {
+          "system": "dnpm-dip/mtb/ngs/tmb/interpretation",
+          "code": "low",
+          "display": "Niedrig"
+        } ]
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|a931f089-9ef1-4693-a706-a99bfa50c4dd_tmb"
+    }
   } ]
 }

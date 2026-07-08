@@ -21,6 +21,7 @@ package dev.pcvolkmer.onco.datamapper.fhir;
 
 import dev.pcvolkmer.mv64e.mtb.Mtb;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.HrdScoreMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.biomarker.TmbMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.HumangenetischeBeratungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.StudieneinschlussMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieempfehlungMapper;
@@ -119,6 +120,12 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
         .filter(item -> item.getResults().getHrdScore() != null)
         .map(item -> item.getResults().getHrdScore())
         .forEach(item -> hrdScoreMapper.addToBundle(bundle, item));
+
+    final var tmbMapper = new TmbMapper();
+    mtb.getNgsReports().stream()
+        .filter(item -> item.getResults().getTmb() != null)
+        .map(item -> item.getResults().getTmb())
+        .forEach(item -> tmbMapper.addToBundle(bundle, item));
 
     return bundle;
   }
