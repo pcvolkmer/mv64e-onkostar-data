@@ -63,8 +63,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                     .setDisplay(
                         "Homologous recombination deficiency status analysis [Presence] in Tissue by Molecular genetics method")));
 
-    // TODO: Values are always a double, but FHIR and Profile requires IntegerType - Fail!
-    /*result.setValue(new DecimalType(sourceItem.getValue()));
+    result.setValue(new IntegerType(Double.valueOf(sourceItem.getValue()).intValue()));
 
     final var components = sourceItem.getComponents();
     if (null != components) {
@@ -77,7 +76,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                               .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
                               .setCode("C18016")
                               .setDisplay("Loss of Heterozygosity")))
-              .setValue(new DecimalType(components.getLoh())));
+              .setValue(new IntegerType(Double.valueOf(components.getLoh()).intValue())));
 
       result.addComponent(
           new Observation.ObservationComponentComponent()
@@ -88,7 +87,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                               .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
                               .setCode("C129774")
                               .setDisplay("Telomeric Allelic Imbalance Region")))
-              .setValue(new DecimalType(components.getTai())));
+              .setValue(new IntegerType(Double.valueOf(components.getTai()).intValue())));
 
       result.addComponent(
           new Observation.ObservationComponentComponent()
@@ -99,8 +98,8 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                               .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
                               .setCode("C120466")
                               .setDisplay("Large-Scale State Transition")))
-              .setValue(new DecimalType(components.getLst())));
-    }*/
+              .setValue(new IntegerType(Double.valueOf(components.getLst()).intValue())));
+    }
 
     final var interpretation = sourceItem.getInterpretation();
     if (null != interpretation) {

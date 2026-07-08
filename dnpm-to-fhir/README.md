@@ -43,12 +43,9 @@ java -jar <dateiname>.jar --filename <file>
 | Gen. Implikation - therapeutisch | -                |                     |
 | Mol Biomarker - TMB              | ⛅                | Verpflichtend       |
 | Mol Biomarker - MSI              | ⛅                | Verpflichtend       |
-| Mol Biomarker - HRD-Score        | ☔ (1)            | Verpflichtend       |
+| Mol Biomarker - HRD-Score        | ⛅                | Verpflichtend       |
 | Mol Biomarker - BRCAness         | ⛅                | Verpflichtend       |
 | RNA-Seq                          | Nicht vorgesehen | Verpflichtend       |
-
-1. Profil verlangt Werte als IntegerType, die jedoch immer ein Double sind.
-   Modellierung vermutlich nicht korrekt. Umgesetzt ohne optionale Werte.
 
 ### MII-MTB – Bereich: Molekular-Pathologie-Befund
 
@@ -81,20 +78,20 @@ java -jar <dateiname>.jar --filename <file>
 
 ### MII-Onco - Bereich: TNM-Klassifikation
 
-| FHIR-Profil                     | Status               | MII Förderkriterien |
-|---------------------------------|----------------------|---------------------|
-| TNM-Kategorie-T: Observation    | ⛅                    | Verpflichtend       |
-| TNM-Kategorie-N: Observation    | ⛅                    | Verpflichtend       |
-| TNM-Kategorie-M: Observation    | ⛅                    | Verpflichtend       |
-| Extension: TNM-Prefix(c/p)      | ⛅ (1)                |                     |
-| TNM-Symbol-a: Observation       | Nicht vorgesehen (2) |                     |
-| TNM-Symbol-m: Observation       | Nicht vorgesehen (2) |                     |
-| TNM-Kategorie-L: Observation    | Nicht vorgesehen (2) |                     |
-| TNM-Kategorie-Pn: Observation   | Nicht vorgesehen (2) |                     |
-| TNM-Symbol-r: Observation       | Nicht vorgesehen (2) |                     |
-| TNM-Kategorie-S: Observation    | Nicht vorgesehen (2) |                     |
-| TNM-Kategorie-V: Observation    | Nicht vorgesehen (2) |                     |
-| TNM-Symbol-y: Observation       | Nicht vorgesehen (2) |                     |
+| FHIR-Profil                   | Status               | MII Förderkriterien |
+|-------------------------------|----------------------|---------------------|
+| TNM-Kategorie-T: Observation  | ⛅                    | Verpflichtend       |
+| TNM-Kategorie-N: Observation  | ⛅                    | Verpflichtend       |
+| TNM-Kategorie-M: Observation  | ⛅                    | Verpflichtend       |
+| Extension: TNM-Prefix(c/p)    | ⛅ (1)                |                     |
+| TNM-Symbol-a: Observation     | Nicht vorgesehen (2) |                     |
+| TNM-Symbol-m: Observation     | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-L: Observation  | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-Pn: Observation | Nicht vorgesehen (2) |                     |
+| TNM-Symbol-r: Observation     | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-S: Observation  | Nicht vorgesehen (2) |                     |
+| TNM-Kategorie-V: Observation  | Nicht vorgesehen (2) |                     |
+| TNM-Symbol-y: Observation     | Nicht vorgesehen (2) |                     |
 
 1. Jeweils in T, N und M enthalten
 2. DNPM-Datenmodell enthält nicht alle erforderlichen Angaben
