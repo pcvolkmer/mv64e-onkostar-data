@@ -1,0 +1,64 @@
+{
+  "resourceType": "Observation",
+  "meta": {
+    "source": "#dnpm",
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-brcaness" ]
+  },
+  "identifier": [ {
+    "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+    "value": "be145e9f-f6ab-4b7a-a7b4-435c8dfdb766_brcaness"
+  } ],
+  "status": "final",
+  "category": [ {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "laboratory",
+      "display": "Laboratory"
+    } ]
+  } ],
+  "code": {
+    "coding": [ {
+      "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
+      "code": "brcaness",
+      "display": "BRCAness"
+    } ]
+  },
+  "subject": {
+    "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+  },
+  "valueQuantity": {
+    "value": 0.5,
+    "unit": "Score",
+    "system": "http://unitsofmeasure.org",
+    "code": "1"
+  },
+  "component": [ {
+    "code": {
+      "coding": [ {
+        "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
+        "code": "brcaness-confidence-range-min",
+        "display": "BRCAness Confidence Range Minimum"
+      } ]
+    },
+    "valueQuantity": {
+      "value": 0.4,
+      "unit": "Score",
+      "system": "http://unitsofmeasure.org",
+      "code": "1"
+    }
+  }, {
+    "code": {
+      "coding": [ {
+        "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
+        "code": "brcaness-confidence-range-max",
+        "display": "BRCAness Confidence Range Maximum"
+      } ]
+    },
+    "valueQuantity": {
+      "value": 0.6,
+      "unit": "Score",
+      "system": "http://unitsofmeasure.org",
+      "code": "1"
+    }
+  } ]
+}
