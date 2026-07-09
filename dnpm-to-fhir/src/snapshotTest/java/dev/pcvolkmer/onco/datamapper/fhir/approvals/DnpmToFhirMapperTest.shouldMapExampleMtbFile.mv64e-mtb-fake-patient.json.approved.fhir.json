@@ -2,6 +2,7 @@
   "resourceType": "Bundle",
   "type": "transaction",
   "entry": [ {
+    "fullUrl": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_mtbdiagnose",
     "resource": {
       "resourceType": "Condition",
       "meta": {
@@ -34,6 +35,7 @@
       "url": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_mtbdiagnose"
     }
   }, {
+    "fullUrl": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_oncodiagnose",
     "resource": {
       "resourceType": "Condition",
       "meta": {
@@ -85,6 +87,7 @@
       "url": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_oncodiagnose"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tumorstaging-0",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -126,6 +129,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tumorstaging-0"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -169,6 +173,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -212,6 +217,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -255,6 +261,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
     }
   }, {
+    "fullUrl": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_careplan",
     "resource": {
       "resourceType": "CarePlan",
       "meta": {
@@ -286,6 +293,7 @@
       "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_careplan"
     }
   }, {
+    "fullUrl": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_careplan",
     "resource": {
       "resourceType": "CarePlan",
       "meta": {
@@ -334,6 +342,7 @@
       "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_careplan"
     }
   }, {
+    "fullUrl": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung",
     "resource": {
       "resourceType": "ServiceRequest",
       "meta": {
@@ -370,6 +379,7 @@
       "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
     }
   }, {
+    "fullUrl": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung",
     "resource": {
       "resourceType": "ServiceRequest",
       "meta": {
@@ -406,6 +416,7 @@
       "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
     }
   }, {
+    "fullUrl": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|d1e90355-b1ba-46e1-a900-e439b63caea0_medicationrequest",
     "resource": {
       "resourceType": "MedicationRequest",
       "meta": {
@@ -449,6 +460,7 @@
       "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|d1e90355-b1ba-46e1-a900-e439b63caea0_medicationrequest"
     }
   }, {
+    "fullUrl": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|c0687be9-6c5e-44f0-b083-688f2f4e9e07_medicationrequest",
     "resource": {
       "resourceType": "MedicationRequest",
       "meta": {
@@ -492,6 +504,7 @@
       "url": "MedicationRequest?identifier=https://fhir.diz.uni-marburg.de/sid/medication-request-id|c0687be9-6c5e-44f0-b083-688f2f4e9e07_medicationrequest"
     }
   }, {
+    "fullUrl": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|ab153511-2582-4a12-83c1-399cbf3ba9bf_studieneinschluss",
     "resource": {
       "resourceType": "ServiceRequest",
       "meta": {
@@ -514,6 +527,7 @@
       "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|ab153511-2582-4a12-83c1-399cbf3ba9bf_studieneinschluss"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|549143c4-aacb-42aa-914f-5ddf8adf1046_tumorcellcount",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -552,6 +566,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|549143c4-aacb-42aa-914f-5ddf8adf1046_tumorcellcount"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|11f61599-ac83-4135-82ae-671dc956bfb0",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -589,6 +604,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|11f61599-ac83-4135-82ae-671dc956bfb0"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|5f6a055f-9cea-4b87-882f-76e308aa208a_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -757,6 +773,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|5f6a055f-9cea-4b87-882f-76e308aa208a_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1553e32e-09e6-4f13-af10-379fef9531dc_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -925,6 +942,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1553e32e-09e6-4f13-af10-379fef9531dc_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|66abece4-04fa-46d3-9530-3cb44689233f_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -1093,6 +1111,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|66abece4-04fa-46d3-9530-3cb44689233f_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1d8c7f79-24ca-4bf9-9db2-be730e66e88f_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -1261,6 +1280,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1d8c7f79-24ca-4bf9-9db2-be730e66e88f_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|6cfa1718-0094-4e22-b5e1-03f8bf292392_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -1429,6 +1449,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|6cfa1718-0094-4e22-b5e1-03f8bf292392_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|94c0a31a-6011-4cb5-b78b-f3be6cb41714_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -1597,6 +1618,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|94c0a31a-6011-4cb5-b78b-f3be6cb41714_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|26be631f-84a4-4404-a44f-6b2a3e3219ce_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -1765,6 +1787,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|26be631f-84a4-4404-a44f-6b2a3e3219ce_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|b930ade2-6b40-4a37-94bc-63b7ad25b395_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -1933,6 +1956,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|b930ade2-6b40-4a37-94bc-63b7ad25b395_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|c2efb492-6422-4397-8e36-93120ed5b6d6_ngssv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -2101,6 +2125,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|c2efb492-6422-4397-8e36-93120ed5b6d6_ngssv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|186e0647-412a-4660-8c6d-284ea213ee5f_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -2393,6 +2418,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|186e0647-412a-4660-8c6d-284ea213ee5f_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|3e3f4c67-27a0-419a-ac30-afc2d1ec1f6c_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -2580,6 +2606,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|3e3f4c67-27a0-419a-ac30-afc2d1ec1f6c_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|ecd03275-4d29-4fa8-8ea2-64a5c3d53917_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -2842,6 +2869,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|ecd03275-4d29-4fa8-8ea2-64a5c3d53917_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|881a7925-647d-4899-8e30-470a7bd7c423_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -3134,6 +3162,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|881a7925-647d-4899-8e30-470a7bd7c423_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|205c8cd8-106c-48b0-a1cb-871148b28b98_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -3471,6 +3500,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|205c8cd8-106c-48b0-a1cb-871148b28b98_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|96c15e3e-fe1a-4c32-ab92-26bd8814f4fa_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -3748,6 +3778,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|96c15e3e-fe1a-4c32-ab92-26bd8814f4fa_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|5c897989-fb79-45e7-bd8c-e0d94c371297_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -3935,6 +3966,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|5c897989-fb79-45e7-bd8c-e0d94c371297_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|a995b155-8639-405e-b16f-4e79979dbfef_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -4152,6 +4184,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|a995b155-8639-405e-b16f-4e79979dbfef_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|9395acc5-abc3-4a98-b2ae-eeab3e3360b6_ngscnv",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -4399,6 +4432,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|9395acc5-abc3-4a98-b2ae-eeab3e3360b6_ngscnv"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|fd16fc89-b492-49cd-9ed4-39f9a597c87a_hrdscore",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -4440,6 +4474,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|fd16fc89-b492-49cd-9ed4-39f9a597c87a_hrdscore"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|be145e9f-f6ab-4b7a-a7b4-435c8dfdb766_brcaness",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -4509,6 +4544,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|be145e9f-f6ab-4b7a-a7b4-435c8dfdb766_brcaness"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|a931f089-9ef1-4693-a706-a99bfa50c4dd_tmb",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -4556,6 +4592,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|a931f089-9ef1-4693-a706-a99bfa50c4dd_tmb"
     }
   }, {
+    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|ba82a81a-dc93-4667-ba29-080a27279406_msi",
     "resource": {
       "resourceType": "Observation",
       "meta": {
