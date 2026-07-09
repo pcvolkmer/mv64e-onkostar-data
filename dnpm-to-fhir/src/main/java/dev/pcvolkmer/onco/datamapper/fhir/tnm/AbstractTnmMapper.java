@@ -76,15 +76,18 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
     dateTimeType.setPrecision(TemporalPrecisionEnum.DAY);
     result.setEffective(dateTimeType);
 
-    final var tumor = sourceItem.getTnmClassification().getTumor();
-    if (tumor != null) {
-      result.setValue(
-          new CodeableConcept()
-              .addCoding(
-                  new Coding()
-                      .setSystem("https://www.uicc.org/resources/tnm")
-                      .setCode(tumor.getCode())
-                      .setDisplay(tumor.getCode())));
+    final var tnmClassification = sourceItem.getTnmClassification();
+    if (null != tnmClassification) {
+      final var tumor = tnmClassification.getTumor();
+      if (tumor != null) {
+        result.setValue(
+            new CodeableConcept()
+                .addCoding(
+                    new Coding()
+                        .setSystem("https://www.uicc.org/resources/tnm")
+                        .setCode(tumor.getCode())
+                        .setDisplay(tumor.getCode())));
+      }
     }
 
     // Method (Version) not available in DNPM

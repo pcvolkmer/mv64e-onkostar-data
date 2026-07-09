@@ -56,25 +56,24 @@ public class TumorzellgehaltMapper extends ObservationMapper<HistologyReport> {
                     .setDisplay(
                         "Cells with cytogenetic abnormality [#] in Blood or Tissue by Molecular genetics method")));
 
-    result.setMethod(
-        new CodeableConcept()
-            .addCoding(
-                new Coding()
-                    .setCode(
-                        sourceItem
-                            .getResults()
-                            .getTumorCellContent()
-                            .getMethod()
-                            .getCode()
-                            .getValue())
-                    .setSystem(
-                        "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-bestimmungsmethode-tumorzellgehalt")));
+    final var tumorCellContent = sourceItem.getResults().getTumorCellContent();
+    if (null != tumorCellContent) {
+      if (null != tumorCellContent.getMethod()) {
+        result.setMethod(
+            new CodeableConcept()
+                .addCoding(
+                    new Coding()
+                        .setCode(tumorCellContent.getMethod().getCode().getValue())
+                        .setSystem(
+                            "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-bestimmungsmethode-tumorzellgehalt")));
+      }
 
-    result.setValue(
-        new Quantity()
-            .setValue(sourceItem.getResults().getTumorCellContent().getValue())
-            .setCode("%")
-            .setSystem("http://unitsofmeasure.org"));
+      result.setValue(
+          new Quantity()
+              .setValue(tumorCellContent.getValue())
+              .setCode("%")
+              .setSystem("http://unitsofmeasure.org"));
+    }
 
     result.setSubject(this.getPatientReference(sourceItem));
 

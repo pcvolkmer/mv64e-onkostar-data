@@ -77,13 +77,16 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                     .setDisplay("Sequencing")));
 
     // Interpretation
-    result.addInterpretation(
-        new CodeableConcept()
-            .addCoding(
-                new Coding()
-                    .setCode(sourceItem.getInterpretation().getCode().getValue())
-                    .setSystem("https://www.ncbi.nlm.nih.gov/clinvar")
-                    .setDisplay(sourceItem.getInterpretation().getDisplay())));
+    final var interpretation = sourceItem.getInterpretation();
+    if (null != interpretation) {
+      result.addInterpretation(
+          new CodeableConcept()
+              .addCoding(
+                  new Coding()
+                      .setCode(interpretation.getCode().getValue())
+                      .setSystem("https://www.ncbi.nlm.nih.gov/clinvar")
+                      .setDisplay(interpretation.getDisplay())));
+    }
 
     // Chromosom
     result.addComponent(

@@ -69,23 +69,25 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
     dateValue.setPrecision(TemporalPrecisionEnum.DAY);
     result.setCreatedElement(dateValue);
 
-    final var reasonId = sourceItem.getReason().getId();
-    result.addAddresses(
-        new Reference()
-            .setReference(
-                String.format(
-                    "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|%s",
-                    reasonId)));
+    final var reasonReference = sourceItem.getReason();
+    if (null != reasonReference) {
+      final var reasonId = reasonReference.getId();
+      result.addAddresses(
+          new Reference()
+              .setReference(
+                  String.format(
+                      "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|%s",
+                      reasonId)));
+    }
 
-    // TODO Add planned activities
-    if (null != sourceItem.getMedicationRecommendations()) {
-      sourceItem
-          .getMedicationRecommendations()
-          .forEach(
-              item ->
-                  result.addActivity(
-                      new CarePlan.CarePlanActivityComponent()
-                          .setReference(new TherapieempfehlungMapper().getReference(item))));
+    // TODO Add other planned activities
+    final var medicationRecommendations = sourceItem.getMedicationRecommendations();
+    if (null != medicationRecommendations) {
+      medicationRecommendations.forEach(
+          item ->
+              result.addActivity(
+                  new CarePlan.CarePlanActivityComponent()
+                      .setReference(new TherapieempfehlungMapper().getReference(item))));
     }
 
     if (null != sourceItem.getGeneticCounselingRecommendation()) {
@@ -94,14 +96,13 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
               .setReference(new HumangenetischeBeratungMapper().getReference(sourceItem)));
     }
 
-    if (null != sourceItem.getStudyEnrollmentRecommendations()) {
-      sourceItem
-          .getStudyEnrollmentRecommendations()
-          .forEach(
-              item ->
-                  result.addActivity(
-                      new CarePlan.CarePlanActivityComponent()
-                          .setReference(new StudieneinschlussMapper().getReference(item))));
+    final var studyEnrollmentRecommendations = sourceItem.getStudyEnrollmentRecommendations();
+    if (null != studyEnrollmentRecommendations) {
+      studyEnrollmentRecommendations.forEach(
+          item ->
+              result.addActivity(
+                  new CarePlan.CarePlanActivityComponent()
+                      .setReference(new StudieneinschlussMapper().getReference(item))));
     }
 
     return result;

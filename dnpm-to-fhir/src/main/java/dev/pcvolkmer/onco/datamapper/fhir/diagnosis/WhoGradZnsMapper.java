@@ -145,6 +145,7 @@ public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
       return grading.getHistory().stream()
           .filter(Objects::nonNull)
           .map(this::map)
+          .filter(Objects::nonNull)
           .collect(Collectors.toList());
     }
     return List.of();
