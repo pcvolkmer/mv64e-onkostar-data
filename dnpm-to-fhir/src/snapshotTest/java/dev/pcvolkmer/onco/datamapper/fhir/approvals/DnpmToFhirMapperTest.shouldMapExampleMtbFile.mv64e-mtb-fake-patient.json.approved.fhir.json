@@ -4461,12 +4461,41 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
+      "valueInteger": 0,
       "interpretation": [ {
         "coding": [ {
           "system": "dnpm-dip/mtb/ngs/hrd-score/interpretation",
           "code": "intermediate",
           "display": "Mittel"
         } ]
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+            "code": "C18016",
+            "display": "Loss of Heterozygosity"
+          } ]
+        },
+        "valueInteger": 0
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+            "code": "C129774",
+            "display": "Telomeric Allelic Imbalance Region"
+          } ]
+        },
+        "valueInteger": 0
+      }, {
+        "code": {
+          "coding": [ {
+            "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+            "code": "C120466",
+            "display": "Large-Scale State Transition"
+          } ]
+        },
+        "valueInteger": 0
       } ]
     },
     "request": {
