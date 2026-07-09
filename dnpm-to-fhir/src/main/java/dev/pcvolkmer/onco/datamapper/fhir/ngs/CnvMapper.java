@@ -94,20 +94,23 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                             .setSystem("http://terminology.hl7.org/CodeSystem/chromosome-human"))));
 
     // Total Copy Number
-    result.addComponent(
-        new Observation.ObservationComponentComponent()
-            .setCode(
-                new CodeableConcept()
-                    .addCoding(
-                        new Coding()
-                            .setCode("82155-3")
-                            .setSystem("http://loinc.org")
-                            .setDisplay("Genomic structural variant copy number")))
-            .setValue(
-                new Quantity()
-                    .setValue(sourceItem.getTotalCopyNumber())
-                    .setSystem("http://loinc.org")
-                    .setCode(sourceItem.getTotalCopyNumber().toString())));
+    final var totalCopyNumber = sourceItem.getTotalCopyNumber();
+    if (null != totalCopyNumber) {
+      result.addComponent(
+          new Observation.ObservationComponentComponent()
+              .setCode(
+                  new CodeableConcept()
+                      .addCoding(
+                          new Coding()
+                              .setCode("82155-3")
+                              .setSystem("http://loinc.org")
+                              .setDisplay("Genomic structural variant copy number")))
+              .setValue(
+                  new Quantity()
+                      .setValue(totalCopyNumber)
+                      .setSystem("http://loinc.org")
+                      .setCode(totalCopyNumber.toString())));
+    }
 
     // Relative Copy Number of Allele A and B
     result.addComponent(
@@ -161,26 +164,27 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                     .setCode("1")));
 
     // Gene(s)
-    sourceItem
-        .getReportedAffectedGenes()
-        .forEach(
-            gene ->
-                result.addComponent(
-                    new Observation.ObservationComponentComponent()
-                        .setCode(
-                            new CodeableConcept()
-                                .addCoding(
-                                    new Coding()
-                                        .setCode("48018-6")
-                                        .setSystem("http://loinc.org/")
-                                        .setDisplay("Gene studied [ID]")))
-                        .setValue(
-                            new CodeableConcept()
-                                .addCoding(
-                                    new Coding()
-                                        .setCode(gene.getCode())
-                                        .setSystem("https://www.genenames.org/")
-                                        .setDisplay(gene.getDisplay())))));
+    final var reportedAffectedGenes = sourceItem.getReportedAffectedGenes();
+    if (null != reportedAffectedGenes) {
+      reportedAffectedGenes.forEach(
+          gene ->
+              result.addComponent(
+                  new Observation.ObservationComponentComponent()
+                      .setCode(
+                          new CodeableConcept()
+                              .addCoding(
+                                  new Coding()
+                                      .setCode("48018-6")
+                                      .setSystem("http://loinc.org/")
+                                      .setDisplay("Gene studied [ID]")))
+                      .setValue(
+                          new CodeableConcept()
+                              .addCoding(
+                                  new Coding()
+                                      .setCode(gene.getCode())
+                                      .setSystem("https://www.genenames.org/")
+                                      .setDisplay(gene.getDisplay())))));
+    }
 
     // Gain/Loss
     result.addComponent(

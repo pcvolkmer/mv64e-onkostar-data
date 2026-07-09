@@ -131,7 +131,7 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     final var performanceStatus = patientRecord.getPerformanceStatus();
     if (null != performanceStatus) {
       final var ecogMapper = new EcogMapper();
-      patientRecord.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
+      performanceStatus.forEach(item -> ecogMapper.addToBundle(bundle, item));
     }
 
     final var ngsReports = patientRecord.getNgsReports();
@@ -139,6 +139,7 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
       final var einfacheVarianteMapper = new EinfacheVarianteMapper();
       ngsReports.stream()
+          .filter(item -> item.getResults().getSimpleVariants() != null)
           .flatMap(item -> item.getResults().getSimpleVariants().stream())
           .forEach(item -> einfacheVarianteMapper.addToBundle(bundle, item));
 
@@ -170,7 +171,7 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     final var msiFindings = patientRecord.getMsiFindings();
     if (null != msiFindings) {
       final var msiMapper = new MsiMapper();
-      patientRecord.getMsiFindings().forEach(item -> msiMapper.addToBundle(bundle, item));
+      msiFindings.forEach(item -> msiMapper.addToBundle(bundle, item));
     }
 
     return bundle;

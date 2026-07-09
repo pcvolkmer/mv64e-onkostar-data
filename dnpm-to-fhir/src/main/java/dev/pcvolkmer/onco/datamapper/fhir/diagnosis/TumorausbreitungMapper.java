@@ -87,17 +87,20 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
   }
 
   private String mapValue(TumorStaging sourceItem) {
-    for (var coding : sourceItem.getOtherClassifications()) {
-      switch (coding.getCode()) {
-        case "tumor-free":
-          return "58899004";
-        case "local":
-          return "255127006";
-        case "metastasized":
-          return "128462008";
-        default:
-          // Unknown
-          return "261665006";
+    final var otherClassifications = sourceItem.getOtherClassifications();
+    if (null != otherClassifications) {
+      for (var coding : otherClassifications) {
+        switch (coding.getCode()) {
+          case "tumor-free":
+            return "58899004";
+          case "local":
+            return "255127006";
+          case "metastasized":
+            return "128462008";
+          default:
+            // Unknown
+            return "261665006";
+        }
       }
     }
     // Unknown
