@@ -27,7 +27,7 @@
     "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
   },
   "valueQuantity": {
-    "value": 472438.0,
+    "value": 472438,
     "unit": "Mutations per megabase",
     "system": "http://unitsofmeasure.org",
     "code": "1/1000000{Base}"

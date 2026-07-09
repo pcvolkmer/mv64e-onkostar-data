@@ -20,7 +20,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.mv64e.model.Converter;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;

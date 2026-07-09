@@ -20,7 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.MtbCarePlan;
+import dev.pcvolkmer.mv64e.model.MtbCarePlan;
 import dev.pcvolkmer.onco.datamapper.fhir.CarePlanMapper;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;

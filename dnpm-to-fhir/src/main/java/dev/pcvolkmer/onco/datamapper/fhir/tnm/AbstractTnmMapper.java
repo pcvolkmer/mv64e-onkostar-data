@@ -20,9 +20,9 @@
 package dev.pcvolkmer.onco.datamapper.fhir.tnm;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
-import dev.pcvolkmer.mv64e.mtb.TumorStaging;
-import dev.pcvolkmer.mv64e.mtb.TumorStagingMethodCodingCode;
+import dev.pcvolkmer.mv64e.model.MtbDiagnosis;
+import dev.pcvolkmer.mv64e.model.TumorStaging;
+import dev.pcvolkmer.mv64e.model.TumorStagingMethodCoding;
 import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import java.util.List;
@@ -93,7 +93,7 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
   }
 
   @Nullable
-  private String mapPrefix(TumorStagingMethodCodingCode dnpmValue) {
+  private String mapPrefix(TumorStagingMethodCoding.CodeEnum dnpmValue) {
     switch (dnpmValue) {
       case CLINICAL:
         return "c";

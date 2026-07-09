@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import dev.pcvolkmer.mv64e.mtb.Mtb;
+import dev.pcvolkmer.mv64e.model.PatientRecord;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.BrcanessMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.HrdScoreMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.MsiMapper;
@@ -75,12 +75,12 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
   protected abstract String getRequestUrl(S item);
 
-  public static Bundle mapToBundle(Mtb mtb) {
+  public static Bundle mapToBundle(PatientRecord patientRecord) {
     final var bundle = new Bundle();
 
     bundle.setType(Bundle.BundleType.TRANSACTION);
 
-    final var diagnoses = mtb.getDiagnoses();
+    final var diagnoses = patientRecord.getDiagnoses();
     if (null != diagnoses) {
       final var mtbDiagnoseMapper = new MtbDiagnoseMapper();
       diagnoses.forEach(item -> mtbDiagnoseMapper.addToBundle(bundle, item));
@@ -101,7 +101,7 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
       diagnoses.forEach(item -> tnmmMapper.addManyToBundle(bundle, item));
     }
 
-    final var carePlans = mtb.getCarePlans();
+    final var carePlans = patientRecord.getCarePlans();
     if (null != carePlans) {
       final var therapieplanMapper = new TherapieplanMapper();
       carePlans.forEach(item -> therapieplanMapper.addToBundle(bundle, item));
@@ -122,19 +122,19 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
           .forEach(item -> studieneinschlussMapper.addToBundle(bundle, item));
     }
 
-    final var histologieReports = mtb.getHistologyReports();
+    final var histologieReports = patientRecord.getHistologyReports();
     if (null != histologieReports) {
       final var tumorzellgehaltMapper = new TumorzellgehaltMapper();
       histologieReports.forEach(item -> tumorzellgehaltMapper.addToBundle(bundle, item));
     }
 
-    final var performanceStatus = mtb.getPerformanceStatus();
+    final var performanceStatus = patientRecord.getPerformanceStatus();
     if (null != performanceStatus) {
       final var ecogMapper = new EcogMapper();
-      mtb.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
+      patientRecord.getPerformanceStatus().forEach(item -> ecogMapper.addToBundle(bundle, item));
     }
 
-    final var ngsReports = mtb.getNgsReports();
+    final var ngsReports = patientRecord.getNgsReports();
     if (null != ngsReports) {
 
       final var einfacheVarianteMapper = new EinfacheVarianteMapper();
@@ -167,10 +167,10 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
           .forEach(item -> tmbMapper.addToBundle(bundle, item));
     }
 
-    final var msiFindings = mtb.getMsiFindings();
+    final var msiFindings = patientRecord.getMsiFindings();
     if (null != msiFindings) {
       final var msiMapper = new MsiMapper();
-      mtb.getMsiFindings().forEach(item -> msiMapper.addToBundle(bundle, item));
+      patientRecord.getMsiFindings().forEach(item -> msiMapper.addToBundle(bundle, item));
     }
 
     return bundle;

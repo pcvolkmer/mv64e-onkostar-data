@@ -691,7 +691,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 546.0
+            "value": 546
           }
         }
       }, {
@@ -860,7 +860,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 54.0
+            "value": 54
           }
         }
       }, {
@@ -1029,7 +1029,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 468.0
+            "value": 468
           }
         }
       }, {
@@ -1198,7 +1198,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 430.0
+            "value": 430
           }
         }
       }, {
@@ -1367,7 +1367,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 263.0
+            "value": 263
           }
         }
       }, {
@@ -1536,7 +1536,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 63.0
+            "value": 63
           }
         }
       }, {
@@ -1705,7 +1705,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 172.0
+            "value": 172
           }
         }
       }, {
@@ -1874,7 +1874,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 330.0
+            "value": 330
           }
         }
       }, {
@@ -2043,7 +2043,7 @@
         },
         "valueRange": {
           "low": {
-            "value": 586.0
+            "value": 586
           }
         }
       }, {
@@ -4603,7 +4603,7 @@
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
       "valueQuantity": {
-        "value": 472438.0,
+        "value": 472438,
         "unit": "Mutations per megabase",
         "system": "http://unitsofmeasure.org",
         "code": "1/1000000{Base}"

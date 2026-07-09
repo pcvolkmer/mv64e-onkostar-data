@@ -20,7 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.MtbMedicationRecommendation;
+import dev.pcvolkmer.mv64e.model.MtbMedicationRecommendation;
 import dev.pcvolkmer.onco.datamapper.fhir.MedicationRequestMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -57,7 +57,7 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
           new CodeableConcept()
               .addCoding(
                   new Coding()
-                      .setCode(sourceItem.getLevelOfEvidence().getGrading().getCode().toValue())
+                      .setCode(sourceItem.getLevelOfEvidence().getGrading().getCode().getValue())
                       .setSystem("dnpm-dip/mtb/level-of-evidence/grading")
                       .setDisplay(sourceItem.getLevelOfEvidence().getGrading().getDisplay()));
 
@@ -69,7 +69,7 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
                 addendum ->
                     evidenzlevelValue.addCoding(
                         new Coding()
-                            .setCode(addendum.getCode().toValue())
+                            .setCode(addendum.getCode().getValue())
                             .setSystem("dnpm-dip/mtb/level-of-evidence/addendum")
                             .setDisplay(addendum.getDisplay())));
       }
@@ -97,7 +97,7 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
               medCoding ->
                   medication.addCoding(
                       new Coding()
-                          .setSystem(medCoding.getSystem().toValue())
+                          .setSystem(medCoding.getSystem().getValue())
                           .setCode(medCoding.getCode())
                           .setDisplay(medCoding.getDisplay())));
     }

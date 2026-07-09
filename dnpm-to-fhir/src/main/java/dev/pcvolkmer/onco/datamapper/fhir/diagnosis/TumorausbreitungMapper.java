@@ -20,8 +20,8 @@
 package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.MtbDiagnosis;
-import dev.pcvolkmer.mv64e.mtb.TumorStaging;
+import dev.pcvolkmer.mv64e.model.MtbDiagnosis;
+import dev.pcvolkmer.mv64e.model.TumorStaging;
 import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import java.util.List;

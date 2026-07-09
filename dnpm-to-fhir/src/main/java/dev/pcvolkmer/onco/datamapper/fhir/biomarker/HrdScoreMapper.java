@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.biomarker;
 
-import dev.pcvolkmer.mv64e.mtb.HrdScore;
+import dev.pcvolkmer.mv64e.model.HrdScore;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -63,7 +63,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                     .setDisplay(
                         "Homologous recombination deficiency status analysis [Presence] in Tissue by Molecular genetics method")));
 
-    result.setValue(new IntegerType(Double.valueOf(sourceItem.getValue()).intValue()));
+    result.setValue(new IntegerType(sourceItem.getValue().intValue()));
 
     final var components = sourceItem.getComponents();
     if (null != components) {
@@ -76,7 +76,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                               .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
                               .setCode("C18016")
                               .setDisplay("Loss of Heterozygosity")))
-              .setValue(new IntegerType(Double.valueOf(components.getLoh()).intValue())));
+              .setValue(new IntegerType(components.getLoh().intValue())));
 
       result.addComponent(
           new Observation.ObservationComponentComponent()
@@ -87,7 +87,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                               .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
                               .setCode("C129774")
                               .setDisplay("Telomeric Allelic Imbalance Region")))
-              .setValue(new IntegerType(Double.valueOf(components.getTai()).intValue())));
+              .setValue(new IntegerType(components.getTai().intValue())));
 
       result.addComponent(
           new Observation.ObservationComponentComponent()
@@ -98,7 +98,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                               .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
                               .setCode("C120466")
                               .setDisplay("Large-Scale State Transition")))
-              .setValue(new IntegerType(Double.valueOf(components.getLst()).intValue())));
+              .setValue(new IntegerType(components.getLst().intValue())));
     }
 
     final var interpretation = sourceItem.getInterpretation();
@@ -107,7 +107,7 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
           new CodeableConcept()
               .addCoding(
                   new Coding()
-                      .setCode(interpretation.getCode().toValue())
+                      .setCode(interpretation.getCode().getValue())
                       .setSystem(interpretation.getSystem())
                       .setDisplay(interpretation.getDisplay())));
     }

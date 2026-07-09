@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
 
-import dev.pcvolkmer.mv64e.mtb.HistologyReport;
+import dev.pcvolkmer.mv64e.model.HistologyReport;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -66,7 +66,7 @@ public class TumorzellgehaltMapper extends ObservationMapper<HistologyReport> {
                             .getTumorCellContent()
                             .getMethod()
                             .getCode()
-                            .toValue())
+                            .getValue())
                     .setSystem(
                         "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-bestimmungsmethode-tumorzellgehalt")));
 

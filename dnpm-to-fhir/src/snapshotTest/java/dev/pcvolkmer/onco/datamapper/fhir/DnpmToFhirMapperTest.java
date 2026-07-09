@@ -21,7 +21,7 @@ package dev.pcvolkmer.onco.datamapper.fhir;
 
 import static dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest.verify;
 
-import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.mv64e.model.Converter;
 import java.io.IOException;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;

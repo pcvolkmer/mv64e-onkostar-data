@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.tnm;
 
-import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.mv64e.model.Converter;
 import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import java.io.IOException;
 import java.util.Collection;

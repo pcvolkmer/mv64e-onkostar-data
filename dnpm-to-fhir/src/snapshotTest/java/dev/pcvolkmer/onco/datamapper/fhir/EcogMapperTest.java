@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
-import dev.pcvolkmer.mv64e.mtb.Converter;
+import dev.pcvolkmer.mv64e.model.Converter;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Collectors;
