@@ -59,13 +59,16 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
   @Override
   public void addToBundle(Bundle bundle, S item) {
-    bundle
-        .addEntry()
-        .setResource(map(item))
-        .setFullUrl(getRequestUrl(item))
-        .getRequest()
-        .setMethod(Bundle.HTTPVerb.PUT)
-        .setUrl(getRequestUrl(item));
+    final var resource = map(item);
+    if (null != resource) {
+      bundle
+          .addEntry()
+          .setResource(resource)
+          .setFullUrl(getRequestUrl(item))
+          .getRequest()
+          .setMethod(Bundle.HTTPVerb.PUT)
+          .setUrl(getRequestUrl(item));
+    }
   }
 
   protected abstract String getId(S item);

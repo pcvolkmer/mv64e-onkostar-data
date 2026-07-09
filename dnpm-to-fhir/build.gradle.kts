@@ -1,28 +1,11 @@
+import net.ltgt.gradle.errorprone.errorprone
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-
-/*
- * This file is part of mv64e-onkostar-data
- *
- * Copyright (C) 2026 the original author or authors.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 plugins {
     id("java")
     id("com.gradleup.shadow") version "8.3.8"
     id("com.diffplug.spotless") version "7.2.1"
+    id("net.ltgt.errorprone") version "4.3.0"
 }
 
 group = "dev.pcvolkmer.onco"
@@ -72,6 +55,7 @@ val snapshotTestImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.implementation.get())
     extendsFrom(configurations.testImplementation.get())
     extendsFrom(configurations.runtimeOnly.get())
+    extendsFrom(configurations.testRuntimeOnly.get())
 }
 
 configurations {
@@ -85,12 +69,16 @@ dependencies {
     implementation("ca.uhn.hapi.fhir:hapi-fhir-base:${hapiFhirVersion}")
     implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r4:${hapiFhirVersion}")
     implementation("org.slf4j:slf4j-api:$slf4j")
+    implementation("org.jspecify:jspecify:1.0.0")
 
+    errorprone("com.google.errorprone:error_prone_core:2.31.0")
+    errorprone("com.uber.nullaway:nullaway:0.12.12")
 
-    snapshotTestImplementation(platform("org.junit:junit-bom:$junit"))
-    snapshotTestImplementation("org.junit.jupiter:junit-jupiter")
-    snapshotTestImplementation("org.assertj:assertj-core:$assertj")
-    snapshotTestImplementation("org.junit.platform:junit-platform-launcher")
+    testImplementation(platform("org.junit:junit-bom:$junit"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.assertj:assertj-core:$assertj")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
     snapshotTestImplementation("com.approvaltests:approvaltests:$approvaltests")
 }
 
@@ -119,7 +107,16 @@ tasks.withType<Test> {
         events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
     }
     useJUnitPlatform()
-    dependsOn(tasks.spotlessApply)
+    dependsOn(tasks.spotlessCheck)
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    options.errorprone {
+        disableAllChecks = true
+        option("NullAway:OnlyNullMarked", "true")
+        error("NullAway")
+    }
 }
 
 spotless {

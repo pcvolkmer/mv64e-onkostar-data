@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
+import org.jspecify.annotations.Nullable;
 
 public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
     implements ManyMapper<MtbDiagnosis, Observation> {
@@ -91,6 +92,7 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
     return result;
   }
 
+  @Nullable
   private String mapPrefix(TumorStagingMethodCodingCode dnpmValue) {
     switch (dnpmValue) {
       case CLINICAL:
