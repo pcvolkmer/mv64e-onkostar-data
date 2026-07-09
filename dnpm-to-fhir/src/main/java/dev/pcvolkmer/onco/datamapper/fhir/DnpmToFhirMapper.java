@@ -62,6 +62,7 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     bundle
         .addEntry()
         .setResource(map(item))
+        .setFullUrl(getRequestUrl(item))
         .getRequest()
         .setMethod(Bundle.HTTPVerb.PUT)
         .setUrl(getRequestUrl(item));

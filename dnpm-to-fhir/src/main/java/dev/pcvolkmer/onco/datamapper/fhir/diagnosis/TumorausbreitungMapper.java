@@ -133,6 +133,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
               bundle
                   .addEntry()
                   .setResource(newItem)
+                  .setFullUrl(requestUrl)
                   .getRequest()
                   .setMethod(Bundle.HTTPVerb.PUT)
                   .setUrl(requestUrl);

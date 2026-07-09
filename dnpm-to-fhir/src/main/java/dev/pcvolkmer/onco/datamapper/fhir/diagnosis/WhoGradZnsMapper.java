@@ -128,6 +128,7 @@ public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
               bundle
                   .addEntry()
                   .setResource(newItem)
+                  .setFullUrl(requestUrl)
                   .getRequest()
                   .setMethod(Bundle.HTTPVerb.PUT)
                   .setUrl(requestUrl);
