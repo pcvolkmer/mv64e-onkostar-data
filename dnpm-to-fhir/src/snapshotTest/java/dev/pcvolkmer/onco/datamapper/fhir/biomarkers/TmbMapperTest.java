@@ -19,9 +19,9 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.biomarkers;
 
-import dev.pcvolkmer.mv64e.mtb.Converter;
-import dev.pcvolkmer.mv64e.mtb.NgsReportResults;
-import dev.pcvolkmer.mv64e.mtb.SomaticNgsReport;
+import dev.pcvolkmer.mv64e.model.Converter;
+import dev.pcvolkmer.mv64e.model.SomaticNgsReport;
+import dev.pcvolkmer.mv64e.model.SomaticNgsReportResults;
 import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.TmbMapper;
 import java.io.IOException;
@@ -45,7 +45,7 @@ class TmbMapperTest extends DnpmToFhirTest {
         mtb.getNgsReports().stream()
             .map(SomaticNgsReport::getResults)
             .filter(Objects::nonNull)
-            .map(NgsReportResults::getTmb)
+            .map(SomaticNgsReportResults::getTmb)
             .filter(Objects::nonNull)
             .map(mapper::map)
             .collect(Collectors.toList());

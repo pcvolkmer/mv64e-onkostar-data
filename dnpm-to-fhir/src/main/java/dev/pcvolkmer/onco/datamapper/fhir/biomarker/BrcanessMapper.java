@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.biomarker;
 
-import dev.pcvolkmer.mv64e.mtb.Brcaness;
+import dev.pcvolkmer.mv64e.model.Brcaness;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 

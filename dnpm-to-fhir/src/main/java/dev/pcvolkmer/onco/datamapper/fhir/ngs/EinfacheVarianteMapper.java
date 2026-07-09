@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
-import dev.pcvolkmer.mv64e.mtb.Snv;
+import dev.pcvolkmer.mv64e.model.Snv;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -81,7 +81,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
         new CodeableConcept()
             .addCoding(
                 new Coding()
-                    .setCode(sourceItem.getInterpretation().getCode().toValue())
+                    .setCode(sourceItem.getInterpretation().getCode().getValue())
                     .setSystem("https://www.ncbi.nlm.nih.gov/clinvar")
                     .setDisplay(sourceItem.getInterpretation().getDisplay())));
 
@@ -99,7 +99,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
-                            .setCode(sourceItem.getChromosome().toValue())
+                            .setCode(sourceItem.getChromosome().getValue())
                             .setSystem("http://terminology.hl7.org/CodeSystem/chromosome-human"))));
 
     // Gene

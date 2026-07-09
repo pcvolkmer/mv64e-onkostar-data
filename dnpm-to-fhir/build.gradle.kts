@@ -13,7 +13,7 @@ version = "0.1.0-SNAPSHOT"
 
 val commonsCli by extra("1.10.0")
 val commonsIo by extra("2.22.0")
-val mtbDto by extra ("0.3.0")
+val mtbModel by extra ("0.4.3")
 val slf4j by extra("2.0.17")
 val hapiFhirVersion by extra("7.6.1")
 
@@ -63,7 +63,7 @@ configurations {
 }
 
 dependencies {
-    implementation("dev.pcvolkmer.mv64e:mtb-dto:$mtbDto")
+    implementation("dev.pcvolkmer.mv64e:mtb-model:$mtbModel")
     implementation("commons-cli:commons-cli:$commonsCli")
     implementation("commons-io:commons-io:$commonsIo")
     implementation("ca.uhn.hapi.fhir:hapi-fhir-base:${hapiFhirVersion}")

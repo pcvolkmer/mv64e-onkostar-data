@@ -20,7 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
+import dev.pcvolkmer.mv64e.model.PerformanceStatus;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;
 
@@ -66,7 +66,7 @@ public class EcogMapper extends ObservationMapper<PerformanceStatus> {
             .addCoding(
                 new Coding()
                     .setSystem("ECOG-Performance-Status")
-                    .setCode(sourceItem.getValue().getCode().toValue())
+                    .setCode(sourceItem.getValue().getCode().getValue())
                     .setDisplay(sourceItem.getValue().getDisplay())));
 
     return result;

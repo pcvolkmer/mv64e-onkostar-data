@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.biomarker;
 
-import dev.pcvolkmer.mv64e.mtb.Tmb;
+import dev.pcvolkmer.mv64e.model.Tmb;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -75,7 +75,7 @@ public class TmbMapper extends ObservationMapper<Tmb> {
           new CodeableConcept()
               .addCoding(
                   new Coding()
-                      .setCode(interpretation.getCode().toValue())
+                      .setCode(interpretation.getCode().getValue())
                       .setSystem(interpretation.getSystem())
                       .setDisplay(interpretation.getDisplay())));
     }

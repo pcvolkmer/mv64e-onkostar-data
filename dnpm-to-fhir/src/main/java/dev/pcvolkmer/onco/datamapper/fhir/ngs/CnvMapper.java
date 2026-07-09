@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
-import dev.pcvolkmer.mv64e.mtb.Cnv;
+import dev.pcvolkmer.mv64e.model.Cnv;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -90,7 +90,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
-                            .setCode(sourceItem.getChromosome().toValue())
+                            .setCode(sourceItem.getChromosome().getValue())
                             .setSystem("http://terminology.hl7.org/CodeSystem/chromosome-human"))));
 
     // Total Copy Number
@@ -193,9 +193,9 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
-                            .setCode(sourceItem.getType().getCode().toValue())
+                            .setCode(sourceItem.getType().getCode().getValue())
                             .setSystem("dnpm-dip/mtb/ngs-report/cnv/type")
-                            .setDisplay(sourceItem.getType().getCode().toValue()))));
+                            .setDisplay(sourceItem.getType().getCode().getValue()))));
 
     result.setSubject(this.getPatientReference(sourceItem));
 

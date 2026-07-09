@@ -20,7 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.mtb.MtbStudyEnrollmentRecommendation;
+import dev.pcvolkmer.mv64e.model.MtbStudyEnrollmentRecommendation;
 import dev.pcvolkmer.onco.datamapper.fhir.ServiceRequestMapper;
 import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Meta;

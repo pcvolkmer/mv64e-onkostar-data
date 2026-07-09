@@ -19,7 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.biomarker;
 
-import dev.pcvolkmer.mv64e.mtb.Msi;
+import dev.pcvolkmer.mv64e.model.Msi;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -68,7 +68,7 @@ public class MsiMapper extends ObservationMapper<Msi> {
           new CodeableConcept()
               .addCoding(
                   new Coding()
-                      .setCode(interpretation.getCode().toValue())
+                      .setCode(interpretation.getCode().getValue())
                       .setSystem(interpretation.getSystem())
                       .setDisplay(interpretation.getDisplay())));
     }
