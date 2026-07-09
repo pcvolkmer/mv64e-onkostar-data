@@ -21,12 +21,16 @@ package dev.pcvolkmer.onco.datamapper.fhir;
 
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Resource;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 public interface Mapper<S, D extends Resource> {
 
+  @NullMarked
   void addToBundle(Bundle bundle, S item);
 
-  D map(S sourceItem);
+  @Nullable D map(S sourceItem);
 
+  @NullMarked
   String getSystem();
 }

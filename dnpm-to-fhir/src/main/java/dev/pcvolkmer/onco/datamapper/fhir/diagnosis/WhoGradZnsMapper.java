@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.hl7.fhir.r4.model.*;
+import org.jspecify.annotations.Nullable;
 
 public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
     implements ManyMapper<MtbDiagnosis, Observation> {
@@ -43,6 +44,7 @@ public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
   }
 
   @Override
+  @Nullable
   public Observation map(TumorGrading sourceItem) {
     var result = new Observation();
 
@@ -79,6 +81,7 @@ public class WhoGradZnsMapper extends ObservationMapper<TumorGrading>
     return result;
   }
 
+  @Nullable
   private String mapValue(TumorGrading sourceItem) {
     for (var coding : sourceItem.getCodes()) {
       if ("dnpm-dip/mtb/who-grading-cns-tumors".equals(coding.getSystem())) {

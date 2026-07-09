@@ -21,9 +21,11 @@ package dev.pcvolkmer.onco.datamapper.fhir;
 
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Resource;
+import org.jspecify.annotations.NullMarked;
 
 public interface ManyMapper<S, D extends Resource> {
   void addManyToBundle(Bundle bundle, S item);
 
+  @NullMarked
   Iterable<D> mapToMany(S sourceItem);
 }
