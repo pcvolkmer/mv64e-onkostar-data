@@ -1,7 +1,7 @@
 {
   "resourceType": "Bundle",
   "entry": [ {
-    "fullUrl": "urn:uuid:b6770bde-1238-5ffa-8d65-f05e7d90ab73",
+    "fullUrl": "urn:uuid:8ef7c29d-93f1-9c27-9e71-dd9298dd20ec",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -10,22 +10,24 @@
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
-        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
+        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmm-0"
       } ],
       "status": "final",
       "code": {
         "extension": [ {
           "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-ex-onko-tnm-cp-praefix",
-          "valueCoding": {
-            "system": "https://www.uicc.org/resources/tnm",
-            "code": "c",
-            "display": "Klinisch"
+          "valueCodeableConcept": {
+            "coding": [ {
+              "system": "https://www.uicc.org/resources/tnm",
+              "code": "c",
+              "display": "c"
+            } ]
           }
         } ],
         "coding": [ {
           "system": "http://snomed.info/sct",
           "code": "399387003",
-          "display": "cT category (observable entity)"
+          "display": "cM category (observable entity)"
         } ]
       },
       "subject": {
@@ -35,14 +37,14 @@
       "valueCodeableConcept": {
         "coding": [ {
           "system": "https://www.uicc.org/resources/tnm",
-          "code": "T0",
-          "display": "T0"
+          "code": "M1",
+          "display": "M1"
         } ]
       }
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmm-0"
     }
   } ]
 }

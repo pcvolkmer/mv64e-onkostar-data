@@ -10,6 +10,20 @@
   } ],
   "status": "active",
   "intent": "proposal",
+  "category": [ {
+    "coding": [ {
+      "system": "http://snomed.info/sct",
+      "code": "110465008",
+      "display": "Clinical trial (procedure)"
+    } ]
+  } ],
+  "code": {
+    "coding": [ {
+      "system": "http://snomed.info/sct",
+      "code": "702475000",
+      "display": "Referral to clinical trial (procedure)"
+    } ]
+  },
   "subject": {
     "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
   },

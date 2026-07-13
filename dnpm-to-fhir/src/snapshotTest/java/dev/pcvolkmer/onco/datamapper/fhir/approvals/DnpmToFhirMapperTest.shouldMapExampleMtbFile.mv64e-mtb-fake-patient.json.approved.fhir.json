@@ -110,7 +110,7 @@
         "coding": [ {
           "system": "http://snomed.info/sct",
           "code": "371508000",
-          "display": "Tumor Stage"
+          "display": "Tumor stage"
         } ]
       },
       "subject": {
@@ -144,10 +144,12 @@
       "code": {
         "extension": [ {
           "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-ex-onko-tnm-cp-praefix",
-          "valueCoding": {
-            "system": "https://www.uicc.org/resources/tnm",
-            "code": "c",
-            "display": "Klinisch"
+          "valueCodeableConcept": {
+            "coding": [ {
+              "system": "https://www.uicc.org/resources/tnm",
+              "code": "c",
+              "display": "c"
+            } ]
           }
         } ],
         "coding": [ {
@@ -173,7 +175,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
     }
   }, {
-    "fullUrl": "urn:uuid:b6770bde-1238-5ffa-8d65-f05e7d90ab73",
+    "fullUrl": "urn:uuid:5e78fdb6-77cd-a24d-760c-8134c18a90c4",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -182,22 +184,24 @@
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
-        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
+        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmn-0"
       } ],
       "status": "final",
       "code": {
         "extension": [ {
           "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-ex-onko-tnm-cp-praefix",
-          "valueCoding": {
-            "system": "https://www.uicc.org/resources/tnm",
-            "code": "c",
-            "display": "Klinisch"
+          "valueCodeableConcept": {
+            "coding": [ {
+              "system": "https://www.uicc.org/resources/tnm",
+              "code": "c",
+              "display": "c"
+            } ]
           }
         } ],
         "coding": [ {
           "system": "http://snomed.info/sct",
           "code": "399534004",
-          "display": "cT category (observable entity)"
+          "display": "cN category (observable entity)"
         } ]
       },
       "subject": {
@@ -207,17 +211,17 @@
       "valueCodeableConcept": {
         "coding": [ {
           "system": "https://www.uicc.org/resources/tnm",
-          "code": "T0",
-          "display": "T0"
+          "code": "N0",
+          "display": "N0"
         } ]
       }
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmn-0"
     }
   }, {
-    "fullUrl": "urn:uuid:b6770bde-1238-5ffa-8d65-f05e7d90ab73",
+    "fullUrl": "urn:uuid:8ef7c29d-93f1-9c27-9e71-dd9298dd20ec",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -226,22 +230,24 @@
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
-        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
+        "value": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmm-0"
       } ],
       "status": "final",
       "code": {
         "extension": [ {
           "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-ex-onko-tnm-cp-praefix",
-          "valueCoding": {
-            "system": "https://www.uicc.org/resources/tnm",
-            "code": "c",
-            "display": "Klinisch"
+          "valueCodeableConcept": {
+            "coding": [ {
+              "system": "https://www.uicc.org/resources/tnm",
+              "code": "c",
+              "display": "c"
+            } ]
           }
         } ],
         "coding": [ {
           "system": "http://snomed.info/sct",
           "code": "399387003",
-          "display": "cT category (observable entity)"
+          "display": "cM category (observable entity)"
         } ]
       },
       "subject": {
@@ -251,14 +257,14 @@
       "valueCodeableConcept": {
         "coding": [ {
           "system": "https://www.uicc.org/resources/tnm",
-          "code": "T0",
-          "display": "T0"
+          "code": "M1",
+          "display": "M1"
         } ]
       }
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmt-0"
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_tnmm-0"
     }
   }, {
     "fullUrl": "urn:uuid:4c0fa487-d0b7-8a86-39a6-b12d161f2eca",
@@ -453,7 +459,10 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "authoredOn": "2025-12-10"
+      "authoredOn": "2025-12-10",
+      "reasonReference": [ {
+        "reference": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_mtbdiagnose"
+      } ]
     },
     "request": {
       "method": "PUT",
@@ -497,7 +506,10 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "authoredOn": "2025-12-10"
+      "authoredOn": "2025-12-10",
+      "reasonReference": [ {
+        "reference": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_mtbdiagnose"
+      } ]
     },
     "request": {
       "method": "PUT",
@@ -517,6 +529,20 @@
       } ],
       "status": "active",
       "intent": "proposal",
+      "category": [ {
+        "coding": [ {
+          "system": "http://snomed.info/sct",
+          "code": "110465008",
+          "display": "Clinical trial (procedure)"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://snomed.info/sct",
+          "code": "702475000",
+          "display": "Referral to clinical trial (procedure)"
+        } ]
+      },
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
@@ -593,9 +619,9 @@
       "effectiveDateTime": "2025-12-10",
       "valueCodeableConcept": {
         "coding": [ {
-          "system": "ECOG-Performance-Status",
+          "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/CodeSystem/mii-cs-onko-allgemeiner-leistungszustand-ecog",
           "code": "2",
-          "display": "ECOG 2"
+          "display": "Gehfähig, Selbstversorgung möglich, aber nicht arbeitsfähig; kann mehr als 50 % der Wachzeit aufstehen (50 - 60 % nach Karnofsky)"
         } ]
       }
     },

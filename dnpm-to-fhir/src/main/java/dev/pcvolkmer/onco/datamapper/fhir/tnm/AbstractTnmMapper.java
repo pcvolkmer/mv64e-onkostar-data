@@ -23,6 +23,7 @@ import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.model.MtbDiagnosis;
 import dev.pcvolkmer.mv64e.model.TumorStaging;
 import dev.pcvolkmer.mv64e.model.TumorStagingMethodCoding;
+import dev.pcvolkmer.mv64e.model.TumorStagingTnmClassification;
 import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import java.util.List;
@@ -63,10 +64,11 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
                   .setUrl(
                       "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-ex-onko-tnm-cp-praefix")
                   .setValue(
-                      new Coding()
-                          .setSystem("https://www.uicc.org/resources/tnm")
-                          .setCode(this.mapPrefix(method.getCode()))
-                          .setDisplay(method.getDisplay())));
+                      new CodeableConcept(
+                          new Coding()
+                              .setSystem("https://www.uicc.org/resources/tnm")
+                              .setCode(this.mapPrefix(method.getCode()))
+                              .setDisplay(this.mapPrefix(method.getCode())))));
       result.setCode(codeableConcept);
     }
 
@@ -78,15 +80,15 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
 
     final var tnmClassification = sourceItem.getTnmClassification();
     if (null != tnmClassification) {
-      final var tumor = tnmClassification.getTumor();
-      if (tumor != null) {
+      final var value = getClassificationValue(tnmClassification);
+      if (value != null) {
         result.setValue(
             new CodeableConcept()
                 .addCoding(
                     new Coding()
                         .setSystem("https://www.uicc.org/resources/tnm")
-                        .setCode(tumor.getCode())
-                        .setDisplay(tumor.getCode())));
+                        .setCode(value.getCode())
+                        .setDisplay(value.getCode())));
       }
     }
 
@@ -94,6 +96,9 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
 
     return result;
   }
+
+  protected abstract dev.pcvolkmer.mv64e.model.Coding getClassificationValue(
+      TumorStagingTnmClassification classification);
 
   @Nullable
   private String mapPrefix(TumorStagingMethodCoding.CodeEnum dnpmValue) {
@@ -122,8 +127,8 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
             idx -> {
               final var requestUrl =
                   String.format(
-                      "Observation?identifier=%s|%s_tnmt-%d",
-                      this.getSystem(), sourceItem.getId(), idx);
+                      "Observation?identifier=%s|%s_%s-%d",
+                      this.getSystem(), sourceItem.getId(), idSuffix(), idx);
 
               final var newItem = newItems.get(idx);
               newItem.setSubject(patientReference);
@@ -131,7 +136,8 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
                   List.of(
                       new Identifier()
                           .setSystem(this.getSystem())
-                          .setValue(String.format("%s_tnmt-%d", sourceItem.getId(), idx))));
+                          .setValue(
+                              String.format("%s_%s-%d", sourceItem.getId(), idSuffix(), idx))));
 
               bundle
                   .addEntry()

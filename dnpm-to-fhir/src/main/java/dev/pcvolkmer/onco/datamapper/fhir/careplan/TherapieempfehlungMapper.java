@@ -22,6 +22,7 @@ package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.model.MtbMedicationRecommendation;
 import dev.pcvolkmer.onco.datamapper.fhir.MedicationRequestMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.MtbDiagnoseMapper;
 import org.hl7.fhir.r4.model.*;
 
 public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicationRecommendation> {
@@ -88,8 +89,18 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
     dateValue.setPrecision(TemporalPrecisionEnum.DAY);
     result.setAuthoredOnElement(dateValue);
 
-    final var medication = new CodeableConcept();
+    final var reason = sourceItem.getReason();
+    if (null != reason) {
+      final var reasonReference =
+          new Reference()
+              .setReference(
+                  String.format(
+                      "Condition?identifier=%s|%s_mtbdiagnose",
+                      new MtbDiagnoseMapper().getSystem(), reason.getId()));
+      result.addReasonReference(reasonReference);
+    }
 
+    final var medication = new CodeableConcept();
     if (null != sourceItem.getMedication()) {
       sourceItem
           .getMedication()

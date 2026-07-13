@@ -146,7 +146,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                     .setSystem("http://unitsofmeasure.org")
                     .setCode("1")));
 
-    // Copy Number of Allele A
+    // Copy Number of Allele B
     result.addComponent(
         new Observation.ObservationComponentComponent()
             .setCode(

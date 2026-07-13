@@ -16,7 +16,7 @@
     "coding": [ {
       "system": "http://snomed.info/sct",
       "code": "371508000",
-      "display": "Tumor Stage"
+      "display": "Tumor stage"
     } ]
   },
   "effectiveDateTime": "2003-09-26",

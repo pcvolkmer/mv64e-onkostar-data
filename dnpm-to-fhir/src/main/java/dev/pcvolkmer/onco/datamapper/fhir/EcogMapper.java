@@ -20,6 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import dev.pcvolkmer.mv64e.model.EcogCoding;
 import dev.pcvolkmer.mv64e.model.PerformanceStatus;
 import java.util.List;
 import org.hl7.fhir.r4.model.*;
@@ -65,10 +66,28 @@ public class EcogMapper extends ObservationMapper<PerformanceStatus> {
         new CodeableConcept()
             .addCoding(
                 new Coding()
-                    .setSystem("ECOG-Performance-Status")
+                    .setSystem(
+                        "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/CodeSystem/mii-cs-onko-allgemeiner-leistungszustand-ecog")
                     .setCode(sourceItem.getValue().getCode().getValue())
-                    .setDisplay(sourceItem.getValue().getDisplay())));
+                    .setDisplay(getDisplay(sourceItem.getValue().getCode()))));
 
     return result;
+  }
+
+  private String getDisplay(EcogCoding.CodeEnum code) {
+    switch (code) {
+      case _0:
+        return "Normale, uneingeschränkte Aktivität wie vor der Erkrankung (90 - 100 % nach Karnofsky)";
+      case _1:
+        return "Einschränkung bei körperlicher Anstrengung, aber gehfähig; leichte körperliche Arbeit bzw. Arbeit im Sitzen (z. B. leichte Hausarbeit oder Büroarbeit) möglich (70 - 80 % nach Karnofsky)";
+      case _2:
+        return "Gehfähig, Selbstversorgung möglich, aber nicht arbeitsfähig; kann mehr als 50 % der Wachzeit aufstehen (50 - 60 % nach Karnofsky)";
+      case _3:
+        return "Nur begrenzte Selbstversorgung möglich; ist 50 % oder mehr der Wachzeit an Bett oder Stuhl gebunden (30 40 % nach Karnofsky)";
+      case _4:
+        return "Völlig pflegebedürftig, keinerlei Selbstversorgung möglich; völlig an Bett oder Stuhl gebunden (10 - 20 % nach Karnofsky)";
+      default:
+        return "Unbekannt";
+    }
   }
 }
