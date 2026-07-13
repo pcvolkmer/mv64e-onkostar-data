@@ -15,6 +15,11 @@
       "code": "laboratory",
       "display": "Laboratory"
     } ]
+  }, {
+    "coding": [ {
+      "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+      "code": "biomarker-category"
+    } ]
   } ],
   "code": {
     "coding": [ {
@@ -31,34 +36,5 @@
     "unit": "Score",
     "system": "http://unitsofmeasure.org",
     "code": "1"
-  },
-  "component": [ {
-    "code": {
-      "coding": [ {
-        "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
-        "code": "brcaness-confidence-range-min",
-        "display": "BRCAness Confidence Range Minimum"
-      } ]
-    },
-    "valueQuantity": {
-      "value": 0.4,
-      "unit": "Score",
-      "system": "http://unitsofmeasure.org",
-      "code": "1"
-    }
-  }, {
-    "code": {
-      "coding": [ {
-        "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
-        "code": "brcaness-confidence-range-max",
-        "display": "BRCAness Confidence Range Maximum"
-      } ]
-    },
-    "valueQuantity": {
-      "value": 0.6,
-      "unit": "Score",
-      "system": "http://unitsofmeasure.org",
-      "code": "1"
-    }
-  } ]
+  }
 }

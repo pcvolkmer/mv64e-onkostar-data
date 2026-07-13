@@ -15,6 +15,11 @@
       "code": "laboratory",
       "display": "Laboratory"
     } ]
+  }, {
+    "coding": [ {
+      "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+      "code": "biomarker-category"
+    } ]
   } ],
   "code": {
     "coding": [ {
@@ -37,7 +42,7 @@
   "component": [ {
     "code": {
       "coding": [ {
-        "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+        "system": "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html",
         "code": "C18016",
         "display": "Loss of Heterozygosity"
       } ]
@@ -46,7 +51,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+        "system": "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html",
         "code": "C129774",
         "display": "Telomeric Allelic Imbalance Region"
       } ]
@@ -55,7 +60,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+        "system": "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html",
         "code": "C120466",
         "display": "Large-Scale State Transition"
       } ]

@@ -4450,6 +4450,11 @@
           "code": "laboratory",
           "display": "Laboratory"
         } ]
+      }, {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "biomarker-category"
+        } ]
       } ],
       "code": {
         "coding": [ {
@@ -4472,7 +4477,7 @@
       "component": [ {
         "code": {
           "coding": [ {
-            "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+            "system": "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html",
             "code": "C18016",
             "display": "Loss of Heterozygosity"
           } ]
@@ -4481,7 +4486,7 @@
       }, {
         "code": {
           "coding": [ {
-            "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+            "system": "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html",
             "code": "C129774",
             "display": "Telomeric Allelic Imbalance Region"
           } ]
@@ -4490,7 +4495,7 @@
       }, {
         "code": {
           "coding": [ {
-            "system": "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl",
+            "system": "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html",
             "code": "C120466",
             "display": "Large-Scale State Transition"
           } ]
@@ -4521,6 +4526,11 @@
           "code": "laboratory",
           "display": "Laboratory"
         } ]
+      }, {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "biomarker-category"
+        } ]
       } ],
       "code": {
         "coding": [ {
@@ -4537,36 +4547,7 @@
         "unit": "Score",
         "system": "http://unitsofmeasure.org",
         "code": "1"
-      },
-      "component": [ {
-        "code": {
-          "coding": [ {
-            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
-            "code": "brcaness-confidence-range-min",
-            "display": "BRCAness Confidence Range Minimum"
-          } ]
-        },
-        "valueQuantity": {
-          "value": 0.4,
-          "unit": "Score",
-          "system": "http://unitsofmeasure.org",
-          "code": "1"
-        }
-      }, {
-        "code": {
-          "coding": [ {
-            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker",
-            "code": "brcaness-confidence-range-max",
-            "display": "BRCAness Confidence Range Maximum"
-          } ]
-        },
-        "valueQuantity": {
-          "value": 0.6,
-          "unit": "Score",
-          "system": "http://unitsofmeasure.org",
-          "code": "1"
-        }
-      } ]
+      }
     },
     "request": {
       "method": "PUT",
@@ -4590,6 +4571,11 @@
           "system": "http://terminology.hl7.org/CodeSystem/observation-category",
           "code": "laboratory",
           "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "biomarker-category"
         } ]
       } ],
       "code": {
@@ -4633,6 +4619,18 @@
         "value": "ba82a81a-dc93-4667-ba29-080a27279406_msi"
       } ],
       "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "biomarker-category"
+        } ]
+      } ],
       "code": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -4647,14 +4645,7 @@
         "value": 0.14136417072841295,
         "system": "http://unitsofmeasure.org",
         "code": "%"
-      },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "dnpm-dip/mtb/msi/interpretation",
-          "code": "mmr-proficient",
-          "display": "MMR Proficient"
-        } ]
-      } ]
+      }
     },
     "request": {
       "method": "PUT",

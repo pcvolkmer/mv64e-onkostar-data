@@ -54,6 +54,12 @@ public class TmbMapper extends ObservationMapper<Tmb> {
         .setCode("laboratory")
         .setDisplay("Laboratory");
 
+    result
+        .addCategory()
+        .addCoding()
+        .setSystem("http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs")
+        .setCode("biomarker-category");
+
     result.setCode(
         new CodeableConcept()
             .addCoding(

@@ -9,6 +9,18 @@
     "value": "ba82a81a-dc93-4667-ba29-080a27279406_msi"
   } ],
   "status": "final",
+  "category": [ {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+      "code": "laboratory",
+      "display": "Laboratory"
+    } ]
+  }, {
+    "coding": [ {
+      "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+      "code": "biomarker-category"
+    } ]
+  } ],
   "code": {
     "coding": [ {
       "system": "http://loinc.org",
@@ -23,12 +35,5 @@
     "value": 0.14136417072841295,
     "system": "http://unitsofmeasure.org",
     "code": "%"
-  },
-  "interpretation": [ {
-    "coding": [ {
-      "system": "dnpm-dip/mtb/msi/interpretation",
-      "code": "mmr-proficient",
-      "display": "MMR Proficient"
-    } ]
-  } ]
+  }
 }
