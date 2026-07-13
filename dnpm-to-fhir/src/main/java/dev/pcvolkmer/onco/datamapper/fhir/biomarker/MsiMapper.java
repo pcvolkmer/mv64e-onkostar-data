@@ -47,6 +47,19 @@ public class MsiMapper extends ObservationMapper<Msi> {
 
     result.setStatus(Observation.ObservationStatus.FINAL);
 
+    result
+        .addCategory()
+        .addCoding()
+        .setSystem("http://terminology.hl7.org/CodeSystem/observation-category")
+        .setCode("laboratory")
+        .setDisplay("Laboratory");
+
+    result
+        .addCategory()
+        .addCoding()
+        .setSystem("http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs")
+        .setCode("biomarker-category");
+
     result.setCode(
         new CodeableConcept()
             .addCoding(
@@ -64,13 +77,14 @@ public class MsiMapper extends ObservationMapper<Msi> {
 
     final var interpretation = sourceItem.getInterpretation();
     if (null != interpretation) {
-      result.addInterpretation(
-          new CodeableConcept()
-              .addCoding(
-                  new Coding()
-                      .setCode(interpretation.getCode().getValue())
-                      .setSystem(interpretation.getSystem())
-                      .setDisplay(interpretation.getDisplay())));
+      // TODO: MMR?
+      /*result.addInterpretation(
+      new CodeableConcept()
+          .addCoding(
+              new Coding()
+                  .setCode(interpretation.getCode().getValue())
+                  .setSystem(interpretation.getSystem())
+                  .setDisplay(interpretation.getDisplay())));*/
     }
 
     // TODO: Methode in DNPM problematisch. Soll immer "bioinformatic" sein, auch wenn es

@@ -54,6 +54,12 @@ public class BrcanessMapper extends ObservationMapper<Brcaness> {
         .setCode("laboratory")
         .setDisplay("Laboratory");
 
+    result
+        .addCategory()
+        .addCoding()
+        .setSystem("http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs")
+        .setCode("biomarker-category");
+
     result.setCode(
         new CodeableConcept()
             .addCoding(
@@ -72,38 +78,20 @@ public class BrcanessMapper extends ObservationMapper<Brcaness> {
 
     final var confidenceRange = sourceItem.getConfidenceRange();
     if (null != confidenceRange) {
-      result.addComponent(
-          new Observation.ObservationComponentComponent()
-              .setCode(
-                  new CodeableConcept()
-                      .addCoding(
-                          new Coding()
-                              .setSystem(
-                                  "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker")
-                              .setCode("brcaness-confidence-range-min")
-                              .setDisplay("BRCAness Confidence Range Minimum")))
-              .setValue(
-                  new Quantity()
-                      .setValue(confidenceRange.getMin())
-                      .setUnit("Score")
-                      .setSystem("http://unitsofmeasure.org")
-                      .setCode("1")));
-      result.addComponent(
-          new Observation.ObservationComponentComponent()
-              .setCode(
-                  new CodeableConcept()
-                      .addCoding(
-                          new Coding()
-                              .setSystem(
-                                  "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-molekulare-biomarker")
-                              .setCode("brcaness-confidence-range-max")
-                              .setDisplay("BRCAness Confidence Range Maximum")))
-              .setValue(
-                  new Quantity()
-                      .setValue(confidenceRange.getMax())
-                      .setUnit("Score")
-                      .setSystem("http://unitsofmeasure.org")
-                      .setCode("1")));
+      /*result.setValue(
+      new Range()
+          .setLow(
+              new Quantity()
+                  .setValue(confidenceRange.getMin())
+                  .setUnit("Score")
+                  .setSystem("http://unitsofmeasure.org")
+                  .setCode("1"))
+          .setHigh(
+              new Quantity()
+                  .setValue(confidenceRange.getMax())
+                  .setUnit("Score")
+                  .setSystem("http://unitsofmeasure.org")
+                  .setCode("1")));*/
     }
 
     final var specimen = sourceItem.getSpecimen();

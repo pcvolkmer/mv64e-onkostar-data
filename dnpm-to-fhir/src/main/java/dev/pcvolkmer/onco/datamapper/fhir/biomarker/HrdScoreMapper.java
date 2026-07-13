@@ -54,6 +54,12 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
         .setCode("laboratory")
         .setDisplay("Laboratory");
 
+    result
+        .addCategory()
+        .addCoding()
+        .setSystem("http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs")
+        .setCode("biomarker-category");
+
     result.setCode(
         new CodeableConcept()
             .addCoding(
@@ -73,7 +79,8 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                   new CodeableConcept()
                       .addCoding(
                           new Coding()
-                              .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
+                              .setSystem(
+                                  "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html")
                               .setCode("C18016")
                               .setDisplay("Loss of Heterozygosity")))
               .setValue(new IntegerType(components.getLoh().intValue())));
@@ -84,7 +91,8 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                   new CodeableConcept()
                       .addCoding(
                           new Coding()
-                              .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
+                              .setSystem(
+                                  "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html")
                               .setCode("C129774")
                               .setDisplay("Telomeric Allelic Imbalance Region")))
               .setValue(new IntegerType(components.getTai().intValue())));
@@ -95,7 +103,8 @@ public class HrdScoreMapper extends ObservationMapper<HrdScore> {
                   new CodeableConcept()
                       .addCoding(
                           new Coding()
-                              .setSystem("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
+                              .setSystem(
+                                  "https://nih-ncpi.github.io/ncpi-fhir-ig/CodeSystem-ncit.html")
                               .setCode("C120466")
                               .setDisplay("Large-Scale State Transition")))
               .setValue(new IntegerType(components.getLst().intValue())));
