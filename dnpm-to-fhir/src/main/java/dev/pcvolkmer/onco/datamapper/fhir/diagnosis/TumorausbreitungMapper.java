@@ -72,7 +72,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
                     new Coding()
                         .setSystem("http://snomed.info/sct")
                         .setCode("371508000")
-                        .setDisplay("Tumor Stage"))));
+                        .setDisplay("Tumor stage"))));
 
     final var dateTimeType = new DateTimeType(sourceItem.getDate());
     dateTimeType.setPrecision(TemporalPrecisionEnum.DAY);

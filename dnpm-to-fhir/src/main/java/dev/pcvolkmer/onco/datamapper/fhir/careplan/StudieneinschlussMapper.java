@@ -22,9 +22,7 @@ package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.model.MtbStudyEnrollmentRecommendation;
 import dev.pcvolkmer.onco.datamapper.fhir.ServiceRequestMapper;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.r4.model.Meta;
-import org.hl7.fhir.r4.model.ServiceRequest;
+import org.hl7.fhir.r4.model.*;
 
 public class StudieneinschlussMapper
     extends ServiceRequestMapper<MtbStudyEnrollmentRecommendation> {
@@ -49,6 +47,21 @@ public class StudieneinschlussMapper
             .setSource("#dnpm")
             .addProfile(
                 "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-studieneinschluss-anfrage"));
+
+    result
+        .addCategory()
+        .addCoding()
+        .setSystem("http://snomed.info/sct")
+        .setCode("110465008")
+        .setDisplay("Clinical trial (procedure)");
+
+    result.setCode(
+        new CodeableConcept()
+            .addCoding(
+                new Coding()
+                    .setSystem("http://snomed.info/sct")
+                    .setCode("702475000")
+                    .setDisplay("Referral to clinical trial (procedure)")));
 
     // Current active care plan? No Information in DNPM - but required!
     result.setStatus(ServiceRequest.ServiceRequestStatus.ACTIVE);

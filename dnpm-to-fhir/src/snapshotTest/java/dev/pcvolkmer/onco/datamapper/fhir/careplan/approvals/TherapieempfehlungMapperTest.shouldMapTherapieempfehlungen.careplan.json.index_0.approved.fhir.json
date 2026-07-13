@@ -34,5 +34,8 @@
   "subject": {
     "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
   },
-  "authoredOn": "2025-12-10"
+  "authoredOn": "2025-12-10",
+  "reasonReference": [ {
+    "reference": "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_mtbdiagnose"
+  } ]
 }

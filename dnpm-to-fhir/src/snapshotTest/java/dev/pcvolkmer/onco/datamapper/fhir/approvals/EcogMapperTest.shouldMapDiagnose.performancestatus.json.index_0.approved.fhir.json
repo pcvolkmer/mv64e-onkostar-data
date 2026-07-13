@@ -24,9 +24,9 @@
   "effectiveDateTime": "2025-12-10",
   "valueCodeableConcept": {
     "coding": [ {
-      "system": "ECOG-Performance-Status",
+      "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/CodeSystem/mii-cs-onko-allgemeiner-leistungszustand-ecog",
       "code": "2",
-      "display": "ECOG 2"
+      "display": "Gehfähig, Selbstversorgung möglich, aber nicht arbeitsfähig; kann mehr als 50 % der Wachzeit aufstehen (50 - 60 % nach Karnofsky)"
     } ]
   }
 }

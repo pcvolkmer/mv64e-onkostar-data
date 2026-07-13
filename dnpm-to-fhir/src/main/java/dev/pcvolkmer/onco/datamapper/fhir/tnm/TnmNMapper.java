@@ -19,6 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.tnm;
 
+import dev.pcvolkmer.mv64e.model.TumorStagingTnmClassification;
 import org.hl7.fhir.r4.model.Coding;
 
 public class TnmNMapper extends AbstractTnmMapper {
@@ -37,6 +38,12 @@ public class TnmNMapper extends AbstractTnmMapper {
     return new Coding()
         .setSystem("http://snomed.info/sct")
         .setCode("399534004")
-        .setDisplay("cT category (observable entity)");
+        .setDisplay("cN category (observable entity)");
+  }
+
+  @Override
+  protected dev.pcvolkmer.mv64e.model.Coding getClassificationValue(
+      TumorStagingTnmClassification classification) {
+    return classification.getNodes();
   }
 }
