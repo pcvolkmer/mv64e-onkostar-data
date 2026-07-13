@@ -1,7 +1,7 @@
 {
   "resourceType": "Bundle",
   "entry": [ {
-    "fullUrl": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2_znsgrading-0",
+    "fullUrl": "urn:uuid:7dc413eb-9dba-115d-d6c2-d5bef1f4b8db",
     "resource": {
       "resourceType": "Observation",
       "meta": {
