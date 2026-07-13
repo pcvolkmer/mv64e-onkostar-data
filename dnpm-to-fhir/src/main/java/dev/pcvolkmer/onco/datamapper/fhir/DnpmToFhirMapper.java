@@ -37,11 +37,26 @@ import dev.pcvolkmer.onco.datamapper.fhir.ngs.EinfacheVarianteMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmMMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmNMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmTMapper;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
 
 public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<S, D> {
+
+  private final MessageDigest md5Digest;
+
+  protected DnpmToFhirMapper() {
+    try {
+      md5Digest = MessageDigest.getInstance("MD5");
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   protected abstract String getPatientId(S item);
 
@@ -64,11 +79,21 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
       bundle
           .addEntry()
           .setResource(resource)
-          .setFullUrl(getRequestUrl(item))
+          .setFullUrl(this.fullUrlUrn(getRequestUrl(item)))
           .getRequest()
           .setMethod(Bundle.HTTPVerb.PUT)
           .setUrl(getRequestUrl(item));
     }
+  }
+
+  public String fullUrlUrn(String requestUrl) {
+    final var digest = this.md5Digest.digest(requestUrl.getBytes(StandardCharsets.UTF_8));
+    ByteBuffer bb = ByteBuffer.wrap(digest);
+    long mostSigBits = bb.getLong();
+    long leastSigBits = bb.getLong();
+
+    final var uuid = new UUID(mostSigBits, leastSigBits);
+    return String.format("urn:uuid:%s", uuid);
   }
 
   protected abstract String getId(S item);
