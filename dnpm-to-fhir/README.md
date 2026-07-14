@@ -39,7 +39,7 @@ java -jar <dateiname>.jar --filename <file>
 | Variante - Copy Number Variant   | ⛅                | Verpflichtend       |
 | Variante - DNA-Fusion            | -                | Verpflichtend       |
 | Variante - RNA-Fusion            | -                | Verpflichtend       |
-| Gen. Implikation - genetisch     | -                |                     |
+| Gen. Implikation - diagnostisch  | ⛅                |                     |
 | Gen. Implikation - therapeutisch | -                |                     |
 | Mol Biomarker - TMB              | ⛅                | Verpflichtend       |
 | Mol Biomarker - MSI              | ⛅                | Verpflichtend       |
