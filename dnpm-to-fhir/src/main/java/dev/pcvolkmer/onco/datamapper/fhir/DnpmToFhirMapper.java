@@ -45,8 +45,12 @@ import java.util.UUID;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<S, D> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(DnpmToFhirMapper.class);
 
   private final MessageDigest md5Digest;
 
@@ -200,7 +204,16 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     final var msiFindings = patientRecord.getMsiFindings();
     if (null != msiFindings) {
       final var msiMapper = new MsiMapper();
-      msiFindings.forEach(item -> msiMapper.addToBundle(bundle, item));
+      msiFindings.forEach(
+          item -> {
+            try {
+              msiMapper.addToBundle(bundle, item);
+            } catch (IllegalArgumentException e) {
+              LOG.warn(
+                  "MSI interpretation with MMR is not supported and ignored in msiFindings[{}]",
+                  item.getId());
+            }
+          });
     }
 
     return bundle;

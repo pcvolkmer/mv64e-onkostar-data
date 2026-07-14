@@ -17,8 +17,8 @@
       },
       "value": 0.14136417072841295,
       "interpretation": {
-        "code": "msi-low",
-        "display": "MSI Low",
+        "code": "mmr-proficient",
+        "display": "MMR Proficient",
         "system": "dnpm-dip/mtb/msi/interpretation"
       }
     }

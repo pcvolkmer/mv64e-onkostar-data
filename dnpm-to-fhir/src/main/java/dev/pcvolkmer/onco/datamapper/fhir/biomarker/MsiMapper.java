@@ -20,6 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir.biomarker;
 
 import dev.pcvolkmer.mv64e.model.Msi;
+import dev.pcvolkmer.mv64e.model.MsiInterpretationCoding;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
@@ -78,13 +79,18 @@ public class MsiMapper extends ObservationMapper<Msi> {
     final var interpretation = sourceItem.getInterpretation();
     if (null != interpretation) {
       // TODO: MMR?
-      /*result.addInterpretation(
-      new CodeableConcept()
-          .addCoding(
-              new Coding()
-                  .setCode(interpretation.getCode().getValue())
-                  .setSystem(interpretation.getSystem())
-                  .setDisplay(interpretation.getDisplay())));*/
+      if (MsiInterpretationCoding.CodeEnum.MMR_DEFICIENT == interpretation.getCode()
+          || MsiInterpretationCoding.CodeEnum.MMR_PROFICIENT == interpretation.getCode()) {
+        throw new IllegalArgumentException("MMR interpretation not supported");
+      }
+
+      result.addInterpretation(
+          new CodeableConcept()
+              .addCoding(
+                  new Coding()
+                      .setCode(interpretation.getCode().getValue())
+                      .setSystem(interpretation.getSystem())
+                      .setDisplay(interpretation.getDisplay())));
     }
 
     // TODO: Methode in DNPM problematisch. Soll immer "bioinformatic" sein, auch wenn es
