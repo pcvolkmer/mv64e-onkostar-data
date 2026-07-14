@@ -31,7 +31,7 @@ class TumorzellgehaltMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"histologiebericht.json"})
-  void shouldMapCnv(String filename) throws IOException {
+  void shouldMap(String filename) throws IOException {
     var inputStream =
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));

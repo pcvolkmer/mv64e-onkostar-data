@@ -31,7 +31,7 @@ class StudieneinschlussMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"careplan.json"})
-  void shouldMapTherapieempfehlungen(String filename) throws IOException {
+  void shouldMapStudienempfehlungen(String filename) throws IOException {
     var inputStream =
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
     var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
