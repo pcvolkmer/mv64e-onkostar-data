@@ -43,7 +43,7 @@ public class EcogMapper extends ObservationMapper<PerformanceStatus> {
 
     result.setMeta(
         new Meta()
-            .setSource("#dnpm")
+            .setSource(this.fhirMetaSource)
             .addProfile(
                 "https://www.medizininformatik-initiative.de/fhir/ext/modul-onko/StructureDefinition/mii-pr-onko-allgemeiner-leistungszustand-ecog"));
 

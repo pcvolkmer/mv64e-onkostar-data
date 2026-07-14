@@ -49,7 +49,7 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
   public Observation map(TumorStaging sourceItem) {
     var result = new Observation();
 
-    result.setMeta(new Meta().setSource("#dnpm").addProfile(this.getProfile()));
+    result.setMeta(new Meta().setSource(this.fhirMetaSource).addProfile(this.getProfile()));
 
     result.setStatus(Observation.ObservationStatus.FINAL);
 
@@ -118,8 +118,8 @@ public abstract class AbstractTnmMapper extends ObservationMapper<TumorStaging>
         new Reference()
             .setReference(
                 String.format(
-                    "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|%s",
-                    sourceItem.getPatient().getId()));
+                    "Patient?identifier=%s/sid/patient-id|%s",
+                    this.fhirSystemBaseUrl, sourceItem.getPatient().getId()));
 
     final var newItems = this.mapToMany(sourceItem);
     IntStream.range(0, newItems.size())

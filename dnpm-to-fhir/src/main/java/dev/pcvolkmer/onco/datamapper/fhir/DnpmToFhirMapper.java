@@ -50,6 +50,10 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
 
   private final MessageDigest md5Digest;
 
+  protected String fhirSystemBaseUrl = "https://fhir.diz.uni-marburg.de";
+
+  protected String fhirMetaSource = String.format("%s/data-source/dnpm", this.fhirSystemBaseUrl);
+
   protected DnpmToFhirMapper() {
     try {
       md5Digest = MessageDigest.getInstance("MD5");
@@ -64,8 +68,8 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     return new Reference()
         .setReference(
             String.format(
-                "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|%s",
-                this.getPatientId(item)));
+                "Patient?identifier=%s/sid/patient-id|%s",
+                this.fhirSystemBaseUrl, this.getPatientId(item)));
   }
 
   public Reference getReference(S item) {
