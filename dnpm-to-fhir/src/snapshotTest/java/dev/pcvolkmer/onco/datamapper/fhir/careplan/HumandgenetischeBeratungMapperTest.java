@@ -20,6 +20,7 @@
 package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 
 import dev.pcvolkmer.mv64e.model.Converter;
+import dev.pcvolkmer.mv64e.model.MtbCarePlan;
 import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import java.io.IOException;
 import java.util.Objects;
@@ -38,7 +39,12 @@ class HumandgenetischeBeratungMapperTest extends DnpmToFhirTest {
 
     final var mapper = new HumangenetischeBeratungMapper();
 
-    var fhir = mtb.getCarePlans().stream().map(mapper::map).collect(Collectors.toList());
+    var fhir =
+        mtb.getCarePlans().stream()
+            .map(MtbCarePlan::getGeneticCounselingRecommendation)
+            .filter(Objects::nonNull)
+            .map(mapper::map)
+            .collect(Collectors.toList());
 
     verifyAll(fhir, filename);
   }

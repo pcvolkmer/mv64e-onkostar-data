@@ -20,24 +20,25 @@
 package dev.pcvolkmer.onco.datamapper.fhir.careplan;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import dev.pcvolkmer.mv64e.model.MtbCarePlan;
+import dev.pcvolkmer.mv64e.model.GeneticCounselingRecommendation;
 import dev.pcvolkmer.onco.datamapper.fhir.ServiceRequestMapper;
 import org.hl7.fhir.r4.model.*;
 
-public class HumangenetischeBeratungMapper extends ServiceRequestMapper<MtbCarePlan> {
+public class HumangenetischeBeratungMapper
+    extends ServiceRequestMapper<GeneticCounselingRecommendation> {
 
   @Override
-  protected String getPatientId(MtbCarePlan item) {
+  protected String getPatientId(GeneticCounselingRecommendation item) {
     return item.getPatient().getId();
   }
 
   @Override
-  protected String getId(MtbCarePlan item) {
+  protected String getId(GeneticCounselingRecommendation item) {
     return String.format("%s_humangenberatung", item.getId());
   }
 
   @Override
-  public ServiceRequest map(MtbCarePlan sourceItem) {
+  public ServiceRequest map(GeneticCounselingRecommendation sourceItem) {
     var result = new ServiceRequest();
     result.addIdentifier().setSystem(this.getSystem()).setValue(this.getId(sourceItem));
 
@@ -66,14 +67,17 @@ public class HumangenetischeBeratungMapper extends ServiceRequestMapper<MtbCareP
                     .setCode("788339009")
                     .setDisplay("Genetic consultation (procedure)")));
 
-    result.addReasonCode(
-        new CodeableConcept()
-            .addCoding(
-                new Coding()
-                    .setSystem("dnpm-dip/mtb/recommendation/genetic-counseling/reason")
-                    .setCode("other")
-                    .setDisplay("Andere")));
-
+    final var reason = sourceItem.getReason();
+    if (null != reason) {
+      result.addReasonCode(
+          new CodeableConcept()
+              .addCoding(
+                  new Coding()
+                      .setSystem(
+                          "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-auftrag-begruendung")
+                      .setCode(reason.getCode().getValue())
+                      .setDisplay(reason.getDisplay())));
+    }
     return result;
   }
 }

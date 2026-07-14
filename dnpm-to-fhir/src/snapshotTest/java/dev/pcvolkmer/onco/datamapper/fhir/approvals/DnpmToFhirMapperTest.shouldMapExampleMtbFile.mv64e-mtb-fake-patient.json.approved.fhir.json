@@ -335,7 +335,7 @@
         }
       }, {
         "reference": {
-          "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+          "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
         }
       }, {
         "reference": {
@@ -348,7 +348,7 @@
       "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_careplan"
     }
   }, {
-    "fullUrl": "urn:uuid:ee7a9b86-6e48-2fd9-8b54-cd81b38e64cc",
+    "fullUrl": "urn:uuid:518b49bf-40c7-cca4-929f-cf46e1b8fc66",
     "resource": {
       "resourceType": "ServiceRequest",
       "meta": {
@@ -357,44 +357,7 @@
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
-        "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
-      } ],
-      "status": "active",
-      "intent": "proposal",
-      "code": {
-        "coding": [ {
-          "system": "http://snomed.info/sct",
-          "code": "788339009",
-          "display": "Genetic consultation (procedure)"
-        } ]
-      },
-      "subject": {
-        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
-      },
-      "authoredOn": "2025-11-26",
-      "reasonCode": [ {
-        "coding": [ {
-          "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
-          "code": "other",
-          "display": "Andere"
-        } ]
-      } ]
-    },
-    "request": {
-      "method": "PUT",
-      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
-    }
-  }, {
-    "fullUrl": "urn:uuid:5f3afc29-2681-f5ec-9dcd-539ebd77718c",
-    "resource": {
-      "resourceType": "ServiceRequest",
-      "meta": {
-        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-humangenetische-beratung-auftrag" ]
-      },
-      "identifier": [ {
-        "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
-        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+        "value": "83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
       } ],
       "status": "active",
       "intent": "proposal",
@@ -411,7 +374,7 @@
       "authoredOn": "2025-12-10",
       "reasonCode": [ {
         "coding": [ {
-          "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
+          "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-auftrag-begruendung",
           "code": "other",
           "display": "Andere"
         } ]
@@ -419,7 +382,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
     }
   }, {
     "fullUrl": "urn:uuid:c56f6891-a697-f5c6-ecf2-c82962798911",
@@ -433,13 +396,11 @@
         "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "dnpm-dip/mtb/level-of-evidence/grading",
-            "code": "m2C",
-            "display": "m2C"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad",
+            "code": "m2C"
           }, {
-            "system": "dnpm-dip/mtb/level-of-evidence/addendum",
-            "code": "iv",
-            "display": "iv"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad-zusatzverweis",
+            "code": "iv"
           } ]
         }
       } ],
@@ -480,13 +441,11 @@
         "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "dnpm-dip/mtb/level-of-evidence/grading",
-            "code": "m1C",
-            "display": "m1C"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad",
+            "code": "m1C"
           }, {
-            "system": "dnpm-dip/mtb/level-of-evidence/addendum",
-            "code": "iv",
-            "display": "iv"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad-zusatzverweis",
+            "code": "iv"
           } ]
         }
       } ],
@@ -664,13 +623,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Likely benign",
-          "display": "Likely benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -834,13 +786,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Benign",
-          "display": "Benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -1004,13 +949,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Likely benign",
-          "display": "Likely benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -1174,13 +1112,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Pathogenic",
-          "display": "Pathogenic"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -1344,13 +1275,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Likely benign",
-          "display": "Likely benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -1514,13 +1438,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Benign",
-          "display": "Benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -1684,13 +1601,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Benign",
-          "display": "Benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -1854,13 +1764,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Likely benign",
-          "display": "Likely benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -2024,13 +1927,6 @@
       "subject": {
         "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
       },
-      "interpretation": [ {
-        "coding": [ {
-          "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-          "code": "Likely benign",
-          "display": "Likely benign"
-        } ]
-      } ],
       "method": {
         "coding": [ {
           "system": "http://loinc.org",
@@ -2158,6 +2054,519 @@
     "request": {
       "method": "PUT",
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|c2efb492-6422-4397-8e36-93120ed5b6d6_ngssv"
+    }
+  }, {
+    "fullUrl": "urn:uuid:0e4bc59c-1d3b-9e68-6200-675b1af5f192",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "5f6a055f-9cea-4b87-882f-76e308aa208a_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|5f6a055f-9cea-4b87-882f-76e308aa208a_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Likely benign",
+            "display": "Likely benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|5f6a055f-9cea-4b87-882f-76e308aa208a_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:c03e7cd2-7b57-40b5-4c83-171e4481b0a5",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "1553e32e-09e6-4f13-af10-379fef9531dc_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1553e32e-09e6-4f13-af10-379fef9531dc_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Benign",
+            "display": "Benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1553e32e-09e6-4f13-af10-379fef9531dc_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:d4fd28ec-c427-4956-a1a6-70a00481e1a3",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "66abece4-04fa-46d3-9530-3cb44689233f_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|66abece4-04fa-46d3-9530-3cb44689233f_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Likely benign",
+            "display": "Likely benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|66abece4-04fa-46d3-9530-3cb44689233f_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:740b0dd8-e4e6-643f-cf89-fce64ea9b7ff",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "1d8c7f79-24ca-4bf9-9db2-be730e66e88f_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1d8c7f79-24ca-4bf9-9db2-be730e66e88f_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Pathogenic",
+            "display": "Pathogenic"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|1d8c7f79-24ca-4bf9-9db2-be730e66e88f_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:246992bd-9219-838f-5038-fd01e09885f9",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "6cfa1718-0094-4e22-b5e1-03f8bf292392_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|6cfa1718-0094-4e22-b5e1-03f8bf292392_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Likely benign",
+            "display": "Likely benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|6cfa1718-0094-4e22-b5e1-03f8bf292392_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:ce1e547b-f8b5-339a-afa0-83d1c3295f10",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "94c0a31a-6011-4cb5-b78b-f3be6cb41714_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|94c0a31a-6011-4cb5-b78b-f3be6cb41714_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Benign",
+            "display": "Benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|94c0a31a-6011-4cb5-b78b-f3be6cb41714_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:69cb0cb4-7614-d7d4-e262-1dfa8386dd3d",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "26be631f-84a4-4404-a44f-6b2a3e3219ce_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|26be631f-84a4-4404-a44f-6b2a3e3219ce_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Benign",
+            "display": "Benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|26be631f-84a4-4404-a44f-6b2a3e3219ce_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:281b7bd6-0457-c523-5a63-3df8a52efb99",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "b930ade2-6b40-4a37-94bc-63b7ad25b395_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|b930ade2-6b40-4a37-94bc-63b7ad25b395_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Likely benign",
+            "display": "Likely benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|b930ade2-6b40-4a37-94bc-63b7ad25b395_ngsdi"
+    }
+  }, {
+    "fullUrl": "urn:uuid:62ddfe47-cec8-1a9f-0138-a082ac3065af",
+    "resource": {
+      "resourceType": "Observation",
+      "meta": {
+        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
+        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-diagnostische-implikation" ]
+      },
+      "identifier": [ {
+        "system": "https://fhir.diz.uni-marburg.de/sid/observation-id",
+        "value": "c2efb492-6422-4397-8e36-93120ed5b6d6_ngsdi"
+      } ],
+      "status": "final",
+      "category": [ {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "laboratory",
+          "display": "Laboratory"
+        } ]
+      }, {
+        "coding": [ {
+          "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+          "code": "GE"
+        } ]
+      } ],
+      "code": {
+        "coding": [ {
+          "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes-cs",
+          "code": "diagnostic-implication"
+        } ]
+      },
+      "subject": {
+        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
+      },
+      "derivedFrom": [ {
+        "reference": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|c2efb492-6422-4397-8e36-93120ed5b6d6_ngssv"
+      } ],
+      "component": [ {
+        "code": {
+          "coding": [ {
+            "system": "http://loinc.org",
+            "code": "53037-8"
+          } ]
+        },
+        "valueCodeableConcept": {
+          "coding": [ {
+            "system": "https://www.ncbi.nlm.nih.gov/clinvar",
+            "code": "Likely benign",
+            "display": "Likely benign"
+          } ]
+        }
+      } ]
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|c2efb492-6422-4397-8e36-93120ed5b6d6_ngsdi"
     }
   }, {
     "fullUrl": "urn:uuid:308e5b3a-e158-1304-0a79-4cab48d1c399",

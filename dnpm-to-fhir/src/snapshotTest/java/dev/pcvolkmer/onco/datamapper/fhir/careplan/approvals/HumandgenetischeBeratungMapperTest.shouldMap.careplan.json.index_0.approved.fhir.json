@@ -6,7 +6,7 @@
   },
   "identifier": [ {
     "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
-    "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
+    "value": "83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
   } ],
   "status": "active",
   "intent": "proposal",
@@ -20,10 +20,10 @@
   "subject": {
     "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
   },
-  "authoredOn": "2025-11-26",
+  "authoredOn": "2025-12-10",
   "reasonCode": [ {
     "coding": [ {
-      "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
+      "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-auftrag-begruendung",
       "code": "other",
       "display": "Andere"
     } ]

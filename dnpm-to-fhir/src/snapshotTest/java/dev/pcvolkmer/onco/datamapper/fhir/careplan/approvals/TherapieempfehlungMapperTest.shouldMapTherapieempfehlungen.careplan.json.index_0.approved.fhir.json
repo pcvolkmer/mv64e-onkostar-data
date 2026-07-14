@@ -8,13 +8,11 @@
     "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
     "valueCodeableConcept": {
       "coding": [ {
-        "system": "dnpm-dip/mtb/level-of-evidence/grading",
-        "code": "m2C",
-        "display": "m2C"
+        "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad",
+        "code": "m2C"
       }, {
-        "system": "dnpm-dip/mtb/level-of-evidence/addendum",
-        "code": "iv",
-        "display": "iv"
+        "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad-zusatzverweis",
+        "code": "iv"
       } ]
     }
   } ],
