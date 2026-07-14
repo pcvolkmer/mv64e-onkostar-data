@@ -44,7 +44,7 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
 
     result.setMeta(
         new Meta()
-            .setSource("#dnpm")
+            .setSource(this.fhirMetaSource)
             .addProfile(
                 "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-therapieplan"));
 
@@ -76,8 +76,8 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
           new Reference()
               .setReference(
                   String.format(
-                      "Condition?identifier=https://fhir.diz.uni-marburg.de/sid/condition-id|%s",
-                      reasonId)));
+                      "Condition?identifier=%s/sid/condition-id|%s",
+                      this.fhirSystemBaseUrl, reasonId)));
     }
 
     // TODO Add other planned activities

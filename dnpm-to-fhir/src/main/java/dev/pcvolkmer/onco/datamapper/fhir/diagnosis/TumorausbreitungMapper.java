@@ -48,7 +48,7 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
 
     result.setMeta(
         new Meta()
-            .setSource("#dnpm")
+            .setSource(this.fhirMetaSource)
             .addProfile(
                 "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-tumorausbreitung"));
 
@@ -113,8 +113,8 @@ public class TumorausbreitungMapper extends ObservationMapper<TumorStaging>
         new Reference()
             .setReference(
                 String.format(
-                    "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|%s",
-                    sourceItem.getPatient().getId()));
+                    "Patient?identifier=%s/sid/patient-id|%s",
+                    this.fhirSystemBaseUrl, sourceItem.getPatient().getId()));
 
     final var newItems = this.mapToMany(sourceItem);
     IntStream.range(0, newItems.size())

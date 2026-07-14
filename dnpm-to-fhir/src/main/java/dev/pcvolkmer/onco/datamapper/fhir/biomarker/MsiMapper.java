@@ -41,7 +41,7 @@ public class MsiMapper extends ObservationMapper<Msi> {
 
     result.setMeta(
         new Meta()
-            .setSource("#dnpm")
+            .setSource(this.fhirMetaSource)
             .addProfile(
                 "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-mikrosatelliteninstabilitaet"));
 
