@@ -31,13 +31,6 @@
   "subject": {
     "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
   },
-  "interpretation": [ {
-    "coding": [ {
-      "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-      "code": "Likely benign",
-      "display": "Likely benign"
-    } ]
-  } ],
   "method": {
     "coding": [ {
       "system": "http://loinc.org",
