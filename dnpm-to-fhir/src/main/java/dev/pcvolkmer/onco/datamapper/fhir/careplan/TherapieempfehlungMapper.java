@@ -59,10 +59,11 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
               .addCoding(
                   new Coding()
                       .setCode(sourceItem.getLevelOfEvidence().getGrading().getCode().getValue())
-                      .setSystem("dnpm-dip/mtb/level-of-evidence/grading")
-                      .setDisplay(sourceItem.getLevelOfEvidence().getGrading().getDisplay()));
+                      .setSystem(
+                          "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad"));
 
-      if (null != sourceItem.getLevelOfEvidence().getAddendums()) {
+      if (null != sourceItem.getLevelOfEvidence()
+          && null != sourceItem.getLevelOfEvidence().getAddendums()) {
         sourceItem
             .getLevelOfEvidence()
             .getAddendums()
@@ -71,8 +72,8 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
                     evidenzlevelValue.addCoding(
                         new Coding()
                             .setCode(addendum.getCode().getValue())
-                            .setSystem("dnpm-dip/mtb/level-of-evidence/addendum")
-                            .setDisplay(addendum.getDisplay())));
+                            .setSystem(
+                                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad-zusatzverweis")));
       }
 
       evidenzlevelExtension.setValue(evidenzlevelValue);
@@ -81,6 +82,7 @@ public class TherapieempfehlungMapper extends MedicationRequestMapper<MtbMedicat
     }
 
     // Current active care plan? No Information in DNPM - but required!
+    // TODO: Lookup in FollowUp mit Status Therapieumsetzung
     result.setStatus(MedicationRequest.MedicationRequestStatus.ACTIVE);
     result.setIntent(MedicationRequest.MedicationRequestIntent.PROPOSAL);
 

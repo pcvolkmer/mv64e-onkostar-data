@@ -90,10 +90,13 @@ public class TherapieplanMapper extends CarePlanMapper<MtbCarePlan> {
                       .setReference(new TherapieempfehlungMapper().getReference(item))));
     }
 
-    if (null != sourceItem.getGeneticCounselingRecommendation()) {
+    final var geneticCounselingRecommendation = sourceItem.getGeneticCounselingRecommendation();
+    if (null != geneticCounselingRecommendation) {
       result.addActivity(
           new CarePlan.CarePlanActivityComponent()
-              .setReference(new HumangenetischeBeratungMapper().getReference(sourceItem)));
+              .setReference(
+                  new HumangenetischeBeratungMapper()
+                      .getReference(geneticCounselingRecommendation)));
     }
 
     final var studyEnrollmentRecommendations = sourceItem.getStudyEnrollmentRecommendations();

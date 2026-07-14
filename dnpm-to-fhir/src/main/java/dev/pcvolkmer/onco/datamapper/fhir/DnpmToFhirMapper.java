@@ -19,6 +19,7 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir;
 
+import dev.pcvolkmer.mv64e.model.MtbCarePlan;
 import dev.pcvolkmer.mv64e.model.PatientRecord;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.BrcanessMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.HrdScoreMapper;
@@ -41,6 +42,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.UUID;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Reference;
@@ -140,7 +142,10 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
       carePlans.forEach(item -> therapieplanMapper.addToBundle(bundle, item));
 
       final var humangenetischeBeratungMapper = new HumangenetischeBeratungMapper();
-      carePlans.forEach(item -> humangenetischeBeratungMapper.addToBundle(bundle, item));
+      carePlans.stream()
+          .map(MtbCarePlan::getGeneticCounselingRecommendation)
+          .filter(Objects::nonNull)
+          .forEach(item -> humangenetischeBeratungMapper.addToBundle(bundle, item));
 
       final var therapieempfehlungMapper = new TherapieempfehlungMapper();
       carePlans.stream()

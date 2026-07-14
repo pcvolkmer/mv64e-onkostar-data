@@ -335,7 +335,7 @@
         }
       }, {
         "reference": {
-          "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+          "reference": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
         }
       }, {
         "reference": {
@@ -348,7 +348,7 @@
       "url": "CarePlan?identifier=https://fhir.diz.uni-marburg.de/sid/careplan-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_careplan"
     }
   }, {
-    "fullUrl": "urn:uuid:ee7a9b86-6e48-2fd9-8b54-cd81b38e64cc",
+    "fullUrl": "urn:uuid:518b49bf-40c7-cca4-929f-cf46e1b8fc66",
     "resource": {
       "resourceType": "ServiceRequest",
       "meta": {
@@ -357,44 +357,7 @@
       },
       "identifier": [ {
         "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
-        "value": "50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
-      } ],
-      "status": "active",
-      "intent": "proposal",
-      "code": {
-        "coding": [ {
-          "system": "http://snomed.info/sct",
-          "code": "788339009",
-          "display": "Genetic consultation (procedure)"
-        } ]
-      },
-      "subject": {
-        "reference": "Patient?identifier=https://fhir.diz.uni-marburg.de/sid/patient-id|4ba7adb6-ee5a-40d5-89fe-670cb6af86c6"
-      },
-      "authoredOn": "2025-11-26",
-      "reasonCode": [ {
-        "coding": [ {
-          "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
-          "code": "other",
-          "display": "Andere"
-        } ]
-      } ]
-    },
-    "request": {
-      "method": "PUT",
-      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|50c725cb-3c0c-4906-9a4e-3a3cb3964172_humangenberatung"
-    }
-  }, {
-    "fullUrl": "urn:uuid:5f3afc29-2681-f5ec-9dcd-539ebd77718c",
-    "resource": {
-      "resourceType": "ServiceRequest",
-      "meta": {
-        "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
-        "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-mtb-humangenetische-beratung-auftrag" ]
-      },
-      "identifier": [ {
-        "system": "https://fhir.diz.uni-marburg.de/sid/service-request-id",
-        "value": "8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+        "value": "83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
       } ],
       "status": "active",
       "intent": "proposal",
@@ -411,7 +374,7 @@
       "authoredOn": "2025-12-10",
       "reasonCode": [ {
         "coding": [ {
-          "system": "dnpm-dip/mtb/recommendation/genetic-counseling/reason",
+          "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-auftrag-begruendung",
           "code": "other",
           "display": "Andere"
         } ]
@@ -419,7 +382,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|8b0d6e36-364f-40e5-8fca-b13f4bb9189a_humangenberatung"
+      "url": "ServiceRequest?identifier=https://fhir.diz.uni-marburg.de/sid/service-request-id|83a14590-f345-4ee7-96d5-70c4ddefd40c_humangenberatung"
     }
   }, {
     "fullUrl": "urn:uuid:c56f6891-a697-f5c6-ecf2-c82962798911",
@@ -433,13 +396,11 @@
         "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "dnpm-dip/mtb/level-of-evidence/grading",
-            "code": "m2C",
-            "display": "m2C"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad",
+            "code": "m2C"
           }, {
-            "system": "dnpm-dip/mtb/level-of-evidence/addendum",
-            "code": "iv",
-            "display": "iv"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad-zusatzverweis",
+            "code": "iv"
           } ]
         }
       } ],
@@ -480,13 +441,11 @@
         "url": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-ex-mtb-empfehlung-evidenzgraduierung",
         "valueCodeableConcept": {
           "coding": [ {
-            "system": "dnpm-dip/mtb/level-of-evidence/grading",
-            "code": "m1C",
-            "display": "m1C"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad",
+            "code": "m1C"
           }, {
-            "system": "dnpm-dip/mtb/level-of-evidence/addendum",
-            "code": "iv",
-            "display": "iv"
+            "system": "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/CodeSystem/mii-cs-mtb-empfehlung-evidenzgrad-zusatzverweis",
+            "code": "iv"
           } ]
         }
       } ],
