@@ -48,8 +48,9 @@
     },
     "valueCodeableConcept": {
       "coding": [ {
-        "system": "http://terminology.hl7.org/CodeSystem/chromosome-human",
-        "code": "chr2"
+        "system": "http://loinc.org",
+        "code": "LA21255-7",
+        "display": "Chromosome 2"
       } ]
     }
   }, {
@@ -62,7 +63,7 @@
     },
     "valueQuantity": {
       "value": 1,
-      "system": "http://loinc.org",
+      "system": "http://unitsofmeasure.org",
       "code": "1"
     }
   }, {
@@ -107,7 +108,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -122,7 +123,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -137,7 +138,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -152,7 +153,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -167,7 +168,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -182,7 +183,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -197,7 +198,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -212,7 +213,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -227,7 +228,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -242,7 +243,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -257,7 +258,7 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "http://loinc.org/",
+        "system": "http://loinc.org",
         "code": "48018-6",
         "display": "Gene studied [ID]"
       } ]
@@ -272,13 +273,13 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "https://bwhc.de/mtb/cnv-type",
+        "system": "http://bwhc.de/mtb/genetics-copy-number-variant",
         "code": "type"
       } ]
     },
     "valueCodeableConcept": {
       "coding": [ {
-        "system": "dnpm-dip/mtb/ngs-report/cnv/type",
+        "system": "http://bwhc.de/mtb/genetics-copy-number-variant",
         "code": "loss",
         "display": "loss"
       } ]
