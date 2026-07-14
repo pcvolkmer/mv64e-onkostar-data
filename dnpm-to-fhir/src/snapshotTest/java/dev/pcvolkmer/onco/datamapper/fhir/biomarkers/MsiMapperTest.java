@@ -19,12 +19,16 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.biomarkers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import dev.pcvolkmer.mv64e.model.Converter;
 import dev.pcvolkmer.onco.datamapper.fhir.DnpmToFhirTest;
 import dev.pcvolkmer.onco.datamapper.fhir.biomarker.MsiMapper;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -42,5 +46,22 @@ class MsiMapperTest extends DnpmToFhirTest {
     var fhir = mtb.getMsiFindings().stream().map(mapper::map).collect(Collectors.toList());
 
     verifyAll(fhir, filename);
+  }
+
+  @Test
+  void shouldNotMapMsiFindingWithMmrInterpretation() throws IOException {
+    var inputStream =
+        Objects.requireNonNull(
+            this.getClass().getClassLoader().getResourceAsStream("msifindings-mmr.json"));
+    var mtb = Converter.fromJsonString(new String(inputStream.readAllBytes()));
+
+    final var mapper = new MsiMapper();
+
+    final var ex =
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> mtb.getMsiFindings().stream().map(mapper::map).collect(Collectors.toList()));
+
+    assertThat(ex).hasMessage("MMR interpretation not supported");
   }
 }

@@ -4671,7 +4671,14 @@
         "value": 0.14136417072841295,
         "system": "http://unitsofmeasure.org",
         "code": "%"
-      }
+      },
+      "interpretation": [ {
+        "coding": [ {
+          "system": "dnpm-dip/mtb/msi/interpretation",
+          "code": "msi-low",
+          "display": "MSI Low"
+        } ]
+      } ]
     },
     "request": {
       "method": "PUT",
