@@ -75,12 +75,7 @@ public class EinfacheVarianteMapper extends AbstractNgsMapper<Snv> {
                     .setSystem("http://loinc.org")
                     .setDisplay("Sequencing")));
 
-    // Interpretation
-    final var interpretation = sourceItem.getInterpretation();
-    if (null != interpretation) {
-      result.addInterpretation(
-          new CodeableConcept().addCoding(mapClinVarInterpretation(interpretation.getCode())));
-    }
+    // Interpretation --> Diagnostische Implikation
 
     // Chromosom
     result.addComponent(

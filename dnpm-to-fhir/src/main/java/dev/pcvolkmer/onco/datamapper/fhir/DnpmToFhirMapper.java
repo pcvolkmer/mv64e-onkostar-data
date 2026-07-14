@@ -33,6 +33,7 @@ import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.OncoDiagnoseMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorzellgehaltMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.CnvMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.ngs.DiagnostischeImplikationMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.EinfacheVarianteMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmMMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.tnm.TnmNMapper;
@@ -175,6 +176,14 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
           .filter(item -> item.getResults().getSimpleVariants() != null)
           .flatMap(item -> item.getResults().getSimpleVariants().stream())
           .forEach(item -> einfacheVarianteMapper.addToBundle(bundle, item));
+
+      final var diagnostischeImplikationMapper =
+          new DiagnostischeImplikationMapper(einfacheVarianteMapper);
+      ngsReports.stream()
+          .filter(item -> item.getResults().getSimpleVariants() != null)
+          .flatMap(item -> item.getResults().getSimpleVariants().stream())
+          .filter(diagnostischeImplikationMapper::supports)
+          .forEach(item -> diagnostischeImplikationMapper.addToBundle(bundle, item));
 
       final var cnvMapper = new CnvMapper();
       ngsReports.stream()
