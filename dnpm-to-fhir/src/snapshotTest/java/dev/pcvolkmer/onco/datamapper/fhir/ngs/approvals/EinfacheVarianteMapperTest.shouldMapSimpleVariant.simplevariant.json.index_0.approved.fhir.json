@@ -34,7 +34,7 @@
   "interpretation": [ {
     "coding": [ {
       "system": "https://www.ncbi.nlm.nih.gov/clinvar",
-      "code": "2",
+      "code": "Likely benign",
       "display": "Likely benign"
     } ]
   } ],
@@ -55,8 +55,9 @@
     },
     "valueCodeableConcept": {
       "coding": [ {
-        "system": "http://terminology.hl7.org/CodeSystem/chromosome-human",
-        "code": "chr20"
+        "system": "http://loinc.org",
+        "code": "LA21273-0",
+        "display": "Chromosome 20"
       } ]
     }
   }, {
@@ -77,9 +78,9 @@
   }, {
     "code": {
       "coding": [ {
-        "system": "81254-5",
-        "code": "http://loinc.org",
-        "display": "Variant exact start-end"
+        "system": "http://loinc.org",
+        "code": "81254-5",
+        "display": "Genomic allele start-end"
       } ]
     },
     "valueRange": {

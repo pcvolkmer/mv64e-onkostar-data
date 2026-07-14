@@ -20,10 +20,9 @@
 package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
 import dev.pcvolkmer.mv64e.model.Snv;
-import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
-public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
+public class EinfacheVarianteMapper extends AbstractNgsMapper<Snv> {
   @Override
   protected String getPatientId(Snv item) {
     return item.getPatient().getId();
@@ -80,12 +79,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
     final var interpretation = sourceItem.getInterpretation();
     if (null != interpretation) {
       result.addInterpretation(
-          new CodeableConcept()
-              .addCoding(
-                  new Coding()
-                      .setCode(interpretation.getCode().getValue())
-                      .setSystem("https://www.ncbi.nlm.nih.gov/clinvar")
-                      .setDisplay(interpretation.getDisplay())));
+          new CodeableConcept().addCoding(mapClinVarInterpretation(interpretation.getCode())));
     }
 
     // Chromosom
@@ -98,12 +92,7 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                             .setCode("48001-2")
                             .setSystem("http://loinc.org")
                             .setDisplay("Cytogenetic (chromosome) location")))
-            .setValue(
-                new CodeableConcept()
-                    .addCoding(
-                        new Coding()
-                            .setCode(sourceItem.getChromosome().getValue())
-                            .setSystem("http://terminology.hl7.org/CodeSystem/chromosome-human"))));
+            .setValue(new CodeableConcept().addCoding(mapChromosome(sourceItem.getChromosome()))));
 
     // Gene
     result.addComponent(
@@ -137,9 +126,9 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
-                            .setCode("http://loinc.org")
-                            .setSystem("81254-5")
-                            .setDisplay("Variant exact start-end")))
+                            .setSystem("http://loinc.org")
+                            .setCode("81254-5")
+                            .setDisplay("Genomic allele start-end")))
             .setValue(positionRange));
 
     // RefAllele
@@ -149,8 +138,8 @@ public class EinfacheVarianteMapper extends ObservationMapper<Snv> {
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
-                            .setCode("69547-8")
                             .setSystem("http://loinc.org")
+                            .setCode("69547-8")
                             .setDisplay("Genomic ref allele [ID]")))
             .setValue(new StringType(sourceItem.getRefAllele())));
 

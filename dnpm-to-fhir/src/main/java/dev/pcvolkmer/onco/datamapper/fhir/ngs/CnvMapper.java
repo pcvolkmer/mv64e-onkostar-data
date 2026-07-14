@@ -20,10 +20,9 @@
 package dev.pcvolkmer.onco.datamapper.fhir.ngs;
 
 import dev.pcvolkmer.mv64e.model.Cnv;
-import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import org.hl7.fhir.r4.model.*;
 
-public class CnvMapper extends ObservationMapper<Cnv> {
+public class CnvMapper extends AbstractNgsMapper<Cnv> {
   @Override
   protected String getPatientId(Cnv item) {
     return item.getPatient().getId();
@@ -75,6 +74,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                     .setCode("LA26398-0")
                     .setSystem("http://loinc.org")
                     .setDisplay("Sequencing")));
+
     // Chromosom
     result.addComponent(
         new Observation.ObservationComponentComponent()
@@ -86,12 +86,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                             .setSystem("http://loinc.org")
                             .setDisplay(
                                 "Chromosome [Identifier] in Blood or Tissue by Molecular genetics method")))
-            .setValue(
-                new CodeableConcept()
-                    .addCoding(
-                        new Coding()
-                            .setCode(sourceItem.getChromosome().getValue())
-                            .setSystem("http://terminology.hl7.org/CodeSystem/chromosome-human"))));
+            .setValue(new CodeableConcept().addCoding(mapChromosome(sourceItem.getChromosome()))));
 
     // Total Copy Number
     final var totalCopyNumber = sourceItem.getTotalCopyNumber();
@@ -108,7 +103,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
               .setValue(
                   new Quantity()
                       .setValue(totalCopyNumber)
-                      .setSystem("http://loinc.org")
+                      .setSystem("http://unitsofmeasure.org")
                       .setCode(totalCopyNumber.toString())));
     }
 
@@ -175,7 +170,7 @@ public class CnvMapper extends ObservationMapper<Cnv> {
                               .addCoding(
                                   new Coding()
                                       .setCode("48018-6")
-                                      .setSystem("http://loinc.org/")
+                                      .setSystem("http://loinc.org")
                                       .setDisplay("Gene studied [ID]")))
                       .setValue(
                           new CodeableConcept()
@@ -192,13 +187,15 @@ public class CnvMapper extends ObservationMapper<Cnv> {
             .setCode(
                 new CodeableConcept()
                     .addCoding(
-                        new Coding().setCode("type").setSystem("https://bwhc.de/mtb/cnv-type")))
+                        new Coding()
+                            .setCode("type")
+                            .setSystem("http://bwhc.de/mtb/genetics-copy-number-variant")))
             .setValue(
                 new CodeableConcept()
                     .addCoding(
                         new Coding()
                             .setCode(sourceItem.getType().getCode().getValue())
-                            .setSystem("dnpm-dip/mtb/ngs-report/cnv/type")
+                            .setSystem("http://bwhc.de/mtb/genetics-copy-number-variant")
                             .setDisplay(sourceItem.getType().getCode().getValue()))));
 
     result.setSubject(this.getPatientReference(sourceItem));
