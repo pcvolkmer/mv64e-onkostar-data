@@ -78,25 +78,36 @@ public class MsiMapper extends ObservationMapper<Msi> {
 
     final var interpretation = sourceItem.getInterpretation();
     if (null != interpretation) {
-      // TODO: MMR?
-      if (MsiInterpretationCoding.CodeEnum.MMR_DEFICIENT == interpretation.getCode()
-          || MsiInterpretationCoding.CodeEnum.MMR_PROFICIENT == interpretation.getCode()) {
-        throw new IllegalArgumentException("MMR interpretation not supported");
-      }
-
       result.addInterpretation(
-          new CodeableConcept()
-              .addCoding(
-                  new Coding()
-                      .setCode(interpretation.getCode().getValue())
-                      .setSystem(interpretation.getSystem())
-                      .setDisplay(interpretation.getDisplay())));
+          new CodeableConcept().addCoding(mapMsiInterpretationCoding(interpretation)));
     }
 
     // TODO: Methode in DNPM problematisch. Soll immer "bioinformatic" sein, auch wenn es
     // "histologic" ist
 
     result.setSubject(this.getPatientReference(sourceItem));
+
+    return result;
+  }
+
+  private Coding mapMsiInterpretationCoding(MsiInterpretationCoding interpretation) {
+    final var result = new Coding().setSystem("http://loinc.org");
+
+    switch (interpretation.getCode()) {
+      case STABLE:
+        result.setCode("LA14122-8").setDisplay("Stable");
+        break;
+      case MSI_LOW:
+        result.setCode("LA26202-4").setDisplay("MSI-L");
+        break;
+      case MSI_HIGH:
+        result.setCode("LA26203-2").setDisplay("MSI-H");
+        break;
+      // TODO: MMR?
+      case MMR_DEFICIENT:
+      case MMR_PROFICIENT:
+        throw new IllegalArgumentException("MMR interpretation not supported");
+    }
 
     return result;
   }

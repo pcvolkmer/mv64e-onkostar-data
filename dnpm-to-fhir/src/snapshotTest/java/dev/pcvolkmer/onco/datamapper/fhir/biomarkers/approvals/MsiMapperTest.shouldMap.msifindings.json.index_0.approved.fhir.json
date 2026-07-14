@@ -38,9 +38,9 @@
   },
   "interpretation": [ {
     "coding": [ {
-      "system": "dnpm-dip/mtb/msi/interpretation",
-      "code": "msi-low",
-      "display": "MSI Low"
+      "system": "http://loinc.org",
+      "code": "LA26202-4",
+      "display": "MSI-L"
     } ]
   } ]
 }
