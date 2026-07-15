@@ -109,3 +109,8 @@ java -jar <dateiname>.jar --filename <file>
 | FHIR-Profil                       | Status |
 |-----------------------------------|--------|
 | Allgemeiner Leistungszustand ECOG | ⛅      |
+
+## Weitere Hinweise
+
+Diese Software enthält eine Oncotree-Ontologie-Tabelle aus https://github.com/cBioPortal/oncotree/blob/master/scripts/ontology_to_ontology_mapping_tool/ontology_mappings.txt.
+Die Quelle ist unter der CC-BY-4.0 license veröffentlicht worden.

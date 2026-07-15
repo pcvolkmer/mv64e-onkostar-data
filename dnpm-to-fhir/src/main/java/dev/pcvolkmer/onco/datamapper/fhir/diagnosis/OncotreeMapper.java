@@ -25,12 +25,38 @@ import dev.pcvolkmer.mv64e.model.MtbDiagnosis;
 import dev.pcvolkmer.mv64e.model.PatientRecord;
 import dev.pcvolkmer.onco.datamapper.fhir.ManyMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.hl7.fhir.r4.model.*;
 import org.jspecify.annotations.Nullable;
 
 public class OncotreeMapper extends ObservationMapper<MtbDiagnosis>
     implements ManyMapper<PatientRecord, Observation> {
+
+  private List<OncotreeOntologyMapping> oncotreeOntologyMappings = new ArrayList<>();
+
+  public OncotreeMapper() {
+    try {
+      final var inputStream =
+          Objects.requireNonNull(
+              this.getClass().getClassLoader().getResourceAsStream("ontology_mappings.txt"));
+      final var buf = new BufferedReader(new InputStreamReader(inputStream));
+      String line;
+      while (null != (line = buf.readLine())) {
+        final var parts = line.split("\\s");
+        if (parts.length >= 5) {
+          oncotreeOntologyMappings.add(new OncotreeOntologyMapping(parts[0], parts[3], parts[4]));
+        }
+      }
+      inputStream.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   @Override
   protected String getPatientId(MtbDiagnosis item) {
@@ -121,6 +147,17 @@ public class OncotreeMapper extends ObservationMapper<MtbDiagnosis>
         });
   }
 
+  @Nullable
+  private String findOncotreeCode(String histology, String topography) {
+    for (final var oncotreeOntologyMapping : oncotreeOntologyMappings) {
+      if (histology.equals(oncotreeOntologyMapping.icdO3TCode)
+          && topography.equals(oncotreeOntologyMapping.icdO3MCode)) {
+        return oncotreeOntologyMapping.oncotreeCode;
+      }
+    }
+    return null;
+  }
+
   @Override
   public List<Observation> mapToMany(PatientRecord sourceItem) {
     throw new UnsupportedOperationException("Not implemented");
@@ -142,5 +179,18 @@ public class OncotreeMapper extends ObservationMapper<MtbDiagnosis>
       throw new IllegalArgumentException("No histology report found with id " + id);
     }
     return result;
+  }
+
+  private static class OncotreeOntologyMapping {
+    public String oncotreeCode;
+    public String icdO3TCode;
+
+    public String icdO3MCode;
+
+    public OncotreeOntologyMapping(String oncotreeCode, String icdO3TCode, String icdO3MCode) {
+      this.oncotreeCode = oncotreeCode;
+      this.icdO3TCode = icdO3TCode;
+      this.icdO3MCode = icdO3MCode;
+    }
   }
 }
