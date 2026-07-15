@@ -2,7 +2,7 @@
   "resourceType": "Condition",
   "meta": {
     "source": "https://fhir.diz.uni-marburg.de/data-source/dnpm",
-    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-onco-diagnose-primaertumor" ]
+    "profile": [ "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-onko-diagnose-primaertumor" ]
   },
   "extension": [ {
     "url": "http://hl7.org/fhir/StructureDefinition/condition-assertedDate",

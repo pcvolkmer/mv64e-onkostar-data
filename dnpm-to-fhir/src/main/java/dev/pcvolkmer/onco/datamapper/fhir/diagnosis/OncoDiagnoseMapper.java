@@ -46,7 +46,7 @@ public class OncoDiagnoseMapper extends ConditionMapper<MtbDiagnosis> {
         new Meta()
             .setSource(this.fhirMetaSource)
             .addProfile(
-                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-onco-diagnose-primaertumor"));
+                "https://www.medizininformatik-initiative.de/fhir/ext/modul-mtb/StructureDefinition/mii-pr-onko-diagnose-primaertumor"));
 
     condition.setClinicalStatus(
         new CodeableConcept()
