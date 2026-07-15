@@ -19,6 +19,8 @@
 
 package dev.pcvolkmer.onco.datamapper.fhir.diagnosis;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import dev.pcvolkmer.mv64e.model.HistologyReport;
 import dev.pcvolkmer.mv64e.model.MtbDiagnosis;
@@ -28,34 +30,21 @@ import dev.pcvolkmer.onco.datamapper.fhir.ObservationMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.UncheckedIOException;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.hl7.fhir.r4.model.*;
 import org.jspecify.annotations.Nullable;
 
 public class OncotreeMapper extends ObservationMapper<MtbDiagnosis>
     implements ManyMapper<PatientRecord, Observation> {
 
-  private List<OncotreeOntologyMapping> oncotreeOntologyMappings = new ArrayList<>();
+  private static final String MAPPING_FILE = "ontology_mappings.txt";
+  private final List<OncotreeOntologyMapping> oncotreeOntologyMappings;
 
   public OncotreeMapper() {
-    try {
-      final var inputStream =
-          Objects.requireNonNull(
-              this.getClass().getClassLoader().getResourceAsStream("ontology_mappings.txt"));
-      final var buf = new BufferedReader(new InputStreamReader(inputStream));
-      String line;
-      while (null != (line = buf.readLine())) {
-        final var parts = line.split("\\s");
-        if (parts.length >= 5) {
-          oncotreeOntologyMappings.add(new OncotreeOntologyMapping(parts[0], parts[3], parts[4]));
-        }
-      }
-      inputStream.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    this.oncotreeOntologyMappings = loadOncotreeOntologyMappings();
   }
 
   @Override
@@ -90,6 +79,8 @@ public class OncotreeMapper extends ObservationMapper<MtbDiagnosis>
                     .setCode("371469007")
                     .setDisplay("Histologic grade of neoplasm (observable entity)")));
 
+    result.setSubject(this.getPatientReference(sourceItem));
+
     if (null != sourceItem.getRecordedOn()) {
       final var dateTimeType = new DateTimeType(sourceItem.getRecordedOn());
       dateTimeType.setPrecision(TemporalPrecisionEnum.DAY);
@@ -106,61 +97,130 @@ public class OncotreeMapper extends ObservationMapper<MtbDiagnosis>
       return;
     }
 
-    diagnoses.forEach(
-        diagnosis -> {
-          final var result = this.map(diagnosis);
-          result.setSubject(this.getPatientReference(diagnosis));
-
-          final var topography = diagnosis.getTopography();
-          final var histologies = diagnosis.getHistology();
-          if (null != topography && null != histologies) {
-            histologies.forEach(
-                ref -> {
-                  final var histology = this.getHistologie(sourceItem, ref.getId());
-                  if (null != histology) {
-                    // TODO: add value codable concept here - mapped from histology and
-                    // topography to oncotree - for now: fake value
-                    result.setValue(
-                        new CodeableConcept()
-                            .addCoding(
-                                new Coding()
-                                    .setSystem("http://data.mskcc.org/ontologies/oncotree")
-                                    .setCode(
-                                        // TODO: Replace!
-                                        String.format(
-                                            "placeholder-oncotree:%s-%s",
-                                            histology
-                                                .getResults()
-                                                .getTumorMorphology()
-                                                .getValue()
-                                                .getCode(),
-                                            topography.getCode()))));
-                  }
-                });
-          }
-          bundle
-              .addEntry()
-              .setResource(result)
-              .getRequest()
-              .setMethod(Bundle.HTTPVerb.PUT)
-              .setUrl(this.getRequestUrl(diagnosis));
-        });
-  }
-
-  @Nullable
-  private String findOncotreeCode(String histology, String topography) {
-    for (final var oncotreeOntologyMapping : oncotreeOntologyMappings) {
-      if (histology.equals(oncotreeOntologyMapping.icdO3TCode)
-          && topography.equals(oncotreeOntologyMapping.icdO3MCode)) {
-        return oncotreeOntologyMapping.oncotreeCode;
-      }
+    for (final var diagnosis : diagnoses) {
+      createObservation(sourceItem, diagnosis)
+          .ifPresent(
+              result ->
+                  bundle
+                      .addEntry()
+                      .setResource(result)
+                      .getRequest()
+                      .setMethod(Bundle.HTTPVerb.PUT)
+                      .setUrl(this.getRequestUrl(diagnosis)));
     }
-    return null;
   }
 
   @Override
   public List<Observation> mapToMany(PatientRecord sourceItem) {
-    throw new UnsupportedOperationException("Not implemented");
+    final var diagnoses = sourceItem.getDiagnoses();
+
+    if (diagnoses == null) {
+      return List.of();
+    }
+
+    return diagnoses.stream()
+        .map(diagnosis -> createObservation(sourceItem, diagnosis))
+        .flatMap(Optional::stream)
+        .collect(Collectors.toList());
+  }
+
+  // Only create Oncotree Observation if there is an oncotree code
+  private Optional<Observation> createObservation(
+      PatientRecord patientRecord, MtbDiagnosis diagnosis) {
+
+    return findOncotreeCode(patientRecord, diagnosis)
+        .map(
+            oncotreeCode -> {
+              final var observation = this.map(diagnosis);
+
+              observation.setValue(
+                  new CodeableConcept()
+                      .addCoding(
+                          new Coding()
+                              .setSystem("http://data.mskcc.org/ontologies/oncotree")
+                              .setCode(oncotreeCode)));
+
+              return observation;
+            });
+  }
+
+  // If there are multiple histology-codes only the first one that leads to a mathc with an oncotree
+  // code is used
+  private Optional<String> findOncotreeCode(PatientRecord patientRecord, MtbDiagnosis diagnosis) {
+
+    final var topography = diagnosis.getTopography();
+    final var histologyReferences = diagnosis.getHistology();
+
+    if (topography == null || topography.getCode() == null || histologyReferences == null) {
+      return Optional.empty();
+    }
+
+    final var icdO3Topography = topography.getCode();
+
+    for (final var histologyReference : histologyReferences) {
+      if (histologyReference == null || histologyReference.getId() == null) {
+        continue;
+      }
+
+      final var histologyReport = getHistologie(patientRecord, histologyReference.getId());
+      if (histologyReport == null) {
+        continue;
+      }
+
+      final var icdO3Morphology =
+          histologyReport.getResults().getTumorMorphology().getValue().getCode();
+      if (icdO3Morphology == null) {
+        continue;
+      }
+
+      final var oncotreeCode = findOncotreeCode(icdO3Topography, icdO3Morphology);
+      if (oncotreeCode.isPresent()) {
+        return oncotreeCode;
+      }
+    }
+
+    return Optional.empty();
+  }
+
+  // Find Oncotree code via mapping file using Topography (Localisation) and Morphology (Histology)
+  // codes
+  private Optional<String> findOncotreeCode(String icdO3Topography, String icdO3Morphology) {
+
+    return this.oncotreeOntologyMappings.stream()
+        .filter(
+            mapping ->
+                icdO3Topography.equals(mapping.icdO3TCode)
+                    && icdO3Morphology.equals(mapping.icdO3MCode))
+        .map(mapping -> mapping.oncotreeCode)
+        .findFirst();
+  }
+
+  private List<OncotreeOntologyMapping> loadOncotreeOntologyMappings() {
+    final var inputStream = OncotreeMapper.class.getClassLoader().getResourceAsStream(MAPPING_FILE);
+
+    if (inputStream == null) {
+      throw new IllegalStateException("Oncotree mapping file not found: " + MAPPING_FILE);
+    }
+
+    try (var reader = new BufferedReader(new InputStreamReader(inputStream, UTF_8))) {
+
+      return reader
+          .lines()
+          // skip header
+          .skip(1)
+          // keep empty columns
+          .map(line -> line.split("\t", -1))
+          .filter(fields -> fields.length >= 5)
+          .map(fields -> new OncotreeOntologyMapping(fields[0], fields[3], fields[4]))
+          // filter rows where ICDO_TOPOGRAPHY_CODE or ICDO_MORPHOLOGY_CODE are blank
+          .filter(mapping -> !mapping.icdO3TCode.isBlank())
+          .filter(mapping -> !mapping.icdO3MCode.isBlank())
+          .collect(Collectors.toList());
+
+    } catch (IOException e) {
+      throw new UncheckedIOException(
+          "Oncotree mapping file could not be loaded: " + MAPPING_FILE, e);
+    }
   }
 
   @Nullable

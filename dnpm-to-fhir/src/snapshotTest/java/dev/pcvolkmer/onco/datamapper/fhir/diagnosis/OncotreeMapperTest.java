@@ -30,7 +30,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class OncotreeMapperTest extends DnpmToFhirTest {
 
   @ParameterizedTest
-  @ValueSource(strings = {"diagnosis-with-patient.json"})
+  @ValueSource(strings = {"diagnosis-with-patient-for-oncotree.json"})
   void shouldAddOncotreeToBundle(String filename) throws IOException {
     var inputStream =
         Objects.requireNonNull(this.getClass().getClassLoader().getResourceAsStream(filename));
