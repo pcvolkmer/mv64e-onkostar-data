@@ -24,6 +24,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
       - name: Execute tests
         run: ./gradlew test
+      - name: Execute DNPM-to-FHIR tests
+        run: |
+          cd dnpm-to-fhir
+          ./gradlew test
   build:
     runs-on: ubuntu-latest
     permissions:
