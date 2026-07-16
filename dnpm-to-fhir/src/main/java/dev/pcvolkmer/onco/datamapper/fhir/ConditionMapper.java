@@ -30,6 +30,6 @@ public abstract class ConditionMapper<S> extends DnpmToFhirMapper<S, Condition> 
 
   @Override
   public String getSystem() {
-    return "https://fhir.diz.uni-marburg.de/sid/condition-id";
+    return String.format("%s/sid/condition-id", this.fhirSystemBaseUrl);
   }
 }

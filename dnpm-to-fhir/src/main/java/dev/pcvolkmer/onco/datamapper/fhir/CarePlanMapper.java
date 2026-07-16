@@ -30,6 +30,6 @@ public abstract class CarePlanMapper<S> extends DnpmToFhirMapper<S, CarePlan> {
 
   @Override
   public String getSystem() {
-    return "https://fhir.diz.uni-marburg.de/sid/careplan-id";
+    return String.format("%s/sid/careplan-id", this.fhirSystemBaseUrl);
   }
 }
