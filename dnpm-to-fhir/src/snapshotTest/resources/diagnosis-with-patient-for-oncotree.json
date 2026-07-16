@@ -1,0 +1,189 @@
+{
+  "patient": {
+    "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+    "gender": {
+      "code": "female",
+      "display": "Weiblich",
+      "system": "Gender"
+    },
+    "birthDate": "1957-01-26",
+    "dateOfDeath": "2007-01-26",
+    "healthInsurance": {
+      "type": {
+        "code": "GKV",
+        "display": "gesetzliche Krankenversicherung",
+        "system": "http://fhir.de/CodeSystem/versicherungsart-de-basis"
+      },
+      "reference": {
+        "id": "1234567890",
+        "system": "https://www.dguv.de/arge-ik",
+        "display": "AOK",
+        "type": "HealthInsurance"
+      }
+    },
+    "address": {
+      "municipalityCode": "12345"
+    },
+    "age": {
+      "value": 50,
+      "unit": "Years"
+    },
+    "vitalStatus": {
+      "code": "deceased",
+      "display": "Verstorben",
+      "system": "dnpm-dip/patient/vital-status"
+    }
+  },
+  "diagnoses": [
+    {
+      "id": "8aa2be4a-14a6-4dd3-9fad-0bb1362c92c2",
+      "patient": {
+        "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+        "type": "Patient"
+      },
+      "recordedOn": "2003-09-26",
+      "type": {
+        "history": [
+          {
+            "value": {
+              "code": "main",
+              "display": "Hauptdiagnose",
+              "system": "dnpm-dip/mtb/diagnosis/type"
+            },
+            "date": "2003-09-26"
+          }
+        ]
+      },
+      "code": {
+        "code": "C25.9",
+        "display": "Bösartige Neubildung des Pankreas, mehrere Teilbereiche überlappend",
+        "system": "http://fhir.de/CodeSystem/bfarm/icd-10-gm",
+        "version": "2025"
+      },
+      "topography": {
+        "code": "C25.9",
+        "display": "Pankreas o.n.A.",
+        "system": "urn:oid:2.16.840.1.113883.6.43.1",
+        "version": "Zweite Revision"
+      },
+      "grading": {
+        "history": [
+          {
+            "date": "2003-09-26",
+            "codes": [
+              {
+                "code": "2",
+                "display": "2 = mäßig differenziert",
+                "system": "https://www.basisdatensatz.de/feld/161/grading"
+              },
+              {
+                "code": "4",
+                "display": "Glioblastoma",
+                "system": "dnpm-dip/mtb/who-grading-cns-tumors",
+                "version": "2021"
+              }
+            ]
+          }
+        ]
+      },
+      "staging": {
+        "history": [
+          {
+            "date": "2003-09-26",
+            "method": {
+              "code": "clinical",
+              "display": "Klinisch",
+              "system": "dnpm-dip/mtb/tumor-staging/method"
+            },
+            "tnmClassification": {
+              "tumor": {
+                "code": "T0",
+                "system": "UICC"
+              },
+              "nodes": {
+                "code": "N0",
+                "system": "UICC"
+              },
+              "metastasis": {
+                "code": "M1",
+                "system": "UICC"
+              }
+            },
+            "otherClassifications": [
+              {
+                "code": "metastasized",
+                "display": "Metastasiert",
+                "system": "dnpm-dip/mtb/diagnosis/kds-tumor-spread"
+              }
+            ]
+          }
+        ]
+      },
+      "guidelineTreatmentStatus": {
+        "code": "non-exhausted",
+        "display": "Leitlinien nicht ausgeschöpft",
+        "system": "dnpm-dip/mtb/diagnosis/guideline-treatment-status"
+      },
+      "histology": [
+        {
+          "id": "549143c4-aacb-42aa-914f-5ddf8adf1046",
+          "type": "HistologyReport"
+        }
+      ],
+      "notes": [
+        "Notes on the tumor diagnosis..."
+      ]
+    }
+  ],
+  "histologyReports": [
+    {
+      "id": "549143c4-aacb-42aa-914f-5ddf8adf1046",
+      "patient": {
+        "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+        "type": "Patient"
+      },
+      "specimen": {
+        "id": "84aa1d75-0ba6-4266-b8e1-7a1337e44a3a",
+        "type": "TumorSpecimen"
+      },
+      "issuedOn": "2025-12-10",
+      "results": {
+        "tumorMorphology": {
+          "id": "b3845b08-6c6b-41df-8b74-0d795c4351f0",
+          "patient": {
+            "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+            "type": "Patient"
+          },
+          "specimen": {
+            "id": "84aa1d75-0ba6-4266-b8e1-7a1337e44a3a",
+            "type": "TumorSpecimen"
+          },
+          "value": {
+            "code": "8140/3",
+            "display": "Adenocarcinoma, NOS",
+            "system": "urn:oid:2.16.840.1.113883.6.43.1",
+            "version": "Zweite Revision"
+          },
+          "note": "Notes..."
+        },
+        "tumorCellContent": {
+          "id": "268b9f18-2e62-46b6-a40b-fda09478b209",
+          "patient": {
+            "id": "4ba7adb6-ee5a-40d5-89fe-670cb6af86c6",
+            "type": "Patient"
+          },
+          "specimen": {
+            "id": "84aa1d75-0ba6-4266-b8e1-7a1337e44a3a",
+            "type": "TumorSpecimen"
+          },
+          "method": {
+            "code": "histologic",
+            "display": "Histologisch",
+            "system": "dnpm-dip/mtb/tumor-cell-content/method"
+          },
+          "value": 0.9068795360732212
+        }
+      }
+    }
+  ]
+}

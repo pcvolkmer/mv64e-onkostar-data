@@ -29,10 +29,7 @@ import dev.pcvolkmer.onco.datamapper.fhir.careplan.HumangenetischeBeratungMapper
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.StudieneinschlussMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieempfehlungMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.careplan.TherapieplanMapper;
-import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.MtbDiagnoseMapper;
-import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.OncoDiagnoseMapper;
-import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorausbreitungMapper;
-import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.TumorzellgehaltMapper;
+import dev.pcvolkmer.onco.datamapper.fhir.diagnosis.*;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.CnvMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.DiagnostischeImplikationMapper;
 import dev.pcvolkmer.onco.datamapper.fhir.ngs.EinfacheVarianteMapper;
@@ -165,6 +162,11 @@ public abstract class DnpmToFhirMapper<S, D extends Resource> implements Mapper<
     if (null != histologieReports) {
       final var tumorzellgehaltMapper = new TumorzellgehaltMapper();
       histologieReports.forEach(item -> tumorzellgehaltMapper.addToBundle(bundle, item));
+    }
+
+    if (null != histologieReports && null != diagnoses) {
+      final var oncotreeMapper = new OncotreeMapper();
+      oncotreeMapper.addManyToBundle(bundle, patientRecord);
     }
 
     final var performanceStatus = patientRecord.getPerformanceStatus();
