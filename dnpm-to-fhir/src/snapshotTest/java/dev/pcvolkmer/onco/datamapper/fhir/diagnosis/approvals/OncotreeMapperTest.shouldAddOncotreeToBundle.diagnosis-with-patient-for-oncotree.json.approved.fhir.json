@@ -26,7 +26,7 @@
       "valueCodeableConcept": {
         "coding": [ {
           "system": "http://data.mskcc.org/ontologies/oncotree",
-          "code": "placeholder-oncotree:9181/3-C53.8"
+          "code": "PAAD"
         } ]
       }
     },
