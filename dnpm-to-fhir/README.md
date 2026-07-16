@@ -14,17 +14,17 @@ java -jar <dateiname>.jar --filename <file>
 
 ### MII-MTB – Bereich: Behandlungsepisode
 
-| FHIR-Profil                         | Status           | 
-|-------------------------------------|------------------|
-| Diagnose - Diagnose Primärtumor     | ⛅                |
-| Diagnose - Tumorausbreitung         | ⛅ (1)            |
-| Diagnose - WHO-Grad ZNS             | ⛅ (2)            |
-| Diagnose - Oncotree                 | Nicht vorgesehen |
-| Probe - Tumorzellgehalt             | ⛅                |
-| Therapieplan - CarePlan             | ☔ (3)            |
-| Therapieplan - Therapieempfehlung   | ⛅                |
-| Therapieplan - Studieneinschluss    | ⛅                |
-| Therapieplan - Weitere Empfehlungen | ☔ (4)            |
+| FHIR-Profil                         | Status | 
+|-------------------------------------|--------|
+| Diagnose - Diagnose Primärtumor     | ⛅      |
+| Diagnose - Tumorausbreitung         | ⛅ (1)  |
+| Diagnose - WHO-Grad ZNS             | ⛅ (2)  |
+| Diagnose - Oncotree                 | ⛅      |
+| Probe - Tumorzellgehalt             | ⛅      |
+| Therapieplan - CarePlan             | ☔ (3)  |
+| Therapieplan - Therapieempfehlung   | ⛅      |
+| Therapieplan - Studieneinschluss    | ⛅      |
+| Therapieplan - Weitere Empfehlungen | ☔ (4)  |
 
 1. Wird aktuell aus `otherClassifications` entnommen und ignoriert, wenn nur TNM angegeben ist.
 2. Eingefügt nur, wenn DNPM-System `dnpm-dip/mtb/who-grading-cns-tumors` gegeben.
@@ -112,5 +112,6 @@ java -jar <dateiname>.jar --filename <file>
 
 ## Weitere Hinweise
 
-Diese Software enthält eine Oncotree-Ontologie-Tabelle aus https://github.com/cBioPortal/oncotree/blob/master/scripts/ontology_to_ontology_mapping_tool/ontology_mappings.txt.
+Diese Software enthält eine Oncotree-Ontologie-Tabelle
+aus https://github.com/cBioPortal/oncotree/blob/master/scripts/ontology_to_ontology_mapping_tool/ontology_mappings.txt.
 Die Quelle ist unter der CC-BY-4.0 license veröffentlicht worden.
