@@ -551,7 +551,7 @@
       "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|549143c4-aacb-42aa-914f-5ddf8adf1046_tumorcellcount"
     }
   }, {
-    "fullUrl": "urn:uuid:c54c830e-7d4e-247b-dcd3-6030f30bb321",
+    "fullUrl": "urn:uuid:b8d3d493-bacd-f86b-f88e-629aef99a32a",
     "resource": {
       "resourceType": "Observation",
       "meta": {
@@ -586,7 +586,7 @@
     },
     "request": {
       "method": "PUT",
-      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|11f61599-ac83-4135-82ae-671dc956bfb0"
+      "url": "Observation?identifier=https://fhir.diz.uni-marburg.de/sid/observation-id|11f61599-ac83-4135-82ae-671dc956bfb0_ecog"
     }
   }, {
     "fullUrl": "urn:uuid:d6beee9d-e9e6-ac14-3c7e-c40313b5e2c7",

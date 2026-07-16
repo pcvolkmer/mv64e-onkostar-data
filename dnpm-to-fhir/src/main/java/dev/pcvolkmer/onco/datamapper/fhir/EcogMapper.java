@@ -33,7 +33,7 @@ public class EcogMapper extends ObservationMapper<PerformanceStatus> {
 
   @Override
   protected String getId(PerformanceStatus item) {
-    return item.getId();
+    return String.format("%s_ecog", item.getId());
   }
 
   @Override
