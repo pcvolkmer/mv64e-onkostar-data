@@ -30,10 +30,9 @@ import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
-import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistory;
-import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCoding;
-import dev.pcvolkmer.mv64e.mtb.FamilyMemberHistoryRelationshipTypeCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.FamilyMemberHistory;
+import dev.pcvolkmer.mv64e.model.FamilyMemberHistoryRelationshipTypeCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,7 +75,7 @@ class KpaVerwandteDataMapperTest {
     assertThat(actual.getRelationship())
         .isEqualTo(
             FamilyMemberHistoryRelationshipTypeCoding.builder()
-                .code(FamilyMemberHistoryRelationshipTypeCodingCode.EXT)
+                .code(FamilyMemberHistoryRelationshipTypeCoding.CodeEnum.EXT)
                 .display("Verwandter weiteren Grades")
                 .system("dnpm-dip/mtb/family-meber-history/relationship-type")
                 .build());

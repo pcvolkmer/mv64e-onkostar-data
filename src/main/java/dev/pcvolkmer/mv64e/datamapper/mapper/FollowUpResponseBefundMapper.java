@@ -21,7 +21,10 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.RecistCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
+import dev.pcvolkmer.mv64e.model.Response;
+import dev.pcvolkmer.mv64e.model.ResponseMethodCoding;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -81,7 +84,7 @@ public class FollowUpResponseBefundMapper implements DataMapper<Response> {
     }
     try {
       return ResponseMethodCoding.builder()
-          .code(ResponseMethodCodingCode.forValue(value))
+          .code(ResponseMethodCoding.CodeEnum.fromValue(value))
           .display(value)
           .system("dnpm-dip/mtb/response/method")
           .build();
@@ -97,7 +100,7 @@ public class FollowUpResponseBefundMapper implements DataMapper<Response> {
     }
     try {
       return RecistCoding.builder()
-          .code(RecistCodingCode.forValue(value))
+          .code(RecistCoding.CodeEnum.fromValue(value))
           .display(value)
           .system("RECIST")
           .build();

@@ -33,10 +33,10 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.ConsentProvision;
-import dev.pcvolkmer.mv64e.mtb.ModelProjectConsent;
-import dev.pcvolkmer.mv64e.mtb.ModelProjectConsentPurpose;
-import dev.pcvolkmer.mv64e.mtb.Provision;
+import dev.pcvolkmer.mv64e.model.ConsentProvisionType;
+import dev.pcvolkmer.mv64e.model.ModelProjectConsentPurpose;
+import dev.pcvolkmer.mv64e.model.MvhMetadataModelProjectConsent;
+import dev.pcvolkmer.mv64e.model.MvhMetadataModelProjectConsentProvisionsInner;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -90,7 +90,7 @@ class ConsentMvDataMapperTest {
         .getAllByParentId(anyInt());
 
     var actual = this.dataMapper.getById(1);
-    assertThat(actual).isInstanceOf(ModelProjectConsent.class);
+    assertThat(actual).isInstanceOf(MvhMetadataModelProjectConsent.class);
     // Intentionally left blank/null
     assertThat(actual.getDate()).isNull();
     assertThat(actual.getVersion()).isEqualTo("02");
@@ -98,20 +98,20 @@ class ConsentMvDataMapperTest {
     assertThat(actual.getProvisions())
         .containsAll(
             List.of(
-                Provision.builder()
+                MvhMetadataModelProjectConsentProvisionsInner.builder()
                     .date(Date.from(Instant.parse("2025-07-12T00:00:00Z")))
                     .purpose(ModelProjectConsentPurpose.SEQUENCING)
-                    .type(ConsentProvision.PERMIT)
+                    .type(ConsentProvisionType.PERMIT)
                     .build(),
-                Provision.builder()
+                MvhMetadataModelProjectConsentProvisionsInner.builder()
                     .date(Date.from(Instant.parse("2025-07-12T00:00:00Z")))
                     .purpose(ModelProjectConsentPurpose.CASE_IDENTIFICATION)
-                    .type(ConsentProvision.PERMIT)
+                    .type(ConsentProvisionType.PERMIT)
                     .build(),
-                Provision.builder()
+                MvhMetadataModelProjectConsentProvisionsInner.builder()
                     .date(Date.from(Instant.parse("2025-07-11T00:00:00Z")))
                     .purpose(ModelProjectConsentPurpose.REIDENTIFICATION)
-                    .type(ConsentProvision.DENY)
+                    .type(ConsentProvisionType.DENY)
                     .build()));
   }
 

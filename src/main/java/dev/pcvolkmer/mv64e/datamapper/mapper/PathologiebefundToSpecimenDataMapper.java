@@ -23,7 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PathologiebefundCatalogue;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -100,16 +100,16 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
 
   // TODO: Keine Angabe in Formular OS.Pathologiebefund möglich - best effort: Unknown
   @Nullable
-  private TumorSpecimenCoding getTumorSpecimenCoding() {
-    return TumorSpecimenCoding.builder()
+  private TumorSpecimenTypeCoding getTumorSpecimenCoding() {
+    return TumorSpecimenTypeCoding.builder()
         .system("dnpm-dip/mtb/tumor-specimen/type")
-        .code(TumorSpecimenCodingCode.UNKNOWN)
+        .code(TumorSpecimenTypeCoding.CodeEnum.UNKNOWN)
         .display("Unbekannt")
         .build();
   }
 
   @Nullable
-  private Collection getCollection(@NonNull ResultSet data) {
+  private TumorSpecimenCollection getCollection(@NonNull ResultSet data) {
     final var entnahmemethode = data.getString("Praeparat");
     final var probenmaterial = data.getString("EntnahmestellederBiopsie");
 
@@ -123,14 +123,18 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
 
     switch (entnahmemethode) {
       case "B":
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.BIOPSY).display("Biopsie");
+        methodBuilder.code(TumorSpecimenCollectionMethodCoding.CodeEnum.BIOPSY).display("Biopsie");
         break;
       case "R":
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.RESECTION).display("Resektat");
+        methodBuilder
+            .code(TumorSpecimenCollectionMethodCoding.CodeEnum.RESECTION)
+            .display("Resektat");
         break;
       case "U":
       default:
-        methodBuilder.code(TumorSpecimenCollectionMethodCodingCode.UNKNOWN).display("Unbekannt");
+        methodBuilder
+            .code(TumorSpecimenCollectionMethodCoding.CodeEnum.UNKNOWN)
+            .display("Unbekannt");
         break;
     }
 
@@ -142,28 +146,28 @@ public class PathologiebefundToSpecimenDataMapper implements DataMapper<TumorSpe
     switch (probenmaterial) {
       case "P":
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.PRIMARY_TUMOR)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.PRIMARY_TUMOR)
             .display("Primärtumor");
         break;
       case "M":
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.METASTASIS)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.METASTASIS)
             .display("Metastase");
         break;
       case "L":
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.REGIONAL_LYMPH_NODES)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.REGIONAL_LYMPH_NODES)
             .display("Lymphknoten");
         break;
       default:
         localizationBuilder
-            .code(TumorSpecimenCollectionLocalizationCodingCode.UNKNOWN)
+            .code(TumorSpecimenCollectionLocalizationCoding.CodeEnum.UNKNOWN)
             .display("Unbekannt");
         break;
     }
 
     final var collectionBuilder =
-        Collection.builder()
+        TumorSpecimenCollection.builder()
             .method(methodBuilder.build())
             .localization(localizationBuilder.build());
 

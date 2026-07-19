@@ -26,7 +26,8 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.genes.GeneUtils;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.tuples.Tuple2;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -55,14 +56,14 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   private static final Logger logger = LoggerFactory.getLogger(MolekulargenetikNgsDataMapper.class);
   private final MolekulargenetikCatalogue catalogue;
   private final MolekulargenuntersuchungCatalogue untersuchungCatalogue;
-  private final TumorCellContentMethodCodingCode tumorCellContentMethod;
+  private final TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod;
   private final PropertyCatalogue propertyCatalogue;
 
   public MolekulargenetikNgsDataMapper(
       final MolekulargenetikCatalogue catalogue,
       final MolekulargenuntersuchungCatalogue untersuchungCatalogue,
       final PropertyCatalogue propertyCatalogue,
-      final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+      final TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod) {
     this.catalogue = catalogue;
     this.untersuchungCatalogue = untersuchungCatalogue;
     this.tumorCellContentMethod = tumorCellContentMethod;
@@ -141,10 +142,10 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         .collect(Collectors.toList());
   }
 
-  private NgsReportResults getNgsReportResults(ResultSet resultSet) {
+  private SomaticNgsReportResults getNgsReportResults(ResultSet resultSet) {
     var subforms = this.untersuchungCatalogue.getAllByParentId(resultSet.getId());
 
-    var resultBuilder = NgsReportResults.builder();
+    var resultBuilder = SomaticNgsReportResults.builder();
 
     final var tumorzellgehalt = resultSet.getLong("tumorzellgehalt");
     if (null != tumorzellgehalt) {
@@ -153,14 +154,14 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
               .id(resultSet.getId().toString())
               .patient(resultSet.getPatientReference())
               .specimen(Reference.builder().id(resultSet.getString("id")).type("Specimen").build())
-              .value(tumorzellgehalt / 100.0);
+              .value(BigDecimal.valueOf(tumorzellgehalt / 100.0));
 
       // Der Tumorcellcontent kann für NGS-Reports ausschließlich bioinformatisch
       // ermittelt werden.
       // Entsprechend wird er nur für diese Methode gemeldet.
       // Erfolgt eine histologische Ermittlung des Tumorcellcounts kann dieser über
       // einen histologischen Report gemeldet werden.
-      if (tumorCellContentMethod == TumorCellContentMethodCodingCode.BIOINFORMATIC) {
+      if (tumorCellContentMethod == TumorCellContentMethodCoding.CodeEnum.BIOINFORMATIC) {
         tumorcellContentBuilder.method(
             TumorCellContentMethodCoding.builder().code(tumorCellContentMethod).build());
         resultBuilder.tumorCellContent(tumorcellContentBuilder.build());
@@ -221,7 +222,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     if (null != chromosome && null != hgncId && null != transcriptId) {
       try {
-        snvBuilder.chromosome(Chromosome.forValue(chromosome));
+        snvBuilder.chromosome(Chromosome.fromValue(chromosome));
       } catch (Exception e) {
         logger.warn("No chromosome found for '{}'", chromosome);
       }
@@ -249,7 +250,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                 transcriptId == null
                     ? TranscriptId.builder()
                         .value(gene.getEnsemblId())
-                        .system(TranscriptIdSystem.ENSEMBL_ORG)
+                        .system(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG)
                         .build()
                     : transcriptId);
             // Add chromosome
@@ -271,9 +272,9 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
     final var allelfrequenz = subform.getLong("allelfrequenz");
     if (null != allelfrequenz) {
-      snvBuilder.allelicFrequency(allelfrequenz);
+      snvBuilder.allelicFrequency(BigDecimal.valueOf(allelfrequenz));
     }
-    final var evreaddepth = subform.getLong("evreaddepth");
+    final var evreaddepth = subform.getInteger("evreaddepth");
     if (null != evreaddepth) {
       snvBuilder.readDepth(evreaddepth);
     }
@@ -289,7 +290,11 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     var posStart = subform.getDouble("EVStart");
     var posEnd = subform.getDouble("EVEnde");
     if (null != posStart) {
-      snvBuilder.position(Position.builder().start(posStart).end(posEnd).build());
+      snvBuilder.position(
+          CnvEndRange.builder()
+              .start(BigDecimal.valueOf(posStart))
+              .end(posEnd == null ? null : BigDecimal.valueOf(posEnd))
+              .build());
     }
 
     return snvBuilder.build();
@@ -328,8 +333,8 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
                     .map(GeneUtils::findBySymbol)
                     .filter(Optional::isPresent)
                     .map(gene -> GeneUtils.toCoding(gene.get()))
-                    .collect(Collectors.toList()))
-            .totalCopyNumber(subform.getLong("cnvtotalcn"));
+                    .collect(Collectors.toSet()))
+            .totalCopyNumber(subform.getInteger("cnvtotalcn"));
 
     if (getCnvTypeCoding(subform) != null) cnvBuilder.type(getCnvTypeCoding(subform));
 
@@ -354,14 +359,14 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     // DNA Partner 5'
 
-    final var fusionPartner5Prime = DnaFusionFusionPartner5Prime.builder();
+    final var fusionPartner5Prime = DnaFusionFusionPartner5prime.builder();
     final var fusiondna5chromosome = subform.getString("fusiondna5chromosome");
     final var fusiondna5ensemblid = subform.getString("fusiondna5ensemblid");
     final var fusiondna5hgncid = subform.getString("fusiondna5hgncid");
 
     if (null != fusiondna5chromosome && null != fusiondna5ensemblid && null != fusiondna5hgncid) {
       try {
-        fusionPartner5Prime.chromosome(Chromosome.forValue(fusiondna5chromosome));
+        fusionPartner5Prime.chromosome(Chromosome.fromValue(fusiondna5chromosome));
       } catch (Exception e) {
         logger.warn("No chromosome found for '{}'", fusiondna5chromosome);
       }
@@ -386,19 +391,19 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     final var fusiondna5position = subform.getDouble("fusiondna5position");
     if (null != fusiondna5position) {
-      fusionPartner5Prime.position(fusiondna5position);
+      fusionPartner5Prime.position(BigDecimal.valueOf(fusiondna5position));
     }
 
     // DNA Partner 3'
 
-    final var fusionPartner3Prime = DnaFusionFusionPartner3Prime.builder();
+    final var fusionPartner3Prime = DnaFusionFusionPartner3prime.builder();
     final var fusiondna3chromosome = subform.getString("fusiondna3chromosome");
     final var fusiondna3ensemblid = subform.getString("fusiondna3ensemblid");
     final var fusiondna3hgncid = subform.getString("fusiondna3hgncid");
 
     if (null != fusiondna3chromosome && null != fusiondna3ensemblid && null != fusiondna3hgncid) {
       try {
-        fusionPartner3Prime.chromosome(Chromosome.forValue(fusiondna3chromosome));
+        fusionPartner3Prime.chromosome(Chromosome.fromValue(fusiondna3chromosome));
       } catch (Exception e) {
         logger.warn("No chromosome found for '{}'", fusiondna3chromosome);
       }
@@ -423,17 +428,17 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     final var fusiondna3position = subform.getDouble("fusiondna3position");
     if (null != fusiondna3position) {
-      fusionPartner3Prime.position(fusiondna3position);
+      fusionPartner3Prime.position(BigDecimal.valueOf(fusiondna3position));
     }
 
     final var builder =
         DnaFusion.builder()
             .id(subform.getString("id"))
             .patient(subform.getPatientReference())
-            .fusionPartner5Prime(fusionPartner5Prime.build())
-            .fusionPartner3Prime(fusionPartner3Prime.build());
+            .fusionPartner5prime(fusionPartner5Prime.build())
+            .fusionPartner3prime(fusionPartner3Prime.build());
 
-    final var fusiondnareportednumread = subform.getLong("fusiondnareportednumread");
+    final var fusiondnareportednumread = subform.getInteger("fusiondnareportednumread");
     if (null != fusiondnareportednumread) {
       builder.reportedNumReads(fusiondnareportednumread);
     }
@@ -457,7 +462,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     // RNA Partner 5'
 
-    final var fusionPartner5Prime = RnaFusionFusionPartner5Prime.builder();
+    final var fusionPartner5Prime = RnaFusionFusionPartner5prime.builder();
     final var fusionrna5ensemblid = subform.getString("fusionrna5ensemblid");
     final var fusionrna5hgncid = subform.getString("fusionrna5hgncid");
 
@@ -490,7 +495,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     final var fusionrna5transposition = subform.getDouble("fusionrna5transposition");
     if (null != fusionrna5transposition) {
-      fusionPartner5Prime.position(fusionrna5transposition);
+      fusionPartner5Prime.position(BigDecimal.valueOf(fusionrna5transposition));
     }
 
     final var fusionrna5strand = subform.getString("fusionrna5strand");
@@ -500,7 +505,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     // RNA Partner 3'
 
-    final var fusionPartner3Prime = RnaFusionFusionPartner3Prime.builder();
+    final var fusionPartner3Prime = RnaFusionFusionPartner3prime.builder();
     final var fusionrna3ensemblid = subform.getString("fusionrna3ensemblid");
     final var fusionrna3hgncid = subform.getString("fusionrna3hgncid");
 
@@ -533,7 +538,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
 
     final var fusionrna3transposition = subform.getDouble("fusionrna3transposition");
     if (null != fusionrna3transposition) {
-      fusionPartner3Prime.position(fusionrna3transposition);
+      fusionPartner3Prime.position(BigDecimal.valueOf(fusionrna3transposition));
     }
 
     final var fusionrna3strand = subform.getString("fusionrna3strand");
@@ -545,15 +550,15 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
         RnaFusion.builder()
             .id(subform.getString("id"))
             .patient(subform.getPatientReference())
-            .fusionPartner5Prime(fusionPartner5Prime.build())
-            .fusionPartner3Prime(fusionPartner3Prime.build());
+            .fusionPartner5prime(fusionPartner5Prime.build())
+            .fusionPartner3prime(fusionPartner3Prime.build());
 
     final var fusionrnaeffect = subform.getString("fusionrnaeffect");
     if (null != fusionrnaeffect) {
       builder.effect(fusionrnaeffect);
     }
 
-    final var fusionrnareportednumread = subform.getLong("fusionrnareportednumread");
+    final var fusionrnareportednumread = subform.getInteger("fusionrnareportednumread");
     if (null != fusionrnareportednumread) {
       builder.reportedNumReads(fusionrnareportednumread);
     }
@@ -562,53 +567,53 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
   }
 
   @Nullable
-  private CnvCoding getCnvTypeCoding(ResultSet osMolResultSet) {
+  private CnvTypeCoding getCnvTypeCoding(ResultSet osMolResultSet) {
 
     var cnvFromString = osMolResultSet.getString("CopyNumberVariation");
     if (cnvFromString == null || cnvFromString.trim().isEmpty()) return null;
 
-    CnvCodingCode cnvCode = getCodeFromString(cnvFromString.trim().toUpperCase());
+    CnvTypeCoding.CodeEnum cnvCode = getCodeFromString(cnvFromString.trim().toUpperCase());
     if (cnvCode == null) return null;
 
-    return CnvCoding.builder().code(cnvCode).build();
+    return CnvTypeCoding.builder().code(cnvCode).build();
   }
 
-  @Nullable
-  private CnvCodingCode getCodeFromString(String value) {
+  private CnvTypeCoding.CodeEnum getCodeFromString(String value) {
     if (value.equals("G")) {
-      return CnvCodingCode.HIGH_LEVEL_GAIN;
+      return CnvTypeCoding.CodeEnum.HIGH_LEVEL_GAIN;
     } else if (value.equals("L")) {
-      return CnvCodingCode.LOSS;
+      return CnvTypeCoding.CodeEnum.LOSS;
     } else if (value.equals("LLG")) {
-      return CnvCodingCode.LOW_LEVEL_GAIN;
+      return CnvTypeCoding.CodeEnum.LOW_LEVEL_GAIN;
     } else {
       logger.error("No supported CNV Code for {} found.", value);
       return null;
     }
   }
 
-  private NgsReportCoding getNgsReportCoding(@NonNull final String artdersequenzierung) {
+  private NgsReportTypeCoding getNgsReportCoding(@NonNull final String artdersequenzierung) {
     final var builder =
-        NgsReportCoding.builder().system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type");
+        NgsReportTypeCoding.builder()
+            .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type");
 
     switch (artdersequenzierung) {
       case "WES":
-        return builder.code(NgsReportCodingCode.EXOME).display("Exome").build();
+        return builder.code(NgsReportTypeCoding.CodeEnum.EXOME).display("Exome").build();
       case "PanelKit":
-        return builder.code(NgsReportCodingCode.PANEL).display("Panel").build();
+        return builder.code(NgsReportTypeCoding.CodeEnum.PANEL).display("Panel").build();
       case "genome-long-read":
         return builder
-            .code(NgsReportCodingCode.GENOME_LONG_READ)
+            .code(NgsReportTypeCoding.CodeEnum.GENOME_LONG_READ)
             .display("Genome long-read")
             .build();
       case "genome-short-read":
         return builder
-            .code(NgsReportCodingCode.GENOME_SHORT_READ)
+            .code(NgsReportTypeCoding.CodeEnum.GENOME_SHORT_READ)
             .display("Genome short-read")
             .system("http://bwhc.de/mtb/somatic-ngs-report/sequencing-type")
             .build();
       default:
-        return builder.code(NgsReportCodingCode.OTHER).display("Other").build();
+        return builder.code(NgsReportTypeCoding.CodeEnum.OTHER).display("Other").build();
     }
   }
 
@@ -652,13 +657,13 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
       final var pipeline =
           propertyCatalogue.getShortdescOrEmptyByCodeAndVersion(seqPipeline, seqPipelinePv);
       if (!pipeline.isBlank()) {
-        builder.pipeline(mapPipelineUri(pipeline).toString());
+        builder.pipeline(mapPipelineUri(pipeline));
       } else {
-        builder.pipeline(pipeline);
+        builder.pipeline(URI.create(pipeline));
       }
 
     } else {
-      builder.pipeline(mapPipelineUri(null).toString());
+      builder.pipeline(mapPipelineUri(null));
     }
 
     var referenceGenome = osMolResultSet.getString("referenzgenom");
@@ -719,9 +724,11 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     var resultBuilder = TranscriptId.builder();
 
     if (null != evnmNummer && !evnmNummer.isBlank()) {
-      resultBuilder.value(evnmNummer).system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ);
+      resultBuilder
+          .value(evnmNummer)
+          .system(TranscriptId.SystemEnum.HTTPS_WWW_NCBI_NLM_NIH_GOV_REFSEQ);
     } else if (null != ensemblId && !ensemblId.isBlank()) {
-      resultBuilder.value(ensemblId).system(TranscriptIdSystem.ENSEMBL_ORG);
+      resultBuilder.value(ensemblId).system(TranscriptId.SystemEnum.HTTPS_WWW_ENSEMBL_ORG);
     } else {
       return null;
     }

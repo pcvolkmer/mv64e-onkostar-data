@@ -21,9 +21,9 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
-import dev.pcvolkmer.mv64e.mtb.MtbEpisodeOfCare;
-import dev.pcvolkmer.mv64e.mtb.PeriodDate;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.MtbEpisodeOfCare;
+import dev.pcvolkmer.mv64e.model.PeriodDate;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.List;
 
 /**
@@ -56,8 +56,7 @@ public class MtbEpisodeDataMapper implements DataMapper<MtbEpisodeOfCare> {
         .patient(kpaData.getPatientReference())
         .diagnoses(
             List.of(Reference.builder().id(kpaData.getString("id")).type("Diagnose").build()))
-        .period(PeriodDate.builder().start(kpaData.getDate("anmeldedatummtb")).build())
-        .build();
+        .period(PeriodDate.builder().start(kpaData.getDate("anmeldedatummtb")).build());
     return builder.build();
   }
 }

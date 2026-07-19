@@ -25,11 +25,9 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
-import dev.pcvolkmer.mv64e.mtb.MtbProcedureRecommendationCategoryCoding;
-import dev.pcvolkmer.mv64e.mtb.MtbProcedureRecommendationCategoryCodingCode;
-import dev.pcvolkmer.mv64e.mtb.ProcedureRecommendation;
-import dev.pcvolkmer.mv64e.mtb.Reference;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.MtbCarePlanProcedureRecommendationsInner;
+import dev.pcvolkmer.mv64e.model.MtbProcedureRecommendationCategoryCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @since 0.1
  */
 public class EinzelempfehlungProzedurDataMapper
-    extends AbstractEinzelempfehlungDataMapper<ProcedureRecommendation> {
+    extends AbstractEinzelempfehlungDataMapper<MtbCarePlanProcedureRecommendationsInner> {
 
   public EinzelempfehlungProzedurDataMapper(
       EinzelempfehlungCatalogue einzelempfehlungCatalogue,
@@ -57,7 +55,7 @@ public class EinzelempfehlungProzedurDataMapper
   }
 
   @Override
-  protected ProcedureRecommendation map(ResultSet resultSet) {
+  protected MtbCarePlanProcedureRecommendationsInner map(ResultSet resultSet) {
     // Fetch date from care plan due to https://github.com/pcvolkmer/onkostar-plugin-dnpm/issues/213
     var hauptprozedurid = resultSet.getParentId();
     if (null == hauptprozedurid) {
@@ -66,7 +64,7 @@ public class EinzelempfehlungProzedurDataMapper
     var carePlan = this.therapieplanCatalogue.getById(hauptprozedurid);
 
     var resultBuilder =
-        ProcedureRecommendation.builder()
+        MtbCarePlanProcedureRecommendationsInner.builder()
             .id(resultSet.getString("id"))
             .patient(resultSet.getPatientReference())
             .reason(Reference.builder().id(this.getCarePlanKpaId(carePlan)).build())
@@ -93,13 +91,13 @@ public class EinzelempfehlungProzedurDataMapper
   }
 
   @Override
-  public ProcedureRecommendation getById(int id) {
+  public MtbCarePlanProcedureRecommendationsInner getById(int id) {
     return this.map(this.catalogue.getById(id));
   }
 
   @NullMarked
   @Override
-  public List<ProcedureRecommendation> getByParentId(final int parentId) {
+  public List<MtbCarePlanProcedureRecommendationsInner> getByParentId(final int parentId) {
     return catalogue.getAllByParentId(parentId).stream()
         // Filter Prozedurempfehlung (Weitere Empfehlungen)
         .filter(it -> "sonstige".equals(it.getString("empfehlungskategorie")))
@@ -113,8 +111,8 @@ public class EinzelempfehlungProzedurDataMapper
   private MtbProcedureRecommendationCategoryCoding getMtbProcedureRecommendationCategoryCoding(
       String code) {
     if (code == null
-        || !Arrays.stream(MtbProcedureRecommendationCategoryCodingCode.values())
-            .map(MtbProcedureRecommendationCategoryCodingCode::toValue)
+        || !Arrays.stream(MtbProcedureRecommendationCategoryCoding.CodeEnum.values())
+            .map(MtbProcedureRecommendationCategoryCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(code)) {
       return null;
@@ -125,8 +123,10 @@ public class EinzelempfehlungProzedurDataMapper
             .system("dnpm-dip/mtb/recommendation/procedure/category");
 
     try {
-      resultBuilder.code(MtbProcedureRecommendationCategoryCodingCode.forValue(code)).display(code);
-    } catch (IOException e) {
+      resultBuilder
+          .code(MtbProcedureRecommendationCategoryCoding.CodeEnum.fromValue(code))
+          .display(code);
+    } catch (IllegalArgumentException e) {
       return null;
     }
 

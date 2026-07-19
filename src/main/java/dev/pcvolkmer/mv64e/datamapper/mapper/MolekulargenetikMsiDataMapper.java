@@ -22,10 +22,10 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenMsiCatalogue;
-import dev.pcvolkmer.mv64e.mtb.Msi;
-import dev.pcvolkmer.mv64e.mtb.MsiMethodCoding;
-import dev.pcvolkmer.mv64e.mtb.MsiMethodCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.Msi;
+import dev.pcvolkmer.mv64e.model.MsiMethodCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
+import java.math.BigDecimal;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -88,14 +88,14 @@ public class MolekulargenetikMsiDataMapper extends AbstractSubformDataMapper<Msi
     if (analysemethoden == null) {
       return null;
     } else if (analysemethoden.contains("S")) {
-      builder.code(MsiMethodCodingCode.BIOINFORMATIC);
-      builder.display(MsiMethodCodingCode.BIOINFORMATIC.toString());
+      builder.code(MsiMethodCoding.CodeEnum.BIOINFORMATIC);
+      builder.display(MsiMethodCoding.CodeEnum.BIOINFORMATIC.toString());
     } else if (analysemethoden.contains("P")) {
-      builder.code(MsiMethodCodingCode.PCR);
-      builder.display(MsiMethodCodingCode.PCR.toString());
+      builder.code(MsiMethodCoding.CodeEnum.PCR);
+      builder.display(MsiMethodCoding.CodeEnum.PCR.toString());
     } else if (analysemethoden.contains("I")) {
-      builder.code(MsiMethodCodingCode.IHC);
-      builder.display(MsiMethodCodingCode.IHC.toString());
+      builder.code(MsiMethodCoding.CodeEnum.IHC);
+      builder.display(MsiMethodCoding.CodeEnum.IHC.toString());
     } else {
       return null;
     }
@@ -103,16 +103,16 @@ public class MolekulargenetikMsiDataMapper extends AbstractSubformDataMapper<Msi
     return builder.build();
   }
 
-  private double getSeqProzentwert(final ResultSet resultSet) {
+  private BigDecimal getSeqProzentwert(final ResultSet resultSet) {
     var analysemethoden = resultSet.getMerkmalList("analysemethoden");
 
     // Achtung: Immer nur eine Methode wird betrachtet! In Onkostar sind gleichzeitig mehrere
     // Angaben möglich!
     var seqprozentwert = resultSet.getDouble("seqprozentwert");
     if (null != seqprozentwert && null != analysemethoden && analysemethoden.contains("S")) {
-      return seqprozentwert;
+      return BigDecimal.valueOf(seqprozentwert);
     }
 
-    return 0;
+    return BigDecimal.ZERO;
   }
 }

@@ -1,6 +1,6 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
-import static dev.pcvolkmer.mv64e.mtb.StudySystem.NCT;
+import static dev.pcvolkmer.mv64e.model.StudyReference.SystemEnum.NCT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -17,7 +17,10 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.LevelOfEvidenceGradingCoding;
+import dev.pcvolkmer.mv64e.model.PublicationReference;
+import dev.pcvolkmer.mv64e.model.RecommendationPriorityCoding;
+import dev.pcvolkmer.mv64e.model.StudyReference;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -93,7 +96,7 @@ class EinzelempfehlungStudieDataMapperTest {
                         assertThat(grading)
                             .isEqualTo(
                                 LevelOfEvidenceGradingCoding.builder()
-                                    .code(LevelOfEvidenceGradingCodingCode.M1C)
+                                    .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_C)
                                     .display("m1C")
                                     .system("dnpm-dip/mtb/level-of-evidence/grading")
                                     .build());
@@ -106,12 +109,14 @@ class EinzelempfehlungStudieDataMapperTest {
                             List.of(
                                 PublicationReference.builder()
                                     .id("12345678")
-                                    .system(PublicationSystem.PUBMED_NCBI_NLM_NIH_GOV)
+                                    .system(
+                                        PublicationReference.SystemEnum
+                                            .HTTPS_PUBMED_NCBI_NLM_NIH_GOV)
                                     .type("Publication")
                                     .build(),
                                 PublicationReference.builder()
                                     .id("12.2024/123")
-                                    .system(PublicationSystem.DOI_ORG)
+                                    .system(PublicationReference.SystemEnum.HTTPS_WWW_DOI_ORG)
                                     .type("Publication")
                                     .build());
                         assertThat(publicationReferences)
@@ -144,7 +149,7 @@ class EinzelempfehlungStudieDataMapperTest {
                         assertThat(grading)
                             .isEqualTo(
                                 LevelOfEvidenceGradingCoding.builder()
-                                    .code(LevelOfEvidenceGradingCodingCode.M1C)
+                                    .code(LevelOfEvidenceGradingCoding.CodeEnum.M1_C)
                                     .display("m1C")
                                     .system("dnpm-dip/mtb/level-of-evidence/grading")
                                     .build());
@@ -199,7 +204,7 @@ class EinzelempfehlungStudieDataMapperTest {
     var actual = this.mapper.getById(1);
     assertThat(actual).isNotNull();
     assertThat(actual.getIssuedOn()).isEqualTo(Date.from(Instant.parse("2025-07-11T00:00:00Z")));
-    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCodingCode.CODE_4);
+    assertThat(actual.getPriority().getCode()).isEqualTo(RecommendationPriorityCoding.CodeEnum._4);
   }
 
   @Test

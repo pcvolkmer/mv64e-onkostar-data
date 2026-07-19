@@ -20,9 +20,8 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
-import dev.pcvolkmer.mv64e.mtb.FollowUp;
-import dev.pcvolkmer.mv64e.mtb.FollowUpPatientStatusCoding;
-import dev.pcvolkmer.mv64e.mtb.FollowUpPatientStatusCodingCode;
+import dev.pcvolkmer.mv64e.model.FollowUp;
+import dev.pcvolkmer.mv64e.model.FollowUpPatientStatusCoding;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -64,8 +63,8 @@ public class FollowUpDataMapper implements DataMapper<FollowUp> {
     if (data.isTrue("losttofollowup")) {
       builder.patientStatus(
           FollowUpPatientStatusCoding.builder()
-              .code(FollowUpPatientStatusCodingCode.LOST_TO_FU)
-              .display(FollowUpPatientStatusCodingCode.LOST_TO_FU.toValue())
+              .code(FollowUpPatientStatusCoding.CodeEnum.LOST_TO_FU)
+              .display(FollowUpPatientStatusCoding.CodeEnum.LOST_TO_FU.toString())
               .system("dnpm-dip/follow-up/patient-status")
               .build());
     }

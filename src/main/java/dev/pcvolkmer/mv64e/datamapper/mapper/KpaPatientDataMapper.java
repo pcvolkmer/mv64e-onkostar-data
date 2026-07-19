@@ -23,7 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.KpaCatalogue;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -67,31 +67,34 @@ public class KpaPatientDataMapper implements DataMapper<Patient> {
 
   private GenderCoding getGenderCoding(ResultSet data) {
     var genderCodingBuilder =
-        GenderCoding.builder().code(GenderCodingCode.UNKNOWN).display("Unbekannt").system("Gender");
+        GenderCoding.builder()
+            .code(GenderCoding.CodeEnum.UNKNOWN)
+            .display("Unbekannt")
+            .system("Gender");
 
     String geschlecht = data.getString("geschlecht");
     if (null != geschlecht) {
       switch (geschlecht) {
         case "m":
-          genderCodingBuilder.code(GenderCodingCode.MALE).display("Männlich");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.MALE).display("Männlich");
           break;
         case "w":
-          genderCodingBuilder.code(GenderCodingCode.FEMALE).display("Weiblich");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.FEMALE).display("Weiblich");
           break;
         case "d":
         case "x":
-          genderCodingBuilder.code(GenderCodingCode.OTHER).display("Divers");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.OTHER).display("Divers");
           break;
         default:
-          genderCodingBuilder.code(GenderCodingCode.UNKNOWN).display("Unbekannt");
+          genderCodingBuilder.code(GenderCoding.CodeEnum.UNKNOWN).display("Unbekannt");
       }
     }
     return genderCodingBuilder.build();
   }
 
-  private HealthInsurance getHealthInsurance(ResultSet data) {
+  private PatientHealthInsurance getHealthInsurance(ResultSet data) {
     var resultBuilder =
-        HealthInsurance.builder()
+        PatientHealthInsurance.builder()
             .reference(
                 Reference.builder()
                     .id(data.getString("krankenkasse"))
@@ -100,47 +103,47 @@ public class KpaPatientDataMapper implements DataMapper<Patient> {
                     .build());
 
     var healthInsuranceCodingBuilder =
-        HealthInsuranceCoding.builder()
+        HealthInsuranceTypeCoding.builder()
             .system("http://fhir.de/CodeSystem/versicherungsart-de-basis");
 
     final var artDerKrankenkasse = data.getString("artderkrankenkasse");
     final var artDerKrankenkassePropcat = data.getInteger("artderkrankenkasse_propcat_version");
 
     if (null == artDerKrankenkasse || null == artDerKrankenkassePropcat) {
-      healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.UNK).build();
+      healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.UNK);
       return resultBuilder.type(healthInsuranceCodingBuilder.build()).build();
     }
 
     switch (artDerKrankenkasse) {
       case "GKV":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GKV).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.GKV);
         break;
       case "PKV":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.PKV).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.PKV);
         break;
       case "BG":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.BG).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.BG);
         break;
       case "SEL":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SEL).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.SEL);
         break;
       case "SOZ":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SOZ).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.SOZ);
         break;
       case "GPV":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.GPV).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.GPV);
         break;
       case "PPV":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.PPV).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.PPV);
         break;
       case "BEI":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.BEI).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.BEI);
         break;
       case "SKT":
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.SKT).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.SKT);
         break;
       default:
-        healthInsuranceCodingBuilder.code(HealthInsuranceCodingCode.UNK).build();
+        healthInsuranceCodingBuilder.code(HealthInsuranceTypeCoding.CodeEnum.UNK);
     }
 
     var healthInsurancePropertyEntry =

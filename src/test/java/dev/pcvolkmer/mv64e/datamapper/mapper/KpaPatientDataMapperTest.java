@@ -35,7 +35,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.time.Instant;
 import java.util.Date;
 import javax.sql.DataSource;
@@ -91,12 +91,12 @@ class KpaPatientDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("1");
-    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.MALE);
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCoding.CodeEnum.MALE);
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isEqualTo(Date.from(Instant.parse("2024-06-19T00:00:00Z")));
     assertThat(actual.getHealthInsurance())
         .isEqualTo(
-            HealthInsurance.builder()
+            PatientHealthInsurance.builder()
                 .reference(
                     Reference.builder()
                         .id("12345678")
@@ -104,8 +104,8 @@ class KpaPatientDataMapperTest {
                         .type("HealthInsurance")
                         .build())
                 .type(
-                    HealthInsuranceCoding.builder()
-                        .code(HealthInsuranceCodingCode.GKV)
+                    HealthInsuranceTypeCoding.builder()
+                        .code(HealthInsuranceTypeCoding.CodeEnum.GKV)
                         .display("Gesetzliche Krankenversicherung")
                         .system("http://fhir.de/CodeSystem/versicherungsart-de-basis")
                         .build())
@@ -135,12 +135,12 @@ class KpaPatientDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(Patient.class);
     assertThat(actual.getId()).isEqualTo("1");
-    assertThat(actual.getGender().getCode()).isEqualTo(GenderCodingCode.FEMALE);
+    assertThat(actual.getGender().getCode()).isEqualTo(GenderCoding.CodeEnum.FEMALE);
     assertThat(actual.getBirthDate()).isEqualTo(Date.from(Instant.parse("2000-01-01T00:00:00Z")));
     assertThat(actual.getDateOfDeath()).isNull();
     assertThat(actual.getHealthInsurance())
         .isEqualTo(
-            HealthInsurance.builder()
+            PatientHealthInsurance.builder()
                 .reference(
                     Reference.builder()
                         .id("12345678")
@@ -148,8 +148,8 @@ class KpaPatientDataMapperTest {
                         .type("HealthInsurance")
                         .build())
                 .type(
-                    HealthInsuranceCoding.builder()
-                        .code(HealthInsuranceCodingCode.PKV)
+                    HealthInsuranceTypeCoding.builder()
+                        .code(HealthInsuranceTypeCoding.CodeEnum.PKV)
                         .display("Private Krankenversicherung")
                         .system("http://fhir.de/CodeSystem/versicherungsart-de-basis")
                         .build())
