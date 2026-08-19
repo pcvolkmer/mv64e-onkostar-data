@@ -912,6 +912,180 @@ class MolekulargenetikNgsDataMapperTest {
             });
   }
 
+  @Test
+  void shouldMapRnaFusionTranscriptEnsemblIds() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(eq(1));
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name(Column.PATIENTEN_ID).value(4711),
+                      Column.name(Column.HAUPTPROZEDUR_ID).value(1),
+                      PropcatColumn.name("ergebnis").value("F"),
+                      PropcatColumn.name("fusionart").value("RNA"),
+                      PropcatColumn.name("untersucht").value("A1BG"),
+                      PropcatColumn.name("fusioniertesgen").value("ABL1"),
+                      Column.name("fusionrna5ensemblid").value("ENSG00000121410"),
+                      Column.name("fusionrna5hgncid").value("HGNC:5"),
+                      Column.name("fusionrna5hgncsymbol").value("A1BG"),
+                      Column.name("fusionrna5hgncname").value("alpha-1-B glycoprotein"),
+                      Column.name("fusionrna5exonid").value("ex5"),
+                      Column.name("fusionrna5transcriptid").value("ENST00000121410.5"),
+                      Column.name("fusionrna5transposition").value(501234),
+                      Column.name("fusionrna5strand").value("+"),
+                      Column.name("fusionrna3ensemblid").value("ENSG00000097007"),
+                      Column.name("fusionrna3hgncid").value("HGNC:76"),
+                      Column.name("fusionrna3hgncsymbol").value("ABL1"),
+                      Column.name("fusionrna3hgncname")
+                          .value("ABL proto-oncogene 1, non-receptor tyrosine kinase"),
+                      Column.name("fusionrna3exonid").value("ex3"),
+                      Column.name("fusionrna3transcriptid").value("ENST00000097007.3"),
+                      Column.name("fusionrna3transposition").value(301234),
+                      Column.name("fusionrna3strand").value("-"),
+                      Column.name("fusionrnaeffect").value("The test effect"),
+                      Column.name("fusionrnareportednumread").value(123L)));
+            })
+        .when(molekulargenuntersuchungCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+    assertThat(actual.getResults()).isNotNull();
+    assertThat(actual.getResults())
+        .satisfies(
+            results -> {
+              assertThat(results).isNotNull();
+              assertThat(results.getRnaFusions())
+                  .satisfies(
+                      rnaFusion -> {
+                        assertThat(rnaFusion).hasSize(1);
+                        assertThat(rnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
+                        assertThat(rnaFusion.get(0).getEffect()).isEqualTo("The test effect");
+                        assertThat(rnaFusion.get(0).getFusionPartner5Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getTranscriptId().getValue())
+                                      .isEqualTo("ENST00000121410.5");
+                                  assertThat(fusionPartner.getTranscriptId().getSystem())
+                                      .isEqualTo(TranscriptIdSystem.ENSEMBL_ORG);
+                                  ;
+                                });
+                        assertThat(rnaFusion.get(0).getFusionPartner3Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getTranscriptId().getValue())
+                                      .isEqualTo("ENST00000097007.3");
+                                  assertThat(fusionPartner.getTranscriptId().getSystem())
+                                      .isEqualTo(TranscriptIdSystem.ENSEMBL_ORG);
+                                });
+                      });
+            });
+  }
+
+  @Test
+  void shouldMapRnaFusionTranscriptNmIds() {
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return TestResultSet.withColumns(
+                  Column.name(Column.ID).value(id),
+                  Column.name(Column.PATIENTEN_ID).value(4711),
+                  PropcatColumn.name("AnalyseMethoden").values("S"),
+                  PropcatColumn.name("entnahmemethode").value("B"),
+                  PropcatColumn.name("probenmaterial").value("T"));
+            })
+        .when(molekulargenetikCatalogue)
+        .getById(eq(1));
+
+    doAnswer(
+            invocationOnMock -> {
+              var id = invocationOnMock.getArgument(0, Integer.class);
+              return List.of(
+                  TestResultSet.withColumns(
+                      Column.name(Column.ID).value(id),
+                      Column.name(Column.PATIENTEN_ID).value(4711),
+                      Column.name(Column.HAUPTPROZEDUR_ID).value(1),
+                      PropcatColumn.name("ergebnis").value("F"),
+                      PropcatColumn.name("fusionart").value("RNA"),
+                      PropcatColumn.name("untersucht").value("A1BG"),
+                      PropcatColumn.name("fusioniertesgen").value("ABL1"),
+                      Column.name("fusionrna5ensemblid").value("ENSG00000121410"),
+                      Column.name("fusionrna5hgncid").value("HGNC:5"),
+                      Column.name("fusionrna5hgncsymbol").value("A1BG"),
+                      Column.name("fusionrna5hgncname").value("alpha-1-B glycoprotein"),
+                      Column.name("fusionrna5exonid").value("ex5"),
+                      Column.name("fusionrna5transcriptid").value("NM_001234"),
+                      Column.name("fusionrna5transposition").value(501234),
+                      Column.name("fusionrna5strand").value("+"),
+                      Column.name("fusionrna3ensemblid").value("ENSG00000097007"),
+                      Column.name("fusionrna3hgncid").value("HGNC:76"),
+                      Column.name("fusionrna3hgncsymbol").value("ABL1"),
+                      Column.name("fusionrna3hgncname")
+                          .value("ABL proto-oncogene 1, non-receptor tyrosine kinase"),
+                      Column.name("fusionrna3exonid").value("ex3"),
+                      Column.name("fusionrna3transcriptid").value("NM_004321"),
+                      Column.name("fusionrna3transposition").value(301234),
+                      Column.name("fusionrna3strand").value("-"),
+                      Column.name("fusionrnaeffect").value("The test effect"),
+                      Column.name("fusionrnareportednumread").value(123L)));
+            })
+        .when(molekulargenuntersuchungCatalogue)
+        .getAllByParentId(anyInt());
+
+    when(molekulargenetikCatalogue.isOfTypeSeqencing(anyInt())).thenReturn(true);
+
+    var actual = this.mapper.getById(1);
+
+    assertThat(actual).isInstanceOf(SomaticNgsReport.class);
+    assertThat(actual.getResults()).isNotNull();
+    assertThat(actual.getResults())
+        .satisfies(
+            results -> {
+              assertThat(results).isNotNull();
+              assertThat(results.getRnaFusions())
+                  .satisfies(
+                      rnaFusion -> {
+                        assertThat(rnaFusion).hasSize(1);
+                        assertThat(rnaFusion.get(0).getReportedNumReads()).isEqualTo(123);
+                        assertThat(rnaFusion.get(0).getEffect()).isEqualTo("The test effect");
+                        assertThat(rnaFusion.get(0).getFusionPartner5Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getTranscriptId().getValue())
+                                      .isEqualTo("NM_001234");
+                                  assertThat(fusionPartner.getTranscriptId().getSystem())
+                                      .isEqualTo(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ);
+                                  ;
+                                });
+                        assertThat(rnaFusion.get(0).getFusionPartner3Prime())
+                            .satisfies(
+                                fusionPartner -> {
+                                  assertThat(fusionPartner.getTranscriptId().getValue())
+                                      .isEqualTo("NM_004321");
+                                  assertThat(fusionPartner.getTranscriptId().getSystem())
+                                      .isEqualTo(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ);
+                                });
+                      });
+            });
+  }
+
   @ParameterizedTest
   @CsvSource({
     "p.F123G,p.Phe123Gly",

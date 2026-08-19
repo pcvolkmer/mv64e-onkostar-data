@@ -483,10 +483,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
 
     final var fusionrna5transcriptid = subform.getString("fusionrna5transcriptid");
-    if (null != fusionrna5transcriptid) {
-      fusionPartner5Prime.transcriptId(
-          TranscriptId.builder().value(fusionrna5transcriptid).build());
-    }
+    getTranscriptId(fusionrna5transcriptid).ifPresent(fusionPartner5Prime::transcriptId);
 
     final var fusionrna5transposition = subform.getDouble("fusionrna5transposition");
     if (null != fusionrna5transposition) {
@@ -526,10 +523,7 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
 
     final var fusionrna3transcriptid = subform.getString("fusionrna3transcriptid");
-    if (null != fusionrna3transcriptid) {
-      fusionPartner3Prime.transcriptId(
-          TranscriptId.builder().value(fusionrna3transcriptid).build());
-    }
+    getTranscriptId(fusionrna3transcriptid).ifPresent(fusionPartner3Prime::transcriptId);
 
     final var fusionrna3transposition = subform.getDouble("fusionrna3transposition");
     if (null != fusionrna3transposition) {
@@ -727,6 +721,24 @@ public class MolekulargenetikNgsDataMapper implements DataMapper<SomaticNgsRepor
     }
 
     return resultBuilder.build();
+  }
+
+  @NonNull
+  private static Optional<TranscriptId> getTranscriptId(@Nullable final String transcriptIdString) {
+    if (null != transcriptIdString && transcriptIdString.startsWith("ENS")) {
+      return Optional.of(
+          TranscriptId.builder()
+              .value(transcriptIdString)
+              .system(TranscriptIdSystem.ENSEMBL_ORG)
+              .build());
+    } else if (null != transcriptIdString && transcriptIdString.startsWith("NM")) {
+      return Optional.of(
+          TranscriptId.builder()
+              .value(transcriptIdString)
+              .system(TranscriptIdSystem.NCBI_NLM_NIH_GOV_REFSEQ)
+              .build());
+    }
+    return Optional.empty();
   }
 
   @Nullable
