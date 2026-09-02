@@ -22,7 +22,8 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import dev.pcvolkmer.mv64e.mtb.StudySystem;
+import dev.pcvolkmer.mv64e.model.StudyReference;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,7 +41,7 @@ class JsonToStudyMapperTest {
             + "    {\"studie\":\"TestInhibitor\",\"system\":\"NCT\",\"id\":\"NCT12345678\",\"nct\":\"NCT12345678\",\"ort\":\"Teststadt\",\"internextern\":\"e\"}\n"
             + "]";
 
-    var actual = JsonToStudyMapper.map(json);
+    var actual = new ArrayList<>(JsonToStudyMapper.map(json));
 
     assertThat(actual).hasSize(1);
 
@@ -50,13 +51,13 @@ class JsonToStudyMapperTest {
         .isEqualTo(
             "TestInhibitor"); // Datenmodell V2.1: Über den "display"-Wert an der Referenz kann der
     // Studien-Name gesetzt werden.
-    assertThat(study.getSystem()).isEqualTo(StudySystem.NCT);
+    assertThat(study.getSystem()).isEqualTo(StudyReference.SystemEnum.NCT);
     assertThat(study.getType()).isEqualTo("Study");
   }
 
   @ParameterizedTest
   @MethodSource("studySystems")
-  void shouldMapStudySystemInJson(String system, StudySystem expected) {
+  void shouldMapStudySystemInJson(String system, StudyReference.SystemEnum expected) {
     var json =
         "[\n"
             + "    {\"studie\":\"TestInhibitor\",\"system\":\""
@@ -72,12 +73,12 @@ class JsonToStudyMapperTest {
 
   private static Stream<Arguments> studySystems() {
     return Stream.of(
-        Arguments.of("NCT", StudySystem.NCT),
+        Arguments.of("NCT", StudyReference.SystemEnum.NCT),
         // Onkostar Property Catalogue
-        Arguments.of("EudraCT", StudySystem.EUDRA_CT),
+        Arguments.of("EudraCT", StudyReference.SystemEnum.EUDRA_CT),
         // DNPM-Datamodel value
-        Arguments.of("Eudra-CT", StudySystem.EUDRA_CT),
-        Arguments.of("DRKS", StudySystem.DRKS),
-        Arguments.of("EUDAMED", StudySystem.EUDAMED));
+        Arguments.of("Eudra-CT", StudyReference.SystemEnum.EUDRA_CT),
+        Arguments.of("DRKS", StudyReference.SystemEnum.DRKS),
+        Arguments.of("EUDAMED", StudyReference.SystemEnum.EUDAMED));
   }
 }

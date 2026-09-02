@@ -25,7 +25,8 @@ import dev.pcvolkmer.mv64e.datamapper.ResultSet;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.HistologieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.MolekulargenetikCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.PathologiebefundCatalogue;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -151,10 +152,10 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   }
 
   @NullMarked
-  private Optional<TumorMorphology> getTumorMorphologyFromOsMolGen(
+  private Optional<HistologyReportResultsTumorMorphology> getTumorMorphologyFromOsMolGen(
       ResultSet resultSet, ResultSet osMolGen) {
     var builder =
-        TumorMorphology.builder()
+        HistologyReportResultsTumorMorphology.builder()
             .id(resultSet.getId().toString())
             .patient(resultSet.getPatientReference())
             .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build());
@@ -175,10 +176,10 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
   }
 
   @NullMarked
-  private Optional<TumorMorphology> getTumorMorphologyFromOsPathoPefund(
+  private Optional<HistologyReportResultsTumorMorphology> getTumorMorphologyFromOsPathoPefund(
       ResultSet resultSet, ResultSet pathoBefund) {
     var builder =
-        TumorMorphology.builder()
+        HistologyReportResultsTumorMorphology.builder()
             .id(resultSet.getId().toString())
             .patient(resultSet.getPatientReference())
             .specimen(
@@ -208,14 +209,14 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
             .specimen(Reference.builder().id(osMolGen.getId().toString()).type("Specimen").build())
             .method(
                 TumorCellContentMethodCoding.builder()
-                    .code(TumorCellContentMethodCodingCode.HISTOLOGIC)
+                    .code(TumorCellContentMethodCoding.CodeEnum.HISTOLOGIC)
                     .build());
 
     var tumorzellgehaltValue = resultSet.getLong("tumorzellgehalt");
     if (null == tumorzellgehaltValue) {
       return Optional.empty();
     }
-    return Optional.of(builder.value(tumorzellgehaltValue / 100.0).build());
+    return Optional.of(builder.value(BigDecimal.valueOf(tumorzellgehaltValue / 100.0)).build());
   }
 
   @Nullable

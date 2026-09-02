@@ -36,7 +36,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -101,7 +101,7 @@ class FollowUpTherapielinieDataMapperTest {
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
                         PropcatColumn.name("typ").value("surgery"),
-                        Column.name("nummer").value(42L))))
+                        Column.name("nummer").value(42))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -146,21 +146,21 @@ class FollowUpTherapielinieDataMapperTest {
     assertThat(actual.getIntent())
         .isEqualTo(
             MtbTherapyIntentCoding.builder()
-                .code(MtbTherapyIntentCodingCode.S)
+                .code(MtbTherapyIntentCoding.CodeEnum.S)
                 .display("Sonstiges")
                 .system("dnpm-dip/therapy/intent")
                 .build());
     assertThat(actual.getStatus())
         .isEqualTo(
             TherapyStatusCoding.builder()
-                .code(TherapyStatusCodingCode.STOPPED)
+                .code(TherapyStatusCoding.CodeEnum.STOPPED)
                 .display("Abgebrochen")
                 .system("dnpm-dip/therapy/status")
                 .build());
     assertThat(actual.getStatusReason())
         .isEqualTo(
             MtbTherapyStatusReasonCoding.builder()
-                .code(MtbTherapyStatusReasonCodingCode.PATIENT_DEATH)
+                .code(MtbTherapyStatusReasonCoding.CodeEnum.PATIENT_DEATH)
                 .display("Tod")
                 .system("dnpm-dip/therapy/status-reason")
                 .build());
@@ -192,7 +192,7 @@ class FollowUpTherapielinieDataMapperTest {
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
                         PropcatColumn.name("typ").value("surgery"),
-                        Column.name("nummer").value(42L))))
+                        Column.name("nummer").value(42))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -310,6 +310,6 @@ class FollowUpTherapielinieDataMapperTest {
         PropcatColumn.name("status").value("stopped"),
         PropcatColumn.name("statusgrund").value("patient-death"),
         PropcatColumn.name("typ").value("surgery"),
-        Column.name("nummer").value(42L));
+        Column.name("nummer").value(42));
   }
 }

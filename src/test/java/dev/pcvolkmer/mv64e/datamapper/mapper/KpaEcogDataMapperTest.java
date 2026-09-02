@@ -34,10 +34,9 @@ import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.EcogCoding;
-import dev.pcvolkmer.mv64e.mtb.EcogCodingCode;
-import dev.pcvolkmer.mv64e.mtb.PerformanceStatus;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.EcogCoding;
+import dev.pcvolkmer.mv64e.model.PerformanceStatus;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +84,7 @@ class KpaEcogDataMapperTest {
     assertThat(actual.getValue())
         .isEqualTo(
             EcogCoding.builder()
-                .code(EcogCodingCode.CODE_1)
+                .code(EcogCoding.CodeEnum._1)
                 .display("ECOG 1")
                 .system("ECOG-Performance-Status")
                 .build());

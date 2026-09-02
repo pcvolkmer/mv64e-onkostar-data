@@ -35,7 +35,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -78,7 +78,7 @@ class KpaProzedurDataMapperTest {
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
                         PropcatColumn.name("typ").value("surgery"),
-                        Column.name("therapielinie").value(1L))))
+                        Column.name("therapielinie").value(1))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -110,7 +110,7 @@ class KpaProzedurDataMapperTest {
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
                         PropcatColumn.name("typ").value("surgery"),
-                        Column.name("therapielinie").value(1L))))
+                        Column.name("therapielinie").value(1))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -175,7 +175,7 @@ class KpaProzedurDataMapperTest {
                         PropcatColumn.name("status").value("stopped"),
                         PropcatColumn.name("statusgrund").value("patient-death"),
                         PropcatColumn.name("typ").value("surgery"),
-                        Column.name("therapielinie").value(1L))))
+                        Column.name("therapielinie").value(1))))
         .when(catalogue)
         .getAllByParentId(anyInt());
 
@@ -217,29 +217,29 @@ class KpaProzedurDataMapperTest {
     assertThat(actual.getIntent())
         .isEqualTo(
             MtbTherapyIntentCoding.builder()
-                .code(MtbTherapyIntentCodingCode.S)
+                .code(MtbTherapyIntentCoding.CodeEnum.S)
                 .display("Sonstiges")
                 .system("dnpm-dip/therapy/intent")
                 .build());
     assertThat(actual.getStatus())
         .isEqualTo(
             TherapyStatusCoding.builder()
-                .code(TherapyStatusCodingCode.STOPPED)
+                .code(TherapyStatusCoding.CodeEnum.STOPPED)
                 .display("Abgebrochen")
                 .system("dnpm-dip/therapy/status")
                 .build());
     assertThat(actual.getStatusReason())
         .isEqualTo(
             MtbTherapyStatusReasonCoding.builder()
-                .code(MtbTherapyStatusReasonCodingCode.PATIENT_DEATH)
+                .code(MtbTherapyStatusReasonCoding.CodeEnum.PATIENT_DEATH)
                 .display("Tod")
                 .system("dnpm-dip/therapy/status-reason")
                 .build());
     assertThat(actual.getTherapyLine()).isEqualTo(1);
     assertThat(actual.getCode())
         .isEqualTo(
-            OncoProcedureCoding.builder()
-                .code(OncoProcedureCodingCode.SURGERY)
+            OncoProcedureTypeCoding.builder()
+                .code(OncoProcedureTypeCoding.CodeEnum.SURGERY)
                 .display("OP")
                 .system("dnpm-dip/therapy/type")
                 .build());
@@ -292,6 +292,6 @@ class KpaProzedurDataMapperTest {
         PropcatColumn.name("status").value("stopped"),
         PropcatColumn.name("statusgrund").value("patient-death"),
         PropcatColumn.name("typ").value("surgery"),
-        Column.name("therapielinie").value(1L));
+        Column.name("therapielinie").value(1));
   }
 }

@@ -25,10 +25,9 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
 import dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog;
-import dev.pcvolkmer.mv64e.mtb.MtbStudyEnrollmentRecommendation;
-import dev.pcvolkmer.mv64e.mtb.Reference;
-import dev.pcvolkmer.mv64e.mtb.StudyReference;
-import dev.pcvolkmer.mv64e.mtb.StudySystem;
+import dev.pcvolkmer.mv64e.model.MtbStudyEnrollmentRecommendation;
+import dev.pcvolkmer.mv64e.model.Reference;
+import dev.pcvolkmer.mv64e.model.StudyReference;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -122,26 +121,25 @@ public class EinzelempfehlungStudieDataMapper
         .collect(Collectors.toList());
   }
 
-  @Nullable
-  public static StudySystem getStudySystem(@Nullable String code) {
+  public static StudyReference.@Nullable SystemEnum getStudySystem(@Nullable String code) {
     if (code == null) return null;
 
     // possible values from DNPM Datamodel
     switch (code) {
       case "NCT":
-        return StudySystem.NCT;
+        return StudyReference.SystemEnum.NCT;
       case "EudraCT": // Additional value from Onkostar Property Catalogue
       case "Eudra-CT":
-        return StudySystem.EUDRA_CT;
+        return StudyReference.SystemEnum.EUDRA_CT;
       case "DRKS":
-        return StudySystem.DRKS;
+        return StudyReference.SystemEnum.DRKS;
       case "EUDAMED":
-        return StudySystem.EUDAMED;
+        return StudyReference.SystemEnum.EUDAMED;
 
       // Or try to map from Enum values
       default:
         try {
-          return StudySystem.valueOf(code);
+          return StudyReference.SystemEnum.valueOf(code);
         } catch (IllegalArgumentException e) {
           return null;
         }

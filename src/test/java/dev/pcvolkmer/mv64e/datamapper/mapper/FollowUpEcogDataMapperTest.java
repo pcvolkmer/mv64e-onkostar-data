@@ -34,7 +34,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,7 +76,7 @@ class FollowUpEcogDataMapperTest {
     assertThat(actual.getValue())
         .isEqualTo(
             EcogCoding.builder()
-                .code(EcogCodingCode.CODE_1)
+                .code(EcogCoding.CodeEnum._1)
                 .display("ECOG 1")
                 .system("ECOG-Performance-Status")
                 .build());

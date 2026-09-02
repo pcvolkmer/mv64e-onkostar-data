@@ -23,8 +23,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -157,7 +156,7 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
 
     var resultBuilder =
         MtbCarePlanRecommendationsMissingReasonCoding.builder()
-            .code(MtbCarePlanRecommendationsMissingReasonCodingCode.NO_TARGET);
+            .code(MtbCarePlanRecommendationsMissingReasonCoding.CodeEnum.NO_TARGET);
 
     return resultBuilder.build();
   }
@@ -166,8 +165,8 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
   private CarePlanNoSequencingPerformedReasonCoding getCarePlanNoSequencingPerformedReasonCoding(
       String value) {
     if (value == null
-        || !Arrays.stream(NoSequencingPerformedReasonCode.values())
-            .map(NoSequencingPerformedReasonCode::toValue)
+        || !Arrays.stream(CarePlanNoSequencingPerformedReasonCoding.CodeEnum.values())
+            .map(CarePlanNoSequencingPerformedReasonCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -175,8 +174,8 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
 
     var resultBuilder = CarePlanNoSequencingPerformedReasonCoding.builder();
     try {
-      resultBuilder.code(NoSequencingPerformedReasonCode.forValue(value));
-    } catch (IOException e) {
+      resultBuilder.code(CarePlanNoSequencingPerformedReasonCoding.CodeEnum.fromValue(value));
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -189,8 +188,8 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
           @Nullable String value, @Nullable Integer version) {
     if (value == null
         || version == null
-        || !Arrays.stream(GeneticCounselingRecommendationReasonCodingCode.values())
-            .map(GeneticCounselingRecommendationReasonCodingCode::toValue)
+        || !Arrays.stream(GeneticCounselingRecommendationReasonCoding.CodeEnum.values())
+            .map(GeneticCounselingRecommendationReasonCoding.CodeEnum::toString)
             .collect(Collectors.toSet())
             .contains(value)) {
       return null;
@@ -200,9 +199,9 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
         GeneticCounselingRecommendationReasonCoding.builder()
             .system("dnpm-dip/mtb/recommendation/genetic-counseling/reason");
     try {
-      resultBuilder.code(GeneticCounselingRecommendationReasonCodingCode.forValue(value));
+      resultBuilder.code(GeneticCounselingRecommendationReasonCoding.CodeEnum.fromValue(value));
       resultBuilder.display(propertyCatalogue.getByCodeAndVersion(value, version).getShortdesc());
-    } catch (IOException e) {
+    } catch (IllegalArgumentException e) {
       return null;
     }
 
@@ -210,11 +209,12 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
   }
 
   @NullMarked
-  private List<RebiopsyRequest> getRebiopsyRequest(int parentId, Reference diagnosisReference) {
+  private List<MtbCarePlanRebiopsyRequestsInner> getRebiopsyRequest(
+      int parentId, Reference diagnosisReference) {
     return this.rebiopsieCatalogue.getAllByParentId(parentId).stream()
         .map(
             resultSet ->
-                RebiopsyRequest.builder()
+                MtbCarePlanRebiopsyRequestsInner.builder()
                     .id(resultSet.getString("id"))
                     .patient(resultSet.getPatientReference())
                     .issuedOn(resultSet.getDate("datum"))
@@ -224,11 +224,12 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
         .collect(Collectors.toList());
   }
 
-  private List<HistologyReevaluationRequest> getHistologyReevaluationRequests(int parentId) {
+  private List<MtbCarePlanHistologyReevaluationRequestsInner> getHistologyReevaluationRequests(
+      int parentId) {
     return this.reevaluationCatalogue.getAllByParentId(parentId).stream()
         .map(
             resultSet ->
-                HistologyReevaluationRequest.builder()
+                MtbCarePlanHistologyReevaluationRequestsInner.builder()
                     .id(resultSet.getString("id"))
                     .patient(resultSet.getPatientReference())
                     .issuedOn(resultSet.getDate("datum"))

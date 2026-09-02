@@ -33,10 +33,9 @@ import dev.pcvolkmer.mv64e.datamapper.test.DateColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.Claim;
-import dev.pcvolkmer.mv64e.mtb.ClaimStageCoding;
-import dev.pcvolkmer.mv64e.mtb.ClaimStageCodingCode;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.Claim;
+import dev.pcvolkmer.mv64e.model.ClaimStageCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +84,7 @@ class FollowUpClaimMapperTest {
     assertThat(actual.getStage())
         .isEqualTo(
             ClaimStageCoding.builder()
-                .code(ClaimStageCodingCode.INITIAL_CLAIM)
+                .code(ClaimStageCoding.CodeEnum.INITIAL_CLAIM)
                 .display("initial-claim")
                 .system("dnpm-dip/mtb/claim/stage")
                 .build());

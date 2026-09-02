@@ -25,8 +25,7 @@ import static dev.pcvolkmer.mv64e.datamapper.mapper.exceptionhandler.TryAndLog.t
 import dev.pcvolkmer.mv64e.datamapper.PropertyCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.*;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.*;
-import java.io.IOException;
+import dev.pcvolkmer.mv64e.model.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,23 +44,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @author Paul-Christian Volkmer
  * @since 0.1
  */
-public class MtbDataMapper implements DataMapper<Mtb> {
+public class MtbDataMapper implements DataMapper<PatientRecord> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final DataCatalogueFactory catalogueFactory;
   private final PropertyCatalogue propertyCatalogue;
 
-  private TumorCellContentMethodCodingCode tumorCellContentMethod;
+  private TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod;
 
   // In Würzburg immer histologisch!
   MtbDataMapper(final JdbcTemplate jdbcTemplate) {
-    this(jdbcTemplate, TumorCellContentMethodCodingCode.HISTOLOGIC);
+    this(jdbcTemplate, TumorCellContentMethodCoding.CodeEnum.HISTOLOGIC);
   }
 
   MtbDataMapper(
       final JdbcTemplate jdbcTemplate,
-      final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+      final TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod) {
     this(
         DataCatalogueFactory.initialize(jdbcTemplate),
         PropertyCatalogue.initialize(jdbcTemplate),
@@ -71,7 +70,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
   MtbDataMapper(
       final DataCatalogueFactory dataCatalogueFactory,
       final PropertyCatalogue propertyCatalogue,
-      final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+      final TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod) {
     this.catalogueFactory = dataCatalogueFactory;
     this.propertyCatalogue = propertyCatalogue;
     this.tumorCellContentMethod = tumorCellContentMethod;
@@ -108,7 +107,8 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    */
   @NullMarked
   public static MtbDataMapper create(
-      final DataSource dataSource, final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+      final DataSource dataSource,
+      final TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod) {
     return new MtbDataMapper(new JdbcTemplate(dataSource), tumorCellContentMethod);
   }
 
@@ -122,7 +122,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
   @NullMarked
   public static MtbDataMapper create(
       final JdbcTemplate jdbcTemplate,
-      final TumorCellContentMethodCodingCode tumorCellContentMethod) {
+      final TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod) {
     return new MtbDataMapper(jdbcTemplate, tumorCellContentMethod);
   }
 
@@ -134,7 +134,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    */
   @NullMarked
   public MtbDataMapper tumorCellContentMethod(
-      TumorCellContentMethodCodingCode tumorCellContentMethod) {
+      TumorCellContentMethodCoding.CodeEnum tumorCellContentMethod) {
     this.tumorCellContentMethod = tumorCellContentMethod;
     return this;
   }
@@ -147,7 +147,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    */
   @Override
   @NullMarked
-  public Mtb getById(int kpaId) {
+  public PatientRecord getById(int kpaId) {
     var kpaCatalogue = catalogueFactory.catalogue(KpaCatalogue.class);
     var patientDataMapper =
         new PatientDataMapper(catalogueFactory.catalogue(PatientCatalogue.class));
@@ -249,7 +249,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
     var followUpEcogMapper =
         new FollowUpEcogDataMapper(catalogueFactory.catalogue(FollowUpCatalogue.class));
 
-    var resultBuilder = Mtb.builder();
+    var resultBuilder = PatientRecord.builder();
 
     try {
       var kpaPatient = kpaPatientDataMapper.getById(kpaId);
@@ -391,7 +391,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
           .ok()
           .ifPresent(resultBuilder::guidelineTherapies);
 
-      var metadataBuilder = MvhMetadata.builder().type(MvhSubmissionType.INITIAL).transferTan("");
+      var metadataBuilder = MvhMetadata.builder().type(MvhSubmissionType.INITIAL).transferTAN("");
 
       var consentId = kpaCatalogue.getById(kpaId).getInteger("consentmv64e");
       var reasonMissingResearchConsent =
@@ -406,8 +406,8 @@ public class MtbDataMapper implements DataMapper<Mtb> {
       if (null != reasonMissingResearchConsent && !reasonMissingResearchConsent.isBlank()) {
         try {
           metadataBuilder.reasonResearchConsentMissing(
-              ResearchConsentReasonMissing.forValue(reasonMissingResearchConsent));
-        } catch (IOException e) {
+              BroadConsentReasonMissing.fromValue(reasonMissingResearchConsent));
+        } catch (IllegalArgumentException e) {
           logger.warn(
               "A reason for missing research consent is set but cannot be used: '{}'",
               reasonMissingResearchConsent);
@@ -433,7 +433,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    * @return The loaded Mtb file
    */
   @NullMarked
-  public Mtb getByCaseId(@Nullable String caseId) {
+  public PatientRecord getByCaseId(@Nullable String caseId) {
     if (null == caseId || caseId.isBlank()) {
       throw new IllegalArgumentException("The Case ID must not be null or empty");
     }
@@ -450,7 +450,7 @@ public class MtbDataMapper implements DataMapper<Mtb> {
    * @return The loaded Mtb file
    */
   @NullMarked
-  public Mtb getLatestByPatientIdAndTumorId(@Nullable String patientId, int tumorId) {
+  public PatientRecord getLatestByPatientIdAndTumorId(@Nullable String patientId, int tumorId) {
     if (null == patientId || patientId.isBlank()) {
       throw new IllegalArgumentException("The Patient ID must not be null or empty");
     }

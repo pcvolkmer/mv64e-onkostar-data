@@ -37,10 +37,9 @@ import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullTest;
-import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCoding;
-import dev.pcvolkmer.mv64e.mtb.MolecularDiagnosticReportCodingCode;
-import dev.pcvolkmer.mv64e.mtb.PriorDiagnosticReport;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.MolecularDiagnosticReport;
+import dev.pcvolkmer.mv64e.model.MolecularDiagnosticReportTypeCoding;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +106,7 @@ class KpaVorbefundeDataMapperTest {
     assertThat(actualList).hasSize(1);
 
     var actual = actualList.get(0);
-    assertThat(actual).isInstanceOf(PriorDiagnosticReport.class);
+    assertThat(actual).isInstanceOf(MolecularDiagnosticReport.class);
     assertThat(actual.getId()).isEqualTo("1");
     assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
     assertThat(actual.getIssuedOn())
@@ -116,8 +115,8 @@ class KpaVorbefundeDataMapperTest {
         .isEqualTo(Reference.builder().id("1").type("Specimen").build());
     assertThat(actual.getType())
         .isEqualTo(
-            MolecularDiagnosticReportCoding.builder()
-                .code(MolecularDiagnosticReportCodingCode.PANEL)
+            MolecularDiagnosticReportTypeCoding.builder()
+                .code(MolecularDiagnosticReportTypeCoding.CodeEnum.PANEL)
                 .display("Panel")
                 .build());
     assertThat(actual.getResults()).containsExactly("Befundtext");

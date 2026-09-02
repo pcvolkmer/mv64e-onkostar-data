@@ -21,7 +21,7 @@ package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.*;
+import dev.pcvolkmer.mv64e.model.*;
 
 public class FollowUpClaimMapper implements DataMapper<Claim> {
 
@@ -69,13 +69,13 @@ public class FollowUpClaimMapper implements DataMapper<Claim> {
   private ClaimStageCoding getClaimStageCoding(final String stage) {
     try {
       return ClaimStageCoding.builder()
-          .code(ClaimStageCodingCode.forValue(stage))
+          .code(ClaimStageCoding.CodeEnum.fromValue(stage))
           .display(stage)
           .system("dnpm-dip/mtb/claim/stage")
           .build();
     } catch (Exception e) {
       return ClaimStageCoding.builder()
-          .code(ClaimStageCodingCode.UNKNOWN)
+          .code(ClaimStageCoding.CodeEnum.UNKNOWN)
           .display(stage)
           .system("dnpm-dip/mtb/claim/stage")
           .build();

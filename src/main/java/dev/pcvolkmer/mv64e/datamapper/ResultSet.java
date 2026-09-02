@@ -21,7 +21,7 @@
 package dev.pcvolkmer.mv64e.datamapper;
 
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
-import dev.pcvolkmer.mv64e.mtb.Reference;
+import dev.pcvolkmer.mv64e.model.Reference;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -139,6 +139,8 @@ public class ResultSet {
 
     if (raw == null) {
       return null;
+    } else if (raw instanceof Long) {
+      return (((Long) raw).intValue());
     } else if (raw instanceof Integer) {
       return ((Integer) raw);
     }

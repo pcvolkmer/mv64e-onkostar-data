@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.IgnorableMappingException;
-import dev.pcvolkmer.mv64e.mtb.StudyReference;
+import dev.pcvolkmer.mv64e.model.StudyReference;
 import java.util.List;
 import java.util.stream.Collectors;
 
