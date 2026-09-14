@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.3...v0.10.0) (2026-09-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* use dependency 'mtb-model' ([#182](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/182))
+
+### Miscellaneous Chores
+
+* use dependency 'mtb-model' ([#182](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/182)) ([476a943](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/476a9438260fb92909a7a7299670d7c631744f05))
+
 ## [0.9.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.2...v0.9.3) (2026-08-19)
 
 

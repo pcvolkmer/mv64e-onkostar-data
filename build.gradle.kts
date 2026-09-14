@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "dev.pcvolkmer.mv64e"
-version = "0.9.3" // x-release-please-version
+version = "0.10.0" // x-release-please-version
 
 var versions = mapOf(
     "mtb-model" to "0.5.0",
