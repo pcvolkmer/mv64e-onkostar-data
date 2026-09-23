@@ -25,7 +25,10 @@ import dev.pcvolkmer.mv64e.datamapper.datacatalogues.EinzelempfehlungCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.FollowUpCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapielinieCatalogue;
 import dev.pcvolkmer.mv64e.datamapper.datacatalogues.TherapieplanCatalogue;
+import dev.pcvolkmer.mv64e.model.MtbTherapyStatusReasonCoding;
 import dev.pcvolkmer.mv64e.model.PatientRecordSystemicTherapiesInner;
+import dev.pcvolkmer.mv64e.model.Reference;
+import dev.pcvolkmer.mv64e.model.TherapyStatusCoding;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -44,6 +47,8 @@ public class TherapiehistorieDataMapper
 
   private final FollowUpTherapielinieDataMapper therapielinieMapper;
 
+  private final FollowUpLostTherapielinieDataMapper lostTherapielinieMapper;
+
   private final TherapieplanCatalogue therapieplanCatalogue;
 
   private final EinzelempfehlungCatalogue einzelempfehlungCatalogue;
@@ -54,11 +59,13 @@ public class TherapiehistorieDataMapper
 
   public TherapiehistorieDataMapper(
       FollowUpTherapielinieDataMapper therapielinieMapper,
+      FollowUpLostTherapielinieDataMapper lostTherapielinieMapper,
       TherapieplanCatalogue therapieplanCatalogue,
       EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       FollowUpCatalogue followUpCatalogue,
       TherapielinieCatalogue therapielinieCatalogue) {
     this.therapieplanCatalogue = therapieplanCatalogue;
+    this.lostTherapielinieMapper = lostTherapielinieMapper;
     this.einzelempfehlungCatalogue = einzelempfehlungCatalogue;
     this.therapielinieMapper = therapielinieMapper;
     this.therapielinieCatalogue = therapielinieCatalogue;
@@ -76,14 +83,16 @@ public class TherapiehistorieDataMapper
                     .map(ResultSet::getId)
                     .distinct()
                     .filter(Objects::nonNull)
-                    .map(this::mapSystemicTherapiesFromRecommendation))
+                    .map(
+                        recommendationId ->
+                            this.mapSystemicTherapiesFromRecommendation(recommendationId, id)))
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
   @Nullable
   private PatientRecordSystemicTherapiesInner mapSystemicTherapiesFromRecommendation(
-      int recommendationId) {
+      int recommendationId, int kpaId) {
     var systemicTherapies =
         this.followUpCatalogue.getByRecommendationId(recommendationId).stream()
             .map(therapielinieCatalogue::getAllByParentId)
@@ -91,6 +100,41 @@ public class TherapiehistorieDataMapper
             .map(this.therapielinieMapper::getById)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
+
+    var lostToFollowUpSystemicTherapy =
+        this.followUpCatalogue.getByRecommendationId(recommendationId).stream()
+            .map(this.lostTherapielinieMapper::getById)
+            .filter(Objects::nonNull)
+            .map(
+                therapy ->
+                    therapy.toBuilder()
+                        .reason(
+                            Reference.builder()
+                                .id(String.valueOf(kpaId))
+                                .system("MTBDiagnosis")
+                                .build())
+                        .build())
+            .collect(Collectors.toList());
+
+    if (systemicTherapies.isEmpty()) {
+      systemicTherapies.addAll(lostToFollowUpSystemicTherapy);
+    } else {
+      final var latest = systemicTherapies.get(systemicTherapies.size() - 1);
+      latest.setStatus(
+          TherapyStatusCoding.builder()
+              .code(TherapyStatusCoding.CodeEnum.UNKNOWN)
+              .display("Nicht durchgeführt")
+              .system("dnpm-dip/therapy/status")
+              .build());
+      latest.setStatusReason(
+          MtbTherapyStatusReasonCoding.builder()
+              .code(MtbTherapyStatusReasonCoding.CodeEnum.LOST_TO_FU)
+              .display("Lost to follow-up")
+              .system("dnpm-dip/therapy/status-reason")
+              .build());
+      systemicTherapies.add(latest);
+    }
+
     if (systemicTherapies.isEmpty()) {
       return null;
     }

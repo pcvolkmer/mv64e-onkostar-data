@@ -31,6 +31,7 @@ import dev.pcvolkmer.mv64e.datamapper.test.Column;
 import dev.pcvolkmer.mv64e.datamapper.test.PropcatColumn;
 import dev.pcvolkmer.mv64e.datamapper.test.TestResultSet;
 import dev.pcvolkmer.mv64e.datamapper.test.fuzz.FuzzNullExtension;
+import dev.pcvolkmer.mv64e.model.MtbSystemicTherapy;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TherapiehistorieDataMapperTest {
 
   FollowUpTherapielinieDataMapper therapielinieMapper;
+  FollowUpLostTherapielinieDataMapper followUpLostTherapielinieMapper;
   TherapieplanCatalogue therapieplanCatalogue;
   EinzelempfehlungCatalogue einzelempfehlungCatalogue;
   FollowUpCatalogue followUpCatalogue;
@@ -51,12 +53,14 @@ class TherapiehistorieDataMapperTest {
   @BeforeEach
   void setUp(
       @Mock FollowUpTherapielinieDataMapper therapielinieMapper,
+      @Mock FollowUpLostTherapielinieDataMapper followUpLostTherapielinieMapper,
       @Mock TherapieplanCatalogue therapieplanCatalogue,
       @Mock EinzelempfehlungCatalogue einzelempfehlungCatalogue,
       @Mock FollowUpCatalogue followUpCatalogue,
       @Mock TherapielinieCatalogue therapielinieCatalogue) {
 
     this.therapielinieMapper = therapielinieMapper;
+    this.followUpLostTherapielinieMapper = followUpLostTherapielinieMapper;
     this.therapieplanCatalogue = therapieplanCatalogue;
     this.einzelempfehlungCatalogue = einzelempfehlungCatalogue;
     this.followUpCatalogue = followUpCatalogue;
@@ -65,6 +69,7 @@ class TherapiehistorieDataMapperTest {
     this.dataMapper =
         new TherapiehistorieDataMapper(
             therapielinieMapper,
+            followUpLostTherapielinieMapper,
             therapieplanCatalogue,
             einzelempfehlungCatalogue,
             followUpCatalogue,
@@ -100,5 +105,27 @@ class TherapiehistorieDataMapperTest {
     this.dataMapper.getById(1);
 
     verify(therapielinieMapper, times(3)).getById(anyInt());
+  }
+
+  @Test
+  void testShouldMapLostToFollowUpToSystemicTherapy() {
+
+    when(therapieplanCatalogue.getByKpaId(anyInt())).thenReturn(List.of(1001));
+
+    when(einzelempfehlungCatalogue.getAllByParentId(eq(1001)))
+        .thenReturn(
+            List.of(
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(2001),
+                    PropcatColumn.name("empfehlungskategorie").value("systemisch"))));
+
+    when(followUpCatalogue.getByRecommendationId(eq(2001))).thenReturn(List.of(3001));
+
+    when(followUpLostTherapielinieMapper.getById(anyInt()))
+        .thenReturn(MtbSystemicTherapy.builder().build());
+
+    this.dataMapper.getById(1);
+
+    verify(followUpLostTherapielinieMapper, times(1)).getById(anyInt());
   }
 }

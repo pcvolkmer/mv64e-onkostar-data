@@ -316,9 +316,14 @@ public class MtbDataMapper implements DataMapper<PatientRecord> {
               .distinct()
               .collect(Collectors.toList());
 
+      final var followUpLostTherapielinieMapper =
+          new FollowUpLostTherapielinieDataMapper(
+              catalogueFactory.catalogue(FollowUpCatalogue.class));
+
       var systemicTherapies =
           new TherapiehistorieDataMapper(
                   followUpTherapielinieMapper,
+                  followUpLostTherapielinieMapper,
                   therapieplanCatalogue,
                   einzelempfehlungCatalogue,
                   catalogueFactory.catalogue(FollowUpCatalogue.class),
