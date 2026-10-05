@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.0...v0.10.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* error in medication deserialization ([#238](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/238)) ([65717e3](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/65717e3f40e62739d6886e286620b3dc41b6c132))
+
 ## [0.10.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.9.3...v0.10.0) (2026-09-02)
 
 
