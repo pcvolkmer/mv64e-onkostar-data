@@ -21,6 +21,7 @@
 package dev.pcvolkmer.mv64e.datamapper.mapper;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.pcvolkmer.mv64e.datamapper.exceptions.DataAccessException;
@@ -69,6 +70,7 @@ public class JsonToMedicationMapper {
     }
   }
 
+  @JsonIgnoreProperties(ignoreUnknown = true)
   private static class Wirkstoff {
     private String code;
 
