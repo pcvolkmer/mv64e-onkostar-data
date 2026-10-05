@@ -76,4 +76,37 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getSystem()).isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED);
     assertThat(elem0.getVersion()).isNull();
   }
+
+  @Test
+  void shouldMapEinzelempfehlungJsonContainingSynonymesAndNoVersion() {
+    var json =
+        " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":null,\"system\":\"ATC\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01FX26");
+    assertThat(elem0.getDisplay()).isEqualTo("Mirvetuximab Soravtansine");
+    assertThat(elem0.getSystem()).isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED);
+    assertThat(elem0.getVersion()).isNull();
+  }
+
+  @Test
+  void shouldMapEinzelempfehlungJsonContainingSynonymesAndVersion() {
+    var json =
+        " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":\"2026\",\"system\":\"ATC\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01FX26");
+    assertThat(elem0.getDisplay()).isEqualTo("Mirvetuximab Soravtansine");
+    assertThat(elem0.getSystem())
+        .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
+    assertThat(elem0.getVersion()).isEqualTo("2026");
+  }
 }
