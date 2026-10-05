@@ -1,8 +1,7 @@
-# Datenextraktion aus den Onkostar DNPM-Formularen
+# Onkostar-Datenextraktion für das Modellvorhaben Genomsequenzierung gem. §64e SGB V
 
-Ziel dieser Library ist die Bereitstellung von Methoden zum Laden von Daten der DNPM-Formulare aus der
-Onkostar-Datenbank
-und dem Mapping in das DNPM-Datenmodell 2.1.
+Ziel dieser Library ist die Bereitstellung von Methoden zum Laden von Daten der DNPM-Formulare für das Modellvorhaben
+Genomsequenzierung aus der Onkostar-Datenbank und Mapping in das DNPM-Datenmodell 2.1.
 
 ## Beispiel
 
@@ -27,7 +26,8 @@ var jsonResult = Converter.toJsonString(
 );
 ```
 
-Unvollständige Daten aus den Onkostar-Formularen werden "as-is" exportiert. Eine Filterung wird nicht (mehr) durchgeführt.
+Unvollständige Daten aus den Onkostar-Formularen werden "as-is" exportiert. Eine Filterung wird nicht (mehr)
+durchgeführt.
 Entsprechende Fehler werden durch DNPM:DIP erkannt und als Issue angemerkt.
 
 Mit `tumorCellContentMethod(TumorCellContentMethodCodingCode.HISTOLOGIC)` kann die verwendete Methode zur Feststellung
@@ -64,36 +64,36 @@ Um Mithilfe wird gebeten.
 
 | DNPM-Datenmodell 2.1 - Bereich   | Status | Anmerkung                                                                                          |
 |----------------------------------|--------|----------------------------------------------------------------------------------------------------|
-| MV Metadaten                     | ⛅      | MV Consent inkl. Grund für Fehlen des Broad-Consent anhand DNPM-Formular. Kein Broad Consent       |                    
-| Patient                          | ✅      | Verwendet Patienten-ID, nicht Datenbank-ID. Keine Managing Site                                    |
-| Episoden                         | ✅      |                                                                                                    |
-| Diagnosen                        | ✅      | Entsprechend Formularaufbau nur Diagnose der aktuellen Episode                                     |
-| Verwandten-Diagnosen             | ✅      |                                                                                                    |
-| Systemische Leitlinien-Therapien | ✅      | Siehe auch: https://github.com/dnpm-dip/mtb-model/issues/9                                         |
-| Leitlinien-Prozeduren            | ✅      | Siehe auch: https://github.com/dnpm-dip/mtb-model/issues/9                                         |
-| ECOG-Verlauf                     | ✅      |                                                                                                    |
-| Tumor-Proben                     | ⛅      | Best effort: Formular OS.Molekulargenetik/OS.Pathologiebefund erfüllt nicht alle Anforderungen (1) |
-| vorherige Molekular-Diagnostik   | ✅      |                                                                                                    |
-| Histologie-Berichte              | ✅      | Aus OS.Molekulargenetik und OS.Pathologiebefund, soweit möglich (1)                                |
+| MV Metadaten                     | ⛅     | MV Consent inkl. Grund für Fehlen des Broad-Consent anhand DNPM-Formular. Kein Broad Consent       |                    
+| Patient                          | ✅     | Verwendet Patienten-ID, nicht Datenbank-ID. Keine Managing Site                                    |
+| Episoden                         | ✅     |                                                                                                    |
+| Diagnosen                        | ✅     | Entsprechend Formularaufbau nur Diagnose der aktuellen Episode                                     |
+| Verwandten-Diagnosen             | ✅     |                                                                                                    |
+| Systemische Leitlinien-Therapien | ✅     | Siehe auch: https://github.com/dnpm-dip/mtb-model/issues/9                                         |
+| Leitlinien-Prozeduren            | ✅     | Siehe auch: https://github.com/dnpm-dip/mtb-model/issues/9                                         |
+| ECOG-Verlauf                     | ✅     |                                                                                                    |
+| Tumor-Proben                     | ⛅     | Best effort: Formular OS.Molekulargenetik/OS.Pathologiebefund erfüllt nicht alle Anforderungen (1) |
+| vorherige Molekular-Diagnostik   | ✅     |                                                                                                    |
+| Histologie-Berichte              | ✅     | Aus OS.Molekulargenetik und OS.Pathologiebefund, soweit möglich (1)                                |
 | IHC-Berichte                     | -      | Aktuell nicht vorgesehen                                                                           |
-| MSI-Befunde                      | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)                     |
-| NGS-Berichte                     | ⛅      | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2) (3)                 |
-| MTB-Beschlüsse                   | ✅      | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4)                    |
-| Follow-Up Verlauf                | ✅      |                                                                                                    |
-| Antrag Kostenübernahme           | ✅      | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (5) (6)                        |
-| Antwort Kostenübernahme          | ✅      | (5)                                                                                                |
-| Therapien                        | ⛅      | Initialer Support                                                                                  |
-| Response Befunde                 | ✅      | (5)                                                                                                |
+| MSI-Befunde                      | ⛅     | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)                     |
+| NGS-Berichte                     | ⛅     | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2) (3)                 |
+| MTB-Beschlüsse                   | ✅     | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4)                    |
+| Follow-Up Verlauf                | ✅     |                                                                                                    |
+| Antrag Kostenübernahme           | ✅     | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (5) (6)                        |
+| Antwort Kostenübernahme          | ✅     | (5)                                                                                                |
+| Therapien                        | ⛅     | Initialer Support                                                                                  |
+| Response Befunde                 | ✅     | (5)                                                                                                |
 
 ### Hinweise
 
 1. Nicht alle möglichen Ausprägungen in `OS.Molekulargenetik` oder `OS.Pathologiebefund` vorhanden.
 2. Aktuell nicht alle Angaben effektiv im Formular `OS.Molekulargenetik` wie gefordert angebbar.
    Hinweise:
-   * Tumorzellgehalt-Methode problematisch, wenn auch im NGS-Bericht histologisch festgestellt.
-   * Angabe zu MSI-Interpretation fehlt in Formular, ist aber Pflichtangabe - Wird gefiltert.
-   * Datenbanktabelle für MSI lautet tatsächlich `dk_molekluargenmsi` [sic!]
-   * Aktuell sind folgende Varianten implementiert: SV, CNV, RNA- und DNA-Fusion.
+    * Tumorzellgehalt-Methode problematisch, wenn auch im NGS-Bericht histologisch festgestellt.
+    * Angabe zu MSI-Interpretation fehlt in Formular, ist aber Pflichtangabe - Wird gefiltert.
+    * Datenbanktabelle für MSI lautet tatsächlich `dk_molekluargenmsi` [sic!]
+    * Aktuell sind folgende Varianten implementiert: SV, CNV, RNA- und DNA-Fusion.
 3. NGS-Berichte werden basierend auf dem Formular `OS.Molekulargenetik` dann exportiert, wenn sie
     * im Formular DNPM Therapieplan unter "Befund (keine Einzelempfehlung)" angegeben wurden,
     * im Formular DNPM Therapieplan in einer Einzelempfehlung referenziert sind,
@@ -102,10 +102,11 @@ Um Mithilfe wird gebeten.
    Ein mehrfacher Export je Datensatz findet dabei nicht statt, jeder NGS-Bericht ist nur einmal vorhanden.
 4. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
 5. Der Export wird dann durchgeführt, wenn:
-   * Antrag Kostenübernahme: Das Datum angegeben ist
-   * Antwort Kostenübernahme: Das Datum angegeben ist
-   * Response Befunde: Die Beurteilungsmethode angegeben ist
-6. Da die Angabe (technisch) optional ist und im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
+    * Antrag Kostenübernahme: Das Datum angegeben ist
+    * Antwort Kostenübernahme: Das Datum angegeben ist
+    * Response Befunde: Die Beurteilungsmethode angegeben ist
+6. Da die Angabe (technisch) optional ist und
+   im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
    nicht genannt ist, wird diese Angabe nicht exportiert.
 
 ## Enthaltene Liste mit Genen
@@ -149,35 +150,36 @@ Dadurch können `NullPointerExceptions` bei der Verarbeitung von `null`-Werten i
 
 @ExtendWith(FuzzyNullExtension.class)
 class DemoTest {
-   // ...
+    // ...
 
-   @FuzzNullTest(initMethod = "testData")
-   void shouldNotSetIdToNull(final ResultSet resultSet) {
-      assertThat(resultSet.getId()).isEqualTo(1);
-   }
+    @FuzzNullTest(initMethod = "testData")
+    void shouldNotSetIdToNull(final ResultSet resultSet) {
+        assertThat(resultSet.getId()).isEqualTo(1);
+    }
 
-   @FuzzNullTest(initMethod = "testData")
-   void exampleShouldThrowIgnorableMappingExceptionOnNullColumns(final ResultSet resultSet) {
-      // Expect an IgnorableMappingException not NullPointerException!
-      var exception = assertThrows(
-              IgnorableMappingException.class,
-              () -> this.dataMapper.getById(1)
-      );
-      assertThat(exception.getMessage()).isEqualTo("...");
-   }
+    @FuzzNullTest(initMethod = "testData")
+    void exampleShouldThrowIgnorableMappingExceptionOnNullColumns(final ResultSet resultSet) {
+        // Expect an IgnorableMappingException not NullPointerException!
+        var exception = assertThrows(
+                IgnorableMappingException.class,
+                () -> this.dataMapper.getById(1)
+        );
+        assertThat(exception.getMessage()).isEqualTo("...");
+    }
 
-   static ResultSet testData() {
-      return TestResultSet.withColumns(
-              Column.name(Column.ID).value(1),
-              DateColumn.name("date").value("2025-07-11"),
-              Column.name("value").value("Test")
-      );
-   }
+    static ResultSet testData() {
+        return TestResultSet.withColumns(
+                Column.name(Column.ID).value(1),
+                DateColumn.name("date").value("2025-07-11"),
+                Column.name("value").value("Test")
+        );
+    }
 }
 
 ```
 
-Durch `@FuzzNullTest(/*...*/, includeColumns = {"date"})` können einzelne Spalten explizit im Null-Fuzzing eingeschlossen 
+Durch `@FuzzNullTest(/*...*/, includeColumns = {"date"})` können einzelne Spalten explizit im Null-Fuzzing
+eingeschlossen
 und andere Spalten dadurch implizit ausgeschlossen werden.
 
 Mit `@FuzzNullTest(/*...*/, excludeColumns = {"value"})` können Spalten explizit ausgeschlossen werden.
