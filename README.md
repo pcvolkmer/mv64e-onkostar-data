@@ -58,10 +58,6 @@ var jsonResult = Converter.toJsonString(
 
 ## Status
 
-Das Projekt befindet sich aktuell in einem sehr frühen Entwicklungsstand und kann daher auch bei Status ✅ Probleme
-aufweisen.
-Um Mithilfe wird gebeten.
-
 | DNPM-Datenmodell 2.1 - Bereich   | Status | Anmerkung                                                                                          |
 |----------------------------------|--------|----------------------------------------------------------------------------------------------------|
 | MV Metadaten                     | ⛅     | MV Consent inkl. Grund für Fehlen des Broad-Consent anhand DNPM-Formular. Kein Broad Consent       |                    
