@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.1...v0.10.2) (2026-11-23)
+
+
+### Features
+
+* use patient or KPA patient date of death ([#241](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/241)) ([c708c82](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/c708c820b03af66d56d2b76813e310cf0e0fdef9))
+
 ## [0.10.1](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.0...v0.10.1) (2026-10-05)
 
 
