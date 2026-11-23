@@ -258,7 +258,7 @@ public class MtbDataMapper implements DataMapper<PatientRecord> {
       kpaPatient.setAddress(patient.getAddress());
 
       if (null == kpaPatient.getDateOfDeath() && null != patient.getDateOfDeath()) {
-        kpaPatient.setDateOfDeath(kpaPatient.getDateOfDeath());
+        kpaPatient.setDateOfDeath(patient.getDateOfDeath());
       }
 
       var specimens = new ArrayList<TumorSpecimen>();
