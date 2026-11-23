@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.2...v0.10.3) (2026-11-23)
+
+
+### Bug Fixes
+
+* use date of death from patient object if nothing else available ([fd7a15a](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/fd7a15a08c3d0add1f874d7ffdc7cef3abb82acf))
+
 ## [0.10.2](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.1...v0.10.2) (2026-11-23)
 
 
