@@ -216,6 +216,18 @@ class KpaHistologieDataMapperTest {
       var actual = this.dataMapper.getById(1);
       assertThat(actual).isInstanceOf(HistologyReport.class);
     }
+
+    @Test
+    void shouldNormalizeTumorMorphologyVersion() {
+      when(propertyCatalogue.getByCodeAndVersion(anyString(), anyInt()))
+          .thenReturn(
+              new PropertyCatalogue.Entry(
+                  "8000/0", "Benigne Neoplasie o.n.A.", "", "HIST Version2019", "Version 2019"));
+
+      var actual = this.dataMapper.getByParentId(1).get(0);
+      assertThat(actual.getResults().getTumorMorphology().getValue().getVersion())
+          .isEqualTo("Zweite Revision");
+    }
   }
 
   @Nested
