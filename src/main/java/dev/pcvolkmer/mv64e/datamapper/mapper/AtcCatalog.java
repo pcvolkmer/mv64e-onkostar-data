@@ -58,11 +58,15 @@ final class AtcCatalog {
       Pattern.compile("^[ABCDGHJLMNPRSV][0-9]{2}[A-Z]{2}[0-9]{2}$");
   private static final Pattern SAFE_TRAILING_PARENS_PATTERN =
       Pattern.compile(
-          "\\s*\\((?:o\\.\\s*n\\.\\s*A\\.|NOS|CBCDA|CDDP|dFdC|5-FU|FU|DTIC|CCNU|BCNU|MTX|VP-16|CPT-11|L-OHP|ADM|CTX|IFO|MMC|BLM|VCR|VBL|VDS)\\)\\s*$",
+          "\\s*\\((?:o\\.\\s*n\\.\\s*A\\.|NOS|CBCDA|CDDP|dFdC|5-FU|FU|DTIC|CCNU|BCNU|MTX|VP-16|CPT-11|L-OHP|ADM|CTX|IFO|MMC|BLM|VCR|VBL|VDS|L-ASP|2-CDA|AraC|EPI|IDA|MPL|DCF|6-TG|CAR-T-Zellen|AMSA,\\s*m-AMSA|6-MP,\\s*Purinethol|Medroxyprogesteronacetat,\\s*MPA)\\)\\s*$",
           Pattern.CASE_INSENSITIVE);
-  private static final Pattern FORMULATION_PREFIX_PATTERN =
+  private static final Pattern SAFE_CONJUGATE_PARENS_PATTERN =
       Pattern.compile(
-          "^(?:nab-|liposomal\\s+verkapseltes\\s+|pegyliertes?\\s+liposomales?\\s+|liposomales?\\s+)",
+          "(?<=(?:deruxtecan))\\s*\\(T-DXd\\)\\s*$|(?<=(?:ozogamicin))\\s*\\(Konjugat\\)\\s*$",
+          Pattern.CASE_INSENSITIVE);
+  private static final Pattern FORMULATION_AFFIX_PATTERN =
+      Pattern.compile(
+          "^(?:nab-|nal-|liposomal\\s+verkapseltes\\s+|pegyliertes?\\s+liposomales?\\s+|liposomales?\\s+)|\\s+liposomal(?:\\s+(?:nicht-)?pegyliert)?$",
           Pattern.CASE_INSENSITIVE);
   private static final Pattern NON_ALNUM_PATTERN = Pattern.compile("[\\s-]+");
 
@@ -175,25 +179,40 @@ final class AtcCatalog {
   }
 
   private static List<String> buildNameVariants(final String candidate) {
-    final var variants = new ArrayList<String>(3);
-    variants.add(candidate);
+    final var variants = new ArrayList<String>(4);
+    addIfNotBlankAndNew(variants, candidate);
 
-    final var withoutParens =
-        trimToNull(SAFE_TRAILING_PARENS_PATTERN.matcher(candidate).replaceFirst(""));
-    if (null != withoutParens && !withoutParens.equals(candidate)) {
-      variants.add(withoutParens);
+    final var withoutParens = stripSafeParens(candidate);
+    addIfNotBlankAndNew(variants, withoutParens);
+
+    final var withoutAffix = stripFormulationAffixes(candidate);
+    addIfNotBlankAndNew(variants, withoutAffix);
+
+    if (null != withoutParens) {
+      addIfNotBlankAndNew(variants, stripFormulationAffixes(withoutParens));
     }
-
-    final var baseForPrefix = null != withoutParens ? withoutParens : candidate;
-    final var withoutPrefix =
-        trimToNull(FORMULATION_PREFIX_PATTERN.matcher(baseForPrefix).replaceFirst(""));
-    if (null != withoutPrefix
-        && !withoutPrefix.equals(baseForPrefix)
-        && !withoutPrefix.equals(candidate)) {
-      variants.add(withoutPrefix);
+    if (null != withoutAffix) {
+      addIfNotBlankAndNew(variants, stripSafeParens(withoutAffix));
     }
 
     return variants;
+  }
+
+  @Nullable
+  private static String stripSafeParens(final String value) {
+    final var step1 = SAFE_TRAILING_PARENS_PATTERN.matcher(value).replaceFirst("");
+    return trimToNull(SAFE_CONJUGATE_PARENS_PATTERN.matcher(step1).replaceFirst(""));
+  }
+
+  @Nullable
+  private static String stripFormulationAffixes(final String value) {
+    return trimToNull(FORMULATION_AFFIX_PATTERN.matcher(value).replaceAll(""));
+  }
+
+  private static void addIfNotBlankAndNew(final List<String> list, @Nullable final String value) {
+    if (null != value && !list.contains(value)) {
+      list.add(value);
+    }
   }
 
   private static Optional<AtcEntry> disambiguate(final List<AtcEntry> matches) {
