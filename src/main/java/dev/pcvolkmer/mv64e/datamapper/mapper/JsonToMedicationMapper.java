@@ -50,20 +50,21 @@ public class JsonToMedicationMapper {
       return new ObjectMapper()
           .readValue(wirkstoffejson, new TypeReference<List<Wirkstoff>>() {}).stream()
               .map(
-                  wirkstoff ->
-                      AtcUnregisteredMedicationCoding.builder()
-                          .code(wirkstoff.code)
-                          .system(
-                              // Wirkstoff ohne Version => UNREGISTERED
-                              "ATC".equals(wirkstoff.system)
-                                      && null != wirkstoff.version
-                                      && !wirkstoff.version.isBlank()
-                                  ? AtcUnregisteredMedicationCoding.SystemEnum
-                                      .HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC
-                                  : AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
-                          .version(wirkstoff.version)
-                          .display(wirkstoff.name)
-                          .build())
+                  wirkstoff -> {
+                    final var resolved =
+                        AtcCatalog.instance()
+                            .resolve(
+                                wirkstoff.code,
+                                wirkstoff.name,
+                                wirkstoff.system,
+                                wirkstoff.version);
+                    return AtcUnregisteredMedicationCoding.builder()
+                        .code(resolved.code())
+                        .system(resolved.system())
+                        .version(resolved.version())
+                        .display(resolved.display())
+                        .build();
+                  })
               .collect(Collectors.toSet());
     } catch (Exception e) {
       throw new DataAccessException(String.format("Cannot map medication for %s", wirkstoffejson));

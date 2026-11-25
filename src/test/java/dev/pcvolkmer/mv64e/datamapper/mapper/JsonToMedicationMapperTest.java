@@ -25,7 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import dev.pcvolkmer.mv64e.model.AtcUnregisteredMedicationCoding;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class JsonToMedicationMapperTest {
 
@@ -46,14 +50,20 @@ class JsonToMedicationMapperTest {
         .containsAll(
             List.of(
                 AtcUnregisteredMedicationCoding.builder()
-                    .code("Cisplatin")
+                    .code("L01XA01")
                     .display("Cisplatin (CDDP)")
-                    .system(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
+                    .version("2026")
+                    .system(
+                        AtcUnregisteredMedicationCoding.SystemEnum
+                            .HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC)
                     .build(),
                 AtcUnregisteredMedicationCoding.builder()
-                    .code("Gemcitabin")
+                    .code("L01BC05")
                     .display("Gemcitabin (dFdC)")
-                    .system(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
+                    .version("2026")
+                    .system(
+                        AtcUnregisteredMedicationCoding.SystemEnum
+                            .HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC)
                     .build()));
   }
 
@@ -78,25 +88,9 @@ class JsonToMedicationMapperTest {
   }
 
   @Test
-  void shouldMapEinzelempfehlungJsonContainingSynonymesAndNoVersion() {
+  void shouldResolveVersionForValidAtcCodeWithoutVersion() {
     var json =
         " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":null,\"system\":\"ATC\"}]";
-
-    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
-
-    assertThat(actual).hasSize(1);
-
-    var elem0 = actual.get(0);
-    assertThat(elem0.getCode()).isEqualTo("L01FX26");
-    assertThat(elem0.getDisplay()).isEqualTo("Mirvetuximab Soravtansine");
-    assertThat(elem0.getSystem()).isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED);
-    assertThat(elem0.getVersion()).isNull();
-  }
-
-  @Test
-  void shouldMapEinzelempfehlungJsonContainingSynonymesAndVersion() {
-    var json =
-        " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":\"2026\",\"system\":\"ATC\"}]";
 
     var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
 
@@ -108,5 +102,199 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getSystem())
         .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
     assertThat(elem0.getVersion()).isEqualTo("2026");
+  }
+
+  @Test
+  void shouldPreserveExplicitAtcVersion() {
+    var json =
+        " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":\"2024\",\"system\":\"ATC\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01FX26");
+    assertThat(elem0.getDisplay()).isEqualTo("Mirvetuximab Soravtansine");
+    assertThat(elem0.getSystem())
+        .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
+    assertThat(elem0.getVersion()).isEqualTo("2024");
+  }
+
+  @ParameterizedTest
+  @MethodSource("resolvableOnkostarSubstances")
+  void shouldResolveOnkostarSubstancesToAtc(
+      String rawCode, String rawSubstance, String expectedAtcCode) {
+    var json =
+        String.format(
+            "[{\"system\":\"other\",\"code\":\"%s\",\"substance\":\"%s\"}]", rawCode, rawSubstance);
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo(expectedAtcCode);
+    assertThat(elem0.getSystem())
+        .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
+    assertThat(elem0.getVersion()).isEqualTo("2026");
+    assertThat(elem0.getDisplay()).isEqualTo(rawSubstance.trim());
+  }
+
+  private static Stream<Arguments> resolvableOnkostarSubstances() {
+    return Stream.of(
+        Arguments.of("Alectinib", "Alectinib", "L01ED03"),
+        Arguments.of("Bevacizuma", "Bevacizumab", "L01FG01"),
+        Arguments.of("Carboplati", "Carboplatin (CBCDA)", "L01XA02"),
+        Arguments.of("Cisplatin ", "Cisplatin (CDDP)", "L01XA01"),
+        Arguments.of("Docetaxel", "Docetaxel", "L01CD02"),
+        Arguments.of("Durvalumab", "Durvalumab", "L01FF03"),
+        Arguments.of("Entrectinib", "Entrectinib", "L01EX14"),
+        Arguments.of("Gemcitabin", "Gemcitabin (dFdC)", "L01BC05"),
+        Arguments.of("PaclitaONA", "Paclitaxel (o.n.A.)", "L01CD01"),
+        Arguments.of("nab-Paclit", "nab-Paclitaxel", "L01CD01"),
+        Arguments.of("lip-Paclit", "liposomal verkapseltes Paclitaxel", "L01CD01"),
+        Arguments.of("Paclitaxel", "Paclitaxel poliglumex", "L01CD03"),
+        Arguments.of("Pembrolizu", "Pembrolizumab", "L01FF02"),
+        Arguments.of("Pemetrexed", "Pemetrexed", "L01BA04"),
+        Arguments.of("Ramuciruma", "Ramucirumab", "L01FG02"),
+        Arguments.of("Vinorelbin", "Vinorelbin", "L01CA04"));
+  }
+
+  @Test
+  void shouldResolveSubstanceByTrimmedCodeWhenDisplayNameIsAbsent() {
+    var json = "[{\"system\":\"other\",\"code\":\"Cisplatin \"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01XA01");
+    assertThat(elem0.getDisplay()).isEqualTo("Cisplatin");
+    assertThat(elem0.getSystem())
+        .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
+    assertThat(elem0.getVersion()).isEqualTo("2026");
+  }
+
+  @Test
+  void shouldPreserveFormulationTextAsDisplayWhenResolvedFromCodeWithoutName() {
+    var json =
+        "[{\"system\":\"other\",\"code\":\"nab-Paclitaxel\"},{\"system\":\"other\",\"code\":\"Paclitaxel\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual)
+        .hasSize(2)
+        .containsExactlyInAnyOrder(
+            AtcUnregisteredMedicationCoding.builder()
+                .code("L01CD01")
+                .display("nab-Paclitaxel")
+                .version("2026")
+                .system(
+                    AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC)
+                .build(),
+            AtcUnregisteredMedicationCoding.builder()
+                .code("L01CD01")
+                .display("Paclitaxel")
+                .version("2026")
+                .system(
+                    AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC)
+                .build());
+  }
+
+  @Test
+  void shouldResolveLowercaseAtcCodeAndTreatUnicodeWhitespaceVersionAsBlank() {
+    var json =
+        "[{\"code\":\"l01fx26\",\"name\":\"Mirvetuximab Soravtansine\",\"version\":\"\\u2003\",\"system\":\"ATC\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01FX26");
+    assertThat(elem0.getVersion()).isEqualTo("2026");
+    assertThat(elem0.getSystem())
+        .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
+  }
+
+  @Test
+  void
+      shouldNotOverwriteExplicitUnknownAtcCodeViaSubstanceNameAndUseCatalogVersionForOtherSystem() {
+    var json =
+        "["
+            + "{\"code\":\"L01ZZ99\",\"name\":\"Bevacizumab\",\"version\":null,\"system\":\"ATC\"},"
+            + "{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"version\":\"1\",\"system\":\"other\"}"
+            + "]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual)
+        .hasSize(2)
+        .containsExactlyInAnyOrder(
+            AtcUnregisteredMedicationCoding.builder()
+                .code("L01ZZ99")
+                .display("Bevacizumab")
+                .system(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
+                .build(),
+            AtcUnregisteredMedicationCoding.builder()
+                .code("L01FX26")
+                .display("Mirvetuximab Soravtansine")
+                .version("2026")
+                .system(
+                    AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC)
+                .build());
+  }
+
+  @ParameterizedTest
+  @MethodSource("unresolvableMedications")
+  void shouldKeepUndefinedAndTrimCodeForAmbiguousOrUnknownMedications(
+      String rawCode, String rawName, String expectedCode) {
+    var json =
+        String.format("[{\"system\":\"other\",\"code\":\"%s\",\"name\":\"%s\"}]", rawCode, rawName);
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo(expectedCode);
+    assertThat(elem0.getSystem()).isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED);
+    assertThat(elem0.getVersion()).isNull();
+  }
+
+  private static Stream<Arguments> unresolvableMedications() {
+    return Stream.of(
+        Arguments.of("Mistelkrau", "Mistelkraut", "Mistelkrau"),
+        Arguments.of("Kombi", "Kombinationen", "Kombi"),
+        Arguments.of("Dexamethas", "Dexamethason", "Dexamethas"),
+        Arguments.of("IfnPeg", "Interferon alfa-2a (pegyliert)", "IfnPeg"),
+        Arguments.of("BevaIvt", "Bevacizumab (intravitreale Anwendung)", "BevaIvt"),
+        Arguments.of("L01XX99", "Unbekannter ATC-Code", "L01XX99"),
+        Arguments.of(" CustomCode ", "Unbekannte Substanz", "CustomCode"));
+  }
+
+  @Test
+  void shouldPreserveSourceVersionForUnresolvableMedications() {
+    var json =
+        "["
+            + "{\"system\":\"other\",\"code\":\"LocalCode\",\"name\":\"Unbekannt\",\"version\":\"7\"},"
+            + "{\"system\":\"other\",\"code\":\"LocalCode\",\"name\":\"Unbekannt\",\"version\":\"8\"}"
+            + "]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual)
+        .hasSize(2)
+        .containsExactlyInAnyOrder(
+            AtcUnregisteredMedicationCoding.builder()
+                .code("LocalCode")
+                .display("Unbekannt")
+                .version("7")
+                .system(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
+                .build(),
+            AtcUnregisteredMedicationCoding.builder()
+                .code("LocalCode")
+                .display("Unbekannt")
+                .version("8")
+                .system(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
+                .build());
   }
 }
