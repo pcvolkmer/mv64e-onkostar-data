@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2026  Paul-Christian Volkmer
+ * Copyright (C) 2026  Paul-Christian Volkmer and other contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,10 +35,10 @@ final class CatalogVersionNormalizer {
       Pattern.compile("(?:^|\\D)((?:19|20)\\d{2})(?:\\D|$)");
   private static final Pattern FIRST_REV_PATTERN =
       Pattern.compile(
-          "(?:erste\\s+revision|\\bfirst\\s+revision\\b|\\b1\\.\\s*rev(?:ision)?\\b|\\brev\\.?\\s*1\\b|\\brevision\\s+i\\b)");
+          "erste\\s+revision|\\bfirst\\s+revision\\b|\\b1\\.\\s*rev(?:ision)?\\b|\\brev\\.?\\s*1\\b|\\brevision\\s+i\\b");
   private static final Pattern SECOND_REV_PATTERN =
       Pattern.compile(
-          "(?:zweite\\s+revision|\\bsecond\\s+revision\\b|\\b2\\.\\s*rev(?:ision)?\\b|\\brev\\.?\\s*2\\b|\\brevision\\s+ii\\b)");
+          "zweite\\s+revision|\\bsecond\\s+revision\\b|\\b2\\.\\s*rev(?:ision)?\\b|\\brev\\.?\\s*2\\b|\\brevision\\s+ii\\b");
 
   private CatalogVersionNormalizer() {
     // intentionally left empty
