@@ -74,11 +74,12 @@ var jsonResult = Converter.toJsonString(
 | IHC-Berichte                     | -      | Aktuell nicht vorgesehen                                                                           |
 | MSI-Befunde                      | ⛅     | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)                     |
 | NGS-Berichte                     | ⛅     | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2) (3)                 |
-| MTB-Beschlüsse                   | ✅     | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4) (5)                   |
+| MTB-Beschlüsse                   | ✅     | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4) (5)                |
 | Follow-Up Verlauf                | ✅     |                                                                                                    |
 | Antrag Kostenübernahme           | ✅     | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (6) (7)                        |
 | Antwort Kostenübernahme          | ✅     | (6)                                                                                                |
 | Therapien                        | ⛅     | Initialer Support                                                                                  |
+| Studieneinschlüsse               | -      | Geplant                                                                                            |
 | Response Befunde                 | ✅     | (6)                                                                                                |
 
 ### Hinweise
