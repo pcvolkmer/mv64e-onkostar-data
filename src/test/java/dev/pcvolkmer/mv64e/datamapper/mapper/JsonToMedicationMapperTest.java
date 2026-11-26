@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2025  Paul-Christian Volkmer
+ * Copyright (C) 2025  Paul-Christian Volkmer and David Mal (UKW)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -87,6 +87,9 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getVersion()).isNull();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldResolveVersionForValidAtcCodeWithoutVersion() {
     var json =
@@ -104,6 +107,9 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getVersion()).isEqualTo("2026");
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldPreserveExplicitAtcVersion() {
     var json =
@@ -121,6 +127,9 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getVersion()).isEqualTo("2024");
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @ParameterizedTest
   @MethodSource("resolvableOnkostarSubstances")
   void shouldResolveOnkostarSubstancesToAtc(
@@ -140,6 +149,9 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getDisplay()).isEqualTo(rawSubstance.trim());
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static Stream<Arguments> resolvableOnkostarSubstances() {
     return Stream.of(
         Arguments.of("Alectinib", "Alectinib", "L01ED03"),
@@ -192,6 +204,9 @@ class JsonToMedicationMapperTest {
         Arguments.of("Vinorelbin", "Vinorelbin", "L01CA04"));
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldResolveSubstanceByTrimmedCodeWhenDisplayNameIsAbsent() {
     var json = "[{\"system\":\"other\",\"code\":\"Cisplatin \"}]";
@@ -207,6 +222,9 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getVersion()).isEqualTo("2026");
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldPreserveFormulationTextAsDisplayWhenResolvedFromCodeWithoutName() {
     var json =
@@ -233,6 +251,9 @@ class JsonToMedicationMapperTest {
                 .build());
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldResolveLowercaseAtcCodeAndTreatUnicodeWhitespaceVersionAsBlank() {
     var json =
@@ -248,6 +269,9 @@ class JsonToMedicationMapperTest {
         .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void
       shouldNotOverwriteExplicitUnknownAtcCodeViaSubstanceNameAndUseCatalogVersionForOtherSystem() {
@@ -276,6 +300,9 @@ class JsonToMedicationMapperTest {
                 .build());
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @ParameterizedTest
   @MethodSource("unresolvableMedications")
   void shouldKeepUndefinedAndTrimCodeForAmbiguousOrUnknownMedications(
@@ -292,6 +319,9 @@ class JsonToMedicationMapperTest {
     assertThat(elem0.getVersion()).isNull();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static Stream<Arguments> unresolvableMedications() {
     return Stream.of(
         Arguments.of("Mistelkrau", "Mistelkraut", "Mistelkrau"),
@@ -305,6 +335,9 @@ class JsonToMedicationMapperTest {
         Arguments.of(" CustomCode ", "Unbekannte Substanz", "CustomCode"));
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldPreserveSourceVersionForUnresolvableMedications() {
     var json =

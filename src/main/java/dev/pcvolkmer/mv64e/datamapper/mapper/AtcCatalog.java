@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2026  Paul-Christian Volkmer
+ * Copyright (C) 2026  Paul-Christian Volkmer and David Mal (UKW)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -41,6 +41,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Resolves medication codes and substance names against the bundled BfArM ATC catalog ({@code
  * atc.csv}).
+ *
+ * @author David Mal (UKW) assisted by GitHub Copilot
  */
 @NullMarked
 final class AtcCatalog {
@@ -74,6 +76,9 @@ final class AtcCatalog {
   private final Map<String, List<AtcEntry>> level5ByExactName;
   private final Map<String, List<AtcEntry>> level5ByCollapsedName;
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static final class Holder {
     private static final AtcCatalog INSTANCE = loadFromClasspath();
   }
@@ -87,16 +92,25 @@ final class AtcCatalog {
     this.level5ByCollapsedName = level5ByCollapsedName;
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   static AtcCatalog instance() {
     return Holder.INSTANCE;
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   static boolean isAtcCode(@Nullable final String code) {
     final var normalized = trimToNull(code);
     return null != normalized
         && ATC_CODE_PATTERN.matcher(normalized.toUpperCase(Locale.ROOT)).matches();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   ResolvedMedication resolve(
       @Nullable final String rawCode,
       @Nullable final String rawName,
@@ -160,6 +174,9 @@ final class AtcCatalog {
         preservedCode, AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED, version, name);
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private Optional<AtcEntry> findBySubstanceName(@Nullable final String rawCandidate) {
     final var candidate = trimToNull(rawCandidate);
     if (null == candidate) {
@@ -178,6 +195,9 @@ final class AtcCatalog {
     return Optional.empty();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static List<String> buildNameVariants(final String candidate) {
     final var variants = new ArrayList<String>(4);
     addIfNotBlankAndNew(variants, candidate);
@@ -198,23 +218,35 @@ final class AtcCatalog {
     return variants;
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Nullable
   private static String stripSafeParens(final String value) {
     final var step1 = SAFE_TRAILING_PARENS_PATTERN.matcher(value).replaceFirst("");
     return trimToNull(SAFE_CONJUGATE_PARENS_PATTERN.matcher(step1).replaceFirst(""));
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Nullable
   private static String stripFormulationAffixes(final String value) {
     return trimToNull(FORMULATION_AFFIX_PATTERN.matcher(value).replaceAll(""));
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static void addIfNotBlankAndNew(final List<String> list, @Nullable final String value) {
     if (null != value && !list.contains(value)) {
       list.add(value);
     }
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static Optional<AtcEntry> disambiguate(final List<AtcEntry> matches) {
     if (matches.size() == 1) {
       return Optional.of(matches.get(0));
@@ -236,10 +268,16 @@ final class AtcCatalog {
     return Optional.empty();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static String collapse(final String value) {
     return NON_ALNUM_PATTERN.matcher(value.toLowerCase(Locale.ROOT)).replaceAll("");
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Nullable
   private static String trimToNull(@Nullable final String value) {
     if (null == value || value.isBlank()) {
@@ -248,6 +286,9 @@ final class AtcCatalog {
     return value.strip();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static AtcCatalog loadFromClasspath() {
     final var byCode = new HashMap<String, AtcEntry>();
     final var byExactName = new HashMap<String, List<AtcEntry>>();
@@ -298,6 +339,9 @@ final class AtcCatalog {
     return new AtcCatalog(byCode, byExactName, byCollapsedName);
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   private static final class AtcEntry {
     private final String code;
     private final String name;
@@ -310,6 +354,9 @@ final class AtcCatalog {
     }
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   static final class ResolvedMedication {
     @Nullable private final String code;
     private final AtcUnregisteredMedicationCoding.SystemEnum system;
@@ -327,18 +374,30 @@ final class AtcCatalog {
       this.display = display;
     }
 
+    /**
+     * @author David Mal (UKW) assisted by GitHub Copilot
+     */
     @Nullable String code() {
       return code;
     }
 
+    /**
+     * @author David Mal (UKW) assisted by GitHub Copilot
+     */
     AtcUnregisteredMedicationCoding.SystemEnum system() {
       return system;
     }
 
+    /**
+     * @author David Mal (UKW) assisted by GitHub Copilot
+     */
     @Nullable String version() {
       return version;
     }
 
+    /**
+     * @author David Mal (UKW) assisted by GitHub Copilot
+     */
     @Nullable String display() {
       return display;
     }
