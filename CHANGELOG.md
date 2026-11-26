@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.10.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.3...v0.10.4) (2026-11-26)
+
+
+### Bug Fixes
+
+* add board type ([#251](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/251)) ([03575ec](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/03575ecc36fb29d5fc0edc1799bb2caf54f872c5))
+* handling of incomplete ATC code groups ([#249](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/249)) ([62c7242](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/62c724206c1c44ed6dc86a05d86101486cd3a1b4))
+* normalize ICD-10-GM and ICD-O-3 catalog versions ([#245](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/245)) ([d74f3dd](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/d74f3dd295cd7c004019fa590dc089142aa93e20))
+
 ## [0.10.3](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.2...v0.10.3) (2026-11-23)
 
 
