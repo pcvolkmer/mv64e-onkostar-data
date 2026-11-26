@@ -329,6 +329,15 @@ public class MtbDataMapper implements DataMapper<PatientRecord> {
                   catalogueFactory.catalogue(TherapielinieCatalogue.class))
               .getById(kpaId);
 
+      var studyInclusions =
+          new StudieneinschlusshistorieDataMapper(
+                  catalogueFactory.catalogue(StudieneinschlussCatalogue.class),
+                  therapieplanCatalogue,
+                  einzelempfehlungCatalogue,
+                  catalogueFactory.catalogue(FollowUpCatalogue.class),
+                  propertyCatalogue)
+              .getById(kpaId);
+
       var responses =
           followUpIds.stream()
               .map(
@@ -384,6 +393,8 @@ public class MtbDataMapper implements DataMapper<PatientRecord> {
           .claimResponses(claimResponses.isEmpty() ? null : claimResponses)
           // Therapie-Verlaufsdokumentation
           .systemicTherapies(systemicTherapies.isEmpty() ? null : systemicTherapies)
+          // Studieneinschluss-Verlaufsdokumentation
+          .studyInclusions(studyInclusions.isEmpty() ? null : studyInclusions)
           // Response Befunde
           .responses(responses.isEmpty() ? null : responses);
 
