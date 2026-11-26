@@ -24,6 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -137,6 +138,46 @@ class KpaDiagnosisDataMapperTest {
 
     assertThat(actual.getGuidelineTreatmentStatus().getCode())
         .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCoding.CodeEnum.EXHAUSTED);
+  }
+
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
+  @Test
+  void shouldNormalizeDiagnosisAndTopographyVersions() {
+    when(kpaCatalogue.getById(anyInt()))
+        .thenReturn(
+            TestResultSet.withColumns(
+                Column.name(Column.ID).value(1),
+                Column.name(Column.PATIENTEN_ID).value(42),
+                Column.name("icd10").value("C34.1"),
+                Column.name("icd10_propcat_version").value(1),
+                Column.name("icdo3lokalisation").value("C34.1"),
+                Column.name("icdo3lokalisation_propcat_version").value(2)));
+
+    when(propertyCatalogue.getByCodeAndVersion("C34.1", 1))
+        .thenReturn(
+            new PropertyCatalogue.Entry(
+                "C34.1", "Oberlappen", "Oberlappen", "icd10gmversion2025", "Version 2025"));
+    when(propertyCatalogue.getByCodeAndVersion("C34.1", 2))
+        .thenReturn(
+            new PropertyCatalogue.Entry(
+                "C34.1", "Oberlappen", "Oberlappen", "LOK Version2013", "Version 2013"));
+    when(propertyCatalogue.getByCodeAndVersion(eq("C00.0"), anyInt()))
+        .thenReturn(
+            new PropertyCatalogue.Entry(
+                "C00.0", "Oberlippe", "Oberlippe", "icd10gmversion2024", "Version 2024"));
+
+    when(keimbahndiagnoseCatalogue.getAllByParentId(anyInt()))
+        .thenReturn(
+            List.of(
+                TestResultSet.withColumns(
+                    Column.name(Column.ID).value(1), PropcatColumn.name("icd10").value("C00.0"))));
+
+    var actual = this.dataMapper.getById(1);
+    assertThat(actual.getCode().getVersion()).isEqualTo("2025");
+    assertThat(actual.getTopography().getVersion()).isEqualTo("Erste Revision");
+    assertThat(new ArrayList<>(actual.getGermlineCodes()).get(0).getVersion()).isEqualTo("2024");
   }
 
   @FuzzNullTest(

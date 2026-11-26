@@ -109,9 +109,10 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                         .getByCodeAndVersion(icd10, icd10PropcatVersion)
                         .getShortdesc())
                 .version(
-                    propertyCatalogue
-                        .getByCodeAndVersion(icd10, icd10PropcatVersion)
-                        .getVersionDescription())
+                    CatalogVersionNormalizer.normalizeIcd10GmVersion(
+                        propertyCatalogue
+                            .getByCodeAndVersion(icd10, icd10PropcatVersion)
+                            .getVersionDescription()))
                 .build())
         .recordedOn(data.getDate("datumerstdiagnose"))
         .topography(
@@ -123,9 +124,10 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                         .getByCodeAndVersion(icd03, icd03PropcatVersion)
                         .getShortdesc())
                 .version(
-                    propertyCatalogue
-                        .getByCodeAndVersion(icd03, icd03PropcatVersion)
-                        .getVersionDescription())
+                    CatalogVersionNormalizer.normalizeIcdO3Version(
+                        propertyCatalogue
+                            .getByCodeAndVersion(icd03, icd03PropcatVersion)
+                            .getVersionDescription()))
                 .build())
         .type(getType(data))
         .grading(getGrading(id))
@@ -271,9 +273,10 @@ public class KpaDiagnosisDataMapper implements DataMapper<MtbDiagnosis> {
                           .getByCodeAndVersion(icd10, icd10PropcatVersion)
                           .getShortdesc())
                   .version(
-                      propertyCatalogue
-                          .getByCodeAndVersion(icd10, icd10PropcatVersion)
-                          .getVersionDescription())
+                      CatalogVersionNormalizer.normalizeIcd10GmVersion(
+                          propertyCatalogue
+                              .getByCodeAndVersion(icd10, icd10PropcatVersion)
+                              .getVersionDescription()))
                   .build();
             })
         .filter(Objects::nonNull)

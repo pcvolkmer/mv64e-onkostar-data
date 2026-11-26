@@ -228,7 +228,9 @@ public class KpaHistologieDataMapper extends AbstractSubformDataMapper<Histology
     return Coding.builder()
         .code(propertyCatalogueEntry.getCode())
         .display(propertyCatalogueEntry.getShortdesc())
-        .version(propertyCatalogueEntry.getVersionDescription())
+        .version(
+            CatalogVersionNormalizer.normalizeIcdO3Version(
+                propertyCatalogueEntry.getVersionDescription()))
         .system("urn:oid:2.16.840.1.113883.6.43.1")
         .build();
   }
