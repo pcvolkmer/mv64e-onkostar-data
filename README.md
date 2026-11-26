@@ -74,12 +74,12 @@ var jsonResult = Converter.toJsonString(
 | IHC-Berichte                     | -      | Aktuell nicht vorgesehen                                                                           |
 | MSI-Befunde                      | ⛅     | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2)                     |
 | NGS-Berichte                     | ⛅     | Best effort: Formular OS.Molekulargenetik erfüllt nicht alle Anforderungen (2) (3)                 |
-| MTB-Beschlüsse                   | ✅     | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4)                    |
+| MTB-Beschlüsse                   | ✅     | Stützende molekulare Alteration(en) für einfache Variante, CNV und Fusionen (4) (5)                   |
 | Follow-Up Verlauf                | ✅     |                                                                                                    |
-| Antrag Kostenübernahme           | ✅     | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (5) (6)                        |
-| Antwort Kostenübernahme          | ✅     | (5)                                                                                                |
+| Antrag Kostenübernahme           | ✅     | Die optionale Angabe der beantragten Wirkstoffe ist nicht enthalten (6) (7)                        |
+| Antwort Kostenübernahme          | ✅     | (6)                                                                                                |
 | Therapien                        | ⛅     | Initialer Support                                                                                  |
-| Response Befunde                 | ✅     | (5)                                                                                                |
+| Response Befunde                 | ✅     | (6)                                                                                                |
 
 ### Hinweise
 
@@ -97,11 +97,14 @@ var jsonResult = Converter.toJsonString(
 
    Ein mehrfacher Export je Datensatz findet dabei nicht statt, jeder NGS-Bericht ist nur einmal vorhanden.
 4. Implementierung des Mappings von HGNC-Symbol (Gen-Name) zu HGNC-ID über enthaltene Gen-Liste.
-5. Der Export wird dann durchgeführt, wenn:
+5. Wirkstoffe werden nur dann als ATC-Code exportiert, wenn der Code mindestens eine engere Wirkstoffgruppe angibt
+   (z.B. L01AA - letzte beide Ziffern fehlend) und eine Version angegeben ist.
+   Ansonsten wird der Wirkstoff mit System "UNDEFINED" und ohne Version exportiert.
+6. Der Export wird dann durchgeführt, wenn:
     * Antrag Kostenübernahme: Das Datum angegeben ist
     * Antwort Kostenübernahme: Das Datum angegeben ist
     * Response Befunde: Die Beurteilungsmethode angegeben ist
-6. Da die Angabe (technisch) optional ist und
+7. Da die Angabe (technisch) optional ist und
    im [DNPM-Datenmodell 2.1](https://ibmi-ut.atlassian.net/wiki/spaces/DAM/pages/698777783)
    nicht genannt ist, wird diese Angabe nicht exportiert.
 

@@ -50,20 +50,27 @@ public class JsonToMedicationMapper {
       return new ObjectMapper()
           .readValue(wirkstoffejson, new TypeReference<List<Wirkstoff>>() {}).stream()
               .map(
-                  wirkstoff ->
-                      AtcUnregisteredMedicationCoding.builder()
-                          .code(wirkstoff.code)
-                          .system(
-                              // Wirkstoff ohne Version => UNREGISTERED
-                              "ATC".equals(wirkstoff.system)
-                                      && null != wirkstoff.version
-                                      && !wirkstoff.version.isBlank()
-                                  ? AtcUnregisteredMedicationCoding.SystemEnum
-                                      .HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC
-                                  : AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED)
-                          .version(wirkstoff.version)
-                          .display(wirkstoff.name)
-                          .build())
+                  wirkstoff -> {
+                    final var system = // Wirkstoff ohne Version => UNREGISTERED/UNDEFINED
+                        "ATC".equals(wirkstoff.system)
+                                && null != wirkstoff.version
+                                && !wirkstoff.version.isBlank()
+                                && wirkstoff.code.matches(
+                                    "^[ABCDGHJLMNPRSV][0-2][1-9][A-Z][A-Z](\\d{2})?")
+                            ? AtcUnregisteredMedicationCoding.SystemEnum
+                                .HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC
+                            : AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED;
+
+                    return AtcUnregisteredMedicationCoding.builder()
+                        .code(wirkstoff.code)
+                        .system(system)
+                        .version(
+                            system == AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED
+                                ? null
+                                : wirkstoff.version)
+                        .display(wirkstoff.name)
+                        .build();
+                  })
               .collect(Collectors.toSet());
     } catch (Exception e) {
       throw new DataAccessException(String.format("Cannot map medication for %s", wirkstoffejson));
