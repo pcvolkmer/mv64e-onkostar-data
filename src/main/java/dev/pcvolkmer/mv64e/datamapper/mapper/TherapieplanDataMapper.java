@@ -104,6 +104,12 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
               id, Reference.builder().id(refDnpmKlinikAnamnese).type("MTBDiagnosis").build()));
     }
 
+    var boardType = getBoardType(therapieplanData.getString("mtb_typ"));
+    if (null == boardType) {
+      throw new IgnorableMappingException("Cannot map BoardType for Therapieplan");
+    }
+    builder.boardType(boardType);
+
     if (therapieplanData.isTrue("mit_einzelempfehlung")) {
       builder.medicationRecommendations(einzelempfehlungWirkstoffDataMapper.getByParentId(id));
       builder.procedureRecommendations(einzelempfehlungProzedurDataMapper.getByParentId(id));
@@ -237,5 +243,28 @@ public class TherapieplanDataMapper implements DataMapper<MtbCarePlan> {
                         Reference.builder().id(resultSet.getString("ref_molekulargenetik")).build())
                     .build())
         .collect(Collectors.toList());
+  }
+
+  private CarePlanBoardTypeCoding getBoardType(String boardType) {
+    final var builder = CarePlanBoardTypeCoding.builder().system("dnpm-dip/careplan/board-type");
+
+    if (null == boardType) {
+      return null;
+    }
+
+    switch (boardType) {
+      case "I":
+        return builder
+            .code(CarePlanBoardTypeCoding.CodeEnum.INDICATION_BOARD)
+            .display("Indikationsbesprechung")
+            .build();
+      case "B":
+        return builder
+            .code(CarePlanBoardTypeCoding.CodeEnum.THERAPY_BOARD)
+            .display("Befundbesprechung")
+            .build();
+    }
+
+    return null;
   }
 }
