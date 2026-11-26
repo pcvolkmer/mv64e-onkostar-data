@@ -104,7 +104,8 @@ class TherapieplanDataMapperTest {
                     DateColumn.name("datum").value("2025-07-11"),
                     Column.name("ref_dnpm_klinikanamnese").value(4711),
                     Column.name("protokollauszug").value("Das ist ein Protokollauszug"),
-                    Column.name("mit_einzelempfehlung").value(true)))
+                    Column.name("mit_einzelempfehlung").value(true),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(this.therapieplanCatalogue)
         .getById(anyInt());
 
@@ -112,6 +113,13 @@ class TherapieplanDataMapperTest {
     assertThat(actual).isInstanceOf(MtbCarePlan.class);
     assertThat(actual.getId()).isEqualTo("100");
     assertThat(actual.getPatient()).isEqualTo(Reference.builder().id("42").type("Patient").build());
+    assertThat(actual.getBoardType())
+        .isEqualTo(
+            CarePlanBoardTypeCoding.builder()
+                .code(CarePlanBoardTypeCoding.CodeEnum.THERAPY_BOARD)
+                .system("dnpm-dip/careplan/board-type")
+                .display("Befundbesprechung")
+                .build());
 
     assertThat(actual.getMedicationRecommendations())
         .satisfies(
@@ -137,7 +145,8 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
-                    DateColumn.name("datum").value("2026-02-03")))
+                    DateColumn.name("datum").value("2026-02-03"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -158,7 +167,8 @@ class TherapieplanDataMapperTest {
                     Column.name(Column.PATIENTEN_ID).value(42),
                     DateColumn.name("datum").value("2026-02-03"),
                     PropcatColumn.name("target").value("KT"),
-                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -187,7 +197,8 @@ class TherapieplanDataMapperTest {
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
                     DateColumn.name("datum").value("2026-02-03"),
-                    PropcatColumn.name("target").value("KT")))
+                    PropcatColumn.name("target").value("KT"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -213,7 +224,8 @@ class TherapieplanDataMapperTest {
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
                     DateColumn.name("datum").value("2026-02-03"),
-                    PropcatColumn.name("target").value(targetFoundCode)))
+                    PropcatColumn.name("target").value(targetFoundCode),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -233,7 +245,8 @@ class TherapieplanDataMapperTest {
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
                     DateColumn.name("datum").value("2026-02-03"),
-                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -259,7 +272,8 @@ class TherapieplanDataMapperTest {
                     Column.name(Column.PATIENTEN_ID).value(42),
                     DateColumn.name("datum").value("2026-02-03"),
                     Column.name("humangen_beratung").value(1),
-                    PropcatColumn.name("humangen_ber_grund").value("other")))
+                    PropcatColumn.name("humangen_ber_grund").value("other"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -277,6 +291,13 @@ class TherapieplanDataMapperTest {
     var actual = this.dataMapper.getById(1);
     assertThat(actual).isInstanceOf(MtbCarePlan.class);
     assertThat(actual.getId()).isEqualTo("1");
+    assertThat(actual.getBoardType())
+        .isEqualTo(
+            CarePlanBoardTypeCoding.builder()
+                .code(CarePlanBoardTypeCoding.CodeEnum.THERAPY_BOARD)
+                .system("dnpm-dip/careplan/board-type")
+                .display("Befundbesprechung")
+                .build());
 
     assertThat(actual.getRecommendationsMissingReason()).isNull();
 
@@ -301,7 +322,8 @@ class TherapieplanDataMapperTest {
                 TestResultSet.withColumns(
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
-                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
@@ -316,7 +338,8 @@ class TherapieplanDataMapperTest {
                     Column.name(Column.ID).value(1),
                     Column.name(Column.PATIENTEN_ID).value(42),
                     DateColumn.name("datum").value("2026-02-03"),
-                    PropcatColumn.name("status_begruendung").value("non-genetic-cause")))
+                    PropcatColumn.name("status_begruendung").value("non-genetic-cause"),
+                    PropcatColumn.name("mtb_typ").value("B")))
         .when(therapieplanCatalogue)
         .getById(anyInt());
 
