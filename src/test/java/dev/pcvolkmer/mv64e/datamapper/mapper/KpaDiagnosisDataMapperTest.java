@@ -140,6 +140,9 @@ class KpaDiagnosisDataMapperTest {
         .isEqualTo(MtbDiagnosisGuidelineTreatmentStatusCoding.CodeEnum.EXHAUSTED);
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldNormalizeDiagnosisAndTopographyVersions() {
     when(kpaCatalogue.getById(anyInt()))

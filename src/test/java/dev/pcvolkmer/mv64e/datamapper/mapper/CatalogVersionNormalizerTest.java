@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2026  Paul-Christian Volkmer and other contributors
+ * Copyright (C) 2026  Paul-Christian Volkmer and David Mal (UKW)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -28,8 +28,16 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+/**
+ * Tests catalog version normalization.
+ *
+ * @author David Mal (UKW) assisted by GitHub Copilot
+ */
 class CatalogVersionNormalizerTest {
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @ParameterizedTest
   @CsvSource({
     "2025, 2025",
@@ -61,6 +69,9 @@ class CatalogVersionNormalizerTest {
     assertThat(CatalogVersionNormalizer.normalizeIcd10GmVersion(input)).isEqualTo(expected);
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @ParameterizedTest
   @NullAndEmptySource
   @ValueSource(strings = {"   "})
@@ -68,6 +79,9 @@ class CatalogVersionNormalizerTest {
     assertThat(CatalogVersionNormalizer.normalizeIcd10GmVersion(input)).isNull();
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @ParameterizedTest
   @CsvSource({
     "Erste Revision, Erste Revision",
@@ -97,6 +111,9 @@ class CatalogVersionNormalizerTest {
     assertThat(CatalogVersionNormalizer.normalizeIcdO3Version(input)).isEqualTo(expected);
   }
 
+  /**
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Test
   void shouldReturnNullForNullIcdO3Version() {
     assertThat(CatalogVersionNormalizer.normalizeIcdO3Version(null)).isNull();

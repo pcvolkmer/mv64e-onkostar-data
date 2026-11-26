@@ -217,6 +217,9 @@ class KpaHistologieDataMapperTest {
       assertThat(actual).isInstanceOf(HistologyReport.class);
     }
 
+    /**
+     * @author David Mal (UKW) assisted by GitHub Copilot
+     */
     @Test
     void shouldNormalizeTumorMorphologyVersion() {
       when(propertyCatalogue.getByCodeAndVersion(anyString(), anyInt()))

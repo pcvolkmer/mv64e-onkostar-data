@@ -1,7 +1,7 @@
 /*
  * This file is part of mv64e-onkostar-data
  *
- * Copyright (C) 2026  Paul-Christian Volkmer and other contributors
+ * Copyright (C) 2026  Paul-Christian Volkmer and David Mal (UKW)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -27,6 +27,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Normalizes Onkostar property catalogue version descriptions to DNPM-compatible Coding versions.
+ *
+ * @author David Mal (UKW) assisted by GitHub Copilot
  */
 @NullMarked
 final class CatalogVersionNormalizer {
@@ -48,6 +50,8 @@ final class CatalogVersionNormalizer {
    * Normalizes Onkostar ICD-10-GM version descriptions (e.g. {@code "Version 2025"} or {@code
    * "ICD-10-GM 2025"}) to the 4-digit catalog year expected by DNPM ({@code "2025"}). Returns the
    * trimmed input unchanged if zero or multiple distinct years are present.
+   *
+   * @author David Mal (UKW) assisted by GitHub Copilot
    */
   @Nullable
   static String normalizeIcd10GmVersion(@Nullable final String versionDescription) {
@@ -67,6 +71,8 @@ final class CatalogVersionNormalizer {
    * <p>In Onkostar, German ICD-O-3 1. Revision (2014) is commonly stored as {@code "Version 2013"}
    * and 2. Revision as {@code "Version 2019"}. Ambiguous or contradictory strings are returned
    * trimmed without guessing.
+   *
+   * @author David Mal (UKW) assisted by GitHub Copilot
    */
   @Nullable
   static String normalizeIcdO3Version(@Nullable final String versionDescription) {
@@ -96,6 +102,12 @@ final class CatalogVersionNormalizer {
     return null != year ? year : trimmed;
   }
 
+  /**
+   * Extracts a single distinct 4-digit year from {@code value}, or {@code null} if none or multiple
+   * distinct years are present.
+   *
+   * @author David Mal (UKW) assisted by GitHub Copilot
+   */
   @Nullable
   private static String extractSingleYear(final String value) {
     final var matcher = YEAR_PATTERN.matcher(value);
