@@ -29,10 +29,8 @@ import org.junit.jupiter.api.Test;
 
 class JsonToMedicationMapperTest {
 
-  // See example in:
-  // https://github.com/pcvolkmer/onkostar-plugin-dnpm/blob/master/sql/sql-queries.md
   @Test
-  void shouldMapTherapielinieJson() {
+  void shouldMapMedicationJson() {
     var json =
         "[\n"
             + "    {\"system\":\"other\",\"code\":\"Gemcitabin\",\"substance\":\"Gemcitabin (dFdC)\"},\n"
@@ -57,10 +55,8 @@ class JsonToMedicationMapperTest {
                     .build()));
   }
 
-  // See example in:
-  // https://github.com/pcvolkmer/onkostar-plugin-dnpm/blob/master/sql/sql-queries.md
   @Test
-  void shouldMapEinzelempfehlungJson() {
+  void shouldMapUnregisteredMedicationJson() {
     var json =
         "[\n"
             + "    {\"code\":\"\",\"name\":\"PARP-Inhibierung\",\"system\":\"UNREGISTERED\"}\n"
@@ -78,7 +74,7 @@ class JsonToMedicationMapperTest {
   }
 
   @Test
-  void shouldMapEinzelempfehlungJsonContainingSynonymesAndNoVersion() {
+  void shouldMapMedicationJsonContainingSynonymesAndNoVersion() {
     var json =
         " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":null,\"system\":\"ATC\"}]";
 
@@ -94,7 +90,7 @@ class JsonToMedicationMapperTest {
   }
 
   @Test
-  void shouldMapEinzelempfehlungJsonContainingSynonymesAndVersion() {
+  void shouldMapMedicationJsonContainingSynonymesAndVersion() {
     var json =
         " [{\"code\":\"L01FX26\",\"name\":\"Mirvetuximab Soravtansine\",\"synonyms\":\"\",\"version\":\"2026\",\"system\":\"ATC\"}]";
 
@@ -105,6 +101,39 @@ class JsonToMedicationMapperTest {
     var elem0 = actual.get(0);
     assertThat(elem0.getCode()).isEqualTo("L01FX26");
     assertThat(elem0.getDisplay()).isEqualTo("Mirvetuximab Soravtansine");
+    assertThat(elem0.getSystem())
+        .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
+    assertThat(elem0.getVersion()).isEqualTo("2026");
+  }
+
+  @Test
+  void shouldMapMedicationGroupAsUndefined() {
+    var json =
+        " [{\"code\":\"L01\",\"name\":\"ANTINEOPLASTISCHE MITTEL\",\"synonyms\":\"\",\"version\":\"2026\",\"system\":\"ATC\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01");
+    assertThat(elem0.getDisplay()).isEqualTo("ANTINEOPLASTISCHE MITTEL");
+    assertThat(elem0.getSystem()).isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.UNDEFINED);
+    assertThat(elem0.getVersion()).isNull();
+  }
+
+  @Test
+  void shouldMapLevel4MedicationGroupAsAtc() {
+    var json =
+        " [{\"code\":\"L01AA\",\"name\":\"Stickstofflost-Analoga\",\"synonyms\":\"\",\"version\":\"2026\",\"system\":\"ATC\"}]";
+
+    var actual = new ArrayList<>(JsonToMedicationMapper.map(json));
+
+    assertThat(actual).hasSize(1);
+
+    var elem0 = actual.get(0);
+    assertThat(elem0.getCode()).isEqualTo("L01AA");
+    assertThat(elem0.getDisplay()).isEqualTo("Stickstofflost-Analoga");
     assertThat(elem0.getSystem())
         .isEqualTo(AtcUnregisteredMedicationCoding.SystemEnum.HTTP_FHIR_DE_CODE_SYSTEM_BFARM_ATC);
     assertThat(elem0.getVersion()).isEqualTo("2026");
