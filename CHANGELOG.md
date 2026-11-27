@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.4...v0.11.0) (2026-11-27)
+
+
+### Features
+
+* add mapper for "Studieneinschluss" ([#252](https://github.com/pcvolkmer/mv64e-onkostar-data/issues/252)) ([920659b](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/920659b31637d823c878f4f6f49d86bf792b868c))
+
+
+### Miscellaneous Chores
+
+* release 0.11.0 ([ef2db96](https://github.com/pcvolkmer/mv64e-onkostar-data/commit/ef2db9693b5cecdcc7ab61ce46d37b988505be2d))
+
 ## [0.10.4](https://github.com/pcvolkmer/mv64e-onkostar-data/compare/v0.10.3...v0.10.4) (2026-11-26)
 
 
